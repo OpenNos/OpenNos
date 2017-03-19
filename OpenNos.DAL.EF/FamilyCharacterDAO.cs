@@ -20,7 +20,9 @@ using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using OpenNos.Domain;
 
 namespace OpenNos.DAL.EF
 {
@@ -34,7 +36,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Character character = context.Character.FirstOrDefault(c => c.Name.Equals(characterName) && c.State == 1);
+                    Character character = context.Character.FirstOrDefault(c => c.Name.Equals(characterName) && c.State == (byte)CharacterState.Active);
                     FamilyCharacter familyCharacter = context.FamilyCharacter.FirstOrDefault(c => c.CharacterId.Equals(character.CharacterId));
                     if (character != null && familyCharacter != null)
                     {

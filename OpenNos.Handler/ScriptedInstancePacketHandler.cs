@@ -56,9 +56,33 @@ namespace OpenNos.Handler
                 ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
                 if (si != null)
                 {
-                    var rand = new Random().Next(si.GiftItems.Count);
-                    Session.Character.GiftAdd(si.GiftItems[rand].VNum, si.GiftItems[rand].Amount);
-                    Session.SendPacket($"repay  13.3.1 -1.0.0 -1.0.0 -1.0.0 -1.0.0 2023.0.1");
+                    var rand = new Random().Next(si.DrawItems.Count);
+                    var repay = "repay ";
+                    Session.Character.GiftAdd(si.DrawItems[rand].VNum, si.DrawItems[rand].Amount);
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Gift gift = si.GiftItems.ElementAtOrDefault(i);
+                        repay += $" {(gift == null ? "-1.0.0" : $"{gift.VNum}.0.{gift.Amount}")}";
+                        if (gift != null)
+                        {
+                            Session.Character.GiftAdd(gift.VNum, gift.Amount);
+                        }
+                    }
+
+                    // TODO ADD HASALREADYDONE
+                    for (int i = 0; i < 2; i++)
+                    {
+                        Gift gift = si.SpecialItems.ElementAtOrDefault(i);
+                        repay += $" {(gift == null ? "-1.0.0" : $"{gift.VNum}.0.{gift.Amount}")}";
+                        if (gift != null)
+                        {
+                            Session.Character.GiftAdd(gift.VNum, gift.Amount);
+                        }
+                    }
+
+                    repay += $" {si.DrawItems[rand].VNum}.0.{si.DrawItems[rand].Amount}";
+                    Session.SendPacket(repay);
                 }
             }
         }
