@@ -19,6 +19,7 @@ namespace OpenNos.GameObject
             StopEvents = new List<EventContainer>();
             TimeoutEvents = new List<EventContainer>();
             Type = type;
+            DeciSecondRemaining = 1;
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(
            x =>
            {
@@ -62,5 +63,6 @@ namespace OpenNos.GameObject
         {
             Enabled = true;
         }
+        
     }
 }

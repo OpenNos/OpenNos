@@ -7,6 +7,7 @@ using System.Xml;
 using System.Linq;
 using OpenNos.GameObject.Helpers;
 using System.Reactive.Linq;
+using System.Threading;
 
 namespace OpenNos.GameObject
 {
@@ -23,7 +24,7 @@ namespace OpenNos.GameObject
         public MapInstance FirstMap { get; set; }
 
         InstanceBag _instancebag = new InstanceBag();
-
+        IDisposable obs;
         Dictionary<int, MapInstance> _mapinstancedictionary = new Dictionary<int, MapInstance>();
 
         public string GenerateRbr()
@@ -56,6 +57,7 @@ namespace OpenNos.GameObject
 
         public void Dispose()
         {
+             Thread.Sleep(10000);
             _mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
         }
 
@@ -87,10 +89,19 @@ namespace OpenNos.GameObject
                    {
                        if (!FirstMap.InstanceBag.Lock)
                        {
-                           EventHelper.Instance.RunEvent(new EventContainer(FirstMap, EventActionType.SCRIPTEND, (byte)0));
+                           _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
                            Dispose();
                        }
                    });
+                 obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
+                 {
+                     if (_instancebag.Clock.DeciSecondRemaining <= 0)
+                     {
+                         _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
+                         Dispose();
+                         obs.Dispose();
+                     }
+                 });
                 GenerateEvent(InstanceEvents, FirstMap);
             }
         }
