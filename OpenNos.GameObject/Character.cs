@@ -3589,6 +3589,7 @@ namespace OpenNos.GameObject
 
         public List<string> GetFamilyHistory()
         {
+            //TODO: Fix some bugs(missing history etc)
             if (Family != null)
             {
                 string packetheader = "ghis";
@@ -3606,7 +3607,7 @@ namespace OpenNos.GameObject
                         packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
                         amount++;
                     }
-                    else if (i == Family.FamilyLogs.Count)
+                    else if (i + 50 * amount == Family.FamilyLogs.Count)
                     {
                         packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
                     }
