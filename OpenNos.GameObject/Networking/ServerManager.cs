@@ -383,6 +383,8 @@ namespace OpenNos.GameObject
             {
                 try
                 {
+                    LeaveMap(session.Character.CharacterId);
+
                     session.Character.IsChangingMapInstance = true;
 
                     session.CurrentMapInstance.RemoveMonstersTarget(session.Character.CharacterId);
@@ -999,7 +1001,6 @@ namespace OpenNos.GameObject
 
         public void JoinMiniland(ClientSession Session, ClientSession MinilandOwner)
         {
-            LeaveMap(Session.Character.CharacterId);
             ChangeMapInstance(Session.Character.CharacterId, MinilandOwner.Character.Miniland.MapInstanceId, 5, 8);
             if (Session.Character.Miniland.MapInstanceId != MinilandOwner.Character.Miniland.MapInstanceId)
             {
@@ -1068,7 +1069,6 @@ namespace OpenNos.GameObject
             ClientSession session = GetSessionByCharacterId(characterId);
             if (session != null && session.Character.Hp <= 0)
             {
-                LeaveMap(session.Character.CharacterId);
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
                 if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)

@@ -789,7 +789,7 @@ namespace OpenNos.Handler
                                 short mapx = session.Character.PositionX;
                                 short mapId = session.Character.MapInstance.Map.MapId;
 
-                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                                
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
                                 Session.Character.Inventory.RemoveItemAmount(vnumToUse);
                             }
@@ -1191,7 +1191,7 @@ namespace OpenNos.Handler
                         return;
                     }
                     Session.SendPacket(Session.CurrentMapInstance.GenerateRsfn());
-                    ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                    
                     Session.Character.LastPortal = currentRunningSeconds;
 
                     if (ServerManager.Instance.GetMapInstance(portal.SourceMapInstanceId).MapInstanceType != MapInstanceType.BaseMapInstance && ServerManager.Instance.GetMapInstance(portal.DestinationMapInstanceId).MapInstanceType == MapInstanceType.BaseMapInstance)

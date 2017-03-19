@@ -2130,7 +2130,7 @@ namespace OpenNos.Handler
                 short mapId;
                 if (short.TryParse(teleportPacket.Data, out mapId))
                 {
-                    ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                    
                     ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, teleportPacket.X, teleportPacket.Y);
                 }
                 else
@@ -2138,7 +2138,7 @@ namespace OpenNos.Handler
                     ClientSession session = ServerManager.Instance.GetSessionByCharacterName(teleportPacket.Data);
                     if (session != null)
                     {
-                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                        
                         short mapX = session.Character.PositionX;
                         short mapY = session.Character.PositionY;
                         if (session.Character.Miniland == session.Character.MapInstance)
@@ -2184,7 +2184,7 @@ namespace OpenNos.Handler
 
                         if (!session.Character.IsChangingMapInstance && Session.HasCurrentMapInstance)
                         {
-                            ServerManager.Instance.LeaveMap(session.Character.CharacterId);
+                            
 
                             List<MapCell> possibilities = new List<MapCell>();
                             for (short x = -6; x < 6; x++)
@@ -2226,7 +2226,6 @@ namespace OpenNos.Handler
                         // clear any shop or trade on target character
                         targetSession.Character.Dispose();
 
-                        ServerManager.Instance.LeaveMap(targetSession.Character.CharacterId);
                         targetSession.Character.IsSitting = false;
                         ServerManager.Instance.ChangeMapInstance(targetSession.Character.CharacterId, Session.Character.MapInstanceId, (short)(Session.Character.PositionX + 1), (short)(Session.Character.PositionY + 1));
                     }

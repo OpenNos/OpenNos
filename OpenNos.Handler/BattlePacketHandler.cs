@@ -297,7 +297,6 @@ namespace OpenNos.Handler
                                .Subscribe(
                                o =>
                                {
-                                   ServerManager.Instance.LeaveMap(target.Character.CharacterId);
                                    target.Character.Hp = (int)target.Character.HPLoad();
                                    target.Character.Mp = (int)target.Character.MPLoad();
                                    short x = (short)(39 + ServerManager.Instance.RandomNumber(-2, 3));

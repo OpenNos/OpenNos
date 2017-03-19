@@ -142,7 +142,7 @@ namespace OpenNos.GameObject
             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEFT_RAID")), 0));
             if (Launched)
             {
-                ServerManager.Instance.LeaveMap(session.Character.CharacterId);
+                
                 ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId,
                     session.Character.MapX, session.Character.MapY);
             }
@@ -158,7 +158,7 @@ namespace OpenNos.GameObject
             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), Leader.Character.Name), 0));
             if (Launched)
             {
-                ServerManager.Instance.LeaveMap(session.Character.CharacterId);
+                
                 ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId,
                     session.Character.MapX, session.Character.MapY);
             }
