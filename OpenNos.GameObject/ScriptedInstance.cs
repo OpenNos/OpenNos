@@ -12,9 +12,9 @@ namespace OpenNos.GameObject
     public class ScriptedInstance : ScriptedInstanceDTO
     {
         public ScriptedInstanceType Type { get; set; }
+        public string Label { get; set; }
         public byte LevelMinimum { get; set; }
         public byte LevelMaximum { get; set; }
-        public string Label { get; set; }
         public List<Gift> RequieredItems { get; set; }
         public List<Gift> DrawItems { get; set; }
         public List<Gift> SpecialItems { get; set; }
@@ -98,6 +98,10 @@ namespace OpenNos.GameObject
                 int mapid = -1;
                 short positionX = -1;
                 short positionY = -1;
+                short toY = -1;
+                short toX = -1;
+                int toMap = -1;
+                Guid destmapInstanceId = default(Guid);
                 bool isHostile = true;
                 bool isBonus;
                 bool isTarget;
@@ -108,13 +112,33 @@ namespace OpenNos.GameObject
                 {
                     mapid = -1;
                 }
-                if (!short.TryParse(mapevent.Attributes["PositionX"]?.Value, out positionX))
+                if (!short.TryParse(mapevent.Attributes["PositionX"]?.Value, out positionX) || !short.TryParse(mapevent.Attributes["PositionY"]?.Value, out positionY))
                 {
                     positionX = -1;
-                }
-                if (!short.TryParse(mapevent.Attributes["PositionY"]?.Value, out positionY))
-                {
                     positionY = -1;
+                }
+                if (int.TryParse(mapevent.Attributes["ToMap"]?.Value, out toMap))
+                {
+                    MapInstance destmap = _mapinstancedictionary.First(s => s.Key == toMap).Value;
+                    if (!short.TryParse(mapevent?.Attributes["ToY"]?.Value, out toY) || !short.TryParse(mapevent?.Attributes["ToX"]?.Value, out toX))
+                    {
+                        if (destmap != null)
+                        {
+                            MapCell cell2 = destmap.Map.GetRandomPosition();
+                            toY = cell2.Y;
+                            toX = cell2.X;
+                            destmapInstanceId = destmap.MapInstanceId;
+                        }
+                        else
+                        {
+                            toY = -1;
+                            toX = -1;
+                        }
+                    }
+                    else
+                    {
+                        destmapInstanceId = destmap.MapInstanceId;
+                    }
                 }
                 bool.TryParse(mapevent?.Attributes["IsTarget"]?.Value, out isTarget);
                 bool.TryParse(mapevent?.Attributes["IsBonus"]?.Value, out isBonus);
@@ -145,6 +169,10 @@ namespace OpenNos.GameObject
                     case "CreateMap":
                     case "InstanceEvents":
                         GenerateEvent(mapevent, mapinstance).ForEach(e => EventHelper.Instance.RunEvent(e));
+                        break;
+
+                    case "End":
+                        _mapinstancedictionary.Values.ToList().ForEach(m => evts.Add(new EventContainer(m, EventActionType.SCRIPTEND, byte.Parse(mapevent?.Attributes["Type"].Value))));
                         break;
 
                     //register events
@@ -280,18 +308,25 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SpawnPortal":
-                        MapInstance destmap = _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent?.Attributes["MapTo"].Value)).Value;
                         Portal portal = new Portal()
                         {
                             PortalId = byte.Parse(mapevent?.Attributes["IdOnMap"].Value),
                             SourceX = positionX,
                             SourceY = positionY,
                             Type = short.Parse(mapevent?.Attributes["Type"].Value),
-                            DestinationX = short.Parse(mapevent?.Attributes["ToX"].Value),
-                            DestinationY = short.Parse(mapevent?.Attributes["ToY"].Value),
+                            DestinationX = toX,
+                            DestinationY = toY,
+                            DestinationMapId = (short)(destmapInstanceId == default(Guid)?-1:0),
                             SourceMapInstanceId = mapinstance.MapInstanceId,
-                            DestinationMapInstanceId = destmap.MapInstanceId,
+                            DestinationMapInstanceId = destmapInstanceId,
                         };
+                        foreach (XmlNode var in mapevent.ChildNodes)
+                        {
+                            if (var.Name == "OnTraversal")
+                            {
+                                portal.OnTraversalEvents.AddRange(GenerateEvent(var, mapinstance));
+                            }
+                        }
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNPORTAL, portal));
                         break;
                 }

@@ -8,6 +8,7 @@ using OpenNos.GameObject;
 using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.GameObject.Helpers;
 using CloneExtensions;
+using OpenNos.Domain;
 
 namespace OpenNos.Handler
 {
@@ -26,7 +27,41 @@ namespace OpenNos.Handler
 
         private ClientSession Session { get; }
 
-       
+
+
+        /// <summary>
+        /// RSelPacket packet
+        /// </summary>
+        /// <param name="packet"></param>
+        /// 
+        public void Escape(EscapePacket packet)
+        {
+            if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
+            {
+                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
+            }
+        }
+
+        /// <summary>
+        /// RSelPacket packet
+        /// </summary>
+        /// <param name="packet"></param>
+        /// 
+        public void getGift(RSelPacket packet)
+        {
+            if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
+            {
+                Guid MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(Session.Character.MapId);
+                MapInstance map = ServerManager.Instance.GetMapInstance(MapInstanceId);
+                ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
+                if(si!=null)
+                {
+                    //add the gift
+                    Session.SendPacket($"repay  13.3.1 -1.0.0 -1.0.0 -1.0.0 -1.0.0 2023.0.1");
+                }
+            }
+        }
+
         /// <summary>
         /// treq packet
         /// </summary>
@@ -41,6 +76,8 @@ namespace OpenNos.Handler
                 {
                     timespace.LoadScript();
                     if (timespace.FirstMap == null) return;
+                    Session.Character.MapX = timespace.PositionX;
+                    Session.Character.MapY = timespace.PositionY;
                     ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, timespace.FirstMap.MapInstanceId);
                     timespace.FirstMap.InstanceBag.Creator = Session.Character.CharacterId;
                     Session.SendPackets(timespace.GenerateMinimap());

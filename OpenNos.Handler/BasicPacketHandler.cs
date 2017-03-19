@@ -1173,12 +1173,21 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                     }
+                    
                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance && !Session.CurrentMapInstance.InstanceBag.Lock)
                     {
                         if (Session.Character.CharacterId == Session.CurrentMapInstance.InstanceBag.Creator)
                         {
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#rstart^1 rstart {Language.Instance.GetMessageFromKey("ASK_ENTRY_IN_FIRST_ROOM")}"));
                         }
+                        return;
+                    }
+                    portal.OnTraversalEvents.ForEach(e =>
+                    {
+                        EventHelper.Instance.RunEvent(e);
+                    });
+                    if (portal.DestinationMapInstanceId == default(Guid))
+                    {
                         return;
                     }
                     Session.SendPacket(Session.CurrentMapInstance.GenerateRsfn());

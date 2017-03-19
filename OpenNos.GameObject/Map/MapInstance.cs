@@ -69,7 +69,7 @@ namespace OpenNos.GameObject
             TimeSpaces = new List<ScriptedInstance>();
             OnCharacterDiscoveringMapEvents = new List<Tuple<EventContainer, List<long>>>();
             OnMoveOnMapEvents = new List<EventContainer>();
-            OnMapClean = new List<EventContainer>(); 
+            OnMapClean = new List<EventContainer>();
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _npcs = new ThreadSafeSortedList<long, MapNpc>();
             _mapMonsterIds = new List<int>();
@@ -90,7 +90,7 @@ namespace OpenNos.GameObject
 
         public InstanceBag InstanceBag { get; set; }
 
-        public Clock Clock{get;set;}
+        public Clock Clock { get; set; }
 
         public bool IsDancing { get; set; }
 
@@ -183,6 +183,8 @@ namespace OpenNos.GameObject
             }
         }
 
+       
+
         public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY)
         {
             try
@@ -242,10 +244,10 @@ namespace OpenNos.GameObject
         public void MapClear()
         {
             Broadcast("mapclear");
-            GetMapItems().ForEach(s=>Broadcast(s));
-          
+            GetMapItems().ForEach(s => Broadcast(s));
+
         }
-        
+
         public List<string> GetMapItems()
         {
             List<string> packets = new List<string>();
@@ -261,7 +263,7 @@ namespace OpenNos.GameObject
             Npcs.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateNPCShopOnMap());
             DroppedList.GetAllItems().ForEach(s => packets.Add(s.GenerateIn()));
-       
+
             Buttons.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateUserShops());
             packets.AddRange(GeneratePlayerShopOnMap());
@@ -421,7 +423,7 @@ namespace OpenNos.GameObject
             _monsters.Remove(monsterToRemove.MapMonsterId);
         }
 
-      
+
 
         public void UnspawnMonsters(int monsterVnum)
         {
@@ -481,7 +483,7 @@ namespace OpenNos.GameObject
             {
                 try
                 {
-                    if(Monsters.Count(s=>s.IsAlive) == 0)
+                    if (Monsters.Count(s => s.IsAlive) == 0)
                     {
                         OnMapClean.ForEach(e =>
                         {
@@ -509,7 +511,7 @@ namespace OpenNos.GameObject
                 NpcMonster npcmonster = ServerManager.Instance.GetNpc(mon.VNum);
                 if (npcmonster != null)
                 {
-                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.X, MapX = mon.SpawnCell.Y, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents,IsTarget = mon.IsTarget, IsBonus = mon.IsBonus };
+                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.X, MapX = mon.SpawnCell.Y, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents, IsTarget = mon.IsTarget, IsBonus = mon.IsBonus };
                     monster.Initialize(this);
                     monster.IsHostile = mon.IsHostile;
                     AddMonster(monster);
@@ -529,7 +531,7 @@ namespace OpenNos.GameObject
             }
         }
 
- 
+
 
         #endregion
     }

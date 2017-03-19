@@ -125,10 +125,10 @@ namespace OpenNos.GameObject.Helpers
                     #region MapInstanceEvent
                     case EventActionType.REGISTEREVENT:
                         Tuple<string, List<EventContainer>> even = (Tuple<string, List<EventContainer>>)evt.Parameter;
-                        switch(even.Item1)
+                        switch (even.Item1)
                         {
                             case "OnCharacterDiscoveringMap":
-                                even.Item2.ForEach(s => evt.MapInstance.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer,List<long>>(s,new List<long>())));
+                                even.Item2.ForEach(s => evt.MapInstance.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer, List<long>>(s, new List<long>())));
                                 break;
                             case "OnMoveOnMap":
                                 evt.MapInstance.OnMoveOnMapEvents.AddRange(even.Item2);
@@ -136,11 +136,28 @@ namespace OpenNos.GameObject.Helpers
                             case "OnMapClean":
                                 evt.MapInstance.OnMapClean.AddRange(even.Item2);
                                 break;
-                        } 
+                        }
                         break;
                     case EventActionType.CLOCK:
                         evt.MapInstance.InstanceBag.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
                         evt.MapInstance.InstanceBag.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
+                        break;
+
+                    case EventActionType.SCRIPTEND:
+                        switch (evt.MapInstance.MapInstanceType)
+                        {
+                            case MapInstanceType.TimeSpaceInstance:
+                                evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
+                                ClientSession client = evt.MapInstance.Sessions.FirstOrDefault();
+                                if (client != null)
+                                {
+                                    Guid MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(client.Character.MapId);
+                                    MapInstance map = ServerManager.Instance.GetMapInstance(MapInstanceId);
+                                    ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s=>s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
+                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState}{((evt.MapInstance.InstanceBag.EndState == 5)?$" 0 27 47 18 {si.DrawItems.Count()} 9 1 7 011 1 1":"")}");
+                                }
+                                break;
+                        }
                         break;
 
                     case EventActionType.MAPCLOCK:
@@ -149,7 +166,7 @@ namespace OpenNos.GameObject.Helpers
                         break;
 
                     case EventActionType.STARTCLOCK:
-                        Tuple<List<EventContainer>, List<EventContainer>> eve =(Tuple<List<EventContainer>, List<EventContainer>>)evt.Parameter;
+                        Tuple<List<EventContainer>, List<EventContainer>> eve = (Tuple<List<EventContainer>, List<EventContainer>>)evt.Parameter;
                         evt.MapInstance.InstanceBag.Clock.StopEvents = eve.Item2;
                         evt.MapInstance.InstanceBag.Clock.TimeoutEvents = eve.Item1;
                         evt.MapInstance.InstanceBag.Clock.StartClock();
@@ -173,14 +190,15 @@ namespace OpenNos.GameObject.Helpers
                         evt.MapInstance.Clock.StopClock();
                         evt.MapInstance.Broadcast(evt.MapInstance.Clock.GetClock());
                         break;
-           
+
                     case EventActionType.SPAWNPORTAL:
                         evt.MapInstance.CreatePortal((Portal)evt.Parameter);
                         break;
-                        
+
                     case EventActionType.REFRESHMAPITEMS:
                         evt.MapInstance.MapClear();
                         break;
+
 
                     case EventActionType.NPCSEFFECTCHANGESTATE:
                         evt.MapInstance.Npcs.ForEach(s => s.EffectActivated = (bool)evt.Parameter);

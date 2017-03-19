@@ -200,7 +200,7 @@ namespace OpenNos.GameObject
 
         public MapInstance GetMapInstance(Guid id)
         {
-            return _mapinstances[id];
+            return _mapinstances.ContainsKey(id)?_mapinstances[id]:null;
         }
 
         public NpcMonster GetNpc(short npcVNum)

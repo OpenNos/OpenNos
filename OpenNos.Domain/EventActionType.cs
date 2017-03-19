@@ -37,6 +37,7 @@ namespace OpenNos.Domain
         STOPCLOCK,
         MAPCLOCK,
         REGISTEREVENT,
-        SPAWNNPCS
+        SPAWNNPCS,
+        SCRIPTEND
     }
 }

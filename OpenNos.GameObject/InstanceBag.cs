@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Timers;
 
 namespace OpenNos.GameObject
@@ -10,11 +11,13 @@ namespace OpenNos.GameObject
         public List<long> DeadList { get; set; }
         public bool Lock { get; set; }
         public long Creator {get;set; }
+        public byte EndState { get; set; }
 
         public InstanceBag()
         {
             Clock = new Clock(1);
             DeadList = new List<long>();
         }
+
     }
 }

@@ -235,12 +235,14 @@ namespace OpenNos.Handler
                         {
                             Logger.Log.ErrorFormat($"Client {Session.ClientId} forced Disconnection, invalid Password or SessionId.");
                             Session.Disconnect();
+                            return;
                         }
                     }
                     else
                     {
                         Logger.Log.ErrorFormat($"Client {Session.ClientId} forced Disconnection, invalid AccountName.");
                         Session.Disconnect();
+                        return;
                     }
                 }
                 else
