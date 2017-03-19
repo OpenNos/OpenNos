@@ -43,7 +43,7 @@ namespace OpenNos.GameObject
                     if (int.TryParse(packetsplit[3], out x1))
                     {
                         Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == x1);
-                        if (mate == null || mate.Level > session.Character.Level - 5)
+                        if (mate == null || mate.Level >= session.Character.Level - 5)
                         {
                             return;
                         }

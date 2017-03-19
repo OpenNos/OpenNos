@@ -53,11 +53,17 @@ namespace OpenNos.GameObject
         #region Properties
 
         public int MateTransportId { get; set; }
+
         public short PositionX { get; set; }
+
         public short PositionY { get; set; }
+
         public bool IsSitting { get; set; }
+
         private NpcMonster monster;
+
         private Character owner;
+
         public NpcMonster Monster
         {
             get
