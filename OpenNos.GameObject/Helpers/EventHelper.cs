@@ -154,7 +154,7 @@ namespace OpenNos.GameObject.Helpers
                                     Guid MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(client.Character.MapId);
                                     MapInstance map = ServerManager.Instance.GetMapInstance(MapInstanceId);
                                     ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s=>s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
-                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState}{((evt.MapInstance.InstanceBag.EndState == 5)?$" 0 27 47 18 {si.DrawItems.Count()} 9 1 7 011 1 1":"")}");
+                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} 0 27 47 18 {si.DrawItems.Count()} 9 1 7 011 1 1");
                                 }
                                 break;
                         }

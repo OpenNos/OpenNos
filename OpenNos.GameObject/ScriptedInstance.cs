@@ -6,6 +6,7 @@ using OpenNos.Core;
 using System.Xml;
 using System.Linq;
 using OpenNos.GameObject.Helpers;
+using System.Reactive.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -55,7 +56,7 @@ namespace OpenNos.GameObject
 
         public void Dispose()
         {
-            //TODO disposing all maps
+            _mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
         }
 
         public void LoadScript()
@@ -81,8 +82,16 @@ namespace OpenNos.GameObject
                 }
 
                 FirstMap = _mapinstancedictionary.Values.FirstOrDefault();
+                Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(
+                   x =>
+                   {
+                       if (!FirstMap.InstanceBag.Lock)
+                       {
+                           EventHelper.Instance.RunEvent(new EventContainer(FirstMap, EventActionType.SCRIPTEND, (byte)0));
+                           Dispose();
+                       }
+                   });
                 GenerateEvent(InstanceEvents, FirstMap);
-
             }
         }
 
@@ -316,7 +325,7 @@ namespace OpenNos.GameObject
                             Type = short.Parse(mapevent?.Attributes["Type"].Value),
                             DestinationX = toX,
                             DestinationY = toY,
-                            DestinationMapId = (short)(destmapInstanceId == default(Guid)?-1:0),
+                            DestinationMapId = (short)(destmapInstanceId == default(Guid) ? -1 : 0),
                             SourceMapInstanceId = mapinstance.MapInstanceId,
                             DestinationMapInstanceId = destmapInstanceId,
                         };

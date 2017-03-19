@@ -5,7 +5,7 @@
         #region Members
 
         private static TransportFactory instance;
-        private long _lastTransportId = 1;
+        private long _lastTransportId = 100000;
 
         #endregion
 
@@ -31,7 +31,7 @@
 
             if (_lastTransportId >= long.MaxValue)
             {
-                _lastTransportId = 100000;
+                _lastTransportId = 0;
             }
 
             return _lastTransportId;
