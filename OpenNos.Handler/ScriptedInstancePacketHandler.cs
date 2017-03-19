@@ -32,12 +32,24 @@ namespace OpenNos.Handler
         /// <param name="treqPacket"></param>
         public void GetTreq(TreqPacket treqPacket)
         {
+
             ScriptedInstance timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY);
 
             if (timespace != null)
             {
-                Session.Character.LastTimeSpace = timespace.ScriptedInstanceId;
-                Session.SendPacket(timespace.GenerateRbr());
+               
+                if (treqPacket.StartPress != 1 || treqPacket.RecordPress != 1)
+                {
+                    timespace.LoadScript();
+                    if (timespace.FirstMap == null) return;
+                    ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, timespace.FirstMap.MapInstanceId);
+                    Session.SendPackets(timespace.GenerateMinimap());
+
+                }
+                else
+                {
+                    Session.SendPacket(timespace.GenerateRbr());
+                }
             }
 
         }
@@ -49,7 +61,7 @@ namespace OpenNos.Handler
         public void Git(GitPacket packet)
         {
             MapButton button = Session.CurrentMapInstance.Buttons.FirstOrDefault(s => s.MapButtonId == packet.ButtonId);
-            if(button != null)
+            if (button != null)
             {
                 Session.CurrentMapInstance.Broadcast(button.GenerateOut());
                 button.RunAction();
@@ -62,14 +74,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void GetWreq(WreqPacket packet)
         {
-           ScriptedInstance timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s=>s.ScriptedInstanceId == Session.Character.LastTimeSpace)?.GetClone();
-            if (timespace != null)
-            {
-                timespace.LoadScript();
-                if (timespace.FirstMap == null) return;
-                ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, timespace.FirstMap.MapInstanceId);
-                Session.SendPackets(timespace.GenerateMinimap());
-            }
+
 
         }
 

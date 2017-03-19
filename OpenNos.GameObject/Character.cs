@@ -398,7 +398,6 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; private set; }
         public int ScPage { get; set; }
-        public int LastTimeSpace { get; set; }
 
         #endregion
 

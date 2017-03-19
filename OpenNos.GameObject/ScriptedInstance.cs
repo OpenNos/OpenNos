@@ -15,6 +15,10 @@ namespace OpenNos.GameObject
         public byte LevelMinimum { get; set; }
         public byte LevelMaximum { get; set; }
         public string Label { get; set; }
+        public List<Gift> RequieredItems { get; set; }
+        public List<Gift> DrawItems { get; set; }
+        public List<Gift> SpecialItems { get; set; }
+        public List<Gift> GiftItems { get; set; }
         public MapInstance FirstMap { get; set; }
 
         InstanceBag _instancebag = new InstanceBag();
@@ -23,7 +27,28 @@ namespace OpenNos.GameObject
 
         public string GenerateRbr()
         {
-            return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} 0 -1.0 -1.0 -1.0 -1.0 -1.0 -1.0 -1.0 -1.0 -1.0 -1.0 {WinnerScore}.{(WinnerScore > 0 ? Winner : "")} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{Label}";
+            string drawgift = string.Empty;
+            string requireditem = string.Empty;
+            string bonusitems = string.Empty;
+            string specialitems = string.Empty;
+
+            for (int i = 0; i < 5; i++)
+            {
+                Gift gift = DrawItems.ElementAtOrDefault(i);
+                drawgift += $" {(gift == null ? "-1.0" : $"{gift.VNum}.{gift.Amount}")}";
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                Gift gift = SpecialItems.ElementAtOrDefault(i);
+                specialitems += $" {(gift == null ? "-1.0" : $"{gift.VNum}.{gift.Amount}")}";
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                Gift gift = GiftItems.ElementAtOrDefault(i);
+                bonusitems += $"{(i == 0 ? "" : " ")}{(gift == null ? "-1.0" : $"{gift.VNum}.{gift.Amount}")}";
+            }
+            return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} 0 {drawgift} {specialitems} {bonusitems} {WinnerScore}.{(WinnerScore > 0 ? Winner : "")} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{Label}";
         }
 
         public void Dispose()
@@ -275,7 +300,7 @@ namespace OpenNos.GameObject
 
         public string GenerateWp()
         {
-            return $"wp {PositionX} {PositionY} {ScriptedInstanceId} 0 {LevelMinimum} {LevelMaximum}"; 
+            return $"wp {PositionX} {PositionY} {ScriptedInstanceId} 0 {LevelMinimum} {LevelMaximum}";
         }
 
         public List<string> GenerateMinimap()
@@ -288,14 +313,48 @@ namespace OpenNos.GameObject
 
         public void LoadGlobals()
         {
+            RequieredItems = new List<Gift>();
+            DrawItems = new List<Gift>();
+            SpecialItems = new List<Gift>();
+            GiftItems = new List<Gift>();
+
             XmlDocument doc = new XmlDocument();
             if (Script != null)
             {
                 doc.LoadXml(Script);
+
                 XmlNode def = doc.SelectSingleNode("Definition").SelectSingleNode("Globals");
                 LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum")?.Attributes["Value"].Value);
                 LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum")?.Attributes["Value"].Value);
                 Label = def.SelectSingleNode("Label")?.Attributes["Value"].Value;
+                if (def.SelectSingleNode("RequieredItems")?.ChildNodes != null)
+                {
+                    foreach (XmlNode node in def.SelectSingleNode("RequieredItems")?.ChildNodes)
+                    {
+                        RequieredItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
+                    }
+                }
+                if (def.SelectSingleNode("DrawItems")?.ChildNodes != null)
+                {
+                    foreach (XmlNode node in def.SelectSingleNode("DrawItems")?.ChildNodes)
+                    {
+                        DrawItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
+                    }
+                }
+                if (def.SelectSingleNode("SpecialItems")?.ChildNodes != null)
+                {
+                    foreach (XmlNode node in def.SelectSingleNode("SpecialItems")?.ChildNodes)
+                    {
+                        SpecialItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
+                    }
+                }
+                if (def.SelectSingleNode("GiftItems")?.ChildNodes != null)
+                {
+                    foreach (XmlNode node in def.SelectSingleNode("GiftItems")?.ChildNodes)
+                    {
+                        GiftItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
+                    }
+                }
             }
         }
     }
