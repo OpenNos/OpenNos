@@ -255,8 +255,8 @@ namespace OpenNos.GameObject.Helpers
                             X = lastincharacter?.PositionX ?? 154,
                             Y = lastincharacter?.PositionY ?? 140
                         };
-                        long HornTarget = lastincharacter != null ? lastincharacter.CharacterId : -1;
-                        summonParameters.Add(new MonsterToSummon((short)evt.Parameter, hornSpawn, HornTarget, true, new List<EventContainer>()));
+                        long hornTarget = lastincharacter?.CharacterId ?? -1;
+                        summonParameters.Add(new MonsterToSummon((short)evt.Parameter, hornSpawn, hornTarget, true, new List<EventContainer>()));
                         evt.MapInstance.SummonMonsters(summonParameters);
                         break;
 

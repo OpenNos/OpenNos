@@ -97,6 +97,41 @@ namespace OpenNos.Handler
         /// <summary>
         /// treq packet
         /// </summary>
+        /// <param name="rxitPacket"></param>
+        public void InstanceExit(RxitPacket rxitPacket)
+        {
+            if (rxitPacket?.State == 1)
+            {
+                if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.TimeSpaceInstance)
+                {
+                    Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(Session.Character.MapId);
+                    MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
+                    ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
+
+                    if (si != null)
+                    {
+                        // TODO REAL ALGORITHM ?
+                        Session.Character.Reput -= si.Reputation / 20;
+                        if (Session.Character.Reput < 0)
+                            Session.Character.Reput = 0;
+                        Session.Character.Dignity -= Session.Character.Level / 4;
+                        if (Session.Character.Dignity < -1000)
+                            Session.Character.Dignity = -1000;
+
+                        
+                        // TODO ADD TIMESPACE DISPOSING
+                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId,
+                            Session.Character.MapX, Session.Character.MapY);
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// treq packet
+        /// </summary>
         /// <param name="treqPacket"></param>
         public void GetTreq(TreqPacket treqPacket)
         {
@@ -110,6 +145,10 @@ namespace OpenNos.Handler
                     if (timespace.FirstMap == null) return;
                     Session.Character.MapX = timespace.PositionX;
                     Session.Character.MapY = timespace.PositionY;
+                    foreach (var i in timespace.RequieredItems)
+                    {
+                        Session.Character.Inventory.RemoveItemAmount(i.VNum, i.Amount);
+                    }
                     ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, timespace.FirstMap.MapInstanceId);
                     timespace.FirstMap.InstanceBag.Creator = Session.Character.CharacterId;
                     Session.SendPackets(timespace.GenerateMinimap());
@@ -170,16 +209,13 @@ namespace OpenNos.Handler
                             });
                             break;
                         case 3:
-                            if (Session.Character.Group != null)
+                            ClientSession character = Session.Character.Group?.Characters.Where(s => s.Character.CharacterId == packet.Param).FirstOrDefault();
+                            if (character != null)
                             {
-                                ClientSession character = Session.Character.Group.Characters.Where(s => s.Character.CharacterId == packet.Param).FirstOrDefault();
-                                if (character != null)
-                                {
-                                    MapCell mapcell = character.CurrentMapInstance.Map.GetRandomPosition();
-                                    Session.Character.MapX = portal.PositionX;
-                                    Session.Character.MapY = portal.PositionY;
-                                    ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, character.CurrentMapInstance.MapInstanceId, mapcell.X, mapcell.Y);
-                                }
+                                MapCell mapcell = character.CurrentMapInstance.Map.GetRandomPosition();
+                                Session.Character.MapX = portal.PositionX;
+                                Session.Character.MapY = portal.PositionY;
+                                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, character.CurrentMapInstance.MapInstanceId, mapcell.X, mapcell.Y);
                             }
                             break;
                     }
