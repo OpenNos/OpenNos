@@ -26,14 +26,14 @@ namespace OpenNos.Handler
 
         private ClientSession Session { get; }
 
+       
         /// <summary>
         /// treq packet
         /// </summary>
         /// <param name="treqPacket"></param>
         public void GetTreq(TreqPacket treqPacket)
         {
-
-            ScriptedInstance timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY);
+            ScriptedInstance timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY).GetClone();
 
             if (timespace != null)
             {
@@ -89,7 +89,17 @@ namespace OpenNos.Handler
                                 Session.SendPacket(portal.GenerateRbr());
                             }
                             break;
-
+                        case 1:
+                            byte record;
+                            byte.TryParse(packet.Param.ToString(), out record);
+                            GetTreq(new TreqPacket()
+                            {
+                                X = portal.PositionX,
+                                Y = portal.PositionY,
+                                RecordPress = record,
+                                StartPress = 1
+                            });
+                            break;
                         case 3:
                             if (Session.Character.Group != null)
                             {

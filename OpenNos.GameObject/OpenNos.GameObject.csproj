@@ -103,6 +103,7 @@
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="NpcToSummon.cs" />
     <Compile Include="MonsterToSummon.cs" />
+    <Compile Include="Packets\ClientPackets\RstartPacket.cs" />
     <Compile Include="ScriptedInstance.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />

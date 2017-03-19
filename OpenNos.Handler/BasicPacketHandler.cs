@@ -235,9 +235,9 @@ namespace OpenNos.Handler
                     MailDTO mail = Session.Character.MailList[giftId];
                     if (getGiftPacket.Type == 4 && mail.AttachmentVNum != null)
                     {
-                        if (Session.Character.Inventory.CanAddItem((short) mail.AttachmentVNum))
+                        if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                         {
-                            List<ItemInstance> newInv =Session.Character.Inventory.AddNewToInventory((short) mail.AttachmentVNum,mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade,Rare: (sbyte) mail.AttachmentRarity);
+                            List<ItemInstance> newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity);
                             if (newInv.Any())
                             {
                                 if (newInv.First().Rare != 0)
@@ -245,7 +245,7 @@ namespace OpenNos.Handler
                                     WearableInstance wearable = newInv.First() as WearableInstance;
                                     wearable?.SetRarityPoint();
                                 }
-                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.First().Item.Name} x {mail.AttachmentAmount}",12));
+                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.First().Item.Name} x {mail.AttachmentAmount}", 12));
 
                                 if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                                 {
@@ -285,7 +285,7 @@ namespace OpenNos.Handler
         public void GetNamedCharacterInformation(string packet)
         {
             string[] characterInformationPacket = packet.Split(' ');
-            if(characterInformationPacket.Length != 4)
+            if (characterInformationPacket.Length != 4)
             {
                 return;
             }
@@ -1126,10 +1126,26 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("preq")]
-        public void Preq(string packet)
+        /// <summary>
+        /// RstartPacket packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void GetRStart(RstartPacket packet)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
+            if (packet.Type == 1)
+            {
+                Session.CurrentMapInstance.InstanceBag.Lock = true;
+                Preq(new PreqPacket());
+            }
+        }
+
+        /// <summary>
+        /// PreqPacket packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void Preq(PreqPacket packet)
+        {
+            Logger.Debug(Session.Character.GenerateIdentity(), packet.ToString());
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstance)
@@ -1157,7 +1173,14 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                     }
-
+                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance && !Session.CurrentMapInstance.InstanceBag.Lock)
+                    {
+                        if (Session.Character.CharacterId == Session.CurrentMapInstance.InstanceBag.Creator)
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#rstart^1 rstart {Language.Instance.GetMessageFromKey("ASK_ENTRY_IN_FIRST_ROOM")}"));
+                        }
+                        return;
+                    }
                     Session.SendPacket(Session.CurrentMapInstance.GenerateRsfn());
                     ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                     Session.Character.LastPortal = currentRunningSeconds;
@@ -1727,7 +1750,8 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;
 
-                    Session.CurrentMapInstance.OnMoveOnMapEvents.ForEach(e => {
+                    Session.CurrentMapInstance.OnMoveOnMapEvents.ForEach(e =>
+                    {
                         EventHelper.Instance.RunEvent(e);
                     });
                     Session.CurrentMapInstance.OnMoveOnMapEvents.RemoveAll(s => s != null);
