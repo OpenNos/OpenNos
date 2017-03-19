@@ -99,7 +99,9 @@ namespace OpenNos.GameObject
             LastMove = DateTime.Now;
             IsHostile = Npc.IsHostile;
             FirstX = MapX;
+            EffectActivated = true;
             FirstY = MapY;
+            EffectDelay = 4000;
             _movetime = ServerManager.Instance.RandomNumber(500, 3000);
             Path = new List<GridPos>();
             Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
@@ -145,9 +147,16 @@ namespace OpenNos.GameObject
         private void NpcLife()
         {
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
-            if (Effect > 0 && time > EffectDelay && EffectActivated)
+            if (time > EffectDelay)
             {
-                MapInstance.Broadcast(GenerateEff(Effect), MapX, MapY);
+                if (IsMate || IsProtected)
+                {
+                    MapInstance.Broadcast(GenerateEff(825), MapX, MapY);
+                }
+                if (Effect > 0 && EffectActivated)
+                {
+                    MapInstance.Broadcast(GenerateEff(Effect), MapX, MapY);
+                }
                 LastEffect = DateTime.Now;
             }
 
