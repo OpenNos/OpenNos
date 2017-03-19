@@ -3658,7 +3658,7 @@ namespace OpenNos.GameObject
             return Reput <= 5000000 ? 26 : 27;
         }
 
-        public void GiftAdd(short itemVNum, byte amount)
+        public void GiftAdd(short itemVNum, byte amount, byte rare = 0)
         {
             if (Inventory != null)
             {
@@ -3670,6 +3670,7 @@ namespace OpenNos.GameObject
                         if (newItem.Item.ItemType == ItemType.Armor || newItem.Item.ItemType == ItemType.Weapon || newItem.Item.ItemType == ItemType.Shell)
                         {
                             ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+                            newItem.Upgrade = newItem.Item.BasicUpgrade;
                         }
                         List<ItemInstance> newInv = Inventory.AddToInventory(newItem);
                         if (newInv.Any())
@@ -4684,8 +4685,8 @@ namespace OpenNos.GameObject
                     Session.SendPacket(GenerateStat());
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_LEVELUP"), 0));
-                    Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
-                    Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
                 }
                 Session.SendPacket(GenerateLev());
             }

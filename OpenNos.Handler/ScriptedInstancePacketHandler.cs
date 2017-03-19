@@ -51,12 +51,13 @@ namespace OpenNos.Handler
         {
             if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
             {
-                Guid MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(Session.Character.MapId);
-                MapInstance map = ServerManager.Instance.GetMapInstance(MapInstanceId);
+                Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(Session.Character.MapId);
+                MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
                 ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
-                if(si!=null)
+                if (si != null)
                 {
-                    //add the gift
+                    var rand = new Random().Next(si.GiftItems.Count);
+                    Session.Character.GiftAdd(si.GiftItems[rand].VNum, si.GiftItems[rand].Amount);
                     Session.SendPacket($"repay  13.3.1 -1.0.0 -1.0.0 -1.0.0 -1.0.0 2023.0.1");
                 }
             }

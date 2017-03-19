@@ -334,6 +334,10 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.RemoveItemAmount(cellaVnum, cella);
                         session.SendPacket(session.Character.GenerateGold());
                         break;
+                    case RarifyMode.Drop:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
                 }
             }
             if (Item.IsHeroic && protection == RarifyProtection.Scroll)
