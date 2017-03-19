@@ -177,10 +177,11 @@ namespace OpenNos.GameObject
                     mapMonster.MapInstance = mapInstance;
                     mapInstance.AddMonster(mapMonster);
                 }
-                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+                foreach (MapNpc mapNpc in mapInstance.Npcs)
                 {
-                    Parallel.ForEach(mapInstance.Monsters, monster => { monster.StartLife(); });
-                });
+                    mapNpc.MapInstance = mapInstance;
+                    mapInstance.AddNPC(mapNpc);
+                }
                 _mapinstances.TryAdd(guid, mapInstance);
                 return mapInstance;
             }
@@ -393,7 +394,7 @@ namespace OpenNos.GameObject
                         session.Character.PositionX = (short)mapX;
                         session.Character.PositionY = (short)mapY;
                     }
-                    
+
                     session.CurrentMapInstance = session.Character.MapInstance;
                     session.CurrentMapInstance.RegisterSession(session);
 
@@ -427,7 +428,7 @@ namespace OpenNos.GameObject
                     });
 
                     session.SendPackets(session.CurrentMapInstance.GetMapItems());
-                  
+
                     if (session.CurrentMapInstance.InstanceBag.Clock.Enabled)
                     {
                         session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());
@@ -1271,19 +1272,15 @@ namespace OpenNos.GameObject
                 RemoveItemProcess();
             });
 
-            foreach (var map in _mapinstances)
+            Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {
-                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+                foreach (var map in _mapinstances)
                 {
                     Parallel.ForEach(map.Value.Npcs, npc => { npc.StartLife(); });
-                });
-
-                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
-                {
                     Parallel.ForEach(map.Value.Monsters, monster => { monster.StartLife(); });
-                });
-            }
 
+                }
+            });
             ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
             ServerCommunicationClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
             ServerCommunicationClient.Instance.FamilyRefresh += OnFamilyRefresh;

@@ -84,7 +84,6 @@ namespace OpenNos.Handler
                     if (monster != null)
                     {
                         monster.Initialize(Session.CurrentMapInstance);
-                        monster.StartLife();
                         Session.CurrentMapInstance.AddMonster(monster);
                         Session.CurrentMapInstance?.Broadcast(monster.GenerateIn());
                     }
@@ -2041,7 +2040,6 @@ namespace OpenNos.Handler
                         {
                             MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstance.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId(), ShouldRespawn = false };
                             monster.Initialize(Session.CurrentMapInstance);
-                            monster.StartLife();
                             Session.CurrentMapInstance.AddMonster(monster);
                             Session.CurrentMapInstance.Broadcast(monster.GenerateIn());
                         }

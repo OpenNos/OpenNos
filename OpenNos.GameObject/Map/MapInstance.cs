@@ -287,7 +287,6 @@ namespace OpenNos.GameObject
                 {
                     MapNpc npc = new MapNpc { NpcVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.X, MapX = mon.SpawnCell.Y, MapId = Map.MapId, IsHostile = true, IsMoving = true, MapNpcId = GetNextNpcId(), Target = mon.Target, OnDeathEvents = mon.DeathEvents, IsMate = mon.IsMate, IsProtected = mon.IsProtected };
                     npc.Initialize(this);
-                    npc.StartLife();
                     AddNPC(npc);
                     Broadcast(npc.GenerateIn());
                     ids.Add(npc.MapNpcId);
@@ -511,7 +510,6 @@ namespace OpenNos.GameObject
                 {
                     MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.X, MapX = mon.SpawnCell.Y, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents,IsTarget = mon.IsTarget, IsBonus = mon.IsBonus };
                     monster.Initialize(this);
-                    monster.StartLife();
                     monster.IsHostile = mon.IsHostile;
                     AddMonster(monster);
                     Broadcast(monster.GenerateIn());

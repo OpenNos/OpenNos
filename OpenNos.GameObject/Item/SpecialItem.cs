@@ -271,7 +271,6 @@ namespace OpenNos.GameObject
                                 }
                                 MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = session.Character.MapY, MapX = session.Character.MapX, MapId = session.Character.MapInstance.Map.MapId, Position = (byte)session.Character.Direction, IsMoving = true, MapMonsterId = session.CurrentMapInstance.GetNextMonsterId(), ShouldRespawn = false };
                                 monster.Initialize(session.CurrentMapInstance);
-                                monster.StartLife();
                                 session.CurrentMapInstance.AddMonster(monster);
                                 session.CurrentMapInstance.Broadcast(monster.GenerateIn());
                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
