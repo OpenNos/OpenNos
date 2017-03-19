@@ -1999,7 +1999,6 @@ namespace OpenNos.Import.Console
                         PositionX = short.Parse(currentPacket[1]),
                         PositionY = short.Parse(currentPacket[2]),
                         MapId = map,
-                        WinnerScore = 0,
                     };
 
                     if (!bddlist.Concat(listtimespace).Any(s => s.MapId == ts.MapId && s.PositionX == ts.PositionX && s.PositionY == ts.PositionY))
