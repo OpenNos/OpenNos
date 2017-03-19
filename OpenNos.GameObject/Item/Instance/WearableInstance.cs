@@ -596,8 +596,7 @@ namespace OpenNos.GameObject
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, session.Character.CharacterId, 1324));
-                        ItemInstance itemInstnace = session.Character.Inventory.GetItemInstanceById(Id);
-                        session.SendPacket(itemInstnace.GenerateInventoryAdd());
+                        session.SendPacket(GenerateInventoryAdd());
                     }
                     else
                     {
