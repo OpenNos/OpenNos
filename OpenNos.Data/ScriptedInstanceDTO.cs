@@ -26,12 +26,8 @@ namespace OpenNos.Data
 
         public short PositionY { get; set; }
 
-        public string Winner { get; set; }
-
         public string Script { get; set; }
-
-        public int WinnerScore { get; set; }
-
+        
 
         #endregion
     }

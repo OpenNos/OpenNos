@@ -29,15 +29,11 @@ namespace OpenNos.DAL.EF
 
         public short PositionX { get; set; }
 
-        public short PositionY { get; set; }
-
-        [MaxLength(255)]
-        public string Winner { get; set; }
+        public short PositionY { get; set; }     
 
         [MaxLength(int.MaxValue)]
         public string Script { get; set; }
-
-        public int WinnerScore { get; set; }
+        
 
         #endregion
     }

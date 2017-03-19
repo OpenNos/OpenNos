@@ -91,6 +91,7 @@ namespace OpenNos.GameObject
         public InstanceBag InstanceBag { get; set; }
 
         public Clock Clock{get;set;}
+
         public bool IsDancing { get; set; }
 
         public bool IsPVP { get; set; }

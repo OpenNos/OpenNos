@@ -336,6 +336,18 @@ namespace OpenNos.GameObject
                         });
                         break;
 
+                    case MapInstanceType.TimeSpaceInstance:
+                        if(Session.CurrentMapInstance.InstanceBag.Lives > 0)
+                        {
+                            Session.CurrentMapInstance.InstanceBag.Lives--;
+                            //revive
+                        }
+                        else
+                        {
+                            //lose
+                        }
+                        break;
+
                     default:
                         Instance.ReviveFirstPosition(Session.Character.CharacterId);
                         break;
