@@ -14,14 +14,26 @@ namespace OpenNos.GameObject
     public class ScriptedInstance : ScriptedInstanceDTO
     {
         public ScriptedInstanceType Type { get; set; }
+
         public string Label { get; set; }
+
         public byte LevelMinimum { get; set; }
+
         public byte LevelMaximum { get; set; }
+
         public List<Gift> RequieredItems { get; set; }
+
         public List<Gift> DrawItems { get; set; }
+
         public List<Gift> SpecialItems { get; set; }
+
         public List<Gift> GiftItems { get; set; }
+
         public MapInstance FirstMap { get; set; }
+
+        public long Gold { get; set; }
+
+        public long Reputation { get; set; }
 
         InstanceBag _instancebag = new InstanceBag();
         IDisposable obs;
@@ -383,6 +395,8 @@ namespace OpenNos.GameObject
                 XmlNode def = doc.SelectSingleNode("Definition").SelectSingleNode("Globals");
                 LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum")?.Attributes["Value"].Value);
                 LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum")?.Attributes["Value"].Value);
+                Gold = long.Parse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value);
+                Reputation = long.Parse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value);
                 Label = def.SelectSingleNode("Label")?.Attributes["Value"].Value;
                 if (def.SelectSingleNode("RequieredItems")?.ChildNodes != null)
                 {

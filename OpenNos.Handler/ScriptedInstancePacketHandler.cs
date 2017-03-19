@@ -56,6 +56,13 @@ namespace OpenNos.Handler
                 ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
                 if (si != null)
                 {
+                    Session.Character.Reput += si.Reputation;
+                    Session.SendPacket(Session.Character.GenerateFd());
+                
+                    Session.Character.Gold = Session.Character.Gold + si.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : Session.Character.Gold + si.Gold;
+                    Session.SendPacket(Session.Character.GenerateGold());
+
+
                     var rand = new Random().Next(si.DrawItems.Count);
                     var repay = "repay ";
                     Session.Character.GiftAdd(si.DrawItems[rand].VNum, si.DrawItems[rand].Amount);
