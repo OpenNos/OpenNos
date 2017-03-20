@@ -1314,6 +1314,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateStat());
                                 }
                                 break;
+  
 
                             default:
                                 const int seed = 1012;

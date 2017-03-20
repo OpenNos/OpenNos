@@ -200,7 +200,7 @@ namespace OpenNos.GameObject
 
         public MapInstance GetMapInstance(Guid id)
         {
-            return _mapinstances.ContainsKey(id)?_mapinstances[id]:null;
+            return _mapinstances.ContainsKey(id) ? _mapinstances[id] : null;
         }
 
         public NpcMonster GetNpc(short npcVNum)
@@ -314,9 +314,16 @@ namespace OpenNos.GameObject
                             }
                         });
                         break;
-
-                    case MapInstanceType.LodInstance:
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE_LOD") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+                    case MapInstanceType.TimeSpaceInstance:
+                        if (!(Session.CurrentMapInstance.InstanceBag.Lives > 0))
+                        {
+                            Session.Character.Hp = 1;
+                            Session.Character.Mp = 1;
+                            return;
+                        }
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE"), Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count()+1), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^1 #revival^1 {(Session.Character.Level > 10 ? Language.Instance.GetMessageFromKey("ASK_REVIVE_TS_LOW_LEVEL") : Language.Instance.GetMessageFromKey("ASK_REVIVE_TS"))}"));
+                        Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
                         Task.Factory.StartNew(async () =>
                         {
                             bool revive = true;
@@ -334,18 +341,27 @@ namespace OpenNos.GameObject
                                 Instance.ReviveFirstPosition(Session.Character.CharacterId);
                             }
                         });
-                        break;
 
-                    case MapInstanceType.TimeSpaceInstance:
-                        if(Session.CurrentMapInstance.InstanceBag.Lives > 0)
+                        break;
+                    case MapInstanceType.LodInstance:
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_LOD")}"));
+                        Task.Factory.StartNew(async () =>
                         {
-                            Session.CurrentMapInstance.InstanceBag.Lives--;
-                            //revive
-                        }
-                        else
-                        {
-                            //lose
-                        }
+                            bool revive = true;
+                            for (int i = 1; i <= 30; i++)
+                            {
+                                await Task.Delay(1000);
+                                if (Session.Character.Hp > 0)
+                                {
+                                    revive = false;
+                                    break;
+                                }
+                            }
+                            if (revive)
+                            {
+                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            }
+                        });
                         break;
 
                     default:
@@ -1069,22 +1085,32 @@ namespace OpenNos.GameObject
             ClientSession session = GetSessionByCharacterId(characterId);
             if (session != null && session.Character.Hp <= 0)
             {
-                session.Character.Hp = 1;
-                session.Character.Mp = 1;
-                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
                 {
-                    RespawnMapTypeDTO resp = session.Character.Respawn;
-                    short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
-                    short y = (short)(resp.DefaultY + RandomNumber(-5, 5));
-                    ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
+                    session.Character.Hp = (int)session.Character.HPLoad();
+                    session.Character.Mp = (int)session.Character.MPLoad();
+                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRevive());
+                    session.SendPacket(session.Character.GenerateStat());
                 }
                 else
                 {
-                    Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                    session.Character.Hp = 1;
+                    session.Character.Mp = 1;
+                    if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                    {
+                        RespawnMapTypeDTO resp = session.Character.Respawn;
+                        short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
+                        short y = (short)(resp.DefaultY + RandomNumber(-5, 5));
+                        ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
+                    }
+                    else
+                    {
+                        Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                    }
+                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateTp());
+                    session.CurrentMapInstance?.Broadcast(session.Character.GenerateRevive());
+                    session.SendPacket(session.Character.GenerateStat());
                 }
-                session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateTp());
-                session.CurrentMapInstance?.Broadcast(session.Character.GenerateRevive());
-                session.SendPacket(session.Character.GenerateStat());
             }
         }
 

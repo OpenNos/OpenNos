@@ -34,6 +34,7 @@ namespace OpenNos.GameObject
         public long Gold { get; set; }
 
         public int Reputation { get; set; }
+        public byte Lives { get; set; }
 
         InstanceBag _instancebag = new InstanceBag();
         IDisposable obs;
@@ -64,12 +65,12 @@ namespace OpenNos.GameObject
             }
             int WinnerScore = 0;
             string Winner = "";
-            return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} 0 {drawgift} {specialitems} {bonusitems} {WinnerScore}.{(WinnerScore > 0 ? Winner : "")} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{Label}";
+            return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} {RequieredItems.Sum(s => s.Amount)} {drawgift} {specialitems} {bonusitems} {WinnerScore}.{(WinnerScore > 0 ? Winner : "")} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{Label}";
         }
 
         public void Dispose()
         {
-             Thread.Sleep(10000);
+            Thread.Sleep(10000);
             _mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
         }
 
@@ -85,6 +86,7 @@ namespace OpenNos.GameObject
                 {
                     if (variable.Name == "CreateMap")
                     {
+                        _instancebag.Lives = Lives;
                         MapInstance newmap = ServerManager.Instance.GenerateMapInstance(short.Parse(variable?.Attributes["VNum"].Value), MapInstanceType.TimeSpaceInstance, _instancebag);
                         newmap.MapIndexX = byte.Parse(variable?.Attributes["IndexX"].Value);
                         newmap.MapIndexY = byte.Parse(variable?.Attributes["IndexY"].Value);
@@ -105,15 +107,21 @@ namespace OpenNos.GameObject
                            Dispose();
                        }
                    });
-                 obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
-                 {
-                     if (_instancebag.Clock.DeciSecondRemaining <= 0)
-                     {
-                         _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
-                         Dispose();
-                         obs.Dispose();
-                     }
-                 });
+                obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
+                {
+                    if (_instancebag.Lives - _instancebag.DeadList.Count() < 0)
+                    {
+                        _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)3)));
+                        Dispose();
+                        obs.Dispose();
+                    }
+                    if (_instancebag.Clock.DeciSecondRemaining <= 0)
+                    {
+                        _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
+                        Dispose();
+                        obs.Dispose();
+                    }
+                });
                 GenerateEvent(InstanceEvents, FirstMap);
             }
         }
@@ -367,6 +375,11 @@ namespace OpenNos.GameObject
             return evts;
         }
 
+        public string GenerateMainInfo()
+        {
+            return $"minfo 0 1 -1.0/0 -1.0/0 -1/0 -1.0/0 1 {FirstMap.InstanceBag.Lives + 1} 0";
+        }
+
         public string GenerateWp()
         {
             return $"wp {PositionX} {PositionY} {ScriptedInstanceId} 0 {LevelMinimum} {LevelMaximum}";
@@ -398,6 +411,9 @@ namespace OpenNos.GameObject
                 Gold = long.Parse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value);
                 Reputation = int.Parse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value);
                 Label = def.SelectSingleNode("Label")?.Attributes["Value"].Value;
+                byte lives;
+                byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out lives);
+                Lives = lives;
                 if (def.SelectSingleNode("RequieredItems")?.ChildNodes != null)
                 {
                     foreach (XmlNode node in def.SelectSingleNode("RequieredItems")?.ChildNodes)

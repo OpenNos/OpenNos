@@ -156,6 +156,8 @@ namespace OpenNos.Handler
                     ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, timespace.FirstMap.MapInstanceId);
                     timespace.FirstMap.InstanceBag.Creator = Session.Character.CharacterId;
                     Session.SendPackets(timespace.GenerateMinimap());
+                    Session.SendPacket(timespace.GenerateMainInfo());
+                    Session.SendPacket(timespace.FirstMap.InstanceBag.GenerateScore());
                 }
                 else
                 {
@@ -226,6 +228,9 @@ namespace OpenNos.Handler
                                 Session.Character.MapX = portal.PositionX;
                                 Session.Character.MapY = portal.PositionY;
                                 ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, character.CurrentMapInstance.MapInstanceId, mapcell.X, mapcell.Y);
+                                Session.SendPacket(portal.GenerateMainInfo());
+                                Session.SendPackets(portal.GenerateMinimap());
+                                Session.SendPacket(portal.FirstMap.InstanceBag.GenerateScore());
                             }
                             break;
                     }

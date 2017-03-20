@@ -12,7 +12,7 @@ namespace OpenNos.GameObject
         public bool Lock { get; set; }
         public long Creator {get;set; }
         public byte EndState { get; set; }
-        public int Point { get; internal set; }
+        public int Point { get;  set; }
 
         public InstanceBag()
         {
@@ -20,5 +20,9 @@ namespace OpenNos.GameObject
             DeadList = new List<long>();
         }
 
+        public string GenerateScore()
+        {
+            return $"rnsc {Point}";
+        }
     }
 }

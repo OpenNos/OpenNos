@@ -24,6 +24,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
 using OpenNos.Core.Handling;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -102,7 +103,7 @@ namespace OpenNos.GameObject
                 _character = value;
             }
         }
-        
+
 
         public long ClientId => _client.ClientId;
 
@@ -175,6 +176,11 @@ namespace OpenNos.GameObject
             if (HasSelectedCharacter)
             {
                 Character.Dispose();
+                if (Character.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance || Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                {
+                    Character.MapInstance.InstanceBag.DeadList.Add(Character.CharacterId);
+                }
+                ServerManager.Instance.RemoveMapInstance(Character.Miniland.MapInstanceId);
 
                 // TODO Check why ExchangeInfo.TargetCharacterId is null Character.CloseTrade();
                 // disconnect client
@@ -274,7 +280,7 @@ namespace OpenNos.GameObject
         {
             if (!IsDisposing)
             {
-                packets.ToList().ForEach(s=> _client.SendPacket(PacketFactory.Serialize(s), priority));
+                packets.ToList().ForEach(s => _client.SendPacket(PacketFactory.Serialize(s), priority));
             }
         }
 
@@ -339,6 +345,11 @@ namespace OpenNos.GameObject
                     }
                 }
             }
+        }
+
+        public void SendPacket(object score)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
