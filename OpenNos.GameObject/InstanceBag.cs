@@ -16,6 +16,7 @@ namespace OpenNos.GameObject
         public long Creator {get;set; }
         public byte EndState { get; set; }
         public int Point { get;  set; }
+        public int Combo { get;  set; }
 
         public InstanceBag()
         {

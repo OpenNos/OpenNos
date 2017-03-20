@@ -44,7 +44,8 @@ namespace EpPathFinding
     {
         MANHATTAN,
         EUCLIDEAN,
-        CHEBYSHEV
+        CHEBYSHEV,
+        OCTILE
     }
 
     public class Heuristic
@@ -55,6 +56,7 @@ namespace EpPathFinding
         {
             return Math.Max(iDx, iDy);
         }
+
 
         public static float Euclidean(int iDx, int iDy)
         {
@@ -68,6 +70,10 @@ namespace EpPathFinding
             return (float)iDx + iDy;
         }
 
+        public static float Octile(int iDx, int iDy)
+        {
+            return (float)(Math.Min(iDx, iDy) * Math.Sqrt(2) + Math.Max(iDx, iDy) - Math.Min(iDx, iDy));
+        }
         #endregion
     }
 }

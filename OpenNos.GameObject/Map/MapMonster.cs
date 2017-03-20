@@ -104,6 +104,16 @@ namespace OpenNos.GameObject
 
         public void RunDeathEvent()
         {
+            if(IsBonus)
+            {
+                MapInstance.InstanceBag.Combo++;
+                MapInstance.InstanceBag.Point+= EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo+1);
+            }
+            else
+            {
+                MapInstance.InstanceBag.Combo = 0;
+                MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo);
+            }
             MapInstance.InstanceBag.MonstersKilled++;
             OnDeathEvents.ForEach(e =>
             {
@@ -134,7 +144,7 @@ namespace OpenNos.GameObject
         {
             MapInstance = currentMapInstance;
             Initialize();
-            JumpPointParameters = new JumpPointParam(MapInstance.Map.Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
+            JumpPointParameters = new JumpPointParam(MapInstance.Map.Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true);
         }
 
         public override void Initialize()

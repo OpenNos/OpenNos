@@ -277,7 +277,18 @@ namespace OpenNos.GameObject.Helpers
                 }
             }
         }
-
+        public int CalculateComboPoint(int n)
+        {
+            int a = 4;
+            int b = 7;
+            for (int i = 0; i < n; i++)
+            {
+                int temp = a;
+                a = b;
+                b = temp + b;
+            }
+            return a;
+        }
         public void ScheduleEvent(TimeSpan timeSpan, EventContainer evt)
         {
             Observable.Timer(timeSpan).Subscribe(x =>

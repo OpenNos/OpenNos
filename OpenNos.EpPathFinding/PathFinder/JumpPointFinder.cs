@@ -947,12 +947,16 @@ namespace EpPathFinding
 
         #region Instantiation
 
-        public JumpPointParam(BaseGrid iGrid, GridPos iStartPos, GridPos iEndPos, bool iAllowEndNodeUnWalkable = true, bool iCrossCorner = true, bool iCrossAdjacentPoint = true, HeuristicMode iMode = HeuristicMode.EUCLIDEAN)
+        public JumpPointParam(BaseGrid iGrid, GridPos iStartPos, GridPos iEndPos, bool iAllowEndNodeUnWalkable = true, bool iCrossCorner = true, bool iCrossAdjacentPoint = true, HeuristicMode iMode = HeuristicMode.OCTILE)
         {
             switch (iMode)
             {
                 case HeuristicMode.MANHATTAN:
                     m_heuristic = Heuristic.Manhattan;
+                    break;
+
+                case HeuristicMode.OCTILE:
+                    m_heuristic = Heuristic.Octile;
                     break;
 
                 case HeuristicMode.EUCLIDEAN:
@@ -964,7 +968,7 @@ namespace EpPathFinding
                     break;
 
                 default:
-                    m_heuristic = Heuristic.Euclidean;
+                    m_heuristic = Heuristic.Octile;
                     break;
             }
             m_allowEndNodeUnWalkable = iAllowEndNodeUnWalkable;
@@ -986,12 +990,16 @@ namespace EpPathFinding
             m_useRecursive = false;
         }
 
-        public JumpPointParam(BaseGrid iGrid, bool iAllowEndNodeUnWalkable = true, bool iCrossCorner = true, bool iCrossAdjacentPoint = true, HeuristicMode iMode = HeuristicMode.EUCLIDEAN)
+        public JumpPointParam(BaseGrid iGrid, bool iAllowEndNodeUnWalkable = true, bool iCrossCorner = true, bool iCrossAdjacentPoint = true, HeuristicMode iMode = HeuristicMode.OCTILE)
         {
             switch (iMode)
             {
                 case HeuristicMode.MANHATTAN:
                     m_heuristic = Heuristic.Manhattan;
+                    break;
+
+                case HeuristicMode.OCTILE:
+                    m_heuristic = Heuristic.Octile;
                     break;
 
                 case HeuristicMode.EUCLIDEAN:
@@ -1003,7 +1011,7 @@ namespace EpPathFinding
                     break;
 
                 default:
-                    m_heuristic = Heuristic.Euclidean;
+                    m_heuristic = Heuristic.Octile;
                     break;
             }
             m_allowEndNodeUnWalkable = iAllowEndNodeUnWalkable;
@@ -1153,6 +1161,10 @@ namespace EpPathFinding
                     m_heuristic = Heuristic.Manhattan;
                     break;
 
+                case HeuristicMode.OCTILE:
+                    m_heuristic = Heuristic.Octile;
+                    break;
+
                 case HeuristicMode.EUCLIDEAN:
                     m_heuristic = Heuristic.Euclidean;
                     break;
@@ -1162,7 +1174,7 @@ namespace EpPathFinding
                     break;
 
                 default:
-                    m_heuristic = Heuristic.Euclidean;
+                    m_heuristic = Heuristic.Octile;
                     break;
             }
         }
