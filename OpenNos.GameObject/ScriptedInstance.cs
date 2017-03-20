@@ -35,6 +35,9 @@ namespace OpenNos.GameObject
 
         public int Reputation { get; set; }
         public byte Lives { get; set; }
+        public int MonsterAmount { get; internal set; }
+        public int RoomAmount { get; internal set; }
+        public int NpcAmount { get; internal set; }
 
         InstanceBag _instancebag = new InstanceBag();
         IDisposable obs;
@@ -228,24 +231,24 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SummonMonsters":
-                        mapinstance.InstanceBag.MonsterAmount += short.Parse(mapevent?.Attributes["Amount"].Value);
+                        MonsterAmount += short.Parse(mapevent?.Attributes["Amount"].Value);
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), move, new List<EventContainer>(), isBonus, isHostile)));
                         break;
 
                     case "SummonMonster":
-                        mapinstance.InstanceBag.MonsterAmount++;
+                        MonsterAmount++;
                         List<MonsterToSummon> lst = new List<MonsterToSummon>();
                         lst.Add(new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile));
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, lst.AsEnumerable()));
                         break;
 
                     case "SummonNps":
-                        mapinstance.InstanceBag.NpcAmount += short.Parse(mapevent?.Attributes["Amount"].Value); ;
+                        NpcAmount += short.Parse(mapevent?.Attributes["Amount"].Value); ;
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, mapinstance.Map.GenerateNpcs(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), new List<EventContainer>(), isMate, isProtected)));
                         break;
 
                     case "SummonNpc":
-                        mapinstance.InstanceBag.NpcAmount++;
+                        NpcAmount++;
                         List<NpcToSummon> lstn = new List<NpcToSummon>();
                         lstn.Add(new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, GenerateEvent(mapevent, mapinstance), isMate, isProtected));
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, lstn.AsEnumerable()));
@@ -412,9 +415,15 @@ namespace OpenNos.GameObject
                 XmlNode def = doc.SelectSingleNode("Definition").SelectSingleNode("Globals");
                 LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum")?.Attributes["Value"].Value);
                 LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum")?.Attributes["Value"].Value);
-                Gold = long.Parse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value);
-                Reputation = int.Parse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value);
                 Label = def.SelectSingleNode("Label")?.Attributes["Value"].Value;
+                long gold = 0;
+                long.TryParse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value, out gold);
+                Gold = gold;
+
+                int reputation = 0;
+                int.TryParse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value,out reputation);
+                Reputation = reputation;
+
                 byte lives;
                 byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out lives);
                 Lives = lives;

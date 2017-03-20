@@ -163,11 +163,11 @@ namespace OpenNos.GameObject.Helpers
                                     }
                                     int point = evt.MapInstance.InstanceBag.Point * (100 - penalty) / 100;
                                     string perfection = string.Empty;
-                                    perfection += evt.MapInstance.InstanceBag.MonstersKilled >= evt.MapInstance.InstanceBag.MonsterAmount ? 1 : 0;
+                                    perfection += evt.MapInstance.InstanceBag.MonstersKilled >= si.MonsterAmount ? 1 : 0;
                                     perfection += evt.MapInstance.InstanceBag.NpcsKilled == 0 ? 1 : 0;
-                                    perfection += evt.MapInstance.InstanceBag.RoomsVisited >= evt.MapInstance.InstanceBag.RoomAmount ? 1 : 0;
+                                    perfection += evt.MapInstance.InstanceBag.RoomsVisited >= si.RoomAmount ? 1 : 0;
 
-                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} { evt.MapInstance.InstanceBag.NpcAmount-evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
+                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} { si.NpcAmount-evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
                                 }
                                 break;
                         }

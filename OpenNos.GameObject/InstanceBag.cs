@@ -13,9 +13,6 @@ namespace OpenNos.GameObject
         public int MonstersKilled { get; set;}
         public int NpcsKilled { get; set; }
         public int RoomsVisited { get; set; }
-        public int MonsterAmount { get; set; }
-        public int NpcAmount { get; set; }
-        public int RoomAmount { get; set; }
         public long Creator {get;set; }
         public byte EndState { get; set; }
         public int Point { get;  set; }
