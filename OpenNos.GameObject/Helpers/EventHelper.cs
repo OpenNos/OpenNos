@@ -162,7 +162,12 @@ namespace OpenNos.GameObject.Helpers
                                         client.SendPacket(client.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("TS_PENALTY"), penalty), 10));
                                     }
                                     int point = evt.MapInstance.InstanceBag.Point * (100 - penalty) / 100;
-                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} 9 1 7 011 1 1");
+                                    string perfection = string.Empty;
+                                    perfection += evt.MapInstance.InstanceBag.MonstersKilled >= evt.MapInstance.InstanceBag.MonsterAmount ? 1 : 0;
+                                    perfection += evt.MapInstance.InstanceBag.NpcsKilled == 0 ? 1 : 0;
+                                    perfection += evt.MapInstance.InstanceBag.RoomsVisited >= evt.MapInstance.InstanceBag.RoomAmount ? 1 : 0;
+
+                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} { evt.MapInstance.InstanceBag.NpcAmount-evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
                                 }
                                 break;
                         }
