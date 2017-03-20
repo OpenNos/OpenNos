@@ -13,6 +13,7 @@
  */
 
 using CloneExtensions;
+using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Event;
 using System;
@@ -153,8 +154,15 @@ namespace OpenNos.GameObject.Helpers
                                 {
                                     Guid MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(client.Character.MapId);
                                     MapInstance map = ServerManager.Instance.GetMapInstance(MapInstanceId);
-                                    ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s=>s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
-                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} 0 27 47 18 {si.DrawItems.Count()} 9 1 7 011 1 1");
+                                    ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
+                                    byte penalty = 0;
+                                    if (penalty > (client.Character.Level - si.LevelMinimum) * 2)
+                                    {
+                                        penalty = penalty > 100 ? (byte)100 : penalty;                              
+                                        client.SendPacket(client.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("TS_PENALTY"), penalty), 10));
+                                    }
+                                    int point = evt.MapInstance.InstanceBag.Point * (100 - penalty) / 100;
+                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} 9 1 7 011 1 1");
                                 }
                                 break;
                         }

@@ -56,12 +56,11 @@ namespace OpenNos.Handler
                 ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
                 if (si != null)
                 {
-                    Session.Character.Reput += si.Reputation;
-                    Session.SendPacket(Session.Character.GenerateFd());
-
+                    Session.Character.GetReput(si.Reputation);
+                   
                     Session.Character.Gold = Session.Character.Gold + si.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : Session.Character.Gold + si.Gold;
                     Session.SendPacket(Session.Character.GenerateGold());
-
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GOLD_TS_END"), si.Gold), 10));  
 
                     var rand = new Random().Next(si.DrawItems.Count);
                     var repay = "repay ";
@@ -137,12 +136,23 @@ namespace OpenNos.Handler
                 {
                     timespace.LoadScript();
                     if (timespace.FirstMap == null) return;
-                    Session.Character.MapX = timespace.PositionX;
-                    Session.Character.MapY = timespace.PositionY;
                     foreach (var i in timespace.RequieredItems)
                     {
+                        if(Session.Character.Inventory.CountItem(i.VNum) < i.Amount)
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_REQUIERED_ITEM"), ServerManager.Instance.GetItem(i.VNum).Name),0));
+                            return;
+                        }
                         Session.Character.Inventory.RemoveItemAmount(i.VNum, i.Amount);
                     }
+                    if(timespace.LevelMinimum > Session.Character.Level)
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_REQUIERED_LEVEL"), 0));
+                        return;
+                    }
+
+                    Session.Character.MapX = timespace.PositionX;
+                    Session.Character.MapY = timespace.PositionY;
                     ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, timespace.FirstMap.MapInstanceId);
                     timespace.FirstMap.InstanceBag.Creator = Session.Character.CharacterId;
                     Session.SendPackets(timespace.GenerateMinimap());
@@ -206,6 +216,12 @@ namespace OpenNos.Handler
                             ClientSession character = Session.Character.Group?.Characters.Where(s => s.Character.CharacterId == packet.Param).FirstOrDefault();
                             if (character != null)
                             {
+                                if (portal.LevelMinimum > Session.Character.Level)
+                                {
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_REQUIERED_LEVEL"), 0));
+                                    return;
+                                }
+
                                 MapCell mapcell = character.CurrentMapInstance.Map.GetRandomPosition();
                                 Session.Character.MapX = portal.PositionX;
                                 Session.Character.MapY = portal.PositionY;

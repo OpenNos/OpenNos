@@ -12,6 +12,7 @@ namespace OpenNos.GameObject
         public bool Lock { get; set; }
         public long Creator {get;set; }
         public byte EndState { get; set; }
+        public int Point { get; internal set; }
 
         public InstanceBag()
         {

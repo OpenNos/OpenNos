@@ -33,7 +33,7 @@ namespace OpenNos.GameObject
 
         public long Gold { get; set; }
 
-        public long Reputation { get; set; }
+        public int Reputation { get; set; }
 
         InstanceBag _instancebag = new InstanceBag();
         IDisposable obs;
@@ -396,7 +396,7 @@ namespace OpenNos.GameObject
                 LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum")?.Attributes["Value"].Value);
                 LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum")?.Attributes["Value"].Value);
                 Gold = long.Parse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value);
-                Reputation = long.Parse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value);
+                Reputation = int.Parse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value);
                 Label = def.SelectSingleNode("Label")?.Attributes["Value"].Value;
                 if (def.SelectSingleNode("RequieredItems")?.ChildNodes != null)
                 {
