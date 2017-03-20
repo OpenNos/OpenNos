@@ -94,7 +94,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// treq packet
+        /// rxitPacket packet
         /// </summary>
         /// <param name="rxitPacket"></param>
         public void InstanceExit(RxitPacket rxitPacket)
