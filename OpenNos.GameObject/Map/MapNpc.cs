@@ -79,6 +79,16 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
+        public void RunDeathEvent()
+        {
+            MapInstance.InstanceBag.NpcsKilled++;
+            OnDeathEvents.ForEach(e =>
+            {
+                EventHelper.Instance.RunEvent(e);
+            });
+            OnDeathEvents.RemoveAll(s => s != null);
+        }
+
         public string GetNpcDialog()
         {
             return $"npc_req 2 {MapNpcId} {Dialog}";

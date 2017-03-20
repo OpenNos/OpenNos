@@ -228,20 +228,24 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SummonMonsters":
+                        mapinstance.InstanceBag.MonsterAmount += short.Parse(mapevent?.Attributes["Amount"].Value);
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), move, new List<EventContainer>(), isBonus, isHostile)));
                         break;
 
                     case "SummonMonster":
+                        mapinstance.InstanceBag.MonsterAmount++;
                         List<MonsterToSummon> lst = new List<MonsterToSummon>();
                         lst.Add(new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile));
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, lst.AsEnumerable()));
                         break;
 
                     case "SummonNps":
+                        mapinstance.InstanceBag.NpcAmount += short.Parse(mapevent?.Attributes["Amount"].Value); ;
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, mapinstance.Map.GenerateNpcs(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), new List<EventContainer>(), isMate, isProtected)));
                         break;
 
                     case "SummonNpc":
+                        mapinstance.InstanceBag.NpcAmount++;
                         List<NpcToSummon> lstn = new List<NpcToSummon>();
                         lstn.Add(new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, GenerateEvent(mapevent, mapinstance), isMate, isProtected));
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, lstn.AsEnumerable()));

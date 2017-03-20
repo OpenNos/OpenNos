@@ -104,6 +104,7 @@ namespace OpenNos.GameObject
 
         public void RunDeathEvent()
         {
+            MapInstance.InstanceBag.MonstersKilled++;
             OnDeathEvents.ForEach(e =>
             {
                 EventHelper.Instance.RunEvent(e);
