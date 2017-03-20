@@ -42,6 +42,7 @@ namespace OpenNos.GameObject
         public MapMonster()
         {
             HitQueue = new ConcurrentQueue<HitRequest>();
+            OnDeathEvents = new List<EventContainer>();
         }
 
         #endregion
