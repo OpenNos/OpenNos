@@ -3067,7 +3067,8 @@ namespace OpenNos.GameObject
 
         public string GenerateRevive()
         {
-            return $"revive 1 {CharacterId} 0";
+            int lives = MapInstance.InstanceBag.Lives - MapInstance.InstanceBag.DeadList.Count() + 1;
+            return $"revive 1 {CharacterId} {(lives > 0 ? lives : 0)}";
         }
 
 

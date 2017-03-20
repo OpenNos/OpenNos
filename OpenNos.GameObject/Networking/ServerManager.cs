@@ -315,7 +315,7 @@ namespace OpenNos.GameObject
                         });
                         break;
                     case MapInstanceType.TimeSpaceInstance:
-                        if (!(Session.CurrentMapInstance.InstanceBag.Lives > 0))
+                        if (!(Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count() <= 1))
                         {
                             Session.Character.Hp = 1;
                             Session.Character.Mp = 1;
