@@ -58,7 +58,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.Reput += si.Reputation;
                     Session.SendPacket(Session.Character.GenerateFd());
-                
+
                     Session.Character.Gold = Session.Character.Gold + si.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : Session.Character.Gold + si.Gold;
                     Session.SendPacket(Session.Character.GenerateGold());
 
@@ -104,26 +104,20 @@ namespace OpenNos.Handler
             {
                 if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.TimeSpaceInstance)
                 {
-                    Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(Session.Character.MapId);
-                    MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
-                    ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
-
-                    if (si != null)
+                    if (Session.CurrentMapInstance.InstanceBag.Lock)
                     {
-                        // TODO REAL ALGORITHM ?
-                        Session.Character.Reput -= si.Reputation / 20;
-                        if (Session.Character.Reput < 0)
-                            Session.Character.Reput = 0;
-                        Session.Character.Dignity -= Session.Character.Level / 4;
-                        if (Session.Character.Dignity < -1000)
-                            Session.Character.Dignity = -1000;
-
-                        
-                        // TODO ADD TIMESPACE DISPOSING
-                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId,
-                            Session.Character.MapX, Session.Character.MapY);
+                        //5seed
+                        Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DIGNITY_LOST"), 20), 11));
+                        Session.Character.Dignity = Session.Character.Dignity < -980 ? -1000 : Session.Character.Dignity - 20;
                     }
+                    else
+                    {
+                        //1seed
+                    }
+                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId,
+                           Session.Character.MapX, Session.Character.MapY);
+
                 }
             }
 
