@@ -60,8 +60,7 @@ namespace OpenNos.GameObject
         public ConcurrentQueue<HitRequest> HitQueue { get; }
 
         public bool IsAlive { get; set; }
-
-        public JumpPointParam JumpPointParameters { get; set; }
+        
 
         public DateTime LastSkill { get; set; }
 
@@ -144,7 +143,6 @@ namespace OpenNos.GameObject
         {
             MapInstance = currentMapInstance;
             Initialize();
-            JumpPointParameters = new JumpPointParam(MapInstance.Map.Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true);
         }
 
         public override void Initialize()
@@ -252,7 +250,7 @@ namespace OpenNos.GameObject
                 {
                     if (!Path.Any())
                     {
-                        Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                        Path = MapInstance.Map.SpatialAStarSearch( new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
                     }
                 });
             }
@@ -279,7 +277,7 @@ namespace OpenNos.GameObject
                     short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);                
                     try
                     {
-                        Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(targetSession.Character.PositionX + xoffset), y = (short)(targetSession.Character.PositionY + yoffset) });
+                        Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(targetSession.Character.PositionX + xoffset), y = (short)(targetSession.Character.PositionY + yoffset) });
                     }
                     catch (Exception ex)
                     {

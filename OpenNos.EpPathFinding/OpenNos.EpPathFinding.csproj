@@ -40,13 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PathFinder\GridPos.cs" />
-    <Compile Include="PathFinder\GridRect.cs" />
-    <Compile Include="PathFinder\Grid\BaseGrid.cs" />
-    <Compile Include="PathFinder\Grid\StaticGrid.cs" />
+    <Compile Include="PathFinder\Algorithm\PriorityQueue.cs" />
+    <Compile Include="PathFinder\Algorithm\Solver.cs" />
+    <Compile Include="PathFinder\Algorithm\SpatialAStar.cs" />
+    <Compile Include="PathFinder\Algorithm\GridPos.cs" />
     <Compile Include="PathFinder\Heuristic.cs" />
-    <Compile Include="PathFinder\JumpPointFinder.cs" />
-    <Compile Include="PathFinder\NodePool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

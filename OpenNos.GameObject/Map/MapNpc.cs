@@ -38,8 +38,7 @@ namespace OpenNos.GameObject
         public short FirstX { get; set; }
 
         public short FirstY { get; set; }
-
-        public JumpPointParam JumpPointParameters { get; set; }
+        
 
         public DateTime LastEffect { get; private set; }
 
@@ -98,8 +97,7 @@ namespace OpenNos.GameObject
         {
             MapInstance = currentMapInstance;
             Initialize();
-            JumpPointParameters = new JumpPointParam(MapInstance.Map.Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true);
-        }
+                }
 
         public override void Initialize()
         {
@@ -254,7 +252,7 @@ namespace OpenNos.GameObject
                             if (IsMoving)
                             {
 
-                                Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                                Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
 
                             }
 
@@ -279,7 +277,7 @@ namespace OpenNos.GameObject
                             short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
 
 
-                            Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
+                            Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
 
                         }
                         if (DateTime.Now > LastMove && Npc.Speed > 0 && Path.Any())
@@ -307,7 +305,7 @@ namespace OpenNos.GameObject
                         if (Path.Any() && (MapId != monster.MapId || distance > maxDistance))
                         {
 
-                            Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                            Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
 
                             Target = -1;
                         }

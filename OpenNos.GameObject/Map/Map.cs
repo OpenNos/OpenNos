@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using OpenNos.Domain;
+using EpPathFinding.PathFinder.Algorithm;
 
 namespace OpenNos.GameObject
 {
@@ -74,7 +75,7 @@ namespace OpenNos.GameObject
 
         public RespawnMapTypeDTO DefaultReturn { get; private set; }
 
-        public StaticGrid Grid { get; set; }
+        public GridPos[,] Grid { get; set; }
 
         public short MapId { get; set; }
 
@@ -114,18 +115,22 @@ namespace OpenNos.GameObject
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
-                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, deathEvents,isBonus: isBonus,isHostile:isHostile));
+                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, deathEvents, isBonus: isBonus, isHostile: isHostile));
             }
             return SummonParameters;
         }
-        public static List<GridPos> JPSPlus(JumpPointParam JumpPointParameters, GridPos cell1, GridPos cell2)
+        public List<GridPos> SpatialAStarSearch(GridPos cell1, GridPos cell2)
         {
-            if (JumpPointParameters != null)
+            Solver<GridPos, Object> aStar = new Solver<GridPos, Object>(Grid);
+            LinkedList<GridPos> list = aStar?.Search(cell1, cell2, null);
+            if (list != null)
             {
-                JumpPointParameters.Reset(cell1, cell2);
-                return JumpPointFinder.GetFullPath(JumpPointFinder.FindPath(JumpPointParameters));
+                return list.ToList();
             }
-            return new List<GridPos>();
+            else
+            {
+                return new List<GridPos>();
+            }
         }
 
         public MapCell GetRandomPosition()
@@ -148,7 +153,7 @@ namespace OpenNos.GameObject
         {
             if (Grid != null)
             {
-                if (!Grid.IsWalkableAt(new GridPos(x, y)))
+                if (!Grid[x, y].IsWalkable(null))
                 {
                     return true;
                 }
@@ -292,13 +297,18 @@ namespace OpenNos.GameObject
                 YLength = BitConverter.ToInt16(ylength, 0);
                 XLength = BitConverter.ToInt16(xlength, 0);
 
-                Grid = new StaticGrid(XLength, YLength);
-                for (int i = 0; i < YLength; ++i)
+                Grid = new GridPos[XLength, YLength];
+                for (short i = 0; i < YLength; ++i)
                 {
-                    for (int t = 0; t < XLength; ++t)
+                    for (short t = 0; t < XLength; ++t)
                     {
                         stream.Read(bytes, numBytesRead, numBytesToRead);
-                        Grid.SetWalkableAt(new GridPos(t, i), bytes[0]);
+                        Grid[t, i] = new GridPos()
+                        {
+                            Value = bytes[0],
+                            x = t,
+                            y = i,
+                        };
                     }
                 }
             }
