@@ -105,8 +105,9 @@ namespace OpenNos.GameObject
 
         public static int GetDistance(MapCell p, MapCell q)
         {
-            return Math.Max(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
+            return (int)Heuristic.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
+
         public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true)
         {
             List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();

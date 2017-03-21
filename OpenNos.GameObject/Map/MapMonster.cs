@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
     public class MapMonster : MapMonsterDTO
     {
         #region Members
-        
+
         private int _movetime;
         private Random _random;
 
@@ -87,7 +87,7 @@ namespace OpenNos.GameObject
         public List<EventContainer> OnDeathEvents { get; set; }
         public bool IsTarget { get; set; }
         public DateTime LastEffect { get; set; }
-        public bool  IsBonus { get; set; }
+        public bool IsBonus { get; set; }
 
         #endregion
 
@@ -104,10 +104,10 @@ namespace OpenNos.GameObject
 
         public void RunDeathEvent()
         {
-            if(IsBonus)
+            if (IsBonus)
             {
                 MapInstance.InstanceBag.Combo++;
-                MapInstance.InstanceBag.Point+= EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo+1);
+                MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo + 1);
             }
             else
             {
@@ -252,11 +252,7 @@ namespace OpenNos.GameObject
                 {
                     if (!Path.Any())
                     {
-                        Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
-                        if (!Path.Any())
-                        {
-                            Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
-                        }
+                        Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
                     }
                 });
             }
@@ -280,20 +276,15 @@ namespace OpenNos.GameObject
                 if (!Path.Any() && targetSession != null)
                 {
                     short xoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
-                    short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
-
-                    Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(targetSession.Character.PositionX + xoffset), y = (short)(targetSession.Character.PositionY + yoffset) });
-                    if (!Path.Any())
+                    short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);                
+                    try
                     {
-                        try
-                        {
-                            Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(targetSession.Character.PositionX + xoffset), y = (short)(targetSession.Character.PositionY + yoffset) });
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Log.Error($"Pathfinding using JPSPlus failed. Map: {MapId} StartX: {MapX} StartY: {MapY} TargetX: {(short)(targetSession.Character.PositionX + xoffset)} TargetY: {(short)(targetSession.Character.PositionY + yoffset)}", ex);
-                            RemoveTarget();
-                        }
+                        Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(targetSession.Character.PositionX + xoffset), y = (short)(targetSession.Character.PositionY + yoffset) });
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log.Error($"Pathfinding using JPSPlus failed. Map: {MapId} StartX: {MapX} StartY: {MapY} TargetX: {(short)(targetSession.Character.PositionX + xoffset)} TargetY: {(short)(targetSession.Character.PositionY + yoffset)}", ex);
+                        RemoveTarget();
                     }
                 }
                 if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
@@ -791,7 +782,7 @@ namespace OpenNos.GameObject
             if ((DateTime.Now - LastEffect).TotalSeconds >= 5)
             {
                 LastEffect = DateTime.Now;
-                if(IsTarget)
+                if (IsTarget)
                 {
                     MapInstance.Broadcast(GenerateEff(824));
                 }

@@ -183,7 +183,7 @@ namespace OpenNos.GameObject
             }
         }
 
-       
+
 
         public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY)
         {
@@ -327,16 +327,20 @@ namespace OpenNos.GameObject
         {
             foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId).ToList())
             {
-                _monsters[monster.MapMonsterId] = monster as MapMonster;
-                _mapMonsterIds.Add(monster.MapMonsterId);
+                MapMonster mo = monster as MapMonster;
+                mo.Initialize(this);
+                _monsters[mo.MapMonsterId] = mo;
+                _mapMonsterIds.Add(mo.MapMonsterId);
             }
         }
         public void LoadNpcs()
         {
             foreach (MapNpcDTO npc in DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId).ToList())
             {
-                _npcs[npc.MapNpcId] = npc as MapNpc;
-                _mapNpcIds.Add(npc.MapNpcId);
+                MapNpc np = npc as MapNpc;
+                np.Initialize(this);
+                _npcs[np.MapNpcId] = np;
+                _mapNpcIds.Add(np.MapNpcId);
             }
         }
         public void LoadPortals()

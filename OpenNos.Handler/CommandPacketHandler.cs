@@ -2097,7 +2097,7 @@ namespace OpenNos.Handler
                         if (Session.HasCurrentMapInstance)
                         {
                             MapNpc monster = new MapNpc { NpcVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstance.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapNpcId = Session.CurrentMapInstance.GetNextMonsterId() };
-                            monster.Initialize();
+                            monster.Initialize(Session.CurrentMapInstance);
                             Session.CurrentMapInstance.AddNPC(monster);
                             Session.CurrentMapInstance.Broadcast(monster.GenerateIn());
                         }
