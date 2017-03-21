@@ -10,13 +10,13 @@ namespace OpenNos.GameObject
         public short Lives { get; set; }
         public List<long> DeadList { get; set; }
         public bool Lock { get; set; }
-        public int MonstersKilled { get; set;}
+        public int MonstersKilled { get; set; }
         public int NpcsKilled { get; set; }
         public int RoomsVisited { get; set; }
-        public long Creator {get;set; }
+        public long Creator { get; set; }
         public byte EndState { get; set; }
-        public int Point { get;  set; }
-        public int Combo { get;  set; }
+        public int Point { get; set; }
+        public int Combo { get; set; }
 
         public InstanceBag()
         {

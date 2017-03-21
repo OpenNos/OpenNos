@@ -28,7 +28,6 @@ namespace OpenNos.Data
 
         public string Script { get; set; }
         
-
         #endregion
     }
 }
