@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
         public short FirstX { get; set; }
 
         public short FirstY { get; set; }
-        
+
 
         public DateTime LastEffect { get; private set; }
 
@@ -64,6 +64,7 @@ namespace OpenNos.GameObject
 
         public bool IsMate { get; set; }
         public bool IsProtected { get; set; }
+        public bool Started { get; internal set; }
         #endregion
 
         #region Methods
@@ -97,7 +98,8 @@ namespace OpenNos.GameObject
         {
             MapInstance = currentMapInstance;
             Initialize();
-                }
+            StartLife();
+        }
 
         public override void Initialize()
         {
@@ -125,17 +127,21 @@ namespace OpenNos.GameObject
 
         internal void StartLife()
         {
-            try
+            Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {
-                if (!MapInstance.IsSleeping)
+                Started = true;
+                try
                 {
-                    NpcLife();
+                    if (!MapInstance.IsSleeping)
+                    {
+                        NpcLife();
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            });
         }
 
         private string GenerateMv2()
@@ -249,11 +255,9 @@ namespace OpenNos.GameObject
                         LastEffect = DateTime.Now;
                         if (monster.CurrentHp < 1)
                         {
-                            if (IsMoving)
+                            if (IsMoving && !Path.Any())
                             {
-
                                 Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
-
                             }
 
                             monster.IsAlive = false;
@@ -275,10 +279,7 @@ namespace OpenNos.GameObject
                         {
                             short xoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                             short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
-
-
                             Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
-
                         }
                         if (DateTime.Now > LastMove && Npc.Speed > 0 && Path.Any())
                         {
@@ -297,23 +298,11 @@ namespace OpenNos.GameObject
                                     MapY = mapY;
                                 });
 
-                            for (int j = maxindex; j > 0; j--)
-                            {
-                                Path.RemoveAt(0);
-                            }
+                            Path.RemoveRange(0, maxindex);
                         }
-                        if (Path.Any() && (MapId != monster.MapId || distance > maxDistance))
+                        if (Target != -1 && (MapId != monster.MapId || distance > maxDistance))
                         {
-
                             Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
-
-                            Target = -1;
-                        }
-                    }
-                    else
-                    {
-                        if (distance > maxdistance)
-                        {
                             Target = -1;
                         }
                     }

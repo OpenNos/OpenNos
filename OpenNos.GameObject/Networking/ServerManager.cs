@@ -1310,15 +1310,6 @@ namespace OpenNos.GameObject
                 RemoveItemProcess();
             });
 
-            Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
-            {
-                foreach (var map in _mapinstances)
-                {
-                    Parallel.ForEach(map.Value.Npcs, npc => { npc.StartLife(); });
-                    Parallel.ForEach(map.Value.Monsters, monster => { monster.StartLife(); });
-
-                }
-            });
             ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
             ServerCommunicationClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
             ServerCommunicationClient.Instance.FamilyRefresh += OnFamilyRefresh;

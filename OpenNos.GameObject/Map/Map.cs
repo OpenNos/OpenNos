@@ -106,7 +106,7 @@ namespace OpenNos.GameObject
 
         public static int GetDistance(MapCell p, MapCell q)
         {
-            return (int)HeuristicDistance.Octil(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
+            return (int)HeuristicDistance.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
 
         public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true)
@@ -191,60 +191,7 @@ namespace OpenNos.GameObject
             }
             return false;
         }
-
-        internal List<GridPos> StraightPath(GridPos mapCell1, GridPos mapCell2)
-        {
-            List<GridPos> Path = new List<GridPos> { mapCell1 };
-            do
-            {
-                if (Path.Last().x < mapCell2.x && Path.Last().y < mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y + 1) });
-                }
-                else if (Path.Last().x > mapCell2.x && Path.Last().y > mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y - 1) });
-                }
-                else if (Path.Last().x < mapCell2.x && Path.Last().y > mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y - 1) });
-                }
-                else if (Path.Last().x > mapCell2.x && Path.Last().y < mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y + 1) });
-                }
-                else if (Path.Last().x > mapCell2.x)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x - 1), y = (short)Path.Last().y });
-                }
-                else if (Path.Last().x < mapCell2.x)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x + 1), y = (short)Path.Last().y });
-                }
-                else if (Path.Last().y > mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)Path.Last().x, y = (short)(Path.Last().y - 1) });
-                }
-                else if (Path.Last().y < mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)Path.Last().x, y = (short)(Path.Last().y + 1) });
-                }
-            }
-            while ((Path.Last().x != mapCell2.x || Path.Last().y != mapCell2.y) && !IsBlockedZone(Path.Last().x, Path.Last().y));
-            if (IsBlockedZone(Path.Last().x, Path.Last().y))
-            {
-                if (Path.Any())
-                {
-                    Path.Remove(Path.Last());
-                }
-            }
-            if (Path.Count > 0)
-            {
-                Path.RemoveAt(0);
-            }
-            return Path;
-        }
-
+ 
         public List<NpcToSummon> GenerateNpcs(short vnum, short amount, List<EventContainer> deathEvents, bool isMate, bool isProtected)
         {
             List<NpcToSummon> SummonParameters = new List<NpcToSummon>();

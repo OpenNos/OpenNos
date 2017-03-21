@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+using EpPathFinding.PathFinder;
 using OpenNos.Pathfinding;
 using System;
 using System.Collections.Generic;
@@ -40,9 +41,6 @@ namespace SettlersEngine
         int Index { get; set; }
     }
 
-    /// <summary>
-    /// Uses about 50 MB for a 1024x1024 grid.
-    /// </summary>
     public class SpatialAStar<TPathNode, TUserContext> where TPathNode : IPathNode<TUserContext>
     {
         private OpenCloseMap m_ClosedSet;
@@ -53,8 +51,8 @@ namespace SettlersEngine
         private PathNode[,] m_SearchSpace;
 
         public TPathNode[,] SearchSpace { get; private set; }
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        public short Width { get; private set; }
+        public short Height { get; private set; }
 
         protected class PathNode : IPathNode<TUserContext>, IComparer<PathNode>, IIndexedObject
         {
@@ -71,8 +69,8 @@ namespace SettlersEngine
                 return UserContext.IsWalkable(inContext);
             }
 
-            public int X { get; internal set; }
-            public int Y { get; internal set; }
+            public short X { get; internal set; }
+            public short Y { get; internal set; }
 
             public int Compare(PathNode x, PathNode y)
             {
@@ -84,7 +82,7 @@ namespace SettlersEngine
                 return 0;
             }
 
-            public PathNode(int inX, int inY, TPathNode inUserContext)
+            public PathNode(short inX, short inY, TPathNode inUserContext)
             {
                 X = inX;
                 Y = inY;
@@ -95,8 +93,8 @@ namespace SettlersEngine
         public SpatialAStar(TPathNode[,] inGrid)
         {
             SearchSpace = inGrid;
-            Width = inGrid.GetLength(0);
-            Height = inGrid.GetLength(1);
+            Width = (short)inGrid.GetLength(0);
+            Height = (short)inGrid.GetLength(1);
             m_SearchSpace = new PathNode[Width, Height];
             m_ClosedSet = new OpenCloseMap(Width, Height);
             m_OpenSet = new OpenCloseMap(Width, Height);
@@ -104,9 +102,9 @@ namespace SettlersEngine
             m_RuntimeGrid = new OpenCloseMap(Width, Height);
             m_OrderedOpenSet = new PriorityQueue<PathNode>(PathNode.Comparer);
 
-            for (int x = 0; x < Width; x++)
+            for (short x = 0; x < Width; x++)
             {
-                for (int y = 0; y < Height; y++)
+                for (short y = 0; y < Height; y++)
                 {
                     if (inGrid[x, y] == null)
                         throw new ArgumentNullException();
@@ -118,7 +116,11 @@ namespace SettlersEngine
 
         protected virtual Double Heuristic(PathNode inStart, PathNode inEnd)
         {
-            return Math.Sqrt((inStart.X - inEnd.X) * (inStart.X - inEnd.X) + (inStart.Y - inEnd.Y) * (inStart.Y - inEnd.Y));
+
+            int diffX = Math.Abs(inStart.X - inEnd.X);
+            int diffY = Math.Abs(inStart.Y - inEnd.Y);
+
+            return HeuristicDistance.Octile(diffX, diffY);
         }
 
         private static readonly Double SQRT_2 = Math.Sqrt(2);
@@ -161,14 +163,7 @@ namespace SettlersEngine
             m_OpenSet.Clear();
             m_RuntimeGrid.Clear();
             m_OrderedOpenSet.Clear();
-
-            for (int x = 0; x < Width; x++)
-            {
-                for (int y = 0; y < Height; y++)
-                {
-                    m_CameFrom[x, y] = null;
-                }
-            }
+            m_CameFrom = new PathNode[Width, Height];
 
             startNode.G = 0;
             startNode.H = Heuristic(startNode, endNode);
@@ -188,10 +183,6 @@ namespace SettlersEngine
 
                 if (x == endNode)
                 {
-                   // watch.Stop();
-
-                    //elapsed.Add(watch.ElapsedMilliseconds);
-
                     LinkedList<TPathNode> result = ReconstructPath(m_CameFrom, m_CameFrom[endNode.X, endNode.Y]);
 
                     result.AddLast(endNode.UserContext);

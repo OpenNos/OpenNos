@@ -24,6 +24,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Type = OpenNos.GameObject.Buff.BCard.Type;
 
 namespace OpenNos.GameObject
@@ -60,7 +61,7 @@ namespace OpenNos.GameObject
         public ConcurrentQueue<HitRequest> HitQueue { get; }
 
         public bool IsAlive { get; set; }
-        
+
 
         public DateTime LastSkill { get; set; }
 
@@ -87,6 +88,7 @@ namespace OpenNos.GameObject
         public bool IsTarget { get; set; }
         public DateTime LastEffect { get; set; }
         public bool IsBonus { get; set; }
+        public bool Started { get; internal set; }
 
         #endregion
 
@@ -143,6 +145,7 @@ namespace OpenNos.GameObject
         {
             MapInstance = currentMapInstance;
             Initialize();
+            StartLife();
         }
 
         public override void Initialize()
@@ -187,17 +190,23 @@ namespace OpenNos.GameObject
 
         public void StartLife()
         {
-            try
+            Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {
-                if (!MapInstance.IsSleeping)
+                Task.Run(() =>
                 {
-                    MonsterLife();
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
+                    try
+                    {
+                        if (!MapInstance.IsSleeping)
+                        {
+                            MonsterLife();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                });
+            });
         }
 
         internal void GetNearestOponent()
@@ -246,13 +255,11 @@ namespace OpenNos.GameObject
             {
                 Path.Clear();
                 Target = -1;
-                Observable.Timer(TimeSpan.FromSeconds(3)).Subscribe(o =>
+
+                if (!Path.Any() && Target == -1)
                 {
-                    if (!Path.Any())
-                    {
-                        Path = MapInstance.Map.SpatialAStarSearch( new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
-                    }
-                });
+                    Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                }
             }
         }
 
@@ -274,7 +281,7 @@ namespace OpenNos.GameObject
                 if (!Path.Any() && targetSession != null)
                 {
                     short xoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
-                    short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);                
+                    short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                     try
                     {
                         Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(targetSession.Character.PositionX + xoffset), y = (short)(targetSession.Character.PositionY + yoffset) });
@@ -302,10 +309,9 @@ namespace OpenNos.GameObject
                              MapY = mapY;
                          });
 
-                    for (int j = maxindex; j > 0; j--)
-                    {
-                        Path.RemoveAt(0);
-                    }
+                    Path.RemoveRange(0, maxindex);
+
+
                 }
 
                 if (targetSession == null || MapId != targetSession.Character.MapInstance.Map.MapId || distance > maxDistance)
@@ -1061,7 +1067,6 @@ namespace OpenNos.GameObject
 
         private void TargetHit2(ClientSession targetSession, NpcMonsterSkill npcMonsterSkill, int damage, int hitmode)
         {
-            Path = new List<GridPos>();
             if (targetSession.Character.Hp > 0)
             {
                 targetSession.Character.GetDamage(damage);

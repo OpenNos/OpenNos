@@ -26,10 +26,9 @@ namespace EpPathFinding.PathFinder
             return (float)iDx + iDy;
         }
 
-        public static float Octil(int iDx, int iDy)
+        public static float Octile(int iDx, int iDy)
         {
-            return (float)(Math.Min(iDx, iDy) * Math.Sqrt(2) + Math.Max(iDx, iDy) - Math.Min(iDx, iDy));
-
+            return (float)(Math.Min(iDx, iDy) * SQRT_2 + Math.Abs(iDx - iDy));
         }
     }
 }

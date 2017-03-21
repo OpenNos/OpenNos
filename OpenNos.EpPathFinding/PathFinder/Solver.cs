@@ -10,7 +10,7 @@ namespace OpenNos.Pathfinding
         {
             int iDx = Math.Abs(inStart.X - inEnd.X);
             int iDy = Math.Abs(inStart.Y - inEnd.Y);
-            return HeuristicDistance.Octil(iDx,iDy);
+            return HeuristicDistance.Octile(iDx,iDy);
         }
 
         public Solver(TPathNode[,] inGrid)
