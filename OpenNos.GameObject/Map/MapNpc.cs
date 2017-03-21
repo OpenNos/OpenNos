@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.GameObject.Helpers;
+using OpenNos.Pathfinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;

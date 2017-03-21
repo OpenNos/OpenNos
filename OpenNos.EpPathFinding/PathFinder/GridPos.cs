@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EpPathFinding
+namespace OpenNos.Pathfinding
 {
     public class GridPos : SettlersEngine.IPathNode<Object>
     {

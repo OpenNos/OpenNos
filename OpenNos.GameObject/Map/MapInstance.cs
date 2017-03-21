@@ -13,12 +13,12 @@
  */
 
 using CloneExtensions;
-using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
+using OpenNos.Pathfinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;

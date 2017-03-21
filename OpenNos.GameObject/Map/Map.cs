@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using EpPathFinding;
 using OpenNos.DAL;
 using OpenNos.Data;
 using System;
@@ -20,7 +19,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using OpenNos.Domain;
-using EpPathFinding.PathFinder.Algorithm;
+using OpenNos.Pathfinding;
+using EpPathFinding.PathFinder;
 
 namespace OpenNos.GameObject
 {
@@ -106,7 +106,7 @@ namespace OpenNos.GameObject
 
         public static int GetDistance(MapCell p, MapCell q)
         {
-            return (int)Heuristic.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
+            return (int)HeuristicDistance.Octil(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
 
         public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true)

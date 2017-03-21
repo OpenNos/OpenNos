@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Buff.BCard;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
+using OpenNos.Pathfinding;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
