@@ -224,6 +224,8 @@ namespace OpenNos.GameObject
 
         public DateTime LastTransform { get; set; }
 
+        public DateTime LastUpgrade { get; set; }
+
         public int LightResistance { get; set; }
 
         public int MagicalDefence { get; set; }
@@ -3725,6 +3727,7 @@ namespace OpenNos.GameObject
             SaveX = 0;
             SaveY = 0;
             LastDefence = DateTime.Now.AddSeconds(-21);
+            LastUpgrade = DateTime.Now.AddSeconds(-5);
             LastHealth = DateTime.Now;
             LastEffect = DateTime.Now;
             Session = null;

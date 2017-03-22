@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -38,7 +39,7 @@ namespace OpenNos.GameObject
                         session.Character.IsSitting = false;
                         session.SendPacket(session.Character.GenerateRest());
                     }
-                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(12, 1,session.Character.CharacterId, EffectValue));
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(12, 1, session.Character.CharacterId, EffectValue));
                 }
                 else if (EffectValue == 0)
                 {
@@ -64,8 +65,8 @@ namespace OpenNos.GameObject
                                         if (equip != null && equip.IsFixed)
                                         {
                                             equip.IsFixed = false;
-                                            session.SendPacket(session.Character.GenerateEff( 3003));
-                                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1,session.Character.CharacterId, SlotEquip));
+                                            session.SendPacket(session.Character.GenerateEff(3003));
+                                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId, SlotEquip));
                                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
                                             isUsed = true;
                                         }
@@ -78,7 +79,7 @@ namespace OpenNos.GameObject
                                         {
                                             specialist.Rare = 0;
                                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
-                                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(13, 1, session.Character.CharacterId,1), session.Character.MapX, session.Character.MapY);
+                                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(13, 1, session.Character.CharacterId, 1), session.Character.MapX, session.Character.MapY);
                                             session.Character.SpPoint = 10000;
                                             if (session.Character.SpPoint > 10000)
                                             {
