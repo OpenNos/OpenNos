@@ -258,7 +258,7 @@ namespace OpenNos.GameObject
 
                 if (!Path.Any() && Target == -1)
                 {
-                    Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                    Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
                 }
             }
         }
@@ -284,7 +284,7 @@ namespace OpenNos.GameObject
                     short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                     try
                     {
-                        Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(targetSession.Character.PositionX + xoffset), y = (short)(targetSession.Character.PositionY + yoffset) });
+                        Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(targetSession.Character.PositionX + xoffset), Y = (short)(targetSession.Character.PositionY + yoffset) });
                     }
                     catch (Exception ex)
                     {
@@ -295,8 +295,8 @@ namespace OpenNos.GameObject
                 if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
                 {
                     int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                    short mapX = (short)Path.ElementAt(maxindex - 1).x;
-                    short mapY = (short)Path.ElementAt(maxindex - 1).y;
+                    short mapX = (short)Path.ElementAt(maxindex - 1).X;
+                    short mapY = (short)Path.ElementAt(maxindex - 1).Y;
                     double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Monster.Speed;
                     MapInstance.Broadcast(new BroadcastPacket(null, $"mv 3 {MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                     LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
@@ -958,8 +958,8 @@ namespace OpenNos.GameObject
                     int timetowalk = 2000 / Monster.Speed;
                     if (time > timetowalk)
                     {
-                        int mapX = Path.ElementAt(0).x;
-                        int mapY = Path.ElementAt(0).y;
+                        int mapX = Path.ElementAt(0).X;
+                        int mapY = Path.ElementAt(0).Y;
                         Path.RemoveAt(0);
                         Observable.Timer(TimeSpan.FromMilliseconds(timetowalk))
                         .Subscribe(

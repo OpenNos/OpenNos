@@ -257,7 +257,7 @@ namespace OpenNos.GameObject
                         {
                             if (IsMoving && !Path.Any())
                             {
-                                Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                                Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
                             }
 
                             monster.IsAlive = false;
@@ -279,13 +279,13 @@ namespace OpenNos.GameObject
                         {
                             short xoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                             short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
-                            Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
+                            Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(monster.MapX + xoffset), Y = (short)(monster.MapY + yoffset) });
                         }
                         if (DateTime.Now > LastMove && Npc.Speed > 0 && Path.Any())
                         {
                             int maxindex = Path.Count > Npc.Speed / 2 && Npc.Speed > 1 ? Npc.Speed / 2 : Path.Count;
-                            short mapX = (short)Path.ElementAt(maxindex - 1).x;
-                            short mapY = (short)Path.ElementAt(maxindex - 1).y;
+                            short mapX = (short)Path.ElementAt(maxindex - 1).X;
+                            short mapY = (short)Path.ElementAt(maxindex - 1).Y;
                             double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Npc.Speed;
                             MapInstance.Broadcast(new BroadcastPacket(null, $"mv 2 {MapNpcId} {mapX} {mapY} {Npc.Speed}", ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                             LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
@@ -302,7 +302,7 @@ namespace OpenNos.GameObject
                         }
                         if (Target != -1 && (MapId != monster.MapId || distance > maxDistance))
                         {
-                            Path = MapInstance.Map.SpatialAStarSearch(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                            Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
                             Target = -1;
                         }
                     }

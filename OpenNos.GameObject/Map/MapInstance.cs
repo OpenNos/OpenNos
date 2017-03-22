@@ -364,7 +364,7 @@ namespace OpenNos.GameObject
             {
                 for (short y = -2; y < 3; y++)
                 {
-                    possibilities.Add(new GridPos { x = x, y = y });
+                    possibilities.Add(new GridPos { X = x, Y = y });
                 }
             }
 
@@ -373,8 +373,8 @@ namespace OpenNos.GameObject
             bool niceSpot = false;
             foreach (GridPos possibilitie in possibilities.OrderBy(s => _random.Next()))
             {
-                mapX = (short)(session.Character.PositionX + possibilitie.x);
-                mapY = (short)(session.Character.PositionY + possibilitie.y);
+                mapX = (short)(session.Character.PositionX + possibilitie.X);
+                mapY = (short)(session.Character.PositionY + possibilitie.Y);
                 if (!Map.IsBlockedZone(mapX, mapY))
                 {
                     niceSpot = true;

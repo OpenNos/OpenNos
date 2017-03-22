@@ -20,7 +20,7 @@ using System.IO;
 using System.Linq;
 using OpenNos.Domain;
 using OpenNos.Pathfinding;
-using EpPathFinding.PathFinder;
+using OpenNos.PathFinder;
 
 namespace OpenNos.GameObject
 {
@@ -106,7 +106,7 @@ namespace OpenNos.GameObject
 
         public static int GetDistance(MapCell p, MapCell q)
         {
-            return (int)HeuristicDistance.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
+            return (int)Heuristic.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
 
         public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true)
@@ -119,18 +119,9 @@ namespace OpenNos.GameObject
             }
             return SummonParameters;
         }
-        public List<GridPos> SpatialAStarSearch(GridPos cell1, GridPos cell2)
+        public List<GridPos> PathSearch(GridPos cell1, GridPos cell2)
         {
-            Solver<GridPos, Object> aStar = new Solver<GridPos, Object>(Grid);
-            LinkedList<GridPos> list = aStar?.Search(cell1, cell2, null);
-            if (list != null)
-            {
-                return list.ToList();
-            }
-            else
-            {
-                return new List<GridPos>();
-            }
+            return BestFirstSearch.findPath(cell1, cell2, Grid);    
         }
 
         public MapCell GetRandomPosition()
@@ -153,7 +144,7 @@ namespace OpenNos.GameObject
         {
             if (Grid != null)
             {
-                if (!Grid[x, y].IsWalkable(null))
+                if (!Grid[x, y].IsWalkable())
                 {
                     return true;
                 }
@@ -191,7 +182,7 @@ namespace OpenNos.GameObject
             }
             return false;
         }
- 
+
         public List<NpcToSummon> GenerateNpcs(short vnum, short amount, List<EventContainer> deathEvents, bool isMate, bool isProtected)
         {
             List<NpcToSummon> SummonParameters = new List<NpcToSummon>();
@@ -253,8 +244,8 @@ namespace OpenNos.GameObject
                         Grid[t, i] = new GridPos()
                         {
                             Value = bytes[0],
-                            x = t,
-                            y = i,
+                            X = t,
+                            Y = i,
                         };
                     }
                 }

@@ -40,11 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PathFinder\HeuristicDistance.cs" />
-    <Compile Include="PathFinder\PriorityQueue.cs" />
-    <Compile Include="PathFinder\Solver.cs" />
-    <Compile Include="PathFinder\SpatialAStar.cs" />
     <Compile Include="PathFinder\GridPos.cs" />
+    <Compile Include="PathFinder\Heuristic.cs" />
+    <Compile Include="PathFinder\MinHeap.cs" />
+    <Compile Include="PathFinder\Node.cs" />
+    <Compile Include="PathFinder\Pathfinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
