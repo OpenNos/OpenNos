@@ -1452,8 +1452,13 @@ namespace OpenNos.Handler
             {
                 return;
             }
+            if (Session.Character.LastUpgrade > DateTime.Now)
+            {
+                return;
+            }
             InventoryType inventoryType = upgradePacket.InventoryType;
             byte uptype = upgradePacket.UpgradeType, slot = upgradePacket.Slot;
+            Session.Character.LastUpgrade = DateTime.Now.AddSeconds(5);
             WearableInstance inventory;
             switch (uptype)
             {
