@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using CloneExtensions;
 
 namespace OpenNos.Handler
 {
@@ -236,7 +235,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                ItemInstance it = item.GetClone();
+                ItemInstance it = item.DeepCopy();
                 if (it.Item.IsTradable && !it.IsBound)
                 {
                     it.Amount = qty[i];
@@ -1652,7 +1651,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            ItemInstance item2 = previousInventory.GetClone();
+            ItemInstance item2 = previousInventory.DeepCopy();
             item2.Id = Guid.NewGuid();
             item2.Amount = withdrawPacket.Amount;
             Session.Character.Inventory.RemoveItemAmountFromInventory(withdrawPacket.Amount, previousInventory.Id);
@@ -1757,7 +1756,7 @@ namespace OpenNos.Handler
             // add all items to target session
             foreach (ItemInstance item in sourceSession.Character.ExchangeInfo.ExchangeList)
             {
-                ItemInstance item2 = item.GetClone();
+                ItemInstance item2 = item.DeepCopy();
                 item2.Id = Guid.NewGuid();
                 List<ItemInstance> inv = targetSession.Character.Inventory.AddToInventory(item2);
                 if (!inv.Any())

@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using OpenNos.Core.Handling;
-using CloneExtensions;
 
 namespace OpenNos.Handler
 {
@@ -635,7 +634,7 @@ namespace OpenNos.Handler
             {
                 if (destinationInventory == null)
                 {
-                    destinationInventory = sourceInventory.GetClone();
+                    destinationInventory = sourceInventory.DeepCopy();
                     sourceInventory.Amount -= fReposPacket.Amount;
                     destinationInventory.Amount = fReposPacket.Amount;
                     destinationInventory.Slot = fReposPacket.NewSlot;
@@ -712,7 +711,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            ItemInstance item2 = previousInventory.GetClone();
+            ItemInstance item2 = previousInventory.DeepCopy();
             item2.Id = Guid.NewGuid();
             item2.Amount = packet.Amount;
             item2.CharacterId = Session.Character.CharacterId;

@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using CloneExtensions;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -386,7 +385,7 @@ namespace OpenNos.GameObject
             {
                 if (amount > 0 && amount <= inv.Amount)
                 {
-                    ItemInstance newItemInstance = inv.GetClone();
+                    ItemInstance newItemInstance = inv.DeepCopy();
                     newItemInstance.Id = random2;
                     newItemInstance.Amount = amount;
                     droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance);
