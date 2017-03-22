@@ -81,7 +81,7 @@
     <Compile Include="CardDAO.cs" />
     <Compile Include="Entities\ItemCard.cs" />
     <Compile Include="Entities\Mate.cs" />
-    <Compile Include="Entities\TimeSpaces.cs" />
+    <Compile Include="Entities\ScriptedInstance.cs" />
     <Compile Include="MateDAO.cs" />
     <Compile Include="ItemCardDAO.cs" />
     <Compile Include="Migrations\201702072152008_Aphrodite22.cs" />
@@ -179,6 +179,14 @@
     <Compile Include="Migrations\201703141654479_Aphrodite45.cs" />
     <Compile Include="Migrations\201703141654479_Aphrodite45.Designer.cs">
       <DependentUpon>201703141654479_Aphrodite45.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703162322176_Aphrodite46.cs" />
+    <Compile Include="Migrations\201703162322176_Aphrodite46.Designer.cs">
+      <DependentUpon>201703162322176_Aphrodite46.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703191106529_Aphrodite47.cs" />
+    <Compile Include="Migrations\201703191106529_Aphrodite47.Designer.cs">
+      <DependentUpon>201703191106529_Aphrodite47.cs</DependentUpon>
     </Compile>
     <Compile Include="MinilandObjectDAO.cs" />
     <Compile Include="CharacterRelationDAO.cs" />
@@ -353,7 +361,7 @@
     <Compile Include="Entities\Teleporter.cs" />
     <Compile Include="StaticBonusDAO.cs" />
     <Compile Include="TeleporterDAO.cs" />
-    <Compile Include="TimeSpaceDAO.cs" />
+    <Compile Include="ScriptedInstanceDAO.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -527,6 +535,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703141654479_Aphrodite45.resx">
       <DependentUpon>201703141654479_Aphrodite45.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703162322176_Aphrodite46.resx">
+      <DependentUpon>201703162322176_Aphrodite46.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703191106529_Aphrodite47.resx">
+      <DependentUpon>201703191106529_Aphrodite47.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

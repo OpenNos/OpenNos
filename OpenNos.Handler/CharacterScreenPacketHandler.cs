@@ -76,8 +76,8 @@ namespace OpenNos.Handler
                                 JobLevel = 1,
                                 Level = 1,
                                 MapId = 1,
-                                MapX = (short)ServerManager.RandomNumber(78, 81),
-                                MapY = (short)ServerManager.RandomNumber(114, 118),
+                                MapX = (short)ServerManager.Instance.RandomNumber(78, 81),
+                                MapY = (short)ServerManager.Instance.RandomNumber(114, 118),
                                 Mp = 221,
                                 MaxMateCount = 10,
                                 SpPoint = 10000,
@@ -235,12 +235,14 @@ namespace OpenNos.Handler
                         {
                             Logger.Log.ErrorFormat($"Client {Session.ClientId} forced Disconnection, invalid Password or SessionId.");
                             Session.Disconnect();
+                            return;
                         }
                     }
                     else
                     {
                         Logger.Log.ErrorFormat($"Client {Session.ClientId} forced Disconnection, invalid AccountName.");
                         Session.Disconnect();
+                        return;
                     }
                 }
                 else
@@ -324,7 +326,7 @@ namespace OpenNos.Handler
                             Mate mate = (Mate)s;
                             mate.Owner = Session.Character;
                             mate.GeneateMateTransportId();
-                            mate.Monster = ServerManager.GetNpc(s.NpcMonsterVNum);
+                            mate.Monster = ServerManager.Instance.GetNpc(s.NpcMonsterVNum);
                             Session.Character.Mates.Add(mate);
                         });
                         Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
@@ -336,7 +338,7 @@ namespace OpenNos.Handler
                         Session.SendPacket("OK");
 
                         // Inform everyone about connected character
-                        ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectCharacter", ServerManager.ServerGroup, ServerManager.Instance.WorldId, Session.Character.Name, Session.Character.CharacterId);
+                        ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectCharacter", ServerManager.Instance.ServerGroup, ServerManager.Instance.WorldId, Session.Character.Name, Session.Character.CharacterId);
                     }
                 }
             }

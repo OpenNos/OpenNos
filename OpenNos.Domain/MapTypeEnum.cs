@@ -41,7 +41,5 @@ namespace OpenNos.Domain
         CleftOfDarkness = 21,
         PVPMap = 22,
         Citadel = 23
-
-        // Future group : Raid | Time-Space |
     }
 }

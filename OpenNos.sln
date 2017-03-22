@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.DAL.Mock", "OpenNos
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.DAL.EF", "OpenNos.DAL.EF\OpenNos.DAL.EF.csproj", "{4AECC47D-098A-4493-8E1E-D10EDBB7A189}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.EpPathFinding", "OpenNos.EpPathFinding\OpenNos.EpPathFinding.csproj", "{4BC2B4B0-2A38-4274-98A2-37CEF5F03B42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.PathFinder", "OpenNos.PathFinder\OpenNos.PathFinder.csproj", "{4BC2B4B0-2A38-4274-98A2-37CEF5F03B42}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.WebApi.SelfHost", "OpenNos.WebApi.SelfHost\OpenNos.WebApi.SelfHost.csproj", "{5D69B6BE-062B-408D-913E-5CD2F21D5D17}"
 EndProject

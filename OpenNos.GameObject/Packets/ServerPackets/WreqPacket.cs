@@ -16,7 +16,7 @@ namespace OpenNos.GameObject.Packets.ServerPackets
         public byte Value { get; set; }
 
         [PacketIndex(1)]
-        public byte? Param { get; set; }
+        public long? Param { get; set; }
         
         #endregion
     }

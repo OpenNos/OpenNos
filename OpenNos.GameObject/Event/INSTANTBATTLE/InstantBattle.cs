@@ -84,7 +84,7 @@ namespace OpenNos.GameObject.Event
                 }
                 if (i % 50 == 0)
                 {
-                    map = ServerManager.GenerateMapInstance(2004, MapInstanceType.NormalInstance, new MapClock());
+                    map = ServerManager.Instance.GenerateMapInstance(2004, MapInstanceType.NormalInstance, new InstanceBag());
                     maps.Add(new Tuple<MapInstance, byte>(map, instancelevel));
                 }
                 if (map != null)
@@ -95,7 +95,7 @@ namespace OpenNos.GameObject.Event
                 level = s.Character.Level;
             }
             ServerManager.Instance.Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.Character.IsWaitingForEvent = false);
-            long maxGold = ServerManager.MaxGold;
+            long maxGold = ServerManager.Instance.MaxGold;
             foreach (Tuple<MapInstance, byte> mapinstance in maps)
             {
                 ServerManager.Instance.StartedEvents.Remove(EventType.INSTANTBATTLE);
@@ -110,7 +110,7 @@ namespace OpenNos.GameObject.Event
                     {
                         if (!mapinstance.Item1.Monsters.Any(s => s.CurrentHp > 0))
                         {
-                            mapinstance.Item1.CreatePortal(new Portal { SourceX = 47, SourceY = 33, DestinationMapId = 1 });
+                            EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(0), new EventContainer(mapinstance.Item1, EventActionType.SPAWNPORTAL, new Portal { SourceX = 47, SourceY = 33, DestinationMapId = 1 }));
                             mapinstance.Item1.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
                             foreach (ClientSession cli in mapinstance.Item1.Sessions.Where(s => s.Character != null).ToList())
                             {
@@ -131,29 +131,29 @@ namespace OpenNos.GameObject.Event
                     }
                 });
 
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(15), EventActionType.DISPOSE, null);
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(3), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 12), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(5), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 10), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(10), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 5), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(11), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 4), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(12), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 3), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(13), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 2), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 1), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_INCOMING"), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(7), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_APPEAR"), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(3), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(15), new EventContainer(mapinstance.Item1, EventActionType.DISPOSEMAP, null));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(3), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 12), 0)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(5), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 10), 0)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(10), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 5), 0)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(11), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 4), 0)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(12), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 3), 0)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(13), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 2), 0)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(14), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 1), 0)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(14.5), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(14.5), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(0), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_INCOMING"), 0)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(7), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_APPEAR"), 0)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(3), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0)));
 
                 for (int wave = 0; wave < 4; wave++)
                 {
-                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(130 + wave * 160), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WAVE"), 0));
-                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(160 + wave * 160), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_INCOMING"), 0));
-                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(170 + wave * 160), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
-                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(10 + wave * 160), EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, wave));
-                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(140 + wave * 160), EventActionType.DROPITEMS, GetInstantBattleDrop(mapinstance.Item1.Map, mapinstance.Item2, wave));
+                    EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(130 + wave * 160), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WAVE"), 0)));
+                    EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(160 + wave * 160), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_INCOMING"), 0)));
+                    EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(170 + wave * 160), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0)));
+                    EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10 + wave * 160), new EventContainer(mapinstance.Item1, EventActionType.SPAWNMONSTERS, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, wave)));
+                    EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(140 + wave * 160), new EventContainer(mapinstance.Item1, EventActionType.DROPITEMS, GetInstantBattleDrop(mapinstance.Item1.Map, mapinstance.Item2, wave)));
                 }
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(650), EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, 4));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(650), new EventContainer(mapinstance.Item1, EventActionType.SPAWNMONSTERS, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, 4)));
             }
         }
 
@@ -168,7 +168,7 @@ namespace OpenNos.GameObject.Event
             return dropParameters;
         }
 
-      
+
 
         private static List<Tuple<short, int, short, short>> GetInstantBattleDrop(Map map, short instantbattletype, int wave)
         {
@@ -372,46 +372,46 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            SummonParameters.AddRange(map.GenerateMonsters( 1, 16, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 58, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 105, 16, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 107, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 108, 8, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 111, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 136, 15, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(1, 16, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(58, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(105, 16, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(107, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(108, 8, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(111, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(136, 15, true, new List<EventContainer>()));
                             break;
 
                         case 1:
-                            SummonParameters.AddRange(map.GenerateMonsters( 194, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 114, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 99, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 39, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 2, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(194, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(114, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(99, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(39, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(2, 16, true, new List<EventContainer>()));
                             break;
 
                         case 2:
-                            SummonParameters.AddRange(map.GenerateMonsters( 140, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 100, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 81, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 12, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 4, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(140, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(100, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(81, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(12, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(4, 16, true, new List<EventContainer>()));
                             break;
 
                         case 3:
-                            SummonParameters.AddRange(map.GenerateMonsters( 115, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 112, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 110, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 14, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 5, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(115, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(112, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(110, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(14, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(5, 16, true, new List<EventContainer>()));
                             break;
 
                         case 4:
-                            SummonParameters.AddRange(map.GenerateMonsters( 979, 1, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 167, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 137, 10, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 22, 15, false));
-                            SummonParameters.AddRange(map.GenerateMonsters( 17, 8, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 16, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(979, 1, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(167, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(137, 10, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(22, 15, false, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(17, 8, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(16, 16, true, new List<EventContainer>()));
                             break;
                     }
                     break;
@@ -420,43 +420,43 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            SummonParameters.AddRange(map.GenerateMonsters( 120, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 151, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 149, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 139, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 73, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(120, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(151, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(149, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(139, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(73, 16, true, new List<EventContainer>()));
                             break;
 
                         case 1:
-                            SummonParameters.AddRange(map.GenerateMonsters( 152, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 147, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 104, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 62, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 8, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(152, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(147, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(104, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(62, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(8, 16, true, new List<EventContainer>()));
                             break;
 
                         case 2:
-                            SummonParameters.AddRange(map.GenerateMonsters( 153, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 132, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 86, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 76, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 68, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(153, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(132, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(86, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(76, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(68, 16, true, new List<EventContainer>()));
                             break;
 
                         case 3:
-                            SummonParameters.AddRange(map.GenerateMonsters( 134, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 91, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 133, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 70, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 89, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(134, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(91, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(133, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(70, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(89, 16, true, new List<EventContainer>()));
                             break;
 
                         case 4:
-                            SummonParameters.AddRange(map.GenerateMonsters( 154, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 200, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 77, 8, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 217, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 724, 1, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(154, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(200, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(77, 8, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(217, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(724, 1, true, new List<EventContainer>()));
                             break;
                     }
                     break;
@@ -465,44 +465,44 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            SummonParameters.AddRange(map.GenerateMonsters( 134, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 91, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 89, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 77, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 71, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(134, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(91, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(89, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(77, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(71, 16, true, new List<EventContainer>()));
                             break;
 
                         case 1:
-                            SummonParameters.AddRange(map.GenerateMonsters( 217, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 200, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 154, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 92, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 79, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(217, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(200, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(154, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(92, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(79, 16, true, new List<EventContainer>()));
                             break;
 
                         case 2:
-                            SummonParameters.AddRange(map.GenerateMonsters( 235, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 226, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 214, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 204, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 201, 15, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(235, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(226, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(214, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(204, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(201, 15, true, new List<EventContainer>()));
                             break;
 
                         case 3:
-                            SummonParameters.AddRange(map.GenerateMonsters( 249, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 236, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 227, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 218, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 202, 15, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(249, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(236, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(227, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(218, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(202, 15, true, new List<EventContainer>()));
                             break;
 
                         case 4:
-                            SummonParameters.AddRange(map.GenerateMonsters( 583, 1, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 400, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 255, 8, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 253, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 251, 10, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 205, 14, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(583, 1, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(400, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(255, 8, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(253, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(251, 10, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(205, 14, true, new List<EventContainer>()));
                             break;
                     }
                     break;
@@ -511,44 +511,44 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            SummonParameters.AddRange(map.GenerateMonsters( 242, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 234, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 215, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 207, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 202, 13, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(242, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(234, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(215, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(207, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(202, 13, true, new List<EventContainer>()));
                             break;
 
                         case 1:
-                            SummonParameters.AddRange(map.GenerateMonsters( 402, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 253, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 237, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 216, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 205, 13, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(402, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(253, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(237, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(216, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(205, 13, true, new List<EventContainer>()));
                             break;
 
                         case 2:
-                            SummonParameters.AddRange(map.GenerateMonsters( 402, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 243, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 228, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 255, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 205, 13, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(402, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(243, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(228, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(255, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(205, 13, true, new List<EventContainer>()));
                             break;
 
                         case 3:
-                            SummonParameters.AddRange(map.GenerateMonsters( 268, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 255, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 254, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 174, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 172, 13, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(268, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(255, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(254, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(174, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(172, 13, true, new List<EventContainer>()));
                             break;
 
                         case 4:
-                            SummonParameters.AddRange(map.GenerateMonsters( 725, 1, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 407, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 272, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 261, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 256, 12, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 275, 13, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(725, 1, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(407, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(272, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(261, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(256, 12, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(275, 13, true, new List<EventContainer>()));
                             break;
                     }
                     break;
@@ -557,45 +557,45 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            SummonParameters.AddRange(map.GenerateMonsters( 402, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 253, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 237, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 216, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 205, 15, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(402, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(253, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(237, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(216, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(205, 15, true, new List<EventContainer>()));
                             break;
 
                         case 1:
-                            SummonParameters.AddRange(map.GenerateMonsters( 402, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 243, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 228, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 225, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 205, 15, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(402, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(243, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(228, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(225, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(205, 15, true, new List<EventContainer>()));
                             break;
 
                         case 2:
-                            SummonParameters.AddRange(map.GenerateMonsters( 255, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 254, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 251, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 174, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 172, 15, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(255, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(254, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(251, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(174, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(172, 15, true, new List<EventContainer>()));
                             break;
 
                         case 3:
-                            SummonParameters.AddRange(map.GenerateMonsters( 407, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 272, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 261, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 257, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 256, 15, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(407, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(272, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(261, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(257, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(256, 15, true, new List<EventContainer>()));
                             break;
 
                         case 4:
-                            SummonParameters.AddRange(map.GenerateMonsters( 748, 1, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 444, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 439, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 275, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 274, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 273, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 163, 13, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(748, 1, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(444, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(439, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(275, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(274, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(273, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(163, 13, true, new List<EventContainer>()));
                             break;
                     }
                     break;
@@ -604,46 +604,46 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            SummonParameters.AddRange(map.GenerateMonsters( 1007, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1003, 15, false));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1002, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1001, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1000, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(1007, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1003, 15, false, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1002, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1001, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1000, 16, true, new List<EventContainer>()));
                             break;
 
                         case 1:
-                            SummonParameters.AddRange(map.GenerateMonsters( 1199, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1198, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1197, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1196, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1123, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(1199, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1198, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1197, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1196, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1123, 16, true, new List<EventContainer>()));
                             break;
 
                         case 2:
-                            SummonParameters.AddRange(map.GenerateMonsters( 1305, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1304, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1303, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1302, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1194, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(1305, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1304, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1303, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1302, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1194, 16, true, new List<EventContainer>()));
                             break;
 
                         case 3:
-                            SummonParameters.AddRange(map.GenerateMonsters( 1902, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1901, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1900, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1045, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1043, 15, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1042, 16, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(1902, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1901, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1900, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1045, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1043, 15, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1042, 16, true, new List<EventContainer>()));
                             break;
 
                         case 4:
-                            SummonParameters.AddRange(map.GenerateMonsters( 637, 1, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1903, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1053, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1051, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1049, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1048, 13, true));
-                            SummonParameters.AddRange(map.GenerateMonsters( 1047, 13, true));
+                            SummonParameters.AddRange(map.GenerateMonsters(637, 1, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1903, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1053, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1051, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1049, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1048, 13, true, new List<EventContainer>()));
+                            SummonParameters.AddRange(map.GenerateMonsters(1047, 13, true, new List<EventContainer>()));
                             break;
                     }
                     break;

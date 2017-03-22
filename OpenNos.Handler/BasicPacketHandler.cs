@@ -235,9 +235,9 @@ namespace OpenNos.Handler
                     MailDTO mail = Session.Character.MailList[giftId];
                     if (getGiftPacket.Type == 4 && mail.AttachmentVNum != null)
                     {
-                        if (Session.Character.Inventory.CanAddItem((short) mail.AttachmentVNum))
+                        if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                         {
-                            List<ItemInstance> newInv =Session.Character.Inventory.AddNewToInventory((short) mail.AttachmentVNum,mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade,Rare: (sbyte) mail.AttachmentRarity);
+                            List<ItemInstance> newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity);
                             if (newInv.Any())
                             {
                                 if (newInv.First().Rare != 0)
@@ -245,7 +245,7 @@ namespace OpenNos.Handler
                                     WearableInstance wearable = newInv.First() as WearableInstance;
                                     wearable?.SetRarityPoint();
                                 }
-                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.First().Item.Name} x {mail.AttachmentAmount}",12));
+                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.First().Item.Name} x {mail.AttachmentAmount}", 12));
 
                                 if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                                 {
@@ -285,7 +285,7 @@ namespace OpenNos.Handler
         public void GetNamedCharacterInformation(string packet)
         {
             string[] characterInformationPacket = packet.Split(' ');
-            if(characterInformationPacket.Length != 4)
+            if (characterInformationPacket.Length != 4)
             {
                 return;
             }
@@ -306,7 +306,7 @@ namespace OpenNos.Handler
                     {
                         if (npc.MapNpcId == mapMonsterId)
                         {
-                            NpcMonster npcinfo = ServerManager.GetNpc(npc.NpcVNum);
+                            NpcMonster npcinfo = ServerManager.Instance.GetNpc(npc.NpcVNum);
                             if (npcinfo == null)
                             {
                                 return;
@@ -335,7 +335,7 @@ namespace OpenNos.Handler
                     {
                         if (monster.MapMonsterId == mapMonsterId)
                         {
-                            NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
+                            NpcMonster monsterinfo = ServerManager.Instance.GetNpc(monster.MonsterVNum);
                             if (monsterinfo == null)
                             {
                                 return;
@@ -576,7 +576,7 @@ namespace OpenNos.Handler
                     if (chara != null)
                     {
                         //session is not on current server, check api if the target character is on another server
-                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, chara.Name, $"talk  {Session.Character.CharacterId} {message}"
+                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name, chara.Name, $"talk  {Session.Character.CharacterId} {message}"
                                                                          , ServerManager.Instance.ChannelId, MessageType.PrivateChat).Result;
                         if (!sentChannelId.HasValue) //character is even offline on different world
                         {
@@ -789,7 +789,7 @@ namespace OpenNos.Handler
                                 short mapx = session.Character.PositionX;
                                 short mapId = session.Character.MapInstance.Map.MapId;
 
-                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                                
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
                                 Session.Character.Inventory.RemoveItemAmount(vnumToUse);
                             }
@@ -825,9 +825,9 @@ namespace OpenNos.Handler
                     MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
                     if (npc != null)
                     {
-                        NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
+                        NpcMonster mapobject = ServerManager.Instance.GetNpc(npc.NpcVNum);
 
-                        int RateDrop = ServerManager.DropRate;
+                        int RateDrop = ServerManager.Instance.DropRate;
                         int delay = (int)Math.Round((3 + mapobject.RespawnTime / 1000d) * Session.Character.TimesUsed);
                         delay = delay > 11 ? 8 : delay;
                         if (Session.Character.LastMapObject.AddSeconds(delay) < DateTime.Now)
@@ -841,7 +841,7 @@ namespace OpenNos.Handler
                                 }
                             }
                             Random random = new Random();
-                            double randomAmount = ServerManager.RandomNumber() * random.NextDouble();
+                            double randomAmount = ServerManager.Instance.RandomNumber() * random.NextDouble();
                             DropDTO drop = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum);
                             if (drop != null)
                             {
@@ -885,7 +885,7 @@ namespace OpenNos.Handler
                 {
                     // MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n =>
                     // n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5]))); NpcMonster mapObject
-                    // = ServerManager.GetNpc(npc.NpcVNum); teleport free
+                    // = ServerManager.Instance.GetNpc(npc.NpcVNum); teleport free
                 }
             }
             else if (guriPacket[2] == "750")
@@ -1126,10 +1126,26 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("preq")]
-        public void Preq(string packet)
+        /// <summary>
+        /// RstartPacket packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void GetRStart(RstartPacket packet)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
+            if (packet.Type == 1)
+            {
+                Session.CurrentMapInstance.InstanceBag.Lock = true;
+                Preq(new PreqPacket());
+            }
+        }
+
+        /// <summary>
+        /// PreqPacket packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void Preq(PreqPacket packet)
+        {
+            Logger.Debug(Session.Character.GenerateIdentity(), packet.ToString());
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstance)
@@ -1149,21 +1165,36 @@ namespace OpenNos.Handler
                         case (sbyte)PortalType.Open:
                         case (sbyte)PortalType.Miniland:
                         case (sbyte)PortalType.TSEnd:
-                        case (sbyte)PortalType.End:
+                        case (sbyte)PortalType.Exit:
                         case (sbyte)PortalType.Effect:
                         case (sbyte)PortalType.ShopTeleport:
                             break;
-
                         default:
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                     }
-
+                    
+                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance && !Session.CurrentMapInstance.InstanceBag.Lock)
+                    {
+                        if (Session.Character.CharacterId == Session.CurrentMapInstance.InstanceBag.Creator)
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#rstart^1 rstart {Language.Instance.GetMessageFromKey("ASK_ENTRY_IN_FIRST_ROOM")}"));
+                        }
+                        return;
+                    }
+                    portal.OnTraversalEvents.ForEach(e =>
+                    {
+                        EventHelper.Instance.RunEvent(e);
+                    });
+                    if (portal.DestinationMapInstanceId == default(Guid))
+                    {
+                        return;
+                    }
                     Session.SendPacket(Session.CurrentMapInstance.GenerateRsfn());
-                    ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                    
                     Session.Character.LastPortal = currentRunningSeconds;
 
-                    if (ServerManager.GetMapInstance(portal.SourceMapInstanceId).MapInstanceType != MapInstanceType.BaseMapInstance && ServerManager.GetMapInstance(portal.DestinationMapInstanceId).MapInstanceType == MapInstanceType.BaseMapInstance)
+                    if (ServerManager.Instance.GetMapInstance(portal.SourceMapInstanceId).MapInstanceType != MapInstanceType.BaseMapInstance && ServerManager.Instance.GetMapInstance(portal.DestinationMapInstanceId).MapInstanceType == MapInstanceType.BaseMapInstance)
                     {
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
                     }
@@ -1214,7 +1245,7 @@ namespace OpenNos.Handler
                 short npcVNum;
                 if (short.TryParse(packetsplit[3], out npcVNum))
                 {
-                    NpcMonster npc = ServerManager.GetNpc((short)npcVNum);
+                    NpcMonster npc = ServerManager.Instance.GetNpc((short)npcVNum);
                     if (npc != null)
                     {
                         Session.SendPacket(npc.GenerateEInfo());
@@ -1283,6 +1314,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateStat());
                                 }
                                 break;
+  
 
                             default:
                                 const int seed = 1012;
@@ -1728,8 +1760,11 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;
 
-                    Session.CurrentMapInstance.MoveEvents.ForEach(e => Session.SendPacket(Session.CurrentMapInstance.RunMapEvent(e.Item1, e.Item2, Session.Character.CharacterId)));
-                    Session.CurrentMapInstance.MoveEvents.RemoveAll(s => s != null);
+                    Session.CurrentMapInstance.OnMoveOnMapEvents.ForEach(e =>
+                    {
+                        EventHelper.Instance.RunEvent(e);
+                    });
+                    Session.CurrentMapInstance.OnMoveOnMapEvents.RemoveAll(s => s != null);
                 }
                 else
                 {
@@ -1771,7 +1806,7 @@ namespace OpenNos.Handler
                         return;
                     }
                 }
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, characterName, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5), ServerManager.Instance.ChannelId, packetsplit[0] == "GM" ? MessageType.WhisperGM : MessageType.Whisper).Result;
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name, characterName, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5), ServerManager.Instance.ChannelId, packetsplit[0] == "GM" ? MessageType.WhisperGM : MessageType.Whisper).Result;
                 if (sentChannelId == null)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));

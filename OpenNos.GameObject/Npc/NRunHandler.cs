@@ -220,7 +220,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 1000 * packet.Type)
                             {
-                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                                
                                 Session.Character.Gold -= 1000 * packet.Type;
                                 Session.SendPacket(Session.Character.GenerateGold());
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
@@ -250,11 +250,11 @@ namespace OpenNos.GameObject
                     }
                     if (Session.Character.Gold >= 500 * (1 + packet.Type))
                     {
-                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                        
                         Session.Character.LastPortal = currentRunningSeconds;
                         Session.Character.Gold -= 500 * (1 + packet.Type);
                         Session.SendPacket(Session.Character.GenerateGold());
-                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, packet.Type == 0 ? ServerManager.ArenaInstance.MapInstanceId : ServerManager.FamilyArenaInstance.MapInstanceId, packet.Type == 0 ? ServerManager.ArenaInstance.Map.GetRandomPosition().X : ServerManager.FamilyArenaInstance.Map.GetRandomPosition().X, packet.Type == 0 ? ServerManager.ArenaInstance.Map.GetRandomPosition().Y : ServerManager.FamilyArenaInstance.Map.GetRandomPosition().Y);
+                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, packet.Type == 0 ? ServerManager.Instance.ArenaInstance.MapInstanceId : ServerManager.Instance.FamilyArenaInstance.MapInstanceId, packet.Type == 0 ? ServerManager.Instance.ArenaInstance.Map.GetRandomPosition().X : ServerManager.Instance.FamilyArenaInstance.Map.GetRandomPosition().X, packet.Type == 0 ? ServerManager.Instance.ArenaInstance.Map.GetRandomPosition().Y : ServerManager.Instance.FamilyArenaInstance.Map.GetRandomPosition().Y);
                     }
                     else
                     {
@@ -263,7 +263,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 18:
-                    Session.SendPacket($"npc_req 1 {Session.Character.CharacterId} 17");
+                    Session.SendPacket(Session.Character.GenerateNpcDialog(17));
                     break;
                 case 26:
                     if (npc != null)
@@ -273,7 +273,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 5000 * packet.Type)
                             {
-                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                                
                                 Session.Character.Gold -= 5000 * packet.Type;
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
@@ -293,7 +293,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 500)
                             {
-                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                                
                                 Session.Character.Gold -= 500;
                                 Session.SendPacket(Session.Character.GenerateGold());
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
@@ -312,7 +312,7 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
-                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                            
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
@@ -323,11 +323,11 @@ namespace OpenNos.GameObject
                     {
                         if (Session.Character.Family != null)
                         {
-                            if (Session.Character.Family.LandOfDeath != null && !Session.Character.Family.LandOfDeath.Lock)
+                            if (Session.Character.Family.LandOfDeath != null && !npc.EffectActivated)
                             {
                                 if (Session.Character.Level >= 55)
                                 {
-                                    ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                                    
                                     ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
                                 }
                                 else
@@ -353,7 +353,7 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
-                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                            
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
@@ -524,7 +524,7 @@ namespace OpenNos.GameObject
                         if (tp != null)
                         {
                             Session.SendPacket("it 3");
-                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                            
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
@@ -533,7 +533,7 @@ namespace OpenNos.GameObject
                 case 5001:
                     if (npc != null)
                     {
-                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                        
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 130, 12, 40);
                     }
                     break;
@@ -541,7 +541,7 @@ namespace OpenNos.GameObject
                 case 5011:
                     if (npc != null)
                     {
-                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                        
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 170, 127, 46);
                     }
                     break;
@@ -552,7 +552,7 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
-                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                            
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }

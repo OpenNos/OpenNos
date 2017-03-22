@@ -24,6 +24,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
 using OpenNos.Core.Handling;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -103,6 +104,7 @@ namespace OpenNos.GameObject
             }
         }
 
+
         public long ClientId => _client.ClientId;
 
         public MapInstance CurrentMapInstance { get; set; }
@@ -174,10 +176,15 @@ namespace OpenNos.GameObject
             if (HasSelectedCharacter)
             {
                 Character.Dispose();
+                if (Character.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance || Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                {
+                    Character.MapInstance.InstanceBag.DeadList.Add(Character.CharacterId);
+                }
+                ServerManager.Instance.RemoveMapInstance(Character.Miniland.MapInstanceId);
 
                 // TODO Check why ExchangeInfo.TargetCharacterId is null Character.CloseTrade();
                 // disconnect client
-                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectCharacter", ServerManager.ServerGroup, Character.Name, Character.CharacterId).Wait();
+                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectCharacter", ServerManager.Instance.ServerGroup, Character.Name, Character.CharacterId).Wait();
 
                 // unregister from map if registered
                 if (CurrentMapInstance != null)
@@ -273,7 +280,7 @@ namespace OpenNos.GameObject
         {
             if (!IsDisposing)
             {
-                packets.ToList().ForEach(s=> _client.SendPacket(PacketFactory.Serialize(s), priority));
+                packets.ToList().ForEach(s => _client.SendPacket(PacketFactory.Serialize(s), priority));
             }
         }
 
@@ -338,6 +345,11 @@ namespace OpenNos.GameObject
                     }
                 }
             }
+        }
+
+        public void SendPacket(object score)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -490,7 +502,7 @@ namespace OpenNos.GameObject
         private void OnOtherCharacterConnected(object sender, EventArgs e)
         {
             Tuple<string, string, long> loggedInCharacter = (Tuple<string, string, long>)sender;
-            if (ServerManager.ServerGroup != loggedInCharacter.Item1)
+            if (ServerManager.Instance.ServerGroup != loggedInCharacter.Item1)
             {
                 return;
             }
@@ -512,7 +524,7 @@ namespace OpenNos.GameObject
         private void OnOtherCharacterDisconnected(object sender, EventArgs e)
         {
             Tuple<string, string, long> loggedOutCharacter = (Tuple<string, string, long>)sender;
-            if (ServerManager.ServerGroup != loggedOutCharacter.Item1)
+            if (ServerManager.Instance.ServerGroup != loggedOutCharacter.Item1)
             {
                 return;
             }

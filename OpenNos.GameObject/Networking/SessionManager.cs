@@ -53,7 +53,7 @@ namespace OpenNos.GameObject
         public virtual void StopServer()
         {
             _sessions.Clear();
-            ServerManager.StopServer();
+            ServerManager.Instance.StopServer();
         }
 
         protected virtual ClientSession IntializeNewSession(INetworkClient client)

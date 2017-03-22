@@ -101,7 +101,7 @@
     <Compile Include="StaticBonusDTO.cs" />
     <Compile Include="StaticBuffDTO.cs" />
     <Compile Include="TeleporterDTO.cs" />
-    <Compile Include="TimeSpaceDTO.cs" />
+    <Compile Include="ScriptedInstanceDTO.cs" />
     <Compile Include="UsableInstanceDTO.cs" />
     <Compile Include="UserDTO.cs" />
     <Compile Include="WearableInstanceDTO.cs" />

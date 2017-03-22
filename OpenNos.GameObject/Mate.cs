@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
         public Mate(Character owner, short VNum, byte level, MateType matetype)
         {
             NpcMonsterVNum = VNum;
-            Monster = ServerManager.GetNpc(VNum);
+            Monster = ServerManager.Instance.GetNpc(VNum);
             Hp = Monster.MaxHP;
             Mp = Monster.MaxMP;
             Name = Monster.Name;
@@ -53,18 +53,24 @@ namespace OpenNos.GameObject
         #region Properties
 
         public int MateTransportId { get; set; }
+
         public short PositionX { get; set; }
+
         public short PositionY { get; set; }
+
         public bool IsSitting { get; set; }
+
         private NpcMonster monster;
+
         private Character owner;
+
         public NpcMonster Monster
         {
             get
             {
                 if (monster == null)
                 {
-                    monster = ServerManager.GetNpc(NpcMonsterVNum);
+                    monster = ServerManager.Instance.GetNpc(NpcMonsterVNum);
                 }
                 return monster;
             }

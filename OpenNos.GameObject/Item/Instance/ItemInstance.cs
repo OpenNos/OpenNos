@@ -59,7 +59,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return item ?? (item = ServerManager.GetItem(ItemVNum));
+                return item ?? (item = ServerManager.Instance.GetItem(ItemVNum));
             }
         }
 
@@ -122,14 +122,11 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
-        public ItemInstance DeepCopy()
-        {
-            return (ItemInstance)MemberwiseClone();
-        }
 
         public void Save()
         {
         }
+        
 
         #endregion
     }

@@ -17,17 +17,17 @@ namespace OpenNos.Domain
     public enum FamilyLogType : byte
     {
         DailyMessage = 1,
-        Raid = 2,
+        RaidWon = 2,
         RainbowBattle = 3,
         FamilyXP = 4,
-        FamilyLevel = 5,
-        Level = 6,
-        Upgrade = 7,
-        RightChange = 8,
-        AuthorityChange = 9,
-        FamilyManage = 10,
-        UserManage = 11,
-        WareHouseAdd = 12,
-        WareHouseRemove = 13
+        FamilyLevelUp = 5,
+        LevelUp = 6,
+        ItemUpgraded = 7,
+        RightChanged = 8,
+        AuthorityChanged = 9,
+        FamilyManaged = 10,
+        UserManaged = 11,
+        WareHouseAdded = 12,
+        WareHouseRemoved = 13
     }
 }

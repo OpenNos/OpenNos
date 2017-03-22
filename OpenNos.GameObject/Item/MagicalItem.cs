@@ -89,8 +89,7 @@ namespace OpenNos.GameObject
                                                 RespawnMapTypeDTO resp = session.Character.Respawn;
                                                 if (resp.DefaultX != 0 && resp.DefaultY != 0 && resp.DefaultMapId != 0)
                                                 {
-                                                    ServerManager.Instance.LeaveMap(session.Character.CharacterId);
-                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, (short)(resp.DefaultX + ServerManager.RandomNumber(-5, 5)), (short)(resp.DefaultY + ServerManager.RandomNumber(-5, 5)));
+                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, (short)(resp.DefaultX + ServerManager.Instance.RandomNumber(-5, 5)), (short)(resp.DefaultY + ServerManager.Instance.RandomNumber(-5, 5)));
                                                 }
                                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                                 break;
@@ -99,8 +98,7 @@ namespace OpenNos.GameObject
                                                 RespawnMapTypeDTO respa = session.Character.Respawn;
                                                 if (respa.DefaultX != 0 && respa.DefaultY != 0 && respa.DefaultMapId != 0)
                                                 {
-                                                    ServerManager.Instance.LeaveMap(session.Character.CharacterId);
-                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, respa.DefaultMapId, (short)(respa.DefaultX + ServerManager.RandomNumber(-5, 5)), (short)(respa.DefaultY + ServerManager.RandomNumber(-5, 5)));
+                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, respa.DefaultMapId, (short)(respa.DefaultX + ServerManager.Instance.RandomNumber(-5, 5)), (short)(respa.DefaultY + ServerManager.Instance.RandomNumber(-5, 5)));
                                                 }
                                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                                 break;
@@ -129,7 +127,6 @@ namespace OpenNos.GameObject
                                         case 2:
                                             if (resp.DefaultX != 0 && resp.DefaultY != 0 && resp.DefaultMapId != 0)
                                             {
-                                                ServerManager.Instance.LeaveMap(session.Character.CharacterId);
                                                 ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, resp.DefaultX, resp.DefaultY);
                                             }
                                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -145,7 +142,6 @@ namespace OpenNos.GameObject
                                 }
                                 else
                                 {
-                                    ServerManager.Instance.LeaveMap(session.Character.CharacterId);
                                     ServerManager.Instance.JoinMiniland(session, session);
                                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                 }
@@ -163,7 +159,7 @@ namespace OpenNos.GameObject
                         {
                             if (EffectValue == 99)
                             {
-                                byte nextValue = (byte)ServerManager.RandomNumber(0, 127);
+                                byte nextValue = (byte)ServerManager.Instance.RandomNumber(0, 127);
                                 session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), nextValue) ? (HairColorType)nextValue : 0;
                             }
                             else
@@ -241,7 +237,7 @@ namespace OpenNos.GameObject
                         WearableInstance wig = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                         if (wig != null)
                         {
-                            wig.Design = (byte)ServerManager.RandomNumber(0, 15);
+                            wig.Design = (byte)ServerManager.Instance.RandomNumber(0, 15);
                             session.SendPacket(session.Character.GenerateEq());
                             session.SendPacket(session.Character.GenerateEquipment());
                             session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn());

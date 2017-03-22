@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.GameObject.Helpers;
+using OpenNos.Pathfinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,6 @@ namespace OpenNos.GameObject
 
         public short FirstY { get; set; }
 
-        public JumpPointParam JumpPointParameters { get; set; }
 
         public DateTime LastEffect { get; private set; }
 
@@ -55,17 +54,24 @@ namespace OpenNos.GameObject
 
         public Shop Shop { get; set; }
 
-        public int Target { get; set; }
+        public bool IsHostile { get; set; }
+        public long Target { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
 
+        public bool EffectActivated { get; set; }
+        public List<EventContainer> OnDeathEvents { get; set; }
+
+        public bool IsMate { get; set; }
+        public bool IsProtected { get; set; }
+        public bool Started { get; internal set; }
         #endregion
 
         #region Methods
 
         public string GenerateIn()
         {
-            NpcMonster npcinfo = ServerManager.GetNpc(NpcVNum);
+            NpcMonster npcinfo = ServerManager.Instance.GetNpc(NpcVNum);
             if (npcinfo != null && !IsDisabled)
             {
                 return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
@@ -73,20 +79,40 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
+        public void RunDeathEvent()
+        {
+            MapInstance.InstanceBag.NpcsKilled++;
+            OnDeathEvents.ForEach(e =>
+            {
+                EventHelper.Instance.RunEvent(e);
+            });
+            OnDeathEvents.RemoveAll(s => s != null);
+        }
+
         public string GetNpcDialog()
         {
             return $"npc_req 2 {MapNpcId} {Dialog}";
         }
 
+        public void Initialize(MapInstance currentMapInstance)
+        {
+            MapInstance = currentMapInstance;
+            Initialize();
+            StartLife();
+        }
+
         public override void Initialize()
         {
             _random = new Random(MapNpcId);
-            Npc = ServerManager.GetNpc(NpcVNum);
+            Npc = ServerManager.Instance.GetNpc(NpcVNum);
             LastEffect = DateTime.Now;
             LastMove = DateTime.Now;
+            IsHostile = Npc.IsHostile;
             FirstX = MapX;
+            EffectActivated = true;
             FirstY = MapY;
-            _movetime = ServerManager.RandomNumber(500, 3000);
+            EffectDelay = 4000;
+            _movetime = ServerManager.Instance.RandomNumber(500, 3000);
             Path = new List<GridPos>();
             Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
             Target = -1;
@@ -101,23 +127,21 @@ namespace OpenNos.GameObject
 
         internal void StartLife()
         {
-            if (LifeEvent == default(IDisposable))
+            Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {
-                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000d / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
+                Started = true;
+                try
                 {
-                    try
+                    if (!MapInstance.IsSleeping)
                     {
-                        if (!MapInstance.IsSleeping)
-                        {
-                            NpcLife();
-                        }
+                        NpcLife();
                     }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                });
-            }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            });
         }
 
         private string GenerateMv2()
@@ -137,20 +161,27 @@ namespace OpenNos.GameObject
         private void NpcLife()
         {
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
-            if (Effect > 0 && time > EffectDelay && MapInstance.NpcEffectActivated)
+            if (time > EffectDelay)
             {
-                MapInstance.Broadcast(GenerateEff( Effect), MapX, MapY);
+                if (IsMate || IsProtected)
+                {
+                    MapInstance.Broadcast(GenerateEff(825), MapX, MapY);
+                }
+                if (Effect > 0 && EffectActivated)
+                {
+                    MapInstance.Broadcast(GenerateEff(Effect), MapX, MapY);
+                }
                 LastEffect = DateTime.Now;
             }
 
             time = (DateTime.Now - LastMove).TotalMilliseconds;
             if (IsMoving && Npc.Speed > 0 && time > _movetime)
             {
-                _movetime = ServerManager.RandomNumber(500, 3000);
-                byte point = (byte)ServerManager.RandomNumber(2, 4);
-                byte fpoint = (byte)ServerManager.RandomNumber(0, 2);
+                _movetime = ServerManager.Instance.RandomNumber(500, 3000);
+                byte point = (byte)ServerManager.Instance.RandomNumber(2, 4);
+                byte fpoint = (byte)ServerManager.Instance.RandomNumber(0, 2);
 
-                byte xpoint = (byte)ServerManager.RandomNumber(fpoint, point);
+                byte xpoint = (byte)ServerManager.Instance.RandomNumber(fpoint, point);
                 byte ypoint = (byte)(point - xpoint);
 
                 short mapX = FirstX;
@@ -173,7 +204,7 @@ namespace OpenNos.GameObject
             }
             if (Target == -1)
             {
-                if (Npc.IsHostile && Shop == null)
+                if (IsHostile && Shop == null)
                 {
                     MapMonster monster = MapInstance.Monsters.FirstOrDefault(s => MapInstance == s.MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.MapX, Y = s.MapY }) < (Npc.NoticeRange > 5 ? Npc.NoticeRange / 2 : Npc.NoticeRange));
                     ClientSession session = MapInstance.Sessions.FirstOrDefault(s => MapInstance == s.Character.MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY }) < Npc.NoticeRange);
@@ -193,7 +224,7 @@ namespace OpenNos.GameObject
                     return;
                 }
                 NpcMonsterSkill npcMonsterSkill = null;
-                if (ServerManager.RandomNumber(0, 10) > 8)
+                if (ServerManager.Instance.RandomNumber(0, 10) > 8)
                 {
                     npcMonsterSkill = Npc.Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
                 }
@@ -212,7 +243,7 @@ namespace OpenNos.GameObject
 
                         if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                         {
-                            MapInstance.Broadcast(GenerateEff( Effect));
+                            MapInstance.Broadcast(GenerateEff(Effect));
                         }
 
                         monster.CurrentHp -= damage;
@@ -224,13 +255,9 @@ namespace OpenNos.GameObject
                         LastEffect = DateTime.Now;
                         if (monster.CurrentHp < 1)
                         {
-                            if (IsMoving)
+                            if (IsMoving && !Path.Any())
                             {
-                                Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
-                                if (!Path.Any())
-                                {
-                                    Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
-                                }
+                                Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
                             }
 
                             monster.IsAlive = false;
@@ -250,20 +277,15 @@ namespace OpenNos.GameObject
                         const short maxDistance = 5;
                         if (!Path.Any() && distance > 1 && distance < maxDistance)
                         {
-                            short xoffset = (short)ServerManager.RandomNumber(-1, 1);
-                            short yoffset = (short)ServerManager.RandomNumber(-1, 1);
-
-                            Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
-                            if (!Path.Any())
-                            {
-                                Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
-                            }
+                            short xoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
+                            short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
+                            Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(monster.MapX + xoffset), Y = (short)(monster.MapY + yoffset) });
                         }
                         if (DateTime.Now > LastMove && Npc.Speed > 0 && Path.Any())
                         {
                             int maxindex = Path.Count > Npc.Speed / 2 && Npc.Speed > 1 ? Npc.Speed / 2 : Path.Count;
-                            short mapX = (short)Path.ElementAt(maxindex - 1).x;
-                            short mapY = (short)Path.ElementAt(maxindex - 1).y;
+                            short mapX = (short)Path.ElementAt(maxindex - 1).X;
+                            short mapY = (short)Path.ElementAt(maxindex - 1).Y;
                             double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Npc.Speed;
                             MapInstance.Broadcast(new BroadcastPacket(null, $"mv 2 {MapNpcId} {mapX} {mapY} {Npc.Speed}", ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                             LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
@@ -276,25 +298,11 @@ namespace OpenNos.GameObject
                                     MapY = mapY;
                                 });
 
-                            for (int j = maxindex; j > 0; j--)
-                            {
-                                Path.RemoveAt(0);
-                            }
+                            Path.RemoveRange(0, maxindex);
                         }
-                        if (Path.Any() && (MapId != monster.MapId || distance > maxDistance))
+                        if (Target != -1 && (MapId != monster.MapId || distance > maxDistance))
                         {
-                            Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
-                            if (!Path.Any())
-                            {
-                                Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
-                            }
-                            Target = -1;
-                        }
-                    }
-                    else
-                    {
-                        if (distance > maxdistance)
-                        {
+                            Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
                             Target = -1;
                         }
                     }

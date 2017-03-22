@@ -117,7 +117,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            //TODO ADD MINILAND MESSAGE
+                            //TODO ADD MINILAND SENDPACKET
                         }
                     }
 

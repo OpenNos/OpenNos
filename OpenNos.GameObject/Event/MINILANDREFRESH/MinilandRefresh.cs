@@ -39,7 +39,7 @@ namespace OpenNos.GameObject.Event
                     Session.Character.GetReput(2 * count);
                     Session.Character.MinilandPoint = 2000;
                 }
-                else if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.ServerGroup, chara.CharacterId).Result)
+                else if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.Instance.ServerGroup, chara.CharacterId).Result)
                 {
                     if (gen == null)
                     {

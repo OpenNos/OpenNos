@@ -12,13 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using EpPathFinding;
 using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OpenNos.Domain;
+using OpenNos.Pathfinding;
+using OpenNos.PathFinder;
 
 namespace OpenNos.GameObject
 {
@@ -73,7 +75,7 @@ namespace OpenNos.GameObject
 
         public RespawnMapTypeDTO DefaultReturn { get; private set; }
 
-        public StaticGrid Grid { get; set; }
+        public GridPos[,] Grid { get; set; }
 
         public short MapId { get; set; }
 
@@ -104,26 +106,22 @@ namespace OpenNos.GameObject
 
         public static int GetDistance(MapCell p, MapCell q)
         {
-            return Math.Max(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
+            return (int)Heuristic.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
-        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move)
+
+        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true)
         {
             List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
-                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move));
+                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, deathEvents, isBonus: isBonus, isHostile: isHostile));
             }
             return SummonParameters;
         }
-        public static List<GridPos> JPSPlus(JumpPointParam JumpPointParameters, GridPos cell1, GridPos cell2)
+        public List<GridPos> PathSearch(GridPos cell1, GridPos cell2)
         {
-            if (JumpPointParameters != null)
-            {
-                JumpPointParameters.Reset(cell1, cell2);
-                return JumpPointFinder.GetFullPath(JumpPointFinder.FindPath(JumpPointParameters));
-            }
-            return new List<GridPos>();
+            return BestFirstSearch.findPath(cell1, cell2, Grid);    
         }
 
         public MapCell GetRandomPosition()
@@ -146,7 +144,7 @@ namespace OpenNos.GameObject
         {
             if (Grid != null)
             {
-                if (!Grid.IsWalkableAt(new GridPos(x, y)))
+                if (!Grid[x, y].IsWalkable())
                 {
                     return true;
                 }
@@ -185,57 +183,15 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        internal List<GridPos> StraightPath(GridPos mapCell1, GridPos mapCell2)
+        public List<NpcToSummon> GenerateNpcs(short vnum, short amount, List<EventContainer> deathEvents, bool isMate, bool isProtected)
         {
-            List<GridPos> Path = new List<GridPos> { mapCell1 };
-            do
+            List<NpcToSummon> SummonParameters = new List<NpcToSummon>();
+            for (int i = 0; i < amount; i++)
             {
-                if (Path.Last().x < mapCell2.x && Path.Last().y < mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y + 1) });
-                }
-                else if (Path.Last().x > mapCell2.x && Path.Last().y > mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y - 1) });
-                }
-                else if (Path.Last().x < mapCell2.x && Path.Last().y > mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y - 1) });
-                }
-                else if (Path.Last().x > mapCell2.x && Path.Last().y < mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y + 1) });
-                }
-                else if (Path.Last().x > mapCell2.x)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x - 1), y = (short)Path.Last().y });
-                }
-                else if (Path.Last().x < mapCell2.x)
-                {
-                    Path.Add(new GridPos { x = (short)(Path.Last().x + 1), y = (short)Path.Last().y });
-                }
-                else if (Path.Last().y > mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)Path.Last().x, y = (short)(Path.Last().y - 1) });
-                }
-                else if (Path.Last().y < mapCell2.y)
-                {
-                    Path.Add(new GridPos { x = (short)Path.Last().x, y = (short)(Path.Last().y + 1) });
-                }
+                MapCell cell = GetRandomPosition();
+                SummonParameters.Add(new NpcToSummon(vnum, cell, -1, deathEvents, isMate: isMate, isProtected: isProtected));
             }
-            while ((Path.Last().x != mapCell2.x || Path.Last().y != mapCell2.y) && !IsBlockedZone(Path.Last().x, Path.Last().y));
-            if (IsBlockedZone(Path.Last().x, Path.Last().y))
-            {
-                if (Path.Any())
-                {
-                    Path.Remove(Path.Last());
-                }
-            }
-            if (Path.Count > 0)
-            {
-                Path.RemoveAt(0);
-            }
-            return Path;
+            return SummonParameters;
         }
 
         private bool IsBlockedZone(int firstX, int firstY, int mapX, int mapY)
@@ -279,13 +235,18 @@ namespace OpenNos.GameObject
                 YLength = BitConverter.ToInt16(ylength, 0);
                 XLength = BitConverter.ToInt16(xlength, 0);
 
-                Grid = new StaticGrid(XLength, YLength);
-                for (int i = 0; i < YLength; ++i)
+                Grid = new GridPos[XLength, YLength];
+                for (short i = 0; i < YLength; ++i)
                 {
-                    for (int t = 0; t < XLength; ++t)
+                    for (short t = 0; t < XLength; ++t)
                     {
                         stream.Read(bytes, numBytesRead, numBytesToRead);
-                        Grid.SetWalkableAt(new GridPos(t, i), bytes[0]);
+                        Grid[t, i] = new GridPos()
+                        {
+                            Value = bytes[0],
+                            X = t,
+                            Y = i,
+                        };
                     }
                 }
             }

@@ -31,7 +31,7 @@ namespace OpenNos.Test
             FakeNetworkClient client = new FakeNetworkClient();
             _sessionManager.AddSession(client);
 
-            long id = ServerManager.RandomNumber(0, 999999);
+            long id = ServerManager.Instance.RandomNumber(0, 999999);
             AccountDTO account = new AccountDTO
             {
                 AccountId = id,

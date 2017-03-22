@@ -17,7 +17,13 @@ namespace OpenNos.GameObject.Packets.ServerPackets
 
         [PacketIndex(1)]
         public int Y { get; set; }
-        
+
+        [PacketIndex(2)]
+        public byte? StartPress { get; set; }
+
+        [PacketIndex(3)]
+        public byte? RecordPress { get; set; }
+
         #endregion
     }
 }

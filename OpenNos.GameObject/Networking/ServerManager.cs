@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using CloneExtensions;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -87,35 +88,35 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public static int DropRate { get; set; }
+        public int DropRate { get; set; }
 
-        public static int FairyXpRate { get; set; }
+        public int FairyXpRate { get; set; }
 
-        public static int GoldDropRate { get; set; }
+        public int GoldDropRate { get; set; }
 
-        public static int GoldRate { get; set; }
+        public int GoldRate { get; set; }
 
-        public static List<MailDTO> Mails { get; private set; }
+        public List<MailDTO> Mails { get; private set; }
 
-        public static long MaxGold { get; set; }
+        public long MaxGold { get; set; }
 
-        public static byte MaxHeroLevel { get; set; }
+        public byte MaxHeroLevel { get; set; }
 
-        public static byte MaxJobLevel { get; set; }
+        public byte MaxJobLevel { get; set; }
 
-        public static byte MaxLevel { get; set; }
+        public byte MaxLevel { get; set; }
 
-        public static byte MaxSPLevel { get; set; }
+        public byte MaxSPLevel { get; set; }
 
-        public static List<Schedule> Schedules { get; set; }
+        public List<Schedule> Schedules { get; set; }
 
-        public static string ServerGroup { get; set; }
+        public string ServerGroup { get; set; }
 
-        public static int XPRate { get; set; }
+        public int XPRate { get; set; }
 
-        public static int HeroXpRate { get; set; }
+        public int HeroXpRate { get; set; }
 
-        public static int HeroicStartLevel { get; set; }
+        public int HeroicStartLevel { get; set; }
 
         public List<BazaarItemLink> BazaarList { get; set; }
 
@@ -153,15 +154,15 @@ namespace OpenNos.GameObject
 
         public Guid WorldId { get; private set; }
 
-        public static MapInstance ArenaInstance { get; private set; }
+        public MapInstance ArenaInstance { get; private set; }
 
-        public static MapInstance FamilyArenaInstance { get; private set; }
+        public MapInstance FamilyArenaInstance { get; private set; }
 
         #endregion
 
         #region Methods
 
-        public static MapInstance GenerateMapInstance(short MapId, MapInstanceType type, MapClock mapclock)
+        public MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
         {
             Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
             if (map != null)
@@ -169,48 +170,50 @@ namespace OpenNos.GameObject
                 Guid guid = Guid.NewGuid();
                 MapInstance mapInstance = new MapInstance(map, guid, false, type, mapclock);
                 mapInstance.LoadMonsters();
+                mapInstance.LoadNpcs();
                 mapInstance.LoadPortals();
                 foreach (MapMonster mapMonster in mapInstance.Monsters)
                 {
                     mapMonster.MapInstance = mapInstance;
                     mapInstance.AddMonster(mapMonster);
                 }
-                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+                foreach (MapNpc mapNpc in mapInstance.Npcs)
                 {
-                    Parallel.ForEach(mapInstance.Monsters, monster => { monster.StartLife(); });
-                });
+                    mapNpc.MapInstance = mapInstance;
+                    mapInstance.AddNPC(mapNpc);
+                }
                 _mapinstances.TryAdd(guid, mapInstance);
                 return mapInstance;
             }
             return null;
         }
 
-        public static IEnumerable<Skill> GetAllSkill()
+        public IEnumerable<Skill> GetAllSkill()
         {
             return _skills;
         }
 
-        public static Item GetItem(short vnum)
+        public Item GetItem(short vnum)
         {
             return _items.FirstOrDefault(m => m.VNum.Equals(vnum));
         }
 
-        public static MapInstance GetMapInstance(Guid id)
+        public MapInstance GetMapInstance(Guid id)
         {
-            return _mapinstances[id];
+            return _mapinstances.ContainsKey(id) ? _mapinstances[id] : null;
         }
 
-        public static NpcMonster GetNpc(short npcVNum)
+        public NpcMonster GetNpc(short npcVNum)
         {
             return _npcs.FirstOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
         }
 
-        public static Skill GetSkill(short skillVNum)
+        public Skill GetSkill(short skillVNum)
         {
             return _skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
         }
 
-        public static int RandomNumber(int min = 0, int max = 100)
+        public int RandomNumber(int min = 0, int max = 100)
         {
             return random.Value.Next(min, max);
         }
@@ -311,9 +314,37 @@ namespace OpenNos.GameObject
                             }
                         });
                         break;
+                    case MapInstanceType.TimeSpaceInstance:
+                        if (!(Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count() <= 1))
+                        {
+                            Session.Character.Hp = 1;
+                            Session.Character.Mp = 1;
+                            return;
+                        }
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE"), Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count()+1), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^1 #revival^1 {(Session.Character.Level > 10 ? Language.Instance.GetMessageFromKey("ASK_REVIVE_TS_LOW_LEVEL") : Language.Instance.GetMessageFromKey("ASK_REVIVE_TS"))}"));
+                        Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
+                        Task.Factory.StartNew(async () =>
+                        {
+                            bool revive = true;
+                            for (int i = 1; i <= 30; i++)
+                            {
+                                await Task.Delay(1000);
+                                if (Session.Character.Hp > 0)
+                                {
+                                    revive = false;
+                                    break;
+                                }
+                            }
+                            if (revive)
+                            {
+                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            }
+                        });
 
+                        break;
                     case MapInstanceType.LodInstance:
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE_LOD") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_LOD")}"));
                         Task.Factory.StartNew(async () =>
                         {
                             bool revive = true;
@@ -368,6 +399,8 @@ namespace OpenNos.GameObject
             {
                 try
                 {
+                    LeaveMap(session.Character.CharacterId);
+
                     session.Character.IsChangingMapInstance = true;
 
                     session.CurrentMapInstance.RemoveMonstersTarget(session.Character.CharacterId);
@@ -392,9 +425,6 @@ namespace OpenNos.GameObject
                         session.Character.PositionY = (short)mapY;
                     }
 
-
-                    // avoid cleaning new portals
-
                     session.CurrentMapInstance = session.Character.MapInstance;
                     session.CurrentMapInstance.RegisterSession(session);
 
@@ -409,40 +439,34 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateCMap());
                     session.SendPacket(session.Character.GenerateStatChar());
 
-
-                    // in 2 // send only when partner present cond 2 // send only when partner present
                     session.SendPacket(session.Character.GeneratePairy());
                     session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
                     {
                         s.PositionX = (short)(session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
                         s.PositionY = (short)(session.Character.PositionY + 1);
-                        session.CurrentMapInstance.Broadcast(s.GenerateIn());
                     });
+
                     session.SendPacket(session.Character.GeneratePinit()); // clear party list
                     session.Character.SendPst();
                     session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
                     session.SendPacket(session.Character.GenerateScpStc());
-                    Sessions.Where(s => s.Character != null && s.Character.MapInstanceId.Equals(session.Character.MapInstanceId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s =>
+
+                    session.CurrentMapInstance.Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm).ToList().ForEach(s =>
                     {
                         session.SendPacket(s.Character.GenerateIn());
                         session.SendPacket(s.Character.GenerateGidx());
-                        s.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => session.SendPacket(m.GenerateIn()));
                     });
 
-                    session.SendPackets(session.Character.GenerateGp());
-                    session.SendPackets(session.Character.GenerateWp());
+                    session.SendPackets(session.CurrentMapInstance.GetMapItems());
 
-                    session.SendPackets(session.Character.MapInstance.Monsters.Select(monster => monster.GenerateIn()).ToList());
-                    session.SendPackets(session.Character.MapInstance.Npcs.Select(npc => npc.GenerateIn()).ToList());
-                    session.SendPackets(session.Character.GenerateNPCShopOnMap());
-                    session.SendPackets(session.Character.GenerateDroppedItem());
-                    session.SendPackets(session.Character.MapInstance.GenerateUserShops());
-                    session.SendPackets(session.CurrentMapInstance.GeneratePlayerShopOnMap());
-                    if (session.CurrentMapInstance.MapClock.Enabled)
+                    if (session.CurrentMapInstance.InstanceBag.Clock.Enabled)
                     {
-                        session.SendPacket(session.CurrentMapInstance.MapClock.GetClock());
+                        session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());
                     }
-
+                    if (session.CurrentMapInstance.Clock.Enabled)
+                    {
+                        session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());
+                    }
                     // TODO: fix this
                     if (session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.CleftOfDarkness))
                     {
@@ -486,17 +510,16 @@ namespace OpenNos.GameObject
                     }
                     session.Character.IsChangingMapInstance = false;
                     session.SendPacket(session.Character.GenerateMinimapPosition());
-
-                    session.CurrentMapInstance.FirstEntryEvents.ForEach(
-                        e =>
-                        {
-                            if (!e.Item2.Contains(session.Character.CharacterId))
-                            {
-                                e.Item2.Add(session.Character.CharacterId);
-                                session.SendPacket(session.CurrentMapInstance.RunMapEvent(e.Item1.Item1, e.Item1.Item2, session.Character.CharacterId));
-                            }
-                        }
-                    );
+                    session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(
+                         e =>
+                         {
+                             if (!e.Item2.Contains(session.Character.CharacterId))
+                             {
+                                 e.Item2.Add(session.Character.CharacterId);
+                                 EventHelper.Instance.RunEvent(e.Item1, session);
+                             }
+                         }
+                     );
                 }
                 catch (Exception)
                 {
@@ -513,15 +536,6 @@ namespace OpenNos.GameObject
                 Dispose(true);
                 GC.SuppressFinalize(this);
                 _disposed = true;
-            }
-        }
-
-        public void EnableMapEffect(short mapId, bool iseffectactivated)
-        {
-            Guid guid = GetBaseMapInstanceIdByMapId(mapId);
-            if (guid != default(Guid))
-            {
-                GetMapInstance(guid).NpcEffectActivated = iseffectactivated;
             }
         }
 
@@ -647,6 +661,7 @@ namespace OpenNos.GameObject
                 }
             }
         }
+
         public void RaidLeave(ClientSession session)
         {
             if (session == null) return;
@@ -657,11 +672,11 @@ namespace OpenNos.GameObject
             {
                 if (raid.Leader != session)
                 {
-                    raid.LeaveRaid(session);
+                    raid.Leave(session);
                 }
                 else
                 {
-                    raid.LeaveRaid(raid.Leader);
+                    raid.Leave(raid.Leader);
                     raid.Leader.SendPacket(
                         $"say 1 {raid.Leader.Character.CharacterId} 10 {Language.Instance.GetMessageFromKey("RAID_NEW_LEADER")}");
                     raid.Leader.SendPacket(
@@ -687,7 +702,7 @@ namespace OpenNos.GameObject
             foreach (ClientSession targetSession in raid.Characters)
             {
                 targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_CLOSED"), 0));
-                raid.LeaveRaid(targetSession);
+                raid.Leave(targetSession);
             }
             raid.DestroyRaid();
         }
@@ -923,21 +938,26 @@ namespace OpenNos.GameObject
                     };
                     _maps.Add(mapinfo);
 
-                    MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance, new MapClock());
+                    MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance, new InstanceBag());
 
                     // register for broadcast
                     _mapinstances.TryAdd(guid, newMap);
-                    newMap.SetMapMapMonsterReference();
-                    newMap.SetMapMapNpcReference();
                     i++;
 
                     newMap.LoadMonsters();
+                    newMap.LoadNpcs();
                     newMap.LoadPortals();
 
                     foreach (MapMonster mapMonster in newMap.Monsters)
                     {
                         mapMonster.MapInstance = newMap;
                         newMap.AddMonster(mapMonster);
+                    }
+
+                    foreach (MapNpc mapNpc in newMap.Npcs)
+                    {
+                        mapNpc.MapInstance = newMap;
+                        newMap.AddNPC(mapNpc);
                     }
                     monstercount += newMap.Monsters.Count;
                 }
@@ -957,9 +977,9 @@ namespace OpenNos.GameObject
                 RefreshRanking();
                 CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
                 PenaltyLogs = DAOFactory.PenaltyLogDAO.LoadAll().ToList();
-                ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance, new MapClock());
+                ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance, new InstanceBag());
                 ArenaInstance.IsPVP = true;
-                FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance, new MapClock());
+                FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance, new InstanceBag());
                 FamilyArenaInstance.IsPVP = true;
                 LoadTimeSpaces();
             }
@@ -977,7 +997,7 @@ namespace OpenNos.GameObject
         {
             foreach (var map in _mapinstances)
             {
-                foreach (TimeSpace timespace in DAOFactory.TimeSpaceDAO.LoadByMap(map.Value.Map.MapId).ToList())
+                foreach (ScriptedInstance timespace in DAOFactory.TimeSpaceDAO.LoadByMap(map.Value.Map.MapId).ToList())
                 {
                     timespace.LoadGlobals();
                     map.Value.TimeSpaces.Add(timespace);
@@ -997,7 +1017,6 @@ namespace OpenNos.GameObject
 
         public void JoinMiniland(ClientSession Session, ClientSession MinilandOwner)
         {
-            LeaveMap(Session.Character.CharacterId);
             ChangeMapInstance(Session.Character.CharacterId, MinilandOwner.Character.Miniland.MapInstanceId, 5, 8);
             if (Session.Character.Miniland.MapInstanceId != MinilandOwner.Character.Miniland.MapInstanceId)
             {
@@ -1066,23 +1085,32 @@ namespace OpenNos.GameObject
             ClientSession session = GetSessionByCharacterId(characterId);
             if (session != null && session.Character.Hp <= 0)
             {
-                LeaveMap(session.Character.CharacterId);
-                session.Character.Hp = 1;
-                session.Character.Mp = 1;
-                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
                 {
-                    RespawnMapTypeDTO resp = session.Character.Respawn;
-                    short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
-                    short y = (short)(resp.DefaultY + RandomNumber(-5, 5));
-                    ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
+                    session.Character.Hp = (int)session.Character.HPLoad();
+                    session.Character.Mp = (int)session.Character.MPLoad();
+                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRevive());
+                    session.SendPacket(session.Character.GenerateStat());
                 }
                 else
                 {
-                    Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                    session.Character.Hp = 1;
+                    session.Character.Mp = 1;
+                    if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                    {
+                        RespawnMapTypeDTO resp = session.Character.Respawn;
+                        short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
+                        short y = (short)(resp.DefaultY + RandomNumber(-5, 5));
+                        ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
+                    }
+                    else
+                    {
+                        Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                    }
+                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateTp());
+                    session.CurrentMapInstance?.Broadcast(session.Character.GenerateRevive());
+                    session.SendPacket(session.Character.GenerateStat());
                 }
-                session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateTp());
-                session.CurrentMapInstance?.Broadcast(session.Character.GenerateRevive());
-                session.SendPacket(session.Character.GenerateStat());
             }
         }
 
@@ -1138,20 +1166,10 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal static void StopServer()
+        internal void StopServer()
         {
             Instance.ShutdownStop = true;
             Instance.TaskShutdown = null;
-        }
-
-        internal IEnumerable<MapNpc> GetMapNpcsByMapId(short mapId)
-        {
-            if (_mapNpcs.ContainsKey(mapId))
-            {
-                return _mapNpcs[mapId];
-            }
-
-            return new List<MapNpc>();
         }
 
         internal List<NpcMonsterSkill> GetNpcMonsterSkillsByMonsterVNum(short npcMonsterVNum)
@@ -1271,15 +1289,14 @@ namespace OpenNos.GameObject
                 BotProcess();
             });
 
-            Instance.EnableMapEffect(98, false);
-
+            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
             foreach (Schedule schedul in Schedules)
             {
-                Observable.Timer(TimeSpan.FromSeconds(EventHelper.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
+                Observable.Timer(TimeSpan.FromSeconds(EventHelper.Instance.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
                 .Subscribe(
                 e =>
                 {
-                    EventHelper.GenerateEvent(schedul.Event);
+                    EventHelper.Instance.GenerateEvent(schedul.Event);
                 });
             }
 
@@ -1292,19 +1309,6 @@ namespace OpenNos.GameObject
             {
                 RemoveItemProcess();
             });
-
-            foreach (var map in _mapinstances)
-            {
-                foreach (MapNpc npc in map.Value.Npcs)
-                {
-                    npc.StartLife();
-                }
-
-                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
-                {
-                    Parallel.ForEach(map.Value.Monsters, monster => { monster.StartLife(); });
-                });
-            }
 
             ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
             ServerCommunicationClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;

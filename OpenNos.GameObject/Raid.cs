@@ -23,22 +23,6 @@ namespace OpenNos.GameObject
             Listed = false;
             Finished = false;
             Launched = false;
-            SetUpRaid();
-        }
-
-        private void SetUpRaid()
-        {
-            switch (RaidDesign)
-            {
-                case 0:
-                    RaidName = "Cuby";
-                    MinLvl = 1;
-                    MaxLvl = 50;
-                    break;
-                default:
-                    break;
-
-            }
         }
 
         #endregion
@@ -54,8 +38,6 @@ namespace OpenNos.GameObject
 
         public int RaidDesign { get; }
 
-        public string RaidName { get; private set; }
-
         public bool Listed { get; set; }
 
         public bool Finished { get; set; }
@@ -66,9 +48,9 @@ namespace OpenNos.GameObject
 
         public List<ClientSession> Characters { get; private set; }
 
-        public int MinLvl { get; set; }
+        public int LevelMinimum { get; set; }
 
-        public int MaxLvl { get; set; }
+        public int LevelMaximum { get; set; }
         #endregion
 
         #region Methods
@@ -95,7 +77,7 @@ namespace OpenNos.GameObject
 
         public string GenerateRdlst()
         {
-            string result = $"rdlst {MinLvl} {MaxLvl} 0 ";
+            string result = $"rdlst {LevelMinimum} {LevelMaximum} 0 ";
 
             result = Characters.Aggregate(result,
                 (current, session) =>
@@ -119,7 +101,7 @@ namespace OpenNos.GameObject
 
         public string GenerateRdlstf()
         {
-            string result = $"rdlstf {MinLvl} {MaxLvl} 0 ";
+            string result = $"rdlstf {LevelMinimum} {LevelMaximum} 0 ";
 
             result += RaidDesign;
             result = Characters.Aggregate(result,
@@ -131,13 +113,62 @@ namespace OpenNos.GameObject
                     $"{session.Character.CharacterId}.{session.Character.HeroLevel}");
             return result;
         }
+
+        public void SendCreationPacket(ClientSession session)
+        {
+            if (RaidDesign == 20 || RaidDesign == 24)
+            {
+                session.SendPacket($"raidf 2 {session.Character.CharacterId}");
+                session.SendPacket("raidf 1 1");
+            }
+            else
+            {
+                session.SendPacket($"raid 2 {session.Character.CharacterId}");
+                session.SendPacket("raid 1 1");
+            }
+        }
         
-        public void AddToRaid(ClientSession session)
+        public void Join(ClientSession session)
         {
             if (session == null || Launched) return;
             Characters.Add(session);
             session.Character.Raid = this;
+            UpdateVisual();
         }
+
+        public void Leave(ClientSession session)
+        {
+            if (session == null) return;
+            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEFT_RAID")), 0));
+            if (Launched)
+            {
+                
+                ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId,
+                    session.Character.MapX, session.Character.MapY);
+            }
+            SendEndPlayer(session);
+            session.Character.Raid = null;
+            Characters.Remove(session);
+            UpdateVisual();
+        }
+
+        public void Kick(ClientSession session)
+        {
+            if (session == null) return;
+            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), Leader.Character.Name), 0));
+            if (Launched)
+            {
+                
+                ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId,
+                    session.Character.MapX, session.Character.MapY);
+            }
+            SendEndPlayer(session);
+            session.Character.Raid = null;
+            Characters.Remove(session);
+            UpdateVisual();
+        }
+
+
         public void Dispose()
         {
             if (_disposed) return;
@@ -149,7 +180,7 @@ namespace OpenNos.GameObject
         {
             foreach (var player in Characters)
             {
-                if (RaidDesign == 24 || RaidDesign == 20)
+                if (RaidDesign != 24 || RaidDesign != 20) // ZENAS OR LAURENA
                 {
                     player.SendPacket(GenerateRaid(player));
                     player.SendPacket(GenerateRdlst());
@@ -175,21 +206,6 @@ namespace OpenNos.GameObject
                 session.SendPacket("raid 1 0");
                 session.SendPacket("raid 2 - 1");
             }
-        }
-
-        public void LeaveRaid(ClientSession session)
-        {
-            if (session == null) return;
-            SendEndPlayer(session);
-            if (Launched)
-            {
-                ServerManager.Instance.LeaveMap(session.Character.CharacterId);
-                ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId,
-                    session.Character.MapX, session.Character.MapY);
-            }
-            session.Character.Raid = null;
-            Characters.Remove(session);
-            UpdateVisual();
         }
 
         public void DestroyRaid()
