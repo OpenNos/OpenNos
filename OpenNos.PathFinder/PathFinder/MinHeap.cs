@@ -49,7 +49,6 @@ class MinHeap
 
         return ret;
     }
-	
 
     public int Count
     {
@@ -58,6 +57,4 @@ class MinHeap
             return array.Count;
         }
     }
-    
-
 }

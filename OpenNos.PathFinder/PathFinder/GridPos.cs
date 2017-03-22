@@ -4,6 +4,7 @@ namespace OpenNos.Pathfinding
 {
     public class GridPos
     {
+        public bool Closed { get; internal set; }
         public byte Value { get; set; }
         public short X { get; set; }
         public short Y { get; set; }

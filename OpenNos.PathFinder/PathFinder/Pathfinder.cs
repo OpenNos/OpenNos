@@ -3,16 +3,57 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace OpenNos.PathFinder
 {
     public class BestFirstSearch
     {
-        public static List<GridPos> GetNeighbors(GridPos[,] Grid, Node node)
+        public static void ShowGrid(Node[,] grid)
+        {
+            Console.Clear();
+            Console.Write(string.Concat(Enumerable.Repeat("-", grid.GetLength(0))));
+            for (int y = 0; y < grid.GetLength(1); y++)
+            {
+                for (int x = 0; x < grid.GetLength(0); x++)
+                {
+
+                    string value = grid[x, y].IsWalkable() ? " " : "X";
+                    if (value == " ")
+                    {
+                        if (grid[x, y].Opened)
+                        {
+                            value = "O";
+                        }
+                        else if (grid[x, y].Closed)
+                        {
+                            value = "C";
+                        }
+                    }
+                    if (x == 0)
+                    {
+                        Console.Write("|");
+                    }
+                    else
+                    {
+                        Console.Write(value);
+                    }
+                }
+                if (y != 0)
+                {
+                    Console.Write("|");
+                }
+                Console.Write("\n");
+            }
+            Console.Write(string.Concat(Enumerable.Repeat("-", grid.GetLength(0))));
+            Thread.Sleep(1000);
+        }
+
+        public static List<Node> GetNeighbors(Node[,] Grid, Node node)
         {
             short x = node.X,
                 y = node.Y;
-            List<GridPos> neighbors = new List<GridPos>();
+            List<Node> neighbors = new List<Node>();
             bool s0 = false, d0 = false,
              s1 = false, d1 = false,
              s2 = false, d2 = false,
@@ -75,55 +116,70 @@ namespace OpenNos.PathFinder
         }
         public static List<GridPos> findPath(GridPos start, GridPos end, GridPos[,] Grid)
         {
+            Node[,] grid = new Node[Grid.GetLength(0),Grid.GetLength(1)];
+            for(short y = 0;y<grid.GetLength(1);y++)
+            {
+                for (short x = 0; x < grid.GetLength(0); x++)
+                {
+                    grid[x, y] = new Node()
+                    {
+                        X = x,
+                        Y = y
+                    };
+                }
+            }
             Node node = new Node();
-            Node Start = new Node(Grid[start.X, start.Y]);
+            Node Start = grid[start.X, start.Y];
             MinHeap path = new MinHeap();
-            short X,Y;
+            // push the start node into the open list
             path.Push(Start);
             Start.Opened = true;
-            
+
+            // while the open list is not empty
             while (path.Count > 0)
             {
+                // pop the position of node which has the minimum `f` value.
                 node = path.Pop();
-                node.Closed = true;
-                
+                Grid[node.X, node.Y].Closed = true;
+
+                //if reached the end position, construct the path and return it
                 if (node.X == end.X && node.Y == end.Y)
                 {
                     return Backtrace(node);
                 }
-                
-                List<GridPos> neighbors = GetNeighbors(Grid, node);
+
+                // get neigbours of the current node
+                List<Node> neighbors = GetNeighbors(grid, node);
 
                 for (int i = 0, l = neighbors.Count(); i < l; ++i)
                 {
-                    Node neighbor = new Node(neighbors[i]);
+                    Node neighbor = neighbors[i];
 
                     if (neighbor.Closed)
                     {
                         continue;
                     }
-                    X = neighbor.X;
-                    Y = neighbor.Y;
-                    double ng = node.G + ((X - node.X == 0 || Y - node.Y == 0) ? 1 : Heuristic.SQRT_2);
-                    if (!neighbor.Opened || ng < neighbor.G)
+
+                    // check if the neighbor has not been inspected yet, or
+                    // can be reached with smaller cost from the current node
+                    if (!neighbor.Opened)
                     {
-                        neighbor.G = ng;
-                        if (neighbor.H == 0)
+                        if (neighbor.F == 0)
                         {
-                            neighbor.H = Heuristic.Octile(Math.Abs(X - end.X), Math.Abs(Y - end.Y));
+                            neighbor.F = Heuristic.Octile(Math.Abs(neighbor.X - end.X), Math.Abs(neighbor.Y - end.Y));
                         }
-                        if (neighbor.N == 0)
-                        {
-                            neighbor.N = GetNeighbors(Grid, neighbor).Count() / 9d;
-                        }
-                        neighbor.F = (neighbor.G * neighbor.N) + neighbor.H;
+
                         neighbor.Parent = node;
 
                         if (!neighbor.Opened)
                         {
                             path.Push(neighbor);
                             neighbor.Opened = true;
-                        }                       
+                        }
+                        else
+                        {
+                            neighbor.Parent = node;
+                        }
                     }
                 }
             }
