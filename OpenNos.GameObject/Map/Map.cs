@@ -142,14 +142,21 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (Grid != null)
+            try
             {
-                if (!Grid[x, y].IsWalkable())
+                if (Grid != null)
                 {
-                    return true;
+                    if (!Grid[x, y].IsWalkable())
+                    {
+                        return true;
+                    }
                 }
+                return false;
             }
-            return false;
+            catch
+            {
+                return false;
+            }
         }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
