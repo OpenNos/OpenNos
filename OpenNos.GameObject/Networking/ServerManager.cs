@@ -459,6 +459,8 @@ namespace OpenNos.GameObject
 
                     session.SendPackets(session.CurrentMapInstance.GetMapItems());
 
+                    MapInstancePortalHandler.GenerateMinilandEntryPortals(session.CurrentMapInstance.Map.MapId, session.Character.Miniland.MapInstanceId).ForEach(p=>session.SendPacket(p.GenerateGp()));
+
                     if (session.CurrentMapInstance.InstanceBag.Clock.Enabled)
                     {
                         session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());
