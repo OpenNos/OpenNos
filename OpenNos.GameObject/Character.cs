@@ -1560,7 +1560,7 @@ namespace OpenNos.GameObject
         {
             return $"dir 1 {CharacterId} {Direction}";
         }
- 
+
 
         public string GenerateEq()
         {
@@ -1879,7 +1879,7 @@ namespace OpenNos.GameObject
             return $"gold {Gold} 0";
         }
 
-       
+
 
         public string GenerateIdentity()
         {
@@ -1910,7 +1910,7 @@ namespace OpenNos.GameObject
 
         public void GenerateKillBonus(MapMonster monsterToAttack)
         {
-         
+
             if (monsterToAttack == null || monsterToAttack.IsAlive)
             {
                 return;
@@ -3013,7 +3013,12 @@ namespace OpenNos.GameObject
                     }
                     string info = string.Empty;
                     if (bz.Item.Item.Type == InventoryType.Equipment)
-                        info = (bz.Item as WearableInstance).GenerateEInfo().Replace(' ', '^').Replace("e_info^", "");
+                    {
+                        if ((bz.Item as WearableInstance) != null)
+                        {
+                            info = (bz.Item as WearableInstance).GenerateEInfo().Replace(' ', '^').Replace("e_info^", "");
+                        }
+                    }
 
                     if (packet.Filter == 0 || packet.Filter == Status)
                     {

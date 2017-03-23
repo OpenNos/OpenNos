@@ -85,6 +85,7 @@ namespace OpenNos.GameObject
                 case 2:
                     Session.SendPacket("wopen 1 0");
                     break;
+
                 case 4:
                     Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == packet.NpcId);
                     switch (packet.Type)
@@ -103,7 +104,6 @@ namespace OpenNos.GameObject
                                         teammate.MapY = teammate.PositionY;
                                     }
                                     mate.IsTeamMember = true;
-
                                 }
                                 else
                                 {
@@ -111,6 +111,7 @@ namespace OpenNos.GameObject
                                 }
                             }
                             break;
+
                         case 3:
                             if (mate != null && Session.Character.Miniland == Session.Character.MapInstance)
                             {
@@ -119,6 +120,7 @@ namespace OpenNos.GameObject
                                 mate.MapY = mate.PositionY;
                             }
                             break;
+
                         case 4:
                             if (mate != null)
                             {
@@ -133,15 +135,16 @@ namespace OpenNos.GameObject
                                     Session.SendPacket($"qna #n_run^4^5^3^{mate.MateTransportId} {Language.Instance.GetMessageFromKey("ASK_KICK_PET")}");
                                 }
                                 break;
-
                             }
                             break;
+
                         case 5:
                             if (mate != null)
                             {
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 10, $"#n_run^4^6^3^{mate.MateTransportId}"));
                             }
                             break;
+
                         case 6:
                             if (mate != null)
                             {
@@ -154,6 +157,7 @@ namespace OpenNos.GameObject
                                 }
                             }
                             break;
+
                         case 7:
                             if (mate != null)
                             {
@@ -168,11 +172,14 @@ namespace OpenNos.GameObject
                                 }
                             }
                             break;
+
                         case 9:
                             if (mate != null)
                             {
                                 if (Session.Character.Level >= mate.Level)
+                                {
                                     mate.PositionX = (short)(Session.Character.PositionX + 1);
+                                }
                                 mate.PositionY = (short)(Session.Character.PositionY + 1);
                                 mate.IsTeamMember = true;
                                 Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
@@ -188,6 +195,7 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GeneratePinit());
                     Session.Character.SendPst();
                     break;
+
                 case 10:
                     Session.SendPacket("wopen 3 0");
                     break;
@@ -199,16 +207,31 @@ namespace OpenNos.GameObject
                 case 14:
                     Session.SendPacket("wopen 27 0");
                     string recipelist = "m_list 2";
-
                     if (npc != null)
                     {
                         List<Recipe> tp = npc.Recipes;
                         foreach (Recipe s in tp)
                         {
-                            if (s.Amount > 0) recipelist = recipelist + $" {s.ItemVNum}";
+                            if (s.Amount > 0)
+                            {
+                                recipelist = recipelist + $" {s.ItemVNum}";
+                            }
                         }
                         recipelist += " -100";
                         Session.SendPacket(recipelist);
+                    }
+                    break;
+
+                case 15:
+                    if (packet.Value == 2)
+                    {
+                        Session.SendPacket($"qna #n_run^15^1^1^{npc.MapNpcId} {Language.Instance.GetMessageFromKey("ASK_CHANGE_SPAWNLOCATION")}");
+                    }
+                    else
+                    {
+                        RespawnMapTypeDTO respDefault = DAOFactory.RespawnMapTypeDAO.LoadByMapId(npc.MapId);
+                        Session.Character.SetRespawnPoint(npc.MapId, respDefault.DefaultX, respDefault.DefaultY);
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RESPAWNLOCATION_CHANGED"), 0));
                     }
                     break;
 
@@ -220,7 +243,6 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 1000 * packet.Type)
                             {
-                                
                                 Session.Character.Gold -= 1000 * packet.Type;
                                 Session.SendPacket(Session.Character.GenerateGold());
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
@@ -243,14 +265,12 @@ namespace OpenNos.GameObject
                     }
                     if (Session.Character.Raid != null && Session.Character.Raid.Launched)
                     {
-                        Session.SendPacket(
-                            Session.Character.GenerateSay("Vous n'avez pas le droit d'aller à l'arène une fois en raid",
-                                10));
+                        Session.SendPacket(Session.Character.GenerateSay("Vous n'avez pas le droit d'aller à l'arène une fois en raid", 10)); // french in source? nou!
                         break;
                     }
                     if (Session.Character.Gold >= 500 * (1 + packet.Type))
                     {
-                        
+
                         Session.Character.LastPortal = currentRunningSeconds;
                         Session.Character.Gold -= 500 * (1 + packet.Type);
                         Session.SendPacket(Session.Character.GenerateGold());
@@ -265,6 +285,7 @@ namespace OpenNos.GameObject
                 case 18:
                     Session.SendPacket(Session.Character.GenerateNpcDialog(17));
                     break;
+
                 case 26:
                     if (npc != null)
                     {
@@ -273,7 +294,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 5000 * packet.Type)
                             {
-                                
+
                                 Session.Character.Gold -= 5000 * packet.Type;
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
@@ -293,7 +314,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 500)
                             {
-                                
+
                                 Session.Character.Gold -= 500;
                                 Session.SendPacket(Session.Character.GenerateGold());
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
@@ -312,7 +333,7 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
-                            
+
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
@@ -327,7 +348,6 @@ namespace OpenNos.GameObject
                             {
                                 if (Session.Character.Level >= 55)
                                 {
-                                    
                                     ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
                                 }
                                 else
@@ -353,7 +373,6 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
-                            
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
@@ -524,7 +543,6 @@ namespace OpenNos.GameObject
                         if (tp != null)
                         {
                             Session.SendPacket("it 3");
-                            
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
@@ -533,7 +551,6 @@ namespace OpenNos.GameObject
                 case 5001:
                     if (npc != null)
                     {
-                        
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 130, 12, 40);
                     }
                     break;
@@ -541,7 +558,6 @@ namespace OpenNos.GameObject
                 case 5011:
                     if (npc != null)
                     {
-                        
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 170, 127, 46);
                     }
                     break;
@@ -552,7 +568,6 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
-                            
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }

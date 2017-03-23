@@ -1747,15 +1747,15 @@ namespace OpenNos.Import.Console
             {
                 new RespawnMapTypeDTO
                 {
-                    RespawnMapTypeId = (long) RespawnType.DefaultAct1,
+                    RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                     DefaultMapId = 1,
-                    DefaultX = 79,
+                    DefaultX = 80,
                     DefaultY = 116,
                     Name = "Default"
                 },
                 new RespawnMapTypeDTO
                 {
-                    RespawnMapTypeId = (long) RespawnType.ReturnAct1,
+                    RespawnMapTypeId = (long)RespawnType.ReturnAct1,
                     DefaultMapId = 0,
                     DefaultX = 0,
                     DefaultY = 0,
@@ -1763,7 +1763,15 @@ namespace OpenNos.Import.Console
                 },
                 new RespawnMapTypeDTO
                 {
-                    RespawnMapTypeId = (long) RespawnType.DefaultAct5,
+                    RespawnMapTypeId = (long)RespawnType.DefaultAct3,
+                    DefaultMapId = 20,
+                    DefaultX = 9,
+                    DefaultY = 92,
+                    Name = "DefaultAct3"
+                },
+                new RespawnMapTypeDTO
+                {
+                    RespawnMapTypeId = (long)RespawnType.DefaultAct5,
                     DefaultMapId = 170,
                     DefaultX = 86,
                     DefaultY = 48,
@@ -1771,7 +1779,7 @@ namespace OpenNos.Import.Console
                 },
                 new RespawnMapTypeDTO
                 {
-                    RespawnMapTypeId = (long) RespawnType.ReturnAct5,
+                    RespawnMapTypeId = (long)RespawnType.ReturnAct5,
                     DefaultMapId = 0,
                     DefaultX = 0,
                     DefaultY = 0,
@@ -1779,7 +1787,7 @@ namespace OpenNos.Import.Console
                 },
                 new RespawnMapTypeDTO
                 {
-                    RespawnMapTypeId = (long) RespawnType.DefaultAct6,
+                    RespawnMapTypeId = (long)RespawnType.DefaultAct6,
                     DefaultMapId = 228,
                     DefaultX = 72,
                     DefaultY = 102,

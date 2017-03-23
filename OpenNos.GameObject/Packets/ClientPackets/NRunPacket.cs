@@ -7,7 +7,8 @@ namespace OpenNos.GameObject
     [PacketHeader("n_run")]
     public class NRunPacket : PacketDefinition
     {
-        #region Properties        
+        #region Properties
+             
         [PacketIndex(0)]
         public short Runner { get; set; }
 
@@ -19,6 +20,7 @@ namespace OpenNos.GameObject
 
         [PacketIndex(3)]
         public int NpcId { get; set; }
+
         #endregion
     }
 }

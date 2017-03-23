@@ -39,7 +39,7 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public IEnumerable<RespawnMapTypeDTO> LoadByMapId(short mapId)
+        public RespawnMapTypeDTO LoadByMapId(short mapId)
         {
             throw new NotImplementedException();
         }
