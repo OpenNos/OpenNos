@@ -155,7 +155,7 @@ namespace OpenNos.GameObject
             }
             catch
             {
-                return false;
+                return true;
             }
         }
 
