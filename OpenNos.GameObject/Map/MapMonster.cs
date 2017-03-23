@@ -192,20 +192,17 @@ namespace OpenNos.GameObject
         {
             Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {
-                Task.Run(() =>
+                try
                 {
-                    try
+                    if (!MapInstance.IsSleeping)
                     {
-                        if (!MapInstance.IsSleeping)
-                        {
-                            MonsterLife();
-                        }
+                        MonsterLife();
                     }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                });
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
             });
         }
 
