@@ -998,7 +998,7 @@
     <value>Your description has been updated!</value>
   </data>
   <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
-    <value>You need atleast {0}x{1}</value>
+    <value>You need at least {0} x {1}</value>
   </data>
   <data name="BANNED" xml:space="preserve">
     <value>This account has been locked to {0} for {1}.</value>

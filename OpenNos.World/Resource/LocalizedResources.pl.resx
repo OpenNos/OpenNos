@@ -971,7 +971,7 @@
     <value>Twój opis został zaktualizowany!</value>
   </data>
   <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
-    <value>Potrzebujesz przynajmniej {0}x{1}</value>
+    <value>Potrzebujesz przynajmniej {0} x {1}</value>
   </data>
   <data name="BAD_DIGNITY" xml:space="preserve">
     <value>Zła wartość godności!</value>

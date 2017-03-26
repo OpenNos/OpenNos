@@ -212,24 +212,27 @@ namespace OpenNos.GameObject
                                 session.Character.IsSitting = false;
                                 session.CurrentMapInstance?.Broadcast(session.Character.GenerateRest());
                             }
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 3,
-                                $"#u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2"));
+                            session.Character.LastDelay = DateTime.Now;
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 3, $"#u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2"));
                         }
                         else
                         {
                             if (!session.Character.IsVehicled && Option != 0)
                             {
-                                session.Character.Speed = Speed;
-                                session.Character.IsVehicled = true;
-                                session.Character.VehicleSpeed = Speed;
-                                session.Character.MorphUpgrade = 0;
-                                session.Character.MorphUpgrade2 = 0;
-                                session.Character.Morph = Morph + (byte)session.Character.Gender;
-                                session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(196),
-                                    session.Character.MapX, session.Character.MapY);
-                                session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
-                                session.SendPacket(session.Character.GenerateCond());
-                                session.Character.LastSpeedChange = DateTime.Now;
+                                DateTime delay = DateTime.Now.AddSeconds(-4);
+                                if (session.Character.LastDelay > delay && session.Character.LastDelay < delay.AddSeconds(2))
+                                {
+                                    session.Character.Speed = Speed;
+                                    session.Character.IsVehicled = true;
+                                    session.Character.VehicleSpeed = Speed;
+                                    session.Character.MorphUpgrade = 0;
+                                    session.Character.MorphUpgrade2 = 0;
+                                    session.Character.Morph = Morph + (byte)session.Character.Gender;
+                                    session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(196), session.Character.MapX, session.Character.MapY);
+                                    session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
+                                    session.SendPacket(session.Character.GenerateCond());
+                                    session.Character.LastSpeedChange = DateTime.Now;
+                                }
                             }
                             else if (session.Character.IsVehicled)
                             {

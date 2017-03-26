@@ -514,7 +514,7 @@ namespace OpenNos.Handler
                 MapButton button = Session.CurrentMapInstance.Buttons.FirstOrDefault(s => s.MapButtonId == getPacket.TransportId);
                 if (button != null)
                 {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(2000,1,$"#git^{button.MapButtonId}"));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(2000, 1, $"#git^{button.MapButtonId}"));
                 }
             }
             else
@@ -1424,10 +1424,15 @@ namespace OpenNos.Handler
                         // TODO: add check on packetheader instead of this type check, way to abuse
                         if (spTransformPacket.Type == 1)
                         {
-                            ChangeSP();
+                            DateTime delay = DateTime.Now.AddSeconds(-6);
+                            if (Session.Character.LastDelay > delay && Session.Character.LastDelay < delay.AddSeconds(2))
+                            {
+                                ChangeSP();
+                            }
                         }
                         else
                         {
+                            Session.Character.LastDelay = DateTime.Now;
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 3, "#sl^1"));
                             Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
                         }
@@ -1451,13 +1456,13 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (Session.Character.LastUpgrade > DateTime.Now)
+            if (Session.Character.LastDelay.AddSeconds(5) > DateTime.Now)
             {
                 return;
             }
             InventoryType inventoryType = upgradePacket.InventoryType;
             byte uptype = upgradePacket.UpgradeType, slot = upgradePacket.Slot;
-            Session.Character.LastUpgrade = DateTime.Now.AddSeconds(5);
+            Session.Character.LastDelay = DateTime.Now;
             WearableInstance inventory;
             switch (uptype)
             {
