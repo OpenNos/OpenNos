@@ -1101,8 +1101,8 @@ namespace OpenNos.GameObject
                     if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                     {
                         RespawnMapTypeDTO resp = session.Character.Respawn;
-                        short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
-                        short y = (short)(resp.DefaultY + RandomNumber(-5, 5));
+                        short x = (short)(resp.DefaultX + RandomNumber(-3, 3));
+                        short y = (short)(resp.DefaultY + RandomNumber(-3, 3));
                         ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
                     }
                     else

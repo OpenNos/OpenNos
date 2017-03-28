@@ -231,12 +231,21 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            RespawnMapTypeDTO respDefault = DAOFactory.RespawnMapTypeDAO.LoadByMapId(npc.MapId);
-                            if (respDefault != null)
+                            switch(npc.MapId)
                             {
-                                Session.Character.SetRespawnPoint(npc.MapId, respDefault.DefaultX, respDefault.DefaultY);
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RESPAWNLOCATION_CHANGED"), 0));
+                                case 1:
+                                    Session.Character.SetRespawnPoint(1, 79, 116);
+                                    break;
+
+                                case 20:
+                                    Session.Character.SetRespawnPoint(20, 9, 92);
+                                    break;
+
+                                case 145:
+                                    Session.Character.SetRespawnPoint(145, 13, 110);
+                                    break;
                             }
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RESPAWNLOCATION_CHANGED"), 0));
                         }
                     }
                     break;

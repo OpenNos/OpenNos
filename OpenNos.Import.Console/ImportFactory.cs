@@ -1763,14 +1763,6 @@ namespace OpenNos.Import.Console
                 },
                 new RespawnMapTypeDTO
                 {
-                    RespawnMapTypeId = (long)RespawnType.DefaultAct3,
-                    DefaultMapId = 20,
-                    DefaultX = 9,
-                    DefaultY = 92,
-                    Name = "DefaultAct3"
-                },
-                new RespawnMapTypeDTO
-                {
                     RespawnMapTypeId = (long)RespawnType.DefaultAct5,
                     DefaultMapId = 170,
                     DefaultX = 86,
