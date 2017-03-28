@@ -223,15 +223,21 @@ namespace OpenNos.GameObject
                     break;
 
                 case 15:
-                    if (packet.Value == 2)
+                    if (npc != null)
                     {
-                        Session.SendPacket($"qna #n_run^15^1^1^{npc.MapNpcId} {Language.Instance.GetMessageFromKey("ASK_CHANGE_SPAWNLOCATION")}");
-                    }
-                    else
-                    {
-                        RespawnMapTypeDTO respDefault = DAOFactory.RespawnMapTypeDAO.LoadByMapId(npc.MapId);
-                        Session.Character.SetRespawnPoint(npc.MapId, respDefault.DefaultX, respDefault.DefaultY);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RESPAWNLOCATION_CHANGED"), 0));
+                        if (packet.Value == 2)
+                        {
+                            Session.SendPacket($"qna #n_run^15^1^1^{npc.MapNpcId} {Language.Instance.GetMessageFromKey("ASK_CHANGE_SPAWNLOCATION")}");
+                        }
+                        else
+                        {
+                            RespawnMapTypeDTO respDefault = DAOFactory.RespawnMapTypeDAO.LoadByMapId(npc.MapId);
+                            if (respDefault != null)
+                            {
+                                Session.Character.SetRespawnPoint(npc.MapId, respDefault.DefaultX, respDefault.DefaultY);
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RESPAWNLOCATION_CHANGED"), 0));
+                            }
+                        }
                     }
                     break;
 
