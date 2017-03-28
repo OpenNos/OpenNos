@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading;
 
@@ -103,7 +104,9 @@ namespace OpenNos.GameObject.Event
                     fam.LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
                 }
                 EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CLOCK, remaining * 10));
-                EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.STARTCLOCK, null));
+                EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.STARTCLOCK,
+                    new Tuple<List<EventContainer>, List<EventContainer>>(new List<EventContainer>(),
+                        new List<EventContainer>())));
             }
         }
 
