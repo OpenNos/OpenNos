@@ -123,6 +123,7 @@ namespace OpenNos.PathFinder
                 {
                     grid[x, y] = new Node()
                     {
+                        Value = Grid[x, y].Value,
                         X = x,
                         Y = y
                     };
