@@ -1387,4 +1387,16 @@ Veux-tu le porter ?</value>
   <data name="YOU_GET_PET" xml:space="preserve">
     <value>Tu as obtenu un NosMate.</value>
   </data>
+  <data name="ASK_ENTRY_IN_FIRST_ROOM" xml:space="preserve">
+    <value>Commencer la mission ?</value>
+  </data>
+  <data name="DIGNITY_LOST" xml:space="preserve">
+    <value>Ta dignité a été reduite !</value>
+  </data>
+  <data name="GOLD_TS_END" xml:space="preserve">
+    <value>Tu es récompensé car tu as fini la mission. Tu as reçu [{0} or] . Il est possible que tu gagnes moins d'or et de réputation si ton niveau est trop élevé pour cette mission !</value>
+  </data>
+  <data name="TS_TUTORIAL" xml:space="preserve">
+    <value>Espace-temps tutoriel</value>
+  </data>
 </root>
