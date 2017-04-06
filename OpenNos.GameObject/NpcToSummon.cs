@@ -12,8 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
-using System;
 using System.Collections.Generic;
 
 namespace OpenNos.GameObject
@@ -22,7 +20,7 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public NpcToSummon(short vnum, MapCell spawnCell, long target, List<EventContainer> deathEvents, bool isProtected = false,bool isMate = false)
+        public NpcToSummon(short vnum, MapCell spawnCell, long target, List<EventContainer> deathEvents, bool isProtected = false, bool isMate = false)
         {
             VNum = vnum;
             SpawnCell = spawnCell;
@@ -36,17 +34,18 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public List<EventContainer> DeathEvents { get; set; }
+
+        public bool IsMate { get; set; }
+
+        public bool IsProtected { get; set; }
+
         public MapCell SpawnCell { get; set; }
 
         public long Target { get; set; }
 
         public short VNum { get; set; }
 
-        public List<EventContainer> DeathEvents { get; set; }
-
-        public bool IsProtected { get; set; }
-
-        public bool IsMate { get;  set; }
         #endregion
     }
 }
