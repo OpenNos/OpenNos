@@ -198,7 +198,8 @@ namespace OpenNos.Handler
         {
             Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
-            long.TryParse(packetsplit[2], out long gold);
+            long gold;
+            long.TryParse(packetsplit[2], out gold);
             byte[] type = new byte[10], qty = new byte[10];
             short[] slot = new short[10];
             string packetList = string.Empty;
@@ -544,7 +545,8 @@ namespace OpenNos.Handler
                     }
                     if (canpick && Session.HasCurrentMapInstance)
                     {
-                        if (mapItem is MonsterMapItem item)
+                        MonsterMapItem item = mapItem as MonsterMapItem;
+                        if (item != null)
                         {
                             MonsterMapItem monsterMapItem = item;
                             if (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.LodInstance && monsterMapItem.OwnerId.HasValue && monsterMapItem.OwnerId.Value != -1)
@@ -610,7 +612,8 @@ namespace OpenNos.Handler
                         {
                             // handle gold drop
                             long maxGold = ServerManager.Instance.MaxGold;
-                            if (mapItem is MonsterMapItem droppedGold && Session.Character.Gold + droppedGold.GoldAmount <= maxGold)
+                            MonsterMapItem droppedGold = mapItem as MonsterMapItem;
+                            if (droppedGold != null && Session.Character.Gold + droppedGold.GoldAmount <= maxGold)
                             {
                                 if (getPacket.PickerType == 2)
                                 {
@@ -672,6 +675,9 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), mviPacket.ToString());
             lock (Session.Character.Inventory)
             {
+                ItemInstance previousInventory;
+                ItemInstance newInventory;
+
                 // check if the destination slot is out of range
                 if (mviPacket.DestinationSlot > 48 + (Session.Character.HaveBackpack() ? 1 : 0) * 12)
                 {
@@ -685,7 +691,7 @@ namespace OpenNos.Handler
                 }
 
                 // actually move the item from source to destination
-                Session.Character.Inventory.MoveItem(mviPacket.InventoryType, mviPacket.InventoryType, mviPacket.Slot, mviPacket.Amount, mviPacket.DestinationSlot, out ItemInstance previousInventory, out ItemInstance newInventory);
+                Session.Character.Inventory.MoveItem(mviPacket.InventoryType, mviPacket.InventoryType, mviPacket.Slot, mviPacket.Amount, mviPacket.DestinationSlot, out previousInventory, out newInventory);
                 if (newInventory == null)
                 {
                     return;
@@ -839,6 +845,9 @@ namespace OpenNos.Handler
         /// <param name="reposPacket"></param>
         public void Repos(ReposPacket reposPacket)
         {
+            ItemInstance previousInventory;
+            ItemInstance newInventory;
+
             // check if the destination slot is out of range
             if (reposPacket.NewSlot >= (reposPacket.PartnerBackpack ? (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0) : Session.Character.WareHouseSize))
             {
@@ -852,7 +861,7 @@ namespace OpenNos.Handler
             }
 
             // actually move the item from source to destination
-            Session.Character.Inventory.MoveItem(reposPacket.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, reposPacket.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, reposPacket.OldSlot, reposPacket.Amount, reposPacket.NewSlot, out ItemInstance previousInventory, out ItemInstance newInventory);
+            Session.Character.Inventory.MoveItem(reposPacket.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, reposPacket.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, reposPacket.OldSlot, reposPacket.Amount, reposPacket.NewSlot, out previousInventory, out newInventory);
             if (newInventory == null)
             {
                 return;
@@ -879,8 +888,11 @@ namespace OpenNos.Handler
                         {
                             if (Session.Character.Inventory.LoadBySlotAndType<ItemInstance>((short)(x + 1), type) != null)
                             {
-                                Session.Character.Inventory.MoveItem(type, type, (short)(x + 1), 1, x, out ItemInstance inv, out ItemInstance invdest);
-                                if (invdest is WearableInstance wearableInstance)
+                                ItemInstance invdest;
+                                ItemInstance inv;
+                                Session.Character.Inventory.MoveItem(type, type, (short)(x + 1), 1, x, out inv, out invdest);
+                                WearableInstance wearableInstance = invdest as WearableInstance;
+                                if (wearableInstance != null)
                                 {
                                     Session.SendPacket(invdest.GenerateInventoryAdd());
                                 }
@@ -1602,7 +1614,9 @@ namespace OpenNos.Handler
         {
             Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ', '^');
-            if (packetsplit.Length > 5 && short.TryParse(packetsplit[5], out short slot) && byte.TryParse(packetsplit[4], out byte type))
+            short slot;
+            byte type;
+            if (packetsplit.Length > 5 && short.TryParse(packetsplit[5], out slot) && byte.TryParse(packetsplit[4], out type))
             {
                 ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot, (InventoryType)type);
                 inv?.Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#' ? (byte)255 : (byte)0, packetsplit);

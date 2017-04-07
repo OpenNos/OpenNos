@@ -54,7 +54,7 @@ namespace OpenNos.GameObject.Event
 
                 if (LODTime == HornTime)
                 {
-                    SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+                    SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
                     foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
                     {
                         if (fam.LandOfDeath != null)
@@ -67,7 +67,7 @@ namespace OpenNos.GameObject.Event
                 }
                 else if (LODTime == HornTime - (HornRespawn * dhspawns))
                 {
-                    SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+                    SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
                     foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
                     {
                         if (fam.LandOfDeath != null)
@@ -80,7 +80,7 @@ namespace OpenNos.GameObject.Event
                 }
                 else if (LODTime == HornTime - (HornRespawn * dhspawns) - HornStay)
                 {
-                    SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+                    SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
                     foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
                     {
                         if (fam.LandOfDeath != null)
@@ -106,7 +106,7 @@ namespace OpenNos.GameObject.Event
 
         private void EndLOD()
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
             {
                 if (fam.LandOfDeath != null)
@@ -121,7 +121,7 @@ namespace OpenNos.GameObject.Event
 
         private void RefreshLOD(int remaining)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
             {
                 if (fam.LandOfDeath == null)

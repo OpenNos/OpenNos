@@ -79,7 +79,8 @@ namespace OpenNos.GameObject
 
         protected void RemoveSession(INetworkClient client)
         {
-            _sessions.TryRemove(client.ClientId, out ClientSession session);
+            ClientSession session;
+            _sessions.TryRemove(client.ClientId, out session);
 
             // check if session hasnt been already removed
             if (session != null)

@@ -25,6 +25,7 @@ namespace OpenNos.GameObject
         private Random _random;
         private Item item;
 
+
         #endregion
 
         #region Instantiation
@@ -67,17 +68,35 @@ namespace OpenNos.GameObject
         //// TODO: create Interface
 
         #region Methods
-
-        public ItemInstance DeepCopy()
+        public string GenerateStash()
         {
-            return (ItemInstance)MemberwiseClone();
+            return $"stash {GenerateStashPacket()}";
         }
-
+        public string GeneratePStash()
+        {
+            return $"pstash {GenerateStashPacket()}";
+        }
         public string GenerateFStash()
         {
             return $"f_stash {GenerateStashPacket()}";
         }
+        public string GenerateStashPacket()
+        {
+            string packet = $"{Slot}.{ItemVNum}.{(byte)Item.Type}";
+            switch (Item.Type)
+            {
+                case InventoryType.Equipment:
+                    return packet + $".{Amount}.{Rare}.{Upgrade}";
 
+                case InventoryType.Specialist:
+                    SpecialistInstance sp = this as SpecialistInstance;
+                    return packet + $".{Upgrade}.{sp?.SpStoneUpgrade ?? 0}.0";
+
+                default:
+                    return packet + $".{Amount}.0.0";
+            }
+        }
+  
         public string GenerateInventoryAdd()
         {
             switch (Type)
@@ -103,36 +122,15 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
-        public string GeneratePStash()
+        public ItemInstance DeepCopy()
         {
-            return $"pstash {GenerateStashPacket()}";
-        }
-
-        public string GenerateStash()
-        {
-            return $"stash {GenerateStashPacket()}";
-        }
-
-        public string GenerateStashPacket()
-        {
-            string packet = $"{Slot}.{ItemVNum}.{(byte)Item.Type}";
-            switch (Item.Type)
-            {
-                case InventoryType.Equipment:
-                    return packet + $".{Amount}.{Rare}.{Upgrade}";
-
-                case InventoryType.Specialist:
-                    SpecialistInstance sp = this as SpecialistInstance;
-                    return packet + $".{Upgrade}.{sp?.SpStoneUpgrade ?? 0}.0";
-
-                default:
-                    return packet + $".{Amount}.0.0";
-            }
+            return (ItemInstance)MemberwiseClone();
         }
 
         public void Save()
         {
         }
+        
 
         #endregion
     }

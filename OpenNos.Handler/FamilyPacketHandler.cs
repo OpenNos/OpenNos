@@ -52,7 +52,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void ChangeAuthority(FauthPacket packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             if (Session.Character.Family == null || Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
             {
                 return;
@@ -108,7 +108,7 @@ namespace OpenNos.Handler
         [Packet("glmk")]
         public void CreateFamily(string packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
 
             if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
             {
@@ -166,7 +166,7 @@ namespace OpenNos.Handler
         [Packet("%FamilyShout")]
         public void FamilyCall(string packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
                 if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerCanShout || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
@@ -191,14 +191,14 @@ namespace OpenNos.Handler
         /// <param name="todayPacket"></param>
         public void FamilyChangeMessage(TodayPacket todayPacket)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             Session.SendPacket("today_stc");
         }
 
         [Packet(":")]
         public void FamilyChat(string packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
                 string msg = string.Empty;
@@ -288,7 +288,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
 
             Family fam = Session.Character.Family;
             List<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character?.Family != null && s.Character.Family.FamilyId == fam.FamilyId).ToList();
@@ -386,7 +386,7 @@ namespace OpenNos.Handler
         [Packet("glist")]
         public void FamilyList(string packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
                 string[] packetsplit = packet.Split(' ');
@@ -410,7 +410,7 @@ namespace OpenNos.Handler
         [Packet("fmg")]
         public void FamilyManagement(string packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             if (Session.Character.Family == null)
             {
                 return;
@@ -420,14 +420,16 @@ namespace OpenNos.Handler
                 return;
             }
             string[] packetsplit = packet.Split(' ');
-            if (long.TryParse(packetsplit[3], out long targetId))
+            long targetId;
+            if (long.TryParse(packetsplit[3], out targetId))
             {
                 if (DAOFactory.FamilyCharacterDAO.LoadByCharacterId(targetId)?.FamilyId != Session.Character.FamilyCharacter.FamilyId)
                 {
                     return;
                 }
                 ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(targetId);
-                byte.TryParse(packetsplit[2], out byte auth);
+                byte auth;
+                byte.TryParse(packetsplit[2], out auth);
                 switch (auth)
                 {
                     case 0:
@@ -549,7 +551,7 @@ namespace OpenNos.Handler
         [Packet("%Avertissement")]
         public void FamilyMessage(string packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
                 if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerCanShout || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
@@ -583,7 +585,7 @@ namespace OpenNos.Handler
         /// <param name="frankCtsPacket"></param>
         public void FamilyRank(FrankCtsPacket frankCtsPacket)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateFrank(frankCtsPacket.Type));
         }
 
@@ -739,7 +741,7 @@ namespace OpenNos.Handler
         [Packet("%Invitationdefamille")]
         public void InviteFamily(string packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             string[] packetsplit = packet.Split(' ');
 
             if (packetsplit.Length != 3)
@@ -790,9 +792,10 @@ namespace OpenNos.Handler
         [Packet("gjoin")]
         public void JoinFamily(string packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length == 4 && long.TryParse(packetsplit[3], out long characterId) && packetsplit[2] == "1")
+            long characterId;
+            if (packetsplit.Length == 4 && long.TryParse(packetsplit[3], out characterId) && packetsplit[2] == "1")
             {
                 ClientSession inviteSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
                 if (inviteSession != null &&
@@ -814,9 +817,12 @@ namespace OpenNos.Handler
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
                     inviteSession.Character.Family.InsertFamilyLog(FamilyLogType.UserManaged,
                         inviteSession.Character.Name, Session.Character.Name);
-                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup,
-                        Session.Character.Name, inviteSession.Character.Family.FamilyId.ToString(),
-                            UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"), Session.Character.Name, inviteSession.Character.Family.Name), 0),
+                    int? sentChannelId =
+                        ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name,
+                            inviteSession.Character.Family.FamilyId.ToString(),
+                            UserInterfaceHelper.Instance.GenerateMsg(
+                                string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"),
+                                    Session.Character.Name, inviteSession.Character.Family.Name), 0),
                             ServerManager.Instance.ChannelId, MessageType.Family).Result;
 
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
@@ -831,13 +837,14 @@ namespace OpenNos.Handler
         [Packet("%Sexe")]
         public void ResetSex(string packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length != 3)
             {
                 return;
             }
-            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null && Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head && byte.TryParse(packetsplit[2], out byte rank))
+            byte rank;
+            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null && Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head && byte.TryParse(packetsplit[2], out rank))
             {
                 foreach (FamilyCharacter familyCharacter in Session.Character.Family.FamilyCharacters)
                 {
@@ -862,7 +869,7 @@ namespace OpenNos.Handler
         [Packet("%Titre")]
         public void TitleChange(string packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null && Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
             {
                 string[] packetsplit = packet.Split(' ');
@@ -872,7 +879,8 @@ namespace OpenNos.Handler
                 }
 
                 FamilyCharacterDTO fchar = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Character.Name == packetsplit[2]);
-                if (fchar != null && byte.TryParse(packetsplit[3], out byte rank))
+                byte rank;
+                if (fchar != null && byte.TryParse(packetsplit[3], out rank))
                 {
                     fchar.Rank = (FamilyMemberRank)rank;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref fchar);
@@ -888,7 +896,7 @@ namespace OpenNos.Handler
         [Packet("%Aujourd'hui")]
         public void TodayMessage(string packet)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
                 string msg = string.Empty;

@@ -113,13 +113,11 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-
         public string GeneratePslInfo()
         {
             // 1235.3 1237.4 1239.5 <= skills SkillVNum.Grade
             return $"pslinfo {Item.VNum} {Item.Element} {Item.ElementRate} {Item.LevelJobMinimum} {Item.Speed} {Item.FireResistance} {Item.WaterResistance} {Item.LightResistance} {Item.DarkResistance} 0.0 0.0 0.0";
         }
-
         public string GenerateSlInfo()
         {
             int freepoint = CharacterHelper.SPPoint(SpLevel, Upgrade) - SlDamage - SlHP - SlElement - SlDefence;
@@ -324,7 +322,7 @@ namespace OpenNos.GameObject
                     count = (byte)ServerManager.Instance.RandomNumber(3, 6);
                 }
 
-                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff( 3005), Session.Character.MapX, Session.Character.MapY);
 
                 if (type < 3)
                 {
@@ -590,7 +588,7 @@ namespace OpenNos.GameObject
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
+                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff( 3004), Session.Character.MapX, Session.Character.MapY);
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 11));
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 0));
                 }
@@ -606,7 +604,7 @@ namespace OpenNos.GameObject
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
+                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff( 3004), Session.Character.MapX, Session.Character.MapY);
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 11));
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 0));
@@ -615,9 +613,9 @@ namespace OpenNos.GameObject
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
+                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff( 3004), Session.Character.MapX, Session.Character.MapY);
                 }
-                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff( 3005), Session.Character.MapX, Session.Character.MapY);
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
                 wearable.Upgrade++;

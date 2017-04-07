@@ -3171,14 +3171,16 @@ namespace OpenNos.GameObject
                         case InventoryType.Equipment:
                             if (inv.Item.EquipmentSlot == EquipmentType.Sp)
                             {
-                                if (inv is SpecialistInstance specialistInstance)
+                                SpecialistInstance specialistInstance = inv as SpecialistInstance;
+                                if (specialistInstance != null)
                                 {
                                     inv0 += $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
                                 }
                             }
                             else
                             {
-                                if (inv is WearableInstance wearableInstance)
+                                WearableInstance wearableInstance = inv as WearableInstance;
+                                if (wearableInstance != null)
                                 {
                                     inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
                                 }

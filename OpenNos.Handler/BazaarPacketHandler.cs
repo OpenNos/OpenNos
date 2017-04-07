@@ -123,7 +123,7 @@ namespace OpenNos.Handler
         /// <param name="cScalcPacket"></param>
         public void GetBazaar(CScalcPacket cScalcPacket)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == cScalcPacket.BazaarId);
             if (bz != null)
             {
@@ -175,7 +175,7 @@ namespace OpenNos.Handler
         /// <param name="cSkillPacket"></param>
         public void OpenBazaar(CSkillPacket cSkillPacket)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
             if (medal != null)
             {
@@ -196,7 +196,7 @@ namespace OpenNos.Handler
         /// <param name="cbListPacket"></param>
         public void RefreshBazarList(CBListPacket cbListPacket)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateRCBList(cbListPacket));
         }
 
@@ -206,7 +206,7 @@ namespace OpenNos.Handler
         /// <param name="csListPacket"></param>
         public void RefreshPersonalBazarList(CSListPacket csListPacket)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             Session.SendPacket(Session.Character.GenerateRCSList(csListPacket));
         }
 
@@ -216,7 +216,7 @@ namespace OpenNos.Handler
         /// <param name="cRegPacket"></param>
         public void SellBazaar(CRegPacket cRegPacket)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
 
             long price = cRegPacket.Price * cRegPacket.Amount;

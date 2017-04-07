@@ -291,7 +291,8 @@ namespace OpenNos.Handler
             }
             if (characterInformationPacket[2] == "1")
             {
-                if (long.TryParse(characterInformationPacket[3], out long charId))
+                long charId;
+                if (long.TryParse(characterInformationPacket[3], out charId))
                 {
                     Session.SendPacket(ServerManager.Instance.GetSessionByCharacterId(charId)?.Character?.GenerateStatInfo());
                 }
@@ -300,7 +301,8 @@ namespace OpenNos.Handler
             {
                 foreach (MapNpc npc in Session.CurrentMapInstance.Npcs)
                 {
-                    if (int.TryParse(characterInformationPacket[3], out int mapMonsterId))
+                    int mapMonsterId;
+                    if (int.TryParse(characterInformationPacket[3], out mapMonsterId))
                     {
                         if (npc.MapNpcId == mapMonsterId)
                         {
@@ -315,7 +317,8 @@ namespace OpenNos.Handler
                 }
                 foreach (var player in Session.CurrentMapInstance.Sessions)
                 {
-                    if (!int.TryParse(characterInformationPacket[3], out int mateId)) continue;
+                    int mateId;
+                    if (!int.TryParse(characterInformationPacket[3], out mateId)) continue;
                     Mate mate = player.Character.Mates.FirstOrDefault(s => s.MateTransportId == mateId);
                     if (mate != null)
                     {
@@ -327,7 +330,8 @@ namespace OpenNos.Handler
             {
                 foreach (MapMonster monster in Session.CurrentMapInstance.Monsters)
                 {
-                    if (int.TryParse(characterInformationPacket[3], out int mapMonsterId))
+                    int mapMonsterId;
+                    if (int.TryParse(characterInformationPacket[3], out mapMonsterId))
                     {
                         if (monster.MapMonsterId == mapMonsterId)
                         {
@@ -553,7 +557,8 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length >= 4)
             {
-                if (long.TryParse(packetsplit[2], out long characterId))
+                long characterId;
+                if (long.TryParse(packetsplit[2], out characterId))
                 {
                     string message = string.Empty;
                     for (int i = 3; i < packetsplit.Length; i++)
@@ -588,7 +593,8 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length == 3)
             {
-                if (long.TryParse(packetsplit[2], out long characterId))
+                long characterId;
+                if (long.TryParse(packetsplit[2], out characterId))
                 {
                     Session.Character.DeleteRelation(characterId);
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_DELETED")));
@@ -604,7 +610,8 @@ namespace OpenNos.Handler
             {
                 if (!Session.Character.IsFriendlistFull())
                 {
-                    if (long.TryParse(packetsplit[3], out long characterId))
+                    long characterId;
+                    if (long.TryParse(packetsplit[3], out characterId))
                     {
                         if (!Session.Character.IsFriendOfCharacter(characterId))
                         {
@@ -674,7 +681,8 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length == 3)
             {
-                if (long.TryParse(packetsplit[2], out long characterId))
+                long characterId;
+                if (long.TryParse(packetsplit[2], out characterId))
                 {
                     Session.Character.DeleteBlackList(characterId);
                     Session.SendPacket(Session.Character.GenerateBlinit());
@@ -689,7 +697,8 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length == 3)
             {
-                if (long.TryParse(packetsplit[2], out long characterId))
+                long characterId;
+                if (long.TryParse(packetsplit[2], out characterId))
                 {
                     Session.Character.AddRelation(characterId, CharacterRelationType.Blocked);
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_ADDED")));
@@ -721,7 +730,8 @@ namespace OpenNos.Handler
             {
                 if (guriPacket[3] == "8023")
                 {
-                    if (short.TryParse(guriPacket[4], out short slot))
+                    short slot;
+                    if (short.TryParse(guriPacket[4], out slot))
                     {
                         ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
                         if (box != null)
@@ -758,7 +768,8 @@ namespace OpenNos.Handler
                 }
                 if (vnumToUse != -1)
                 {
-                    if (!long.TryParse(guriPacket[4], out long charId))
+                    long charId;
+                    if (!long.TryParse(guriPacket[4], out charId))
                     {
                         return;
                     }
@@ -778,7 +789,7 @@ namespace OpenNos.Handler
                                 short mapx = session.Character.PositionX;
                                 short mapId = session.Character.MapInstance.Map.MapId;
 
-
+                                
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
                                 Session.Character.Inventory.RemoveItemAmount(vnumToUse);
                             }
@@ -802,7 +813,8 @@ namespace OpenNos.Handler
             {
                 if (guriPacket.Length > 3)
                 {
-                    if (!short.TryParse(guriPacket[3], out short MapNpcId))
+                    short MapNpcId;
+                    if (!short.TryParse(guriPacket[3], out MapNpcId))
                     {
                         return;
                     }
@@ -880,8 +892,9 @@ namespace OpenNos.Handler
             {
                 if (guriPacket.Length > 3)
                 {
+                    short faction;
                     const short baseVnum = 1623;
-                    if (short.TryParse(guriPacket[3], out short faction))
+                    if (short.TryParse(guriPacket[3], out faction))
                     {
                         if (Session.Character.Inventory.CountItem(baseVnum + faction) > 0)
                         {
@@ -974,7 +987,8 @@ namespace OpenNos.Handler
             }
             else if (guriPacket[2] == "199" && guriPacket[3] == "1")
             {
-                long.TryParse(guriPacket[4], out long charId);
+                long charId;
+                long.TryParse(guriPacket[4], out charId);
                 if (!Session.Character.IsFriendOfCharacter(charId))
                 {
                     Session.SendPacket(Language.Instance.GetMessageFromKey("CHARACTER_NOT_IN_FRIENDLIST"));
@@ -996,7 +1010,9 @@ namespace OpenNos.Handler
             }
             else if (guriPacket[2] == "208" && guriPacket[3] == "0")
             {
-                if (short.TryParse(guriPacket[4], out short pearlSlot) && short.TryParse(guriPacket[6], out short mountSlot))
+                short pearlSlot;
+                short mountSlot;
+                if (short.TryParse(guriPacket[4], out pearlSlot) && short.TryParse(guriPacket[6], out mountSlot))
                 {
                     ItemInstance mount = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(mountSlot, InventoryType.Main);
                     BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
@@ -1009,7 +1025,9 @@ namespace OpenNos.Handler
             }
             else if (guriPacket[2] == "209" && guriPacket[3] == "0")
             {
-                if (short.TryParse(guriPacket[4], out short pearlSlot) && short.TryParse(guriPacket[6], out short mountSlot))
+                short pearlSlot;
+                short mountSlot;
+                if (short.TryParse(guriPacket[4], out pearlSlot) && short.TryParse(guriPacket[6], out mountSlot))
                 {
                     WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(mountSlot, InventoryType.Equipment);
                     BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
@@ -1155,7 +1173,7 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                     }
-
+                    
                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance && !Session.CurrentMapInstance.InstanceBag.Lock)
                     {
                         if (Session.Character.CharacterId == Session.CurrentMapInstance.InstanceBag.Creator)
@@ -1173,7 +1191,7 @@ namespace OpenNos.Handler
                         return;
                     }
                     Session.SendPacket(Session.CurrentMapInstance.GenerateRsfn());
-
+                    
                     Session.Character.LastPortal = currentRunningSeconds;
 
                     if (ServerManager.Instance.GetMapInstance(portal.SourceMapInstanceId).MapInstanceType != MapInstanceType.BaseMapInstance && ServerManager.Instance.GetMapInstance(portal.DestinationMapInstanceId).MapInstanceType == MapInstanceType.BaseMapInstance)
@@ -1215,7 +1233,8 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2] == "6")
             {
-                if (int.TryParse(packetsplit[4], out int mateVnum))
+                int mateVnum;
+                if (int.TryParse(packetsplit[4], out mateVnum))
                 {
                     var mate = Session.CurrentMapInstance.Sessions.FirstOrDefault(s => s.Character?.Mates != null && s.Character.Mates.Any(o => o.MateTransportId == mateVnum))?.Character.Mates.First(o => o.MateTransportId == mateVnum);
                     Session.SendPacket(mate?.GenerateEInfo());
@@ -1223,7 +1242,8 @@ namespace OpenNos.Handler
             }
             else if (packetsplit[2] == "5")
             {
-                if (short.TryParse(packetsplit[3], out short npcVNum))
+                short npcVNum;
+                if (short.TryParse(packetsplit[3], out npcVNum))
                 {
                     NpcMonster npc = ServerManager.Instance.GetNpc((short)npcVNum);
                     if (npc != null)
@@ -1264,7 +1284,8 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ', '^');
             if (packetsplit.Length > 2)
             {
-                if (!byte.TryParse(packetsplit[2], out byte type))
+                byte type;
+                if (!byte.TryParse(packetsplit[2], out type))
                 {
                     return;
                 }
@@ -1293,7 +1314,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateStat());
                                 }
                                 break;
-
+  
 
                             default:
                                 const int seed = 1012;
@@ -1507,8 +1528,8 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 4)
             {
-                short data1 = 0, data2 = 0;
-                if (!short.TryParse(packetsplit[2], out short type) || !short.TryParse(packetsplit[3], out short q1) || !short.TryParse(packetsplit[4], out short q2))
+                short type, q1, q2, data1 = 0, data2 = 0;
+                if (!short.TryParse(packetsplit[2], out type) || !short.TryParse(packetsplit[3], out q1) || !short.TryParse(packetsplit[4], out q2))
                 {
                     return;
                 }

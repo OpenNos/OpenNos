@@ -67,7 +67,8 @@ namespace OpenNos.GameObject
                             {
                                 if (packetsplit.Length == 1)
                                 {
-                                    if (int.TryParse(packetsplit[0], out int PetId))
+                                    int PetId;
+                                    if (int.TryParse(packetsplit[0], out PetId))
                                     {
                                         Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
                                         box.HoldingVNum = mate.NpcMonsterVNum;
@@ -86,11 +87,9 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                Mate mate = new Mate(session.Character, (short)box.HoldingVNum, 1, MateType.Pet)
-                                {
-                                    Attack = box.SpDamage,
-                                    Defence = box.SpDefence
-                                };
+                                Mate mate = new Mate(session.Character, (short)box.HoldingVNum, 1, MateType.Pet);
+                                mate.Attack = box.SpDamage;
+                                mate.Defence = box.SpDefence;
                                 if (session.Character.AddPet(mate))
                                 {
                                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
