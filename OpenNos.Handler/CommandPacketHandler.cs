@@ -80,8 +80,7 @@ namespace OpenNos.Handler
                 if (!DAOFactory.MapMonsterDAO.DoesMonsterExist(monst.MapMonsterId))
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
-                    MapMonster monster = DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) as MapMonster;
-                    if (monster != null)
+                    if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) is MapMonster monster)
                     {
                         monster.Initialize(Session.CurrentMapInstance);
                         Session.CurrentMapInstance.AddMonster(monster);
@@ -531,7 +530,7 @@ namespace OpenNos.Handler
                     player.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                     player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff( 8), player.Character.PositionX, player.Character.PositionY);
+                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(8), player.Character.PositionX, player.Character.PositionY);
 
                     player.Character.Skills[(short)(200 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
                     player.Character.Skills[(short)(201 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
@@ -648,7 +647,7 @@ namespace OpenNos.Handler
                     player = ServerManager.Instance.GetSessionByCharacterName(changeSpecialistLevelPacket.Name);
                 }
                 SpecialistInstance sp =
-                    player.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp,
+                    player.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,
                         InventoryType.Wear);
 
                 if (sp != null && Session.Character.UseSp)
@@ -860,7 +859,6 @@ namespace OpenNos.Handler
                 string[] packetsplit = packet.Split(' ');
                 byte amount = 1, upgrade = 0, design = 0;
                 sbyte rare = 0;
-                short vnum;
                 if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
                 {
                     Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 10));
@@ -870,7 +868,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 10));
                     Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 10));
                 }
-                else if (short.TryParse(packetsplit[2], out vnum))
+                else if (short.TryParse(packetsplit[2], out short vnum))
                 {
                     if (vnum == 1046)
                     {
@@ -1076,7 +1074,7 @@ namespace OpenNos.Handler
             Logger.Debug("Effect Command", Session.Character.GenerateIdentity());
             if (effectCommandpacket != null)
             {
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( effectCommandpacket.EffectId), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(effectCommandpacket.EffectId), Session.Character.PositionX, Session.Character.PositionY);
             }
             else
             {
@@ -1272,7 +1270,7 @@ namespace OpenNos.Handler
         public void Guri(GuriCommandPacket guriCommandPacket)
         {
             Logger.Debug("Guri Command", Session.Character.GenerateIdentity());
-            Session.SendPacket(guriCommandPacket != null ? UserInterfaceHelper.Instance.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument,Session.Character.CharacterId, guriCommandPacket.Value) : Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
+            Session.SendPacket(guriCommandPacket != null ? UserInterfaceHelper.Instance.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, Session.Character.CharacterId, guriCommandPacket.Value) : Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
         }
 
         /// <summary>
@@ -1364,20 +1362,16 @@ namespace OpenNos.Handler
                     case InventoryType.Equipment:
                         if (inv.Item.EquipmentSlot == EquipmentType.Sp)
                         {
-                            SpecialistInstance specialistInstance = inv as SpecialistInstance;
-                            if (specialistInstance != null)
+                            if (inv is SpecialistInstance specialistInstance)
                             {
-                                inv0 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
+                                inv0 += $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
                             }
                         }
                         else
                         {
-                            WearableInstance wearableInstance = inv as WearableInstance;
-                            if (wearableInstance != null)
+                            if (inv is WearableInstance wearableInstance)
                             {
-                                inv0 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
+                                inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
                             }
                         }
                         break;
@@ -1398,8 +1392,7 @@ namespace OpenNos.Handler
                         SpecialistInstance specialist = inv as SpecialistInstance;
                         if (specialist != null)
                         {
-                            inv6 +=
-                                $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
+                            inv6 += $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
                         }
                         break;
 
@@ -1407,8 +1400,7 @@ namespace OpenNos.Handler
                         WearableInstance costumeInstance = inv as WearableInstance;
                         if (costumeInstance != null)
                         {
-                            inv7 +=
-                                $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
+                            inv7 += $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
                         }
                         break;
                     case InventoryType.Wear:
@@ -2127,10 +2119,9 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                short mapId;
-                if (short.TryParse(teleportPacket.Data, out mapId))
+                if (short.TryParse(teleportPacket.Data, out short mapId))
                 {
-                    
+
                     ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, teleportPacket.X, teleportPacket.Y);
                 }
                 else
@@ -2138,7 +2129,7 @@ namespace OpenNos.Handler
                     ClientSession session = ServerManager.Instance.GetSessionByCharacterName(teleportPacket.Data);
                     if (session != null)
                     {
-                        
+
                         short mapX = session.Character.PositionX;
                         short mapY = session.Character.PositionY;
                         if (session.Character.Miniland == session.Character.MapInstance)
@@ -2184,7 +2175,7 @@ namespace OpenNos.Handler
 
                         if (!session.Character.IsChangingMapInstance && Session.HasCurrentMapInstance)
                         {
-                            
+
 
                             List<MapCell> possibilities = new List<MapCell>();
                             for (short x = -6; x < 6; x++)
@@ -2413,7 +2404,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug("Zoom Command", Session.Character.GenerateIdentity());
             Session.SendPacket(zoomPacket != null
-                ? UserInterfaceHelper.Instance.GenerateGuri(15, zoomPacket.Value,Session.Character.CharacterId)
+                ? UserInterfaceHelper.Instance.GenerateGuri(15, zoomPacket.Value, Session.Character.CharacterId)
                 : Session.Character.GenerateSay("$Zoom VALUE", 10));
         }
 

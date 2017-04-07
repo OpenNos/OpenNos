@@ -132,9 +132,9 @@ namespace OpenNos.GameObject
 
         public List<Raid> Raids => _raids.GetAllItems();
 
-        public bool inBazaarRefreshMode { get; set; }
+        public bool InBazaarRefreshMode { get; set; }
 
-        public bool inFamilyRefreshMode { get; set; }
+        public bool InFamilyRefreshMode { get; set; }
 
         public static ServerManager Instance => _instance ?? (_instance = new ServerManager());
 
@@ -373,9 +373,9 @@ namespace OpenNos.GameObject
 
         public void BazaarRefresh(long BazaarItemId)
         {
-            inBazaarRefreshMode = true;
+            InBazaarRefreshMode = true;
             ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh", ServerGroup, BazaarItemId);
-            SpinWait.SpinUntil(() => !inBazaarRefreshMode);
+            SpinWait.SpinUntil(() => !InBazaarRefreshMode);
         }
 
         public void ChangeMap(long id, short? MapId = null, short? mapX = null, short? mapY = null)
@@ -543,9 +543,9 @@ namespace OpenNos.GameObject
 
         public void FamilyRefresh(long FamilyId)
         {
-            inFamilyRefreshMode = true;
+            InFamilyRefreshMode = true;
             ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", ServerGroup, FamilyId);
-            SpinWait.SpinUntil(() => !inFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !InFamilyRefreshMode);
         }
 
         public Guid GetBaseMapInstanceIdByMapId(short MapId)
@@ -1416,7 +1416,7 @@ namespace OpenNos.GameObject
                     BazaarList.Remove(bzlink);
                 }
             }
-            inBazaarRefreshMode = false;
+            InBazaarRefreshMode = false;
         }
 
         private void OnFamilyRefresh(object sender, EventArgs e)
@@ -1485,7 +1485,7 @@ namespace OpenNos.GameObject
                     FamilyList.Remove(fam);
                 }
             }
-            inFamilyRefreshMode = false;
+            InFamilyRefreshMode = false;
         }
 
         private void OnMessageSentToCharacter(object sender, EventArgs e)

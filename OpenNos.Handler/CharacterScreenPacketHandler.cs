@@ -63,9 +63,8 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            byte slot;
             string characterName = packetsplit[2];
-            if (byte.TryParse(packetsplit[3], out slot) && slot <= 2 && DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) == null)
+            if (byte.TryParse(packetsplit[3], out byte slot) && slot <= 2 && DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) == null)
             {
                 if (characterName.Length > 3 && characterName.Length < 15)
                 {
@@ -307,8 +306,7 @@ namespace OpenNos.Handler
             {
                 if (Session?.Account != null && !Session.HasSelectedCharacter)
                 {
-                    Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) as Character;
-                    if (character != null)
+                    if (DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) is Character character)
                     {
                         character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
                         character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(character.MapId);
