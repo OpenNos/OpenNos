@@ -30,7 +30,6 @@ namespace OpenNos.GameObject.Helpers
         private static int[,] _distDodge;
         private static int[,] _distRate;
         private static double[] _firstJobXpData;
-        private static double[] _heroXpData;
         private static int[,] _hitDef;
         private static int[,] _hitDodge;
         private static int[,] _hitRate;
@@ -57,6 +56,7 @@ namespace OpenNos.GameObject.Helpers
 
         // same for all class
         private static double[] _xpData;
+        private static double[] _heroXpData;
 
         #endregion
 
@@ -91,18 +91,6 @@ namespace OpenNos.GameObject.Helpers
                     new CharacterHelper();
                 }
                 return _firstJobXpData;
-            }
-        }
-
-        public static double[] HeroXpData
-        {
-            get
-            {
-                if (_heroXpData == null)
-                {
-                    new CharacterHelper();
-                }
-                return _heroXpData;
             }
         }
 
@@ -223,6 +211,18 @@ namespace OpenNos.GameObject.Helpers
                     new CharacterHelper();
                 }
                 return _xpData;
+            }
+        }
+
+        public static double[] HeroXpData
+        {
+            get
+            {
+                if (_heroXpData == null)
+                {
+                    new CharacterHelper();
+                }
+                return _heroXpData;
             }
         }
 
@@ -765,17 +765,6 @@ namespace OpenNos.GameObject.Helpers
             return 0;
         }
 
-        private static void LoadHeroXpData()
-        {
-            // Load SpData
-            _heroXpData = new double[256];
-            _heroXpData[0] = 949560;
-            for (var i = 1; i < _heroXpData.Length; i++)
-            {
-                _heroXpData[i] = Convert.ToInt64(_heroXpData[i - 1] * 1.08);
-            }
-        }
-
         private static void LoadHPData()
         {
             _hp = new int[4, 256];
@@ -1055,6 +1044,19 @@ namespace OpenNos.GameObject.Helpers
                 _hitDodge[(int)ClassType.Archer, i] = 41 + i; // approx
                 _distDodge[(int)ClassType.Archer, i] = i + 2; // approx
                 _distDef[(int)ClassType.Archer, i] = i; // approx
+            }
+        }
+
+
+
+        private static void LoadHeroXpData()
+        {
+            // Load SpData
+            _heroXpData = new double[256];
+            _heroXpData[0] = 949560;
+            for (var i = 1; i < _heroXpData.Length; i++)
+            {
+                _heroXpData[i] = Convert.ToInt64(_heroXpData[i - 1] * 1.08);
             }
         }
 

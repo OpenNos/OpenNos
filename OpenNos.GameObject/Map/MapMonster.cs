@@ -24,6 +24,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Type = OpenNos.GameObject.Buff.BCard.Type;
 
 namespace OpenNos.GameObject
@@ -48,7 +49,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
-
+        public bool IsHostile { get; set; }
         public int CurrentHp { get; set; }
 
         public int CurrentMp { get; set; }
@@ -61,17 +62,10 @@ namespace OpenNos.GameObject
 
         public bool IsAlive { get; set; }
 
-        public bool IsBonus { get; set; }
-
-        public bool IsHostile { get; set; }
-
-        public bool IsTarget { get; set; }
-
-        public DateTime LastEffect { get; set; }
-
-        public DateTime LastMove { get; set; }
 
         public DateTime LastSkill { get; set; }
+
+        public DateTime LastMove { get; set; }
 
         public IDisposable LifeEvent { get; set; }
 
@@ -79,35 +73,26 @@ namespace OpenNos.GameObject
 
         public NpcMonster Monster { get; private set; }
 
-        public List<EventContainer> OnDeathEvents { get; set; }
-
         public List<GridPos> Path { get; set; }
 
         public bool? ShouldRespawn { get; set; }
 
         public List<NpcMonsterSkill> Skills { get; set; }
 
-        public bool Started { get; internal set; }
-
         public long Target { get; set; }
 
         private short FirstX { get; set; }
 
         private short FirstY { get; set; }
+        public List<EventContainer> OnDeathEvents { get; set; }
+        public bool IsTarget { get; set; }
+        public DateTime LastEffect { get; set; }
+        public bool IsBonus { get; set; }
+        public bool Started { get; internal set; }
 
         #endregion
 
         #region Methods
-
-        public EffectPacket GenerateEff(int effectid)
-        {
-            return new EffectPacket
-            {
-                EffectType = 3,
-                CharacterId = MapMonsterId,
-                Id = effectid
-            };
-        }
 
         public string GenerateIn()
         {
@@ -118,11 +103,39 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
+        public void RunDeathEvent()
+        {
+            if (IsBonus)
+            {
+                MapInstance.InstanceBag.Combo++;
+                MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo + 1);
+            }
+            else
+            {
+                MapInstance.InstanceBag.Combo = 0;
+                MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo);
+            }
+            MapInstance.InstanceBag.MonstersKilled++;
+            OnDeathEvents.ForEach(e =>
+            {
+                EventHelper.Instance.RunEvent(e);
+            });
+            OnDeathEvents.RemoveAll(s => s != null);
+        }
+
         public string GenerateOut()
         {
             return $"out 3 {MapMonsterId}";
         }
-
+        public EffectPacket GenerateEff(int effectid)
+        {
+            return new EffectPacket
+            {
+                EffectType = 3,
+                CharacterId = MapMonsterId,
+                Id = effectid
+            };
+        }
         public string GenerateSay(string message, int type)
         {
             return $"say 3 {MapMonsterId} {type} {message}";
@@ -173,26 +186,6 @@ namespace OpenNos.GameObject
                  X = MapX,
                  Y = MapY
              }) <= distance + 1;
-        }
-
-        public void RunDeathEvent()
-        {
-            if (IsBonus)
-            {
-                MapInstance.InstanceBag.Combo++;
-                MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo + 1);
-            }
-            else
-            {
-                MapInstance.InstanceBag.Combo = 0;
-                MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo);
-            }
-            MapInstance.InstanceBag.MonstersKilled++;
-            OnDeathEvents.ForEach(e =>
-            {
-                EventHelper.Instance.RunEvent(e);
-            });
-            OnDeathEvents.RemoveAll(s => s != null);
         }
 
         public void StartLife()
@@ -314,6 +307,8 @@ namespace OpenNos.GameObject
                          });
 
                     Path.RemoveRange(0, maxindex);
+
+
                 }
 
                 if (targetSession == null || MapId != targetSession.Character.MapInstance.Map.MapId || distance > maxDistance)
@@ -797,7 +792,6 @@ namespace OpenNos.GameObject
                     MapInstance.Broadcast(GenerateEff(826));
                 }
             }
-
             // handle hit queue
             HitRequest hitRequest;
             while (HitQueue.TryDequeue(out hitRequest))

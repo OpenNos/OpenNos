@@ -1,84 +1,47 @@
-﻿using OpenNos.Core;
+﻿using System.Collections.Generic;
 using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.GameObject.Helpers;
 using System;
-using System.Collections.Generic;
+using OpenNos.Core;
+using System.Xml;
 using System.Linq;
+using OpenNos.GameObject.Helpers;
 using System.Reactive.Linq;
 using System.Threading;
-using System.Xml;
 
 namespace OpenNos.GameObject
 {
     public class ScriptedInstance : ScriptedInstanceDTO
     {
-        #region Members
-
-        private InstanceBag _instancebag = new InstanceBag();
-
-        private Dictionary<int, MapInstance> _mapinstancedictionary = new Dictionary<int, MapInstance>();
-
-        private IDisposable obs;
-
-        #endregion
-
-        #region Properties
-
-        public List<Gift> DrawItems { get; set; }
-
-        public MapInstance FirstMap { get; set; }
-
-        public List<Gift> GiftItems { get; set; }
-
-        public long Gold { get; set; }
+        public ScriptedInstanceType Type { get; set; }
 
         public string Label { get; set; }
 
-        public byte LevelMaximum { get; set; }
-
         public byte LevelMinimum { get; set; }
 
-        public byte Lives { get; set; }
-
-        public int MonsterAmount { get; internal set; }
-
-        public int NpcAmount { get; internal set; }
-
-        public int Reputation { get; set; }
+        public byte LevelMaximum { get; set; }
 
         public List<Gift> RequieredItems { get; set; }
 
-        public int RoomAmount { get; internal set; }
+        public List<Gift> DrawItems { get; set; }
 
         public List<Gift> SpecialItems { get; set; }
 
-        public ScriptedInstanceType Type { get; set; }
+        public List<Gift> GiftItems { get; set; }
 
-        #endregion
+        public MapInstance FirstMap { get; set; }
 
-        #region Methods
+        public long Gold { get; set; }
 
-        public void Dispose()
-        {
-            Thread.Sleep(10000);
-            _mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
-        }
+        public int Reputation { get; set; }
+        public byte Lives { get; set; }
+        public int MonsterAmount { get; internal set; }
+        public int RoomAmount { get; internal set; }
+        public int NpcAmount { get; internal set; }
 
-        public string GenerateMainInfo()
-        {
-            return $"minfo 0 1 -1.0/0 -1.0/0 -1/0 -1.0/0 1 {FirstMap.InstanceBag.Lives + 1} 0";
-        }
-
-        public List<string> GenerateMinimap()
-        {
-            List<string> lst = new List<string>
-            {
-                "rsfm 0 0 4 12"
-            };
-            _mapinstancedictionary.Values.ToList().ForEach(s => lst.Add(s.GenerateRsfn(true)));
-            return lst;
-        }
+        InstanceBag _instancebag = new InstanceBag();
+        IDisposable obs;
+        Dictionary<int, MapInstance> _mapinstancedictionary = new Dictionary<int, MapInstance>();
 
         public string GenerateRbr()
         {
@@ -108,66 +71,10 @@ namespace OpenNos.GameObject
             return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} {RequieredItems.Sum(s => s.Amount)} {drawgift} {specialitems} {bonusitems} {WinnerScore}.{(WinnerScore > 0 ? Winner : "")} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{Label}";
         }
 
-        public string GenerateWp()
+        public void Dispose()
         {
-            return $"wp {PositionX} {PositionY} {ScriptedInstanceId} 0 {LevelMinimum} {LevelMaximum}";
-        }
-
-        public void LoadGlobals()
-        {
-            RequieredItems = new List<Gift>();
-            DrawItems = new List<Gift>();
-            SpecialItems = new List<Gift>();
-            GiftItems = new List<Gift>();
-
-            XmlDocument doc = new XmlDocument();
-            if (Script != null)
-            {
-                doc.LoadXml(Script);
-
-                XmlNode def = doc.SelectSingleNode("Definition").SelectSingleNode("Globals");
-                LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum")?.Attributes["Value"].Value);
-                LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum")?.Attributes["Value"].Value);
-                Label = def.SelectSingleNode("Label")?.Attributes["Value"].Value;
-
-                long.TryParse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value, out long gold);
-                Gold = gold;
-
-                int.TryParse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value, out int reputation);
-                Reputation = reputation;
-
-                byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out byte lives);
-                Lives = lives;
-
-                if (def.SelectSingleNode("RequieredItems")?.ChildNodes != null)
-                {
-                    foreach (XmlNode node in def.SelectSingleNode("RequieredItems")?.ChildNodes)
-                    {
-                        RequieredItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
-                    }
-                }
-                if (def.SelectSingleNode("DrawItems")?.ChildNodes != null)
-                {
-                    foreach (XmlNode node in def.SelectSingleNode("DrawItems")?.ChildNodes)
-                    {
-                        DrawItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
-                    }
-                }
-                if (def.SelectSingleNode("SpecialItems")?.ChildNodes != null)
-                {
-                    foreach (XmlNode node in def.SelectSingleNode("SpecialItems")?.ChildNodes)
-                    {
-                        SpecialItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
-                    }
-                }
-                if (def.SelectSingleNode("GiftItems")?.ChildNodes != null)
-                {
-                    foreach (XmlNode node in def.SelectSingleNode("GiftItems")?.ChildNodes)
-                    {
-                        GiftItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
-                    }
-                }
-            }
+            Thread.Sleep(10000);
+            _mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
         }
 
         public void LoadScript()
@@ -177,7 +84,6 @@ namespace OpenNos.GameObject
             {
                 doc.LoadXml(Script);
                 XmlNode InstanceEvents = doc.SelectSingleNode("Definition");
-
                 //CreateMaps
                 foreach (XmlNode variable in InstanceEvents.SelectSingleNode("InstanceEvents").ChildNodes)
                 {
@@ -227,12 +133,11 @@ namespace OpenNos.GameObject
         {
             List<EventContainer> evts = new List<EventContainer>();
 
+
             foreach (XmlNode mapevent in node.ChildNodes)
             {
                 if (mapevent.Name == "#comment")
-                {
                     continue;
-                }
                 int mapid = -1;
                 short positionX = -1;
                 short positionY = -1;
@@ -240,6 +145,12 @@ namespace OpenNos.GameObject
                 short toX = -1;
                 int toMap = -1;
                 Guid destmapInstanceId = default(Guid);
+                bool isHostile = true;
+                bool isBonus;
+                bool isTarget;
+                bool isMate;
+                bool isProtected;
+                bool move;
                 if (!int.TryParse(mapevent.Attributes["Map"]?.Value, out mapid))
                 {
                     mapid = -1;
@@ -272,15 +183,15 @@ namespace OpenNos.GameObject
                         destmapInstanceId = destmap.MapInstanceId;
                     }
                 }
-                bool.TryParse(mapevent?.Attributes["IsTarget"]?.Value, out bool isTarget);
-                bool.TryParse(mapevent?.Attributes["IsBonus"]?.Value, out bool isBonus);
-                bool.TryParse(mapevent?.Attributes["IsProtected"]?.Value, out bool isProtected);
-                bool.TryParse(mapevent?.Attributes["IsMate"]?.Value, out bool isMate);
-                if (!bool.TryParse(mapevent?.Attributes["Move"]?.Value, out bool move))
+                bool.TryParse(mapevent?.Attributes["IsTarget"]?.Value, out isTarget);
+                bool.TryParse(mapevent?.Attributes["IsBonus"]?.Value, out isBonus);
+                bool.TryParse(mapevent?.Attributes["IsProtected"]?.Value, out isProtected);
+                bool.TryParse(mapevent?.Attributes["IsMate"]?.Value, out isMate);
+                if (!bool.TryParse(mapevent?.Attributes["Move"]?.Value, out move))
                 {
                     move = true;
                 }
-                if (!bool.TryParse(mapevent?.Attributes["IsHostile"]?.Value, out bool isHostile))
+                if (!bool.TryParse(mapevent?.Attributes["IsHostile"]?.Value, out isHostile))
                 {
                     isHostile = true;
                 }
@@ -326,10 +237,8 @@ namespace OpenNos.GameObject
 
                     case "SummonMonster":
                         MonsterAmount++;
-                        List<MonsterToSummon> lst = new List<MonsterToSummon>
-                        {
-                            new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile)
-                        };
+                        List<MonsterToSummon> lst = new List<MonsterToSummon>();
+                        lst.Add(new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile));
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, lst.AsEnumerable()));
                         break;
 
@@ -340,16 +249,22 @@ namespace OpenNos.GameObject
 
                     case "SummonNpc":
                         NpcAmount++;
-                        List<NpcToSummon> lstn = new List<NpcToSummon>
-                        {
-                            new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, GenerateEvent(mapevent, mapinstance), isMate, isProtected)
-                        };
+                        List<NpcToSummon> lstn = new List<NpcToSummon>();
+                        lstn.Add(new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, GenerateEvent(mapevent, mapinstance), isMate, isProtected));
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, lstn.AsEnumerable()));
                         break;
 
                     case "SpawnButton":
-                        MapButton button = new MapButton(int.Parse(mapevent?.Attributes["Id"].Value), positionX, positionY, short.Parse(mapevent?.Attributes["VNumEnabled"].Value),
-                             short.Parse(mapevent?.Attributes["VNumDisabled"].Value), new List<EventContainer>(), new List<EventContainer>(), new List<EventContainer>());
+                        MapButton button = new MapButton(
+                            int.Parse(mapevent?.Attributes["Id"].Value),
+                            positionX,
+                           positionY,
+                             short.Parse(mapevent?.Attributes["VNumEnabled"].Value),
+                              short.Parse(mapevent?.Attributes["VNumDisabled"].Value),
+                              new List<EventContainer>(),
+                               new List<EventContainer>(),
+                                new List<EventContainer>()
+                            );
                         foreach (XmlNode var in mapevent.ChildNodes)
                         {
                             switch (var.Name)
@@ -357,11 +272,9 @@ namespace OpenNos.GameObject
                                 case "OnFirstEnable":
                                     button.FirstEnableEvents.AddRange(GenerateEvent(var, mapinstance));
                                     break;
-
                                 case "OnEnable":
                                     button.EnableEvents.AddRange(GenerateEvent(var, mapinstance));
                                     break;
-
                                 case "OnDisable":
                                     button.DisableEvents.AddRange(GenerateEvent(var, mapinstance));
                                     break;
@@ -369,6 +282,7 @@ namespace OpenNos.GameObject
                         }
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNBUTTON, button));
                         break;
+
 
                     case "StopClock":
                         evts.Add(new EventContainer(mapinstance, EventActionType.STOPCLOCK, null));
@@ -415,7 +329,6 @@ namespace OpenNos.GameObject
                                 case "OnTimeout":
                                     eve.Item1.AddRange(GenerateEvent(var, mapinstance));
                                     break;
-
                                 case "OnStop":
                                     eve.Item2.AddRange(GenerateEvent(var, mapinstance));
                                     break;
@@ -433,7 +346,6 @@ namespace OpenNos.GameObject
                                 case "OnTimeout":
                                     eve.Item1.AddRange(GenerateEvent(var, mapinstance));
                                     break;
-
                                 case "OnStop":
                                     eve.Item2.AddRange(GenerateEvent(var, mapinstance));
                                     break;
@@ -465,10 +377,85 @@ namespace OpenNos.GameObject
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNPORTAL, portal));
                         break;
                 }
+
             }
             return evts;
         }
 
-        #endregion
+        public string GenerateMainInfo()
+        {
+            return $"minfo 0 1 -1.0/0 -1.0/0 -1/0 -1.0/0 1 {FirstMap.InstanceBag.Lives + 1} 0";
+        }
+
+        public string GenerateWp()
+        {
+            return $"wp {PositionX} {PositionY} {ScriptedInstanceId} 0 {LevelMinimum} {LevelMaximum}";
+        }
+
+        public List<string> GenerateMinimap()
+        {
+            List<string> lst = new List<string>();
+            lst.Add("rsfm 0 0 4 12");
+            _mapinstancedictionary.Values.ToList().ForEach(s => lst.Add(s.GenerateRsfn(true)));
+            return lst;
+        }
+
+        public void LoadGlobals()
+        {
+            RequieredItems = new List<Gift>();
+            DrawItems = new List<Gift>();
+            SpecialItems = new List<Gift>();
+            GiftItems = new List<Gift>();
+
+            XmlDocument doc = new XmlDocument();
+            if (Script != null)
+            {
+                doc.LoadXml(Script);
+
+                XmlNode def = doc.SelectSingleNode("Definition").SelectSingleNode("Globals");
+                LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum")?.Attributes["Value"].Value);
+                LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum")?.Attributes["Value"].Value);
+                Label = def.SelectSingleNode("Label")?.Attributes["Value"].Value;
+                long gold = 0;
+                long.TryParse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value, out gold);
+                Gold = gold;
+
+                int reputation = 0;
+                int.TryParse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value,out reputation);
+                Reputation = reputation;
+
+                byte lives;
+                byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out lives);
+                Lives = lives;
+                if (def.SelectSingleNode("RequieredItems")?.ChildNodes != null)
+                {
+                    foreach (XmlNode node in def.SelectSingleNode("RequieredItems")?.ChildNodes)
+                    {
+                        RequieredItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
+                    }
+                }
+                if (def.SelectSingleNode("DrawItems")?.ChildNodes != null)
+                {
+                    foreach (XmlNode node in def.SelectSingleNode("DrawItems")?.ChildNodes)
+                    {
+                        DrawItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
+                    }
+                }
+                if (def.SelectSingleNode("SpecialItems")?.ChildNodes != null)
+                {
+                    foreach (XmlNode node in def.SelectSingleNode("SpecialItems")?.ChildNodes)
+                    {
+                        SpecialItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
+                    }
+                }
+                if (def.SelectSingleNode("GiftItems")?.ChildNodes != null)
+                {
+                    foreach (XmlNode node in def.SelectSingleNode("GiftItems")?.ChildNodes)
+                    {
+                        GiftItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
+                    }
+                }
+            }
+        }
     }
 }

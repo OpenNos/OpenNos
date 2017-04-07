@@ -14,12 +14,13 @@
 
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.PathFinder;
-using OpenNos.Pathfinding;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OpenNos.Domain;
+using OpenNos.Pathfinding;
+using OpenNos.PathFinder;
 
 namespace OpenNos.GameObject
 {
@@ -118,16 +119,9 @@ namespace OpenNos.GameObject
             }
             return SummonParameters;
         }
-
-        public List<NpcToSummon> GenerateNpcs(short vnum, short amount, List<EventContainer> deathEvents, bool isMate, bool isProtected)
+        public List<GridPos> PathSearch(GridPos cell1, GridPos cell2)
         {
-            List<NpcToSummon> SummonParameters = new List<NpcToSummon>();
-            for (int i = 0; i < amount; i++)
-            {
-                MapCell cell = GetRandomPosition();
-                SummonParameters.Add(new NpcToSummon(vnum, cell, -1, deathEvents, isMate: isMate, isProtected: isProtected));
-            }
-            return SummonParameters;
+            return BestFirstSearch.findPath(cell1, cell2, Grid);    
         }
 
         public MapCell GetRandomPosition()
@@ -165,11 +159,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public List<GridPos> PathSearch(GridPos cell1, GridPos cell2)
-        {
-            return BestFirstSearch.FindPath(cell1, cell2, Grid);
-        }
-
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
         {
             short MinX = (short)(-xpoint + firstX);
@@ -199,6 +188,17 @@ namespace OpenNos.GameObject
                 }
             }
             return false;
+        }
+
+        public List<NpcToSummon> GenerateNpcs(short vnum, short amount, List<EventContainer> deathEvents, bool isMate, bool isProtected)
+        {
+            List<NpcToSummon> SummonParameters = new List<NpcToSummon>();
+            for (int i = 0; i < amount; i++)
+            {
+                MapCell cell = GetRandomPosition();
+                SummonParameters.Add(new NpcToSummon(vnum, cell, -1, deathEvents, isMate: isMate, isProtected: isProtected));
+            }
+            return SummonParameters;
         }
 
         private bool IsBlockedZone(int firstX, int firstY, int mapX, int mapY)

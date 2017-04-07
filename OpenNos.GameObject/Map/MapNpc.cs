@@ -35,17 +35,10 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public bool EffectActivated { get; set; }
-
         public short FirstX { get; set; }
 
         public short FirstY { get; set; }
 
-        public bool IsHostile { get; set; }
-
-        public bool IsMate { get; set; }
-
-        public bool IsProtected { get; set; }
 
         public DateTime LastEffect { get; private set; }
 
@@ -55,33 +48,26 @@ namespace OpenNos.GameObject
 
         public MapInstance MapInstance { get; set; }
 
-        public List<EventContainer> OnDeathEvents { get; set; }
-
         public List<GridPos> Path { get; set; }
 
         public List<Recipe> Recipes { get; set; }
 
         public Shop Shop { get; set; }
 
-        public bool Started { get; internal set; }
-
+        public bool IsHostile { get; set; }
         public long Target { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
 
+        public bool EffectActivated { get; set; }
+        public List<EventContainer> OnDeathEvents { get; set; }
+
+        public bool IsMate { get; set; }
+        public bool IsProtected { get; set; }
+        public bool Started { get; internal set; }
         #endregion
 
         #region Methods
-
-        public EffectPacket GenerateEff(int effectid)
-        {
-            return new EffectPacket
-            {
-                EffectType = 2,
-                CharacterId = MapNpcId,
-                Id = effectid
-            };
-        }
 
         public string GenerateIn()
         {
@@ -91,6 +77,16 @@ namespace OpenNos.GameObject
                 return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
             }
             return string.Empty;
+        }
+
+        public void RunDeathEvent()
+        {
+            MapInstance.InstanceBag.NpcsKilled++;
+            OnDeathEvents.ForEach(e =>
+            {
+                EventHelper.Instance.RunEvent(e);
+            });
+            OnDeathEvents.RemoveAll(s => s != null);
         }
 
         public string GetNpcDialog()
@@ -129,16 +125,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void RunDeathEvent()
-        {
-            MapInstance.InstanceBag.NpcsKilled++;
-            OnDeathEvents.ForEach(e =>
-            {
-                EventHelper.Instance.RunEvent(e);
-            });
-            OnDeathEvents.RemoveAll(s => s != null);
-        }
-
         internal void StartLife()
         {
             Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
@@ -161,6 +147,15 @@ namespace OpenNos.GameObject
         private string GenerateMv2()
         {
             return $"mv 2 {MapNpcId} {MapX} {MapY} {Npc.Speed}";
+        }
+        public EffectPacket GenerateEff(int effectid)
+        {
+            return new EffectPacket
+            {
+                EffectType = 2,
+                CharacterId = MapNpcId,
+                Id = effectid
+            };
         }
 
         private void NpcLife()

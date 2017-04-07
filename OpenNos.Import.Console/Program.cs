@@ -157,7 +157,7 @@ namespace OpenNos.Import.Console
                     {
                         factory.ImportTimeSpaces();
                     }
-
+                    
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')

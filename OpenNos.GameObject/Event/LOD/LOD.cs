@@ -31,18 +31,15 @@ namespace OpenNos.GameObject.Event
             const int HornTime = 30;
             const int HornRepawn = 4;
             const int HornStay = 1;
-            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
+            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)),EventActionType.NPCSEFFECTCHANGESTATE,true));
             LODThread lodThread = new LODThread();
             Observable.Timer(TimeSpan.FromMinutes(0)).Subscribe(X => lodThread.Run(lodtime * 60, HornTime * 60, HornRepawn * 60, HornStay * 60));
         }
-
         #endregion
     }
 
     public class LODThread
     {
-        #region Methods
-
         public void Run(int LODTime, int HornTime, int HornRespawn, int HornStay)
         {
             const int interval = 30;
@@ -97,11 +94,20 @@ namespace OpenNos.GameObject.Event
             EndLOD();
         }
 
-        private void DespawnDH(MapInstance LandOfDeath)
+        private void RefreshLOD(int remaining)
         {
-            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, false));
-            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0)));
-            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.UNSPAWNMONSTERS, 443));
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+            foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+            {
+                if (fam.LandOfDeath == null)
+                {
+                    fam.LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
+                }
+                EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CLOCK, remaining * 10));
+                EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.STARTCLOCK,
+                    new Tuple<List<EventContainer>, List<EventContainer>>(new List<EventContainer>(),
+                        new List<EventContainer>())));
+            }
         }
 
         private void EndLOD()
@@ -119,29 +125,17 @@ namespace OpenNos.GameObject.Event
             ServerManager.Instance.StartedEvents.Remove(EventType.LODDH);
         }
 
-        private void RefreshLOD(int remaining)
-        {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
-            foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
-            {
-                if (fam.LandOfDeath == null)
-                {
-                    fam.LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
-                }
-                EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CLOCK, remaining * 10));
-                EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.STARTCLOCK,
-                    new Tuple<List<EventContainer>, List<EventContainer>>(new List<EventContainer>(),
-                        new List<EventContainer>())));
-            }
-        }
-
         private void SpawnDH(MapInstance LandOfDeath)
         {
             EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SPAWNONLASTENTRY, 443));
             EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SENDPACKET, "df 2"));
             EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
         }
-
-        #endregion
+        private void DespawnDH(MapInstance LandOfDeath)
+        {
+            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, false));
+            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0)));
+            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.UNSPAWNMONSTERS, 443));
+        }
     }
 }

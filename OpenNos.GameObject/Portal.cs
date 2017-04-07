@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using System;
+using OpenNos.Domain;
 using System.Collections.Generic;
 
 namespace OpenNos.GameObject
@@ -26,18 +27,12 @@ namespace OpenNos.GameObject
         private Guid sourceMapInstanceId;
 
         #endregion
-
-        #region Instantiation
-
         public Portal()
         {
             OnTraversalEvents = new List<EventContainer>();
         }
-
-        #endregion
-
         #region Properties
-
+        
         public Guid DestinationMapInstanceId
         {
             get
@@ -66,14 +61,12 @@ namespace OpenNos.GameObject
             set { sourceMapInstanceId = value; }
         }
 
-        #endregion
-
-        #region Methods
-
         public string GenerateGp()
         {
-            return $"gp {SourceX} {SourceY} {ServerManager.Instance.GetMapInstance(DestinationMapInstanceId)?.Map.MapId ?? 0} {Type} {PortalId} {(IsDisabled ? 1 : 0)}";
+            return $"gp {SourceX} {SourceY} {ServerManager.Instance.GetMapInstance(DestinationMapInstanceId)?.Map.MapId??0} {Type} {PortalId} {(IsDisabled ? 1 : 0)}";
         }
+
+
 
         #endregion
     }

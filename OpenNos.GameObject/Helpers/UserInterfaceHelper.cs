@@ -16,18 +16,19 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenNos.GameObject.Helpers
 {
     public class UserInterfaceHelper
     {
-        #region Members
-
+        #region Instantiation
         private static UserInterfaceHelper instance;
 
         #endregion
 
         #region Properties
+
 
         public static UserInterfaceHelper Instance
         {
@@ -41,18 +42,49 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
-        #endregion
-
-        #region Methods
-
+        public IEnumerable<string> GenerateVb()
+        {
+            return new[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
+        }
+        public string GenerateRp(int mapid, int x, int y, string param)
+        {
+            return $"rp {mapid} {x} {y} {param}";
+        }
+        public string GenerateShopMemo(int type, string message)
+        {
+            return $"s_memo {type} {message}";
+        }
         public string GenerateDelay(int delay, int type, string argument)
         {
             return $"delay {delay} {type} {argument}";
         }
-
         public string GenerateDialog(string dialog)
         {
             return $"dlg {dialog}";
+        }
+
+        public string GenerateStashRemove(short slot)
+        {
+            return $"stash {GenerateRemovePacket(slot)}";
+        }
+        public string GeneratePStashRemove(short slot)
+        {
+            return $"pstash {GenerateRemovePacket(slot)}";
+        }
+
+        public string GenerateFStashRemove(short slot)
+        {
+            return $"f_stash {GenerateRemovePacket(slot)}";
+        }
+
+        public string GenerateRemovePacket(short slot)
+        {
+            return $"{slot}.-1.0.0.0";
+        }
+
+        public string GenerateInventoryRemove(InventoryType Type, short Slot)
+        {
+            return $"ivn {(byte)Type} {GenerateRemovePacket(Slot)}";
         }
 
         public string GenerateFrank(byte type)
@@ -147,73 +179,30 @@ namespace OpenNos.GameObject.Helpers
             }
             return packet;
         }
-
-        public string GenerateFStashRemove(short slot)
-        {
-            return $"f_stash {GenerateRemovePacket(slot)}";
-        }
-
-        public string GenerateGuri(byte type, byte argument, long CharacterId, int value = 0)
-        {
-            switch (type)
-            {
-                case 2:
-                    return $"guri 2 {argument} {CharacterId}";
-
-                case 6:
-                    return $"guri 6 1 {CharacterId} 0 0";
-
-                case 10:
-                    return $"guri 10 {argument} {value} {CharacterId}";
-
-                case 15:
-                    return $"guri 15 {argument} 0 0";
-
-                default:
-                    return $"guri {type} {argument} {CharacterId} {value}";
-            }
-        }
-
-        public string GenerateInbox(string value)
-        {
-            return $"inbox {value}";
-        }
-
-        public string GenerateInfo(string message)
-        {
-            return $"info {message}";
-        }
-
-        public string GenerateInventoryRemove(InventoryType Type, short Slot)
-        {
-            return $"ivn {(byte)Type} {GenerateRemovePacket(Slot)}";
-        }
-
         public string GenerateMapOut()
         {
             return "mapout";
         }
-
+        public string GenerateInbox(string value)
+        {
+            return $"inbox {value}";
+        }
+        public string GenerateInfo(string message)
+        {
+            return $"info {message}";
+        }
         public string GenerateModal(string message, int type)
         {
             return $"modal {type} {message}";
         }
-
         public string GenerateMsg(string message, int type)
         {
             return $"msg {type} {message}";
         }
-
         public string GeneratePClear()
         {
             return "p_clear";
         }
-
-        public string GeneratePStashRemove(short slot)
-        {
-            return $"pstash {GenerateRemovePacket(slot)}";
-        }
-
         public string GenerateRCBList(CBListPacket packet)
         {
             string itembazar = string.Empty;
@@ -267,7 +256,8 @@ namespace OpenNos.GameObject.Helpers
                         if (bz.Item.Item.Type == InventoryType.Equipment)
                             if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 2)
                             {
-                                if (bz.Item is BoxInstance boxInstance)
+                                BoxInstance boxInstance = bz.Item as BoxInstance;
+                                if (boxInstance != null)
                                 {
                                     if (packet.SubTypeFilter == 0)
                                     {
@@ -328,7 +318,8 @@ namespace OpenNos.GameObject.Helpers
                         if (bz.Item.Item.Type == InventoryType.Equipment)
                             if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 0)
                             {
-                                if (bz.Item is BoxInstance instance && (packet.LevelFilter == 0 || instance.SpLevel < packet.LevelFilter * 10 + 1 && instance.SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
+                                BoxInstance instance = bz.Item as BoxInstance;
+                                if (instance != null && (packet.LevelFilter == 0 || instance.SpLevel < packet.LevelFilter * 10 + 1 && instance.SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
                                     if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && ((BoxInstance)bz.Item).HoldingVNum == 0 || packet.SubTypeFilter == 2 && ((BoxInstance)bz.Item).HoldingVNum != 0)
                                         bzlist.Add(bz);
                             }
@@ -338,7 +329,8 @@ namespace OpenNos.GameObject.Helpers
                         if (bz.Item.Item.Type == InventoryType.Equipment)
                             if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 1)
                             {
-                                if (bz.Item is BoxInstance box && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
+                                BoxInstance box = bz.Item as BoxInstance;
+                                if (box != null && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
                                     if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && ((BoxInstance)bz.Item).HoldingVNum == 0 || packet.SubTypeFilter == 2 && ((BoxInstance)bz.Item).HoldingVNum != 0)
                                         bzlist.Add(bz);
                             }
@@ -347,44 +339,40 @@ namespace OpenNos.GameObject.Helpers
                     case 12://Vehicle
                         if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 4)
                         {
-                            if (bz.Item is BoxInstance box && (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && box.HoldingVNum == 0 || packet.SubTypeFilter == 2 && box.HoldingVNum != 0))
+                            BoxInstance box = bz.Item as BoxInstance;
+                            if (box != null && (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && box.HoldingVNum == 0 || packet.SubTypeFilter == 2 && box.HoldingVNum != 0))
                                 bzlist.Add(bz);
                         }
                         break;
 
                     case 8://Shell
                         if (bz.Item.Item.Type == InventoryType.Equipment)
-                        {
                             if (bz.Item.Item.ItemType == ItemType.Shell)
                                 if (packet.SubTypeFilter == 0 || bz.Item.Item.ItemSubType == bz.Item.Item.ItemSubType + 1)
                                     if (packet.RareFilter == 0 || packet.RareFilter == bz.Item.Rare + 1) //rare filter
-                                        if (bz.Item is BoxInstance box && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
+                                    {
+                                        BoxInstance box = bz.Item as BoxInstance;
+                                        if (box != null && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
                                             bzlist.Add(bz);
-                        }
+                                    }
                         break;
 
                     case 9://Main
                         if (bz.Item.Item.Type == InventoryType.Main)
-                        {
                             if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && bz.Item.Item.ItemType == ItemType.Main || packet.SubTypeFilter == 2 && bz.Item.Item.ItemType == ItemType.Upgrade || packet.SubTypeFilter == 3 && bz.Item.Item.ItemType == ItemType.Production || packet.SubTypeFilter == 4 && bz.Item.Item.ItemType == ItemType.Special || packet.SubTypeFilter == 5 && bz.Item.Item.ItemType == ItemType.Potion || packet.SubTypeFilter == 6 && bz.Item.Item.ItemType == ItemType.Event)
                                 bzlist.Add(bz);
-                        }
                         break;
 
                     case 10://Usable
                         if (bz.Item.Item.Type == InventoryType.Etc)
-                        {
                             if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && bz.Item.Item.ItemType == ItemType.Food || packet.SubTypeFilter == 2 && bz.Item.Item.ItemType == ItemType.Snack || packet.SubTypeFilter == 3 && bz.Item.Item.ItemType == ItemType.Magical || packet.SubTypeFilter == 4 && bz.Item.Item.ItemType == ItemType.Part || packet.SubTypeFilter == 5 && bz.Item.Item.ItemType == ItemType.Teacher || packet.SubTypeFilter == 6 && bz.Item.Item.ItemType == ItemType.Sell)
                                 bzlist.Add(bz);
-                        }
                         break;
 
                     case 11://Others
                         if (bz.Item.Item.Type == InventoryType.Equipment)
-                        {
                             if (bz.Item.Item.ItemType == ItemType.Box && !bz.Item.Item.IsHolder)
                                 bzlist.Add(bz);
-                        }
                         break;
 
                     default:
@@ -423,41 +411,37 @@ namespace OpenNos.GameObject.Helpers
                 long time = (long)(bzlink.BazaarItem.DateStart.AddHours(bzlink.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
                 string info = string.Empty;
                 if (bzlink.Item.Item.Type == InventoryType.Equipment)
-                {
-                    info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ? (bzlink.Item as WearableInstance).GenerateEInfo() : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
+                    info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ?
+                        (bzlink.Item as WearableInstance).GenerateEInfo() : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
                         (bzlink.Item as SpecialistInstance).GeneratePslInfo() : (bzlink.Item as SpecialistInstance).GenerateSlInfo()).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
-                }
+
                 itembazar += $"{bzlink.BazaarItem.BazaarItemId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage ? 1 : 0)}|{bzlink.BazaarItem.Price}|{time}|2|0|{bzlink.Item.Rare}|{bzlink.Item.Upgrade}|{info} ";
             }
 
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
-        public string GenerateRemovePacket(short slot)
-        {
-            return $"{slot}.-1.0.0.0";
-        }
 
-        public string GenerateRp(int mapid, int x, int y, string param)
+        public string GenerateGuri(byte type, byte argument, long CharacterId, int value = 0)
         {
-            return $"rp {mapid} {x} {y} {param}";
-        }
+            switch (type)
+            {
+                case 2:
+                    return $"guri 2 {argument} {CharacterId}";
 
-        public string GenerateShopMemo(int type, string message)
-        {
-            return $"s_memo {type} {message}";
-        }
+                case 6:
+                    return $"guri 6 1 {CharacterId} 0 0";
 
-        public string GenerateStashRemove(short slot)
-        {
-            return $"stash {GenerateRemovePacket(slot)}";
-        }
+                case 10:
+                    return $"guri 10 {argument} {value} {CharacterId}";
 
-        public IEnumerable<string> GenerateVb()
-        {
-            return new[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
-        }
+                case 15:
+                    return $"guri 15 {argument} 0 0";
 
+                default:
+                    return $"guri {type} {argument} {CharacterId} {value}";
+            }
+        }
         #endregion
     }
 }

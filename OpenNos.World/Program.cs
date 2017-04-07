@@ -109,8 +109,7 @@ namespace OpenNos.World
                 Logger.Log.Error("General Error", ex);
             }
             NetworkManager<WorldEncryption> networkManager = null;
-
-        portloop:
+            portloop:
             try
             {
                 networkManager = new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
@@ -205,7 +204,7 @@ namespace OpenNos.World
             DAOFactory.MateDAO.RegisterMapping(typeof(Mate)).InitializeMapper();
             DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
             DAOFactory.StaticBonusDAO.RegisterMapping(typeof(StaticBonusDTO)).InitializeMapper();
-            DAOFactory.FamilyDAO.RegisterMapping(typeof(Family)).InitializeMapper();
+            DAOFactory.FamilyDAO.RegisterMapping(typeof(Family)).InitializeMapper(); 
             DAOFactory.FamilyCharacterDAO.RegisterMapping(typeof(FamilyCharacter)).InitializeMapper();
             DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
             DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstance)).InitializeMapper();

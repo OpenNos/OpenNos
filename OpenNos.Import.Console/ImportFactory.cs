@@ -303,7 +303,8 @@ namespace OpenNos.Import.Console
                     {
                         continue;
                     }
-                    if (!int.TryParse(linesave[0], out int mapid))
+                    int mapid;
+                    if (!int.TryParse(linesave[0], out mapid))
                     {
                         continue;
                     }
@@ -1000,51 +1001,39 @@ namespace OpenNos.Import.Console
                             case 2500:
                                 npc.HeroXp = 533;
                                 break;
-
                             case 2501:
                                 npc.HeroXp = 534;
                                 break;
-
                             case 2502:
                                 npc.HeroXp = 535;
                                 break;
-
                             case 2503:
                                 npc.HeroXp = 614;
                                 break;
-
                             case 2510:
                                 npc.HeroXp = 534;
                                 break;
-
                             case 2511:
                                 npc.HeroXp = 533;
                                 break;
-
                             case 2512:
                                 npc.HeroXp = 535;
                                 break;
-
                             case 2513:
                                 npc.HeroXp = 651;
                                 break;
-
                             case 2521:
                                 npc.HeroXp = 170;
                                 break;
-
                             case 2522:
                                 npc.HeroXp = 286;
                                 break;
-
                             case 2523:
                                 npc.HeroXp = 328;
                                 break;
-
                             case 2525:
                                 npc.HeroXp = 261;
                                 break;
-
                             default:
                                 npc.HeroXp = 0;
                                 break;
@@ -1990,7 +1979,41 @@ namespace OpenNos.Import.Console
                 skillIdStream.Close();
             }
         }
+        public void ImportTimeSpaces()
+        {
+            short map = 0;
+            List<ScriptedInstanceDTO> listtimespace = new List<ScriptedInstanceDTO>();
+            List<ScriptedInstanceDTO> bddlist = new List<ScriptedInstanceDTO>(); ;
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("wp")))
+            {
+                if (currentPacket.Length > 5 && currentPacket[0] == "at")
+                {
+                    map = short.Parse(currentPacket[2]);
+                    bddlist = DAOFactory.TimeSpaceDAO.LoadByMap(map).ToList();
+                    continue;
+                }
+                else if (currentPacket.Length > 6 && currentPacket[0] == "wp")
+                {
+                    ScriptedInstanceDTO ts = new ScriptedInstanceDTO()
+                    {
+                        PositionX = short.Parse(currentPacket[1]),
+                        PositionY = short.Parse(currentPacket[2]),
+                        MapId = map,
+                    };
 
+                    if (!bddlist.Concat(listtimespace).Any(s => s.MapId == ts.MapId && s.PositionX == ts.PositionX && s.PositionY == ts.PositionY))
+                    {
+                        listtimespace.Add(ts);
+                    }
+                }
+                else if (currentPacket[0] == "rbr")
+                {
+                    //someinfo
+                }
+            }
+            DAOFactory.TimeSpaceDAO.Insert(listtimespace);
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TIMESPACES_PARSED"), listtimespace.Count));
+        }
         public void ImportSkills()
         {
             string fileSkillId = $"{_folder}\\Skill.dat";
@@ -2030,7 +2053,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
-                        skill.Name = dictionaryIdLang.TryGetValue(currentLine[2], out string name) ? name : string.Empty;
+                        string name;
+                        skill.Name = dictionaryIdLang.TryGetValue(currentLine[2], out name) ? name : string.Empty;
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "TYPE")
                     {
@@ -2381,42 +2405,6 @@ namespace OpenNos.Import.Console
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_PARSED"), teleporterCounter));
         }
 
-        public void ImportTimeSpaces()
-        {
-            short map = 0;
-            List<ScriptedInstanceDTO> listtimespace = new List<ScriptedInstanceDTO>();
-            List<ScriptedInstanceDTO> bddlist = new List<ScriptedInstanceDTO>(); ;
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("wp")))
-            {
-                if (currentPacket.Length > 5 && currentPacket[0] == "at")
-                {
-                    map = short.Parse(currentPacket[2]);
-                    bddlist = DAOFactory.TimeSpaceDAO.LoadByMap(map).ToList();
-                    continue;
-                }
-                else if (currentPacket.Length > 6 && currentPacket[0] == "wp")
-                {
-                    ScriptedInstanceDTO ts = new ScriptedInstanceDTO()
-                    {
-                        PositionX = short.Parse(currentPacket[1]),
-                        PositionY = short.Parse(currentPacket[2]),
-                        MapId = map,
-                    };
-
-                    if (!bddlist.Concat(listtimespace).Any(s => s.MapId == ts.MapId && s.PositionX == ts.PositionX && s.PositionY == ts.PositionY))
-                    {
-                        listtimespace.Add(ts);
-                    }
-                }
-                else if (currentPacket[0] == "rbr")
-                {
-                    //someinfo
-                }
-            }
-            DAOFactory.TimeSpaceDAO.Insert(listtimespace);
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TIMESPACES_PARSED"), listtimespace.Count));
-        }
-
         public void LoadMaps()
         {
             _maps = DAOFactory.MapDAO.LoadAll().ToList();
@@ -2476,7 +2464,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
-                        item.Name = dictionaryName.TryGetValue(currentLine[2], out string name) ? name : string.Empty;
+                        string name;
+                        item.Name = dictionaryName.TryGetValue(currentLine[2], out name) ? name : string.Empty;
                     }
                     else if (currentLine.Length > 7 && currentLine[1] == "INDEX")
                     {
@@ -3149,6 +3138,7 @@ namespace OpenNos.Import.Console
                             case ItemType.Special:
                                 switch (item.VNum)
                                 {
+
                                     case 1246:
                                     case 9020:
                                         item.Effect = 6600;
@@ -3172,12 +3162,10 @@ namespace OpenNos.Import.Console
                                         item.Effect = 6600;
                                         item.EffectValue = 4;
                                         break;
-
                                     case 5130:
                                     case 9072:
                                         item.Effect = 1006;
                                         break;
-
                                     case 1272:
                                     case 1858:
                                     case 9047:
@@ -3304,12 +3292,10 @@ namespace OpenNos.Import.Console
                                     case 204:
                                         item.EffectValue = 10000;
                                         break;
-
                                     case 305:
                                         item.EffectValue = Convert.ToInt32(currentLine[5]);
                                         item.Morph = Convert.ToInt16(currentLine[4]);
                                         break;
-
                                     default:
                                         item.EffectValue = item.EffectValue == 0 ? Convert.ToInt32(currentLine[4]) : item.EffectValue;
                                         break;

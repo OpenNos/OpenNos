@@ -13,7 +13,6 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Core.Handling;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
@@ -21,6 +20,7 @@ using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core.Handling;
 
 namespace OpenNos.Handler
 {
@@ -345,7 +345,8 @@ namespace OpenNos.Handler
             string shopname = string.Empty;
             if (packetsplit.Length > 2)
             {
-                short.TryParse(packetsplit[2], out short typePacket);
+                short typePacket;
+                short.TryParse(packetsplit[2], out typePacket);
                 if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMapInstance || Session.Character.IsExchanging || Session.Character.ExchangeInfo != null)
                 {
                     return;
@@ -486,6 +487,58 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// say_p packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void PetTalk(SayPPacket packet)
+        {
+            Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == packet.PetId);
+            if (mate != null)
+            {
+                Session.CurrentMapInstance.Broadcast(mate.GenerateSay(packet.Message, 2));
+            }
+
+        }
+
+        /// <summary>
+        /// ptctl packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void PetMove(PtCtlPacket packet)
+        {
+            string[] packetsplit = packet.PacketEnd.Split(' ');
+            for (int i = 0; i < packet.Amount * 3; i += 3)
+            {
+                if (packetsplit.Count() >= packet.Amount * 3)
+                {
+                    int PetId = int.Parse(packetsplit[i]);
+                    short PositionX = short.Parse(packetsplit[i + 1]);
+                    short PositionY = short.Parse(packetsplit[i + 2]);
+
+                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
+                    if (mate != null)
+                    {
+                        mate.PositionX = PositionX;
+                        mate.PositionY = PositionY;
+                        Session.CurrentMapInstance.Broadcast($"mv 2 {PetId} {PositionX} {PositionY} {mate.Monster.Speed}");
+                    }
+                }
+            }
+            /*
+             *   packet.Users.ForEach(u =>
+            {
+                Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId);
+                if (mate != null)
+                {
+                    mate.PositionX = u.UserX;
+                    mate.PositionY = u.UserY;
+                    Session.CurrentMapInstance.Broadcast($"mv 2 {u.UserId} { u.UserX} { u.UserY} {mate.Monster.Speed}");
+                }
+            });
+             */
+        }
+
         [Packet("pdtse")]
         public void Pdtse(string packet)
         {
@@ -495,7 +548,9 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (!byte.TryParse(packetsplit[2], out byte type) || !short.TryParse(packetsplit[3], out short VNum))
+            byte type;
+            short VNum;
+            if (!byte.TryParse(packetsplit[2], out type) || !short.TryParse(packetsplit[3], out VNum))
             {
                 return;
             }
@@ -548,7 +603,8 @@ namespace OpenNos.Handler
                             }
                             if (inv.GetType() == typeof(WearableInstance))
                             {
-                                if (inv.First() is WearableInstance item && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
+                                WearableInstance item = inv.First() as WearableInstance;
+                                if (item != null && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
                                 {
                                     item.SetRarityPoint();
                                 }
@@ -570,57 +626,6 @@ namespace OpenNos.Handler
             }
         }
 
-        /// <summary>
-        /// ptctl packet
-        /// </summary>
-        /// <param name="packet"></param>
-        public void PetMove(PtCtlPacket packet)
-        {
-            string[] packetsplit = packet.PacketEnd.Split(' ');
-            for (int i = 0; i < packet.Amount * 3; i += 3)
-            {
-                if (packetsplit.Count() >= packet.Amount * 3)
-                {
-                    int PetId = int.Parse(packetsplit[i]);
-                    short PositionX = short.Parse(packetsplit[i + 1]);
-                    short PositionY = short.Parse(packetsplit[i + 2]);
-
-                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
-                    if (mate != null)
-                    {
-                        mate.PositionX = PositionX;
-                        mate.PositionY = PositionY;
-                        Session.CurrentMapInstance.Broadcast($"mv 2 {PetId} {PositionX} {PositionY} {mate.Monster.Speed}");
-                    }
-                }
-            }
-            /*
-             *   packet.Users.ForEach(u =>
-            {
-                Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId);
-                if (mate != null)
-                {
-                    mate.PositionX = u.UserX;
-                    mate.PositionY = u.UserY;
-                    Session.CurrentMapInstance.Broadcast($"mv 2 {u.UserId} { u.UserX} { u.UserY} {mate.Monster.Speed}");
-                }
-            });
-             */
-        }
-
-        /// <summary>
-        /// say_p packet
-        /// </summary>
-        /// <param name="packet"></param>
-        public void PetTalk(SayPPacket packet)
-        {
-            Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == packet.PetId);
-            if (mate != null)
-            {
-                Session.CurrentMapInstance.Broadcast(mate.GenerateSay(packet.Message, 2));
-            }
-        }
-
         [Packet("sell")]
         public void SellShop(string packet)
         {
@@ -632,7 +637,10 @@ namespace OpenNos.Handler
             }
             if (packetsplit.Length > 6)
             {
-                if (!Enum.TryParse(packetsplit[4], out InventoryType type) || !byte.TryParse(packetsplit[5], out byte slot) || !byte.TryParse(packetsplit[6], out byte amount) || type == InventoryType.Bazaar)
+                InventoryType type;
+                byte amount, slot;
+
+                if (!Enum.TryParse(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount) || type == InventoryType.Bazaar)
                 {
                     return;
                 }
@@ -666,7 +674,8 @@ namespace OpenNos.Handler
             }
             else if (packetsplit.Length == 5)
             {
-                short.TryParse(packetsplit[4], out short vnum);
+                short vnum;
+                short.TryParse(packetsplit[4], out vnum);
                 CharacterSkill skill = Session.Character.Skills[vnum];
                 if (skill == null || vnum == 200 + 20 * (byte)Session.Character.Class || vnum == 201 + 20 * (byte)Session.Character.Class)
                 {
@@ -695,8 +704,9 @@ namespace OpenNos.Handler
         {
             Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
-            byte typeshop = 0;
-            if (!int.TryParse(packetsplit[5], out int NpcId) || !byte.TryParse(packetsplit[2], out byte type) || Session.Character.IsShopping || !Session.HasCurrentMapInstance)
+            byte type, typeshop = 0;
+            int NpcId;
+            if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type) || Session.Character.IsShopping || !Session.HasCurrentMapInstance)
             {
                 return;
             }
@@ -806,9 +816,11 @@ namespace OpenNos.Handler
         {
             Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
+            long owner;
             if (packetsplit.Length > 2)
             {
-                if (!int.TryParse(packetsplit[2], out int mode) || !Session.HasCurrentMapInstance)
+                int mode;
+                if (!int.TryParse(packetsplit[2], out mode) || !Session.HasCurrentMapInstance)
                 {
                     return;
                 }
@@ -819,7 +831,7 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    if (!long.TryParse(packetsplit[3], out long owner))
+                    if (!long.TryParse(packetsplit[3], out owner))
                     {
                         return;
                     }
@@ -829,7 +841,8 @@ namespace OpenNos.Handler
                 else
                 {
                     // Npc Shop , ignore if has drop
-                    if (!short.TryParse(packetsplit[3], out short MapNpcId))
+                    short MapNpcId;
+                    if (!short.TryParse(packetsplit[3], out MapNpcId))
                     {
                         return;
                     }
@@ -882,8 +895,9 @@ namespace OpenNos.Handler
             {
                 amount = shopitem.SellAmount;
             }
-            List<ItemInstance> inv = shopitem.ItemInstance.Type == InventoryType.Equipment ? clientSession.Character.Inventory.AddToInventory(shopitem.ItemInstance) :
-                clientSession.Character.Inventory.AddNewToInventory(shopitem.ItemInstance.ItemVNum, amount, shopitem.ItemInstance.Type);
+            List<ItemInstance> inv = shopitem.ItemInstance.Type == InventoryType.Equipment
+                   ? clientSession.Character.Inventory.AddToInventory(shopitem.ItemInstance)
+                   : clientSession.Character.Inventory.AddNewToInventory(shopitem.ItemInstance.ItemVNum, amount, shopitem.ItemInstance.Type);
 
             if (!inv.Any())
             {
