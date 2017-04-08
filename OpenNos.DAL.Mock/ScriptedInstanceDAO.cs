@@ -14,10 +14,8 @@
 
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
@@ -25,8 +23,6 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
-
-        #endregion
         public void Insert(List<ScriptedInstanceDTO> portals)
         {
             throw new NotImplementedException();
@@ -36,5 +32,7 @@ namespace OpenNos.DAL.Mock
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

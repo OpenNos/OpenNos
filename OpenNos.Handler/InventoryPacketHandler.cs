@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-
 using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.Domain;

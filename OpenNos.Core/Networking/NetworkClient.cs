@@ -17,7 +17,6 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Server;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenNos.Core
 {

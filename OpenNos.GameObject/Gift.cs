@@ -17,9 +17,9 @@ namespace OpenNos.GameObject
     public class Gift
     {
         #region Instantiation
+
         public Gift()
         {
-
         }
 
         public Gift(short vnum, byte amount)

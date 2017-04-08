@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Core.Handling;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
@@ -20,7 +21,6 @@ using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core.Handling;
 
 namespace OpenNos.Handler
 {
@@ -487,58 +487,6 @@ namespace OpenNos.Handler
             }
         }
 
-        /// <summary>
-        /// say_p packet
-        /// </summary>
-        /// <param name="packet"></param>
-        public void PetTalk(SayPPacket packet)
-        {
-            Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == packet.PetId);
-            if (mate != null)
-            {
-                Session.CurrentMapInstance.Broadcast(mate.GenerateSay(packet.Message, 2));
-            }
-
-        }
-
-        /// <summary>
-        /// ptctl packet
-        /// </summary>
-        /// <param name="packet"></param>
-        public void PetMove(PtCtlPacket packet)
-        {
-            string[] packetsplit = packet.PacketEnd.Split(' ');
-            for (int i = 0; i < packet.Amount * 3; i += 3)
-            {
-                if (packetsplit.Count() >= packet.Amount * 3)
-                {
-                    int PetId = int.Parse(packetsplit[i]);
-                    short PositionX = short.Parse(packetsplit[i + 1]);
-                    short PositionY = short.Parse(packetsplit[i + 2]);
-
-                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
-                    if (mate != null)
-                    {
-                        mate.PositionX = PositionX;
-                        mate.PositionY = PositionY;
-                        Session.CurrentMapInstance.Broadcast($"mv 2 {PetId} {PositionX} {PositionY} {mate.Monster.Speed}");
-                    }
-                }
-            }
-            /*
-             *   packet.Users.ForEach(u =>
-            {
-                Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId);
-                if (mate != null)
-                {
-                    mate.PositionX = u.UserX;
-                    mate.PositionY = u.UserY;
-                    Session.CurrentMapInstance.Broadcast($"mv 2 {u.UserId} { u.UserX} { u.UserY} {mate.Monster.Speed}");
-                }
-            });
-             */
-        }
-
         [Packet("pdtse")]
         public void Pdtse(string packet)
         {
@@ -623,6 +571,57 @@ namespace OpenNos.Handler
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// ptctl packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void PetMove(PtCtlPacket packet)
+        {
+            string[] packetsplit = packet.PacketEnd.Split(' ');
+            for (int i = 0; i < packet.Amount * 3; i += 3)
+            {
+                if (packetsplit.Count() >= packet.Amount * 3)
+                {
+                    int PetId = int.Parse(packetsplit[i]);
+                    short PositionX = short.Parse(packetsplit[i + 1]);
+                    short PositionY = short.Parse(packetsplit[i + 2]);
+
+                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
+                    if (mate != null)
+                    {
+                        mate.PositionX = PositionX;
+                        mate.PositionY = PositionY;
+                        Session.CurrentMapInstance.Broadcast($"mv 2 {PetId} {PositionX} {PositionY} {mate.Monster.Speed}");
+                    }
+                }
+            }
+            /*
+             *   packet.Users.ForEach(u =>
+            {
+                Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId);
+                if (mate != null)
+                {
+                    mate.PositionX = u.UserX;
+                    mate.PositionY = u.UserY;
+                    Session.CurrentMapInstance.Broadcast($"mv 2 {u.UserId} { u.UserX} { u.UserY} {mate.Monster.Speed}");
+                }
+            });
+             */
+        }
+
+        /// <summary>
+        /// say_p packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void PetTalk(SayPPacket packet)
+        {
+            Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == packet.PetId);
+            if (mate != null)
+            {
+                Session.CurrentMapInstance.Broadcast(mate.GenerateSay(packet.Message, 2));
             }
         }
 

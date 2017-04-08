@@ -13,7 +13,9 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Core.Handling;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Domain;
 using OpenNos.GameObject.Buff;
 using OpenNos.WebApi.Reference;
 using System;
@@ -23,8 +25,6 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
-using OpenNos.Core.Handling;
-using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -103,7 +103,6 @@ namespace OpenNos.GameObject
                 _character = value;
             }
         }
-
 
         public long ClientId => _client.ClientId;
 
@@ -247,6 +246,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void SendPacket(object score)
+        {
+            throw new NotImplementedException();
+        }
+
         public void SendPacketAfterWait(string packet, int Millisecond)
         {
             if (!IsDisposing)
@@ -283,7 +287,6 @@ namespace OpenNos.GameObject
                 packets.ToList().ForEach(s => _client.SendPacket(PacketFactory.Serialize(s), priority));
             }
         }
-
 
         public void SetCharacter(Character character)
         {
@@ -345,11 +348,6 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-        }
-
-        public void SendPacket(object score)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

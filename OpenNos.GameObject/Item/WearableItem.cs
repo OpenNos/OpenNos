@@ -57,9 +57,11 @@ namespace OpenNos.GameObject
                         case 1:
                             equipment = InventoryType.FirstPartnerInventory;
                             break;
+
                         case 2:
                             equipment = InventoryType.SecondPartnerInventory;
                             break;
+
                         case 3:
                             equipment = InventoryType.ThirdPartnerInventory;
                             break;
@@ -95,7 +97,6 @@ namespace OpenNos.GameObject
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_EQUIP_DESTROYED_SP"), 0));
                         return;
                     }
-
 
                     if (Option == 0)
                     {
@@ -142,19 +143,16 @@ namespace OpenNos.GameObject
                     }
                     else if (mate != null)
                     {
-                       
-                        if (( EquipmentSlot != EquipmentType.Gloves
+                        if ((EquipmentSlot != EquipmentType.Gloves
                              && EquipmentSlot != EquipmentType.Boots)
                             || LevelMinimum > mate.Level)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                             return;
                         }
-
                     }
 
                     ItemInstance currentlyEquippedItem = session.Character.Inventory.LoadBySlotAndType((short)EquipmentSlot, equipment);
-
 
                     if (currentlyEquippedItem == null)
                     {
@@ -168,7 +166,6 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment, itemToWearType, inv.Slot);
                         session.SendPacket(currentlyEquippedItem.GenerateInventoryAdd());
                     }
-
 
                     if (Option == 0)
                     {

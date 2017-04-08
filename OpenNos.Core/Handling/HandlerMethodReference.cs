@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
 using System;
 using System.Linq;
-using OpenNos.Domain;
 
 namespace OpenNos.Core.Handling
 {

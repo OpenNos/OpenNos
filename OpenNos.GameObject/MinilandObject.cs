@@ -21,14 +21,19 @@ namespace OpenNos.GameObject
         public ItemInstance ItemInstance;
 
         #endregion
+
+        #region Methods
+
         public string GenerateMinilandEffect(bool removed)
         {
             return $"eff_g  {ItemInstance.Item.EffectValue} {MapX.ToString("00")}{MapY.ToString("00")} {MapX} {MapY} {(removed ? 1 : 0)}";
         }
+
         public string GenerateMinilandObject(bool deleted)
         {
             return $"mlobj {(deleted ? 0 : 1)} {ItemInstance.Slot} {MapX} {MapY} {ItemInstance.Item.Width} {ItemInstance.Item.Height} 0 {ItemInstance.DurabilityPoint} 0 {(ItemInstance.Item.IsMinilandObject ? 1 : 0)}";
         }
 
+        #endregion
     }
 }

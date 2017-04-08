@@ -45,7 +45,7 @@ namespace OpenNos.Handler
             // TODO: Hold Account Information in Authorized object
             long accountId = Session.Account.AccountId;
             string[] packetsplit = packet.Split(' ');
-            if(packetsplit.Length != 7)
+            if (packetsplit.Length != 7)
             {
                 return;
             }
@@ -285,7 +285,6 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="selectPacket"></param>
         public void SelectCharacter(SelectPacket selectPacket)

@@ -62,11 +62,11 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<Portal> Portal1 { get; set; }
 
-        public virtual ICollection<ScriptedInstance> ScriptedInstance { get; set; }
-
         public virtual ICollection<Respawn> Respawn { get; set; }
 
         public virtual ICollection<RespawnMapType> RespawnMapType { get; set; }
+
+        public virtual ICollection<ScriptedInstance> ScriptedInstance { get; set; }
 
         public bool ShopAllowed { get; set; }
 

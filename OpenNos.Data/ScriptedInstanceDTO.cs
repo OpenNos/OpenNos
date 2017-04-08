@@ -18,8 +18,6 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public short ScriptedInstanceId { get; set; }
-
         public short MapId { get; set; }
 
         public short PositionX { get; set; }
@@ -27,7 +25,9 @@ namespace OpenNos.Data
         public short PositionY { get; set; }
 
         public string Script { get; set; }
-        
+
+        public short ScriptedInstanceId { get; set; }
+
         #endregion
     }
 }

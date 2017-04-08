@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CloneExtensions;
 using OpenNos.Core;
-using OpenNos.GameObject;
-using OpenNos.GameObject.Packets.ServerPackets;
-using OpenNos.GameObject.Helpers;
-using CloneExtensions;
 using OpenNos.Domain;
+using OpenNos.GameObject;
+using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Packets.ServerPackets;
+using System;
+using System.Linq;
 
 namespace OpenNos.Handler
 {
-    class ScriptedInstancePacketHandler : IPacketHandler
+    internal class ScriptedInstancePacketHandler : IPacketHandler
     {
         #region Instantiation
 
@@ -27,13 +24,14 @@ namespace OpenNos.Handler
 
         private ClientSession Session { get; }
 
+        #endregion
 
+        #region Methods
 
         /// <summary>
         /// RSelPacket packet
         /// </summary>
         /// <param name="packet"></param>
-        /// 
         public void Escape(EscapePacket packet)
         {
             if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
@@ -46,7 +44,6 @@ namespace OpenNos.Handler
         /// RSelPacket packet
         /// </summary>
         /// <param name="packet"></param>
-        /// 
         public void getGift(RSelPacket packet)
         {
             if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
@@ -57,10 +54,10 @@ namespace OpenNos.Handler
                 if (si != null)
                 {
                     Session.Character.GetReput(si.Reputation);
-                   
+
                     Session.Character.Gold = Session.Character.Gold + si.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : Session.Character.Gold + si.Gold;
                     Session.SendPacket(Session.Character.GenerateGold());
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GOLD_TS_END"), si.Gold), 10));  
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GOLD_TS_END"), si.Gold), 10));
 
                     var rand = new Random().Next(si.DrawItems.Count);
                     var repay = "repay ";
@@ -94,35 +91,6 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// rxitPacket packet
-        /// </summary>
-        /// <param name="rxitPacket"></param>
-        public void InstanceExit(RxitPacket rxitPacket)
-        {
-            if (rxitPacket?.State == 1)
-            {
-                if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.TimeSpaceInstance)
-                {
-                    if (Session.CurrentMapInstance.InstanceBag.Lock)
-                    {
-                        //5seed
-                        Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DIGNITY_LOST"), 20), 11));
-                        Session.Character.Dignity = Session.Character.Dignity < -980 ? -1000 : Session.Character.Dignity - 20;
-                    }
-                    else
-                    {
-                        //1seed
-                    }
-                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId,
-                           Session.Character.MapX, Session.Character.MapY);
-
-                }
-            }
-
-        }
-
-        /// <summary>
         /// treq packet
         /// </summary>
         /// <param name="treqPacket"></param>
@@ -138,14 +106,14 @@ namespace OpenNos.Handler
                     if (timespace.FirstMap == null) return;
                     foreach (var i in timespace.RequieredItems)
                     {
-                        if(Session.Character.Inventory.CountItem(i.VNum) < i.Amount)
+                        if (Session.Character.Inventory.CountItem(i.VNum) < i.Amount)
                         {
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_REQUIERED_ITEM"), ServerManager.Instance.GetItem(i.VNum).Name),0));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_REQUIERED_ITEM"), ServerManager.Instance.GetItem(i.VNum).Name), 0));
                             return;
                         }
                         Session.Character.Inventory.RemoveItemAmount(i.VNum, i.Amount);
                     }
-                    if(timespace.LevelMinimum > Session.Character.Level)
+                    if (timespace.LevelMinimum > Session.Character.Level)
                     {
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_REQUIERED_LEVEL"), 0));
                         return;
@@ -166,20 +134,6 @@ namespace OpenNos.Handler
             }
         }
 
-        /// <summary>
-        /// GitPacket packet
-        /// </summary>
-        /// <param name="packet"></param>
-        public void Git(GitPacket packet)
-        {
-            MapButton button = Session.CurrentMapInstance.Buttons.FirstOrDefault(s => s.MapButtonId == packet.ButtonId);
-            if (button != null)
-            {
-                Session.CurrentMapInstance.Broadcast(button.GenerateOut());
-                button.RunAction();
-                Session.CurrentMapInstance.Broadcast(button.GenerateIn());
-            }
-        }
         /// <summary>
         /// wreq packet
         /// </summary>
@@ -203,6 +157,7 @@ namespace OpenNos.Handler
                                 Session.SendPacket(portal.GenerateRbr());
                             }
                             break;
+
                         case 1:
                             byte record;
                             byte.TryParse(packet.Param.ToString(), out record);
@@ -214,6 +169,7 @@ namespace OpenNos.Handler
                                 StartPress = 1
                             });
                             break;
+
                         case 3:
                             ClientSession character = Session.Character.Group?.Characters.Where(s => s.Character.CharacterId == packet.Param).FirstOrDefault();
                             if (character != null)
@@ -238,6 +194,47 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// GitPacket packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void Git(GitPacket packet)
+        {
+            MapButton button = Session.CurrentMapInstance.Buttons.FirstOrDefault(s => s.MapButtonId == packet.ButtonId);
+            if (button != null)
+            {
+                Session.CurrentMapInstance.Broadcast(button.GenerateOut());
+                button.RunAction();
+                Session.CurrentMapInstance.Broadcast(button.GenerateIn());
+            }
+        }
+
+        /// <summary>
+        /// rxitPacket packet
+        /// </summary>
+        /// <param name="rxitPacket"></param>
+        public void InstanceExit(RxitPacket rxitPacket)
+        {
+            if (rxitPacket?.State == 1)
+            {
+                if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.TimeSpaceInstance)
+                {
+                    if (Session.CurrentMapInstance.InstanceBag.Lock)
+                    {
+                        //5seed
+                        Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DIGNITY_LOST"), 20), 11));
+                        Session.Character.Dignity = Session.Character.Dignity < -980 ? -1000 : Session.Character.Dignity - 20;
+                    }
+                    else
+                    {
+                        //1seed
+                    }
+                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId,
+                           Session.Character.MapX, Session.Character.MapY);
+                }
+            }
+        }
 
         #endregion
     }

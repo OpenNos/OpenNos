@@ -19,10 +19,6 @@ namespace OpenNos.Core.Handling
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class PacketAttribute : Attribute
     {
-        #region Members
-
-        #endregion
-
         #region Instantiation
 
         public PacketAttribute(string header, int amount = 1)

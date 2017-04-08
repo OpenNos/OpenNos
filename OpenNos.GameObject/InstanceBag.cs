@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Timers;
+﻿using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
     public class InstanceBag
     {
-        public Clock Clock { get; set; }
-        public short Lives { get; set; }
-        public List<long> DeadList { get; set; }
-        public bool Lock { get; set; }
-        public int MonstersKilled { get; set; }
-        public int NpcsKilled { get; set; }
-        public int RoomsVisited { get; set; }
-        public long Creator { get; set; }
-        public byte EndState { get; set; }
-        public int Point { get; set; }
-        public int Combo { get; set; }
+        #region Instantiation
 
         public InstanceBag()
         {
@@ -24,9 +12,41 @@ namespace OpenNos.GameObject
             DeadList = new List<long>();
         }
 
+        #endregion
+
+        #region Properties
+
+        public Clock Clock { get; set; }
+
+        public int Combo { get; set; }
+
+        public long Creator { get; set; }
+
+        public List<long> DeadList { get; set; }
+
+        public byte EndState { get; set; }
+
+        public short Lives { get; set; }
+
+        public bool Lock { get; set; }
+
+        public int MonstersKilled { get; set; }
+
+        public int NpcsKilled { get; set; }
+
+        public int Point { get; set; }
+
+        public int RoomsVisited { get; set; }
+
+        #endregion
+
+        #region Methods
+
         public string GenerateScore()
         {
             return $"rnsc {Point}";
         }
+
+        #endregion
     }
 }

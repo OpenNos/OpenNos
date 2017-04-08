@@ -35,8 +35,6 @@ namespace OpenNos.DAL.EF.Entities
 
         public long Experience { get; set; }
 
-        public short Skin { get; set; }
-
         public int Hp { get; set; }
 
         public bool IsSummonable { get; set; }
@@ -64,6 +62,8 @@ namespace OpenNos.DAL.EF.Entities
         public virtual NpcMonster NpcMonster { get; set; }
 
         public short NpcMonsterVNum { get; set; }
+
+        public short Skin { get; set; }
 
         #endregion
     }

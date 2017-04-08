@@ -378,6 +378,7 @@ namespace OpenNos.GameObject
                                 string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
+
                 case 1006:
                     if (Option == 0)
                     {
@@ -431,6 +432,7 @@ namespace OpenNos.GameObject
                                 string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
+
                 default:
                     Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;

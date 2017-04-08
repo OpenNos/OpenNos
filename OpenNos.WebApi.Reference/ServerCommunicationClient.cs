@@ -104,7 +104,6 @@ namespace OpenNos.WebApi.Reference
                 _hubconnection = new HubConnection(remoteUrl);
                 _hubProxy = _hubconnection.CreateHubProxy("servercommunicationhub");
 
-
                 _hubProxy.On<string, long>("accountConnected", OnAccountConnected);
 
                 _hubProxy.On<string>("accountDisconnected", OnAccountDisconnected);
@@ -128,7 +127,6 @@ namespace OpenNos.WebApi.Reference
                 _hubconnection.Start().Wait();
                 IsConnected = true;
             };
-
 
             _hubProxy = _hubconnection.CreateHubProxy("servercommunicationhub");
 

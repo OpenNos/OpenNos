@@ -16,19 +16,18 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenNos.GameObject.Helpers
 {
     public class UserInterfaceHelper
     {
-        #region Instantiation
+        #region Members
+
         private static UserInterfaceHelper instance;
 
         #endregion
 
         #region Properties
-
 
         public static UserInterfaceHelper Instance
         {
@@ -42,49 +41,18 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
-        public IEnumerable<string> GenerateVb()
-        {
-            return new[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
-        }
-        public string GenerateRp(int mapid, int x, int y, string param)
-        {
-            return $"rp {mapid} {x} {y} {param}";
-        }
-        public string GenerateShopMemo(int type, string message)
-        {
-            return $"s_memo {type} {message}";
-        }
+        #endregion
+
+        #region Methods
+
         public string GenerateDelay(int delay, int type, string argument)
         {
             return $"delay {delay} {type} {argument}";
         }
+
         public string GenerateDialog(string dialog)
         {
             return $"dlg {dialog}";
-        }
-
-        public string GenerateStashRemove(short slot)
-        {
-            return $"stash {GenerateRemovePacket(slot)}";
-        }
-        public string GeneratePStashRemove(short slot)
-        {
-            return $"pstash {GenerateRemovePacket(slot)}";
-        }
-
-        public string GenerateFStashRemove(short slot)
-        {
-            return $"f_stash {GenerateRemovePacket(slot)}";
-        }
-
-        public string GenerateRemovePacket(short slot)
-        {
-            return $"{slot}.-1.0.0.0";
-        }
-
-        public string GenerateInventoryRemove(InventoryType Type, short Slot)
-        {
-            return $"ivn {(byte)Type} {GenerateRemovePacket(Slot)}";
         }
 
         public string GenerateFrank(byte type)
@@ -179,30 +147,73 @@ namespace OpenNos.GameObject.Helpers
             }
             return packet;
         }
-        public string GenerateMapOut()
+
+        public string GenerateFStashRemove(short slot)
         {
-            return "mapout";
+            return $"f_stash {GenerateRemovePacket(slot)}";
         }
+
+        public string GenerateGuri(byte type, byte argument, long CharacterId, int value = 0)
+        {
+            switch (type)
+            {
+                case 2:
+                    return $"guri 2 {argument} {CharacterId}";
+
+                case 6:
+                    return $"guri 6 1 {CharacterId} 0 0";
+
+                case 10:
+                    return $"guri 10 {argument} {value} {CharacterId}";
+
+                case 15:
+                    return $"guri 15 {argument} 0 0";
+
+                default:
+                    return $"guri {type} {argument} {CharacterId} {value}";
+            }
+        }
+
         public string GenerateInbox(string value)
         {
             return $"inbox {value}";
         }
+
         public string GenerateInfo(string message)
         {
             return $"info {message}";
         }
+
+        public string GenerateInventoryRemove(InventoryType Type, short Slot)
+        {
+            return $"ivn {(byte)Type} {GenerateRemovePacket(Slot)}";
+        }
+
+        public string GenerateMapOut()
+        {
+            return "mapout";
+        }
+
         public string GenerateModal(string message, int type)
         {
             return $"modal {type} {message}";
         }
+
         public string GenerateMsg(string message, int type)
         {
             return $"msg {type} {message}";
         }
+
         public string GeneratePClear()
         {
             return "p_clear";
         }
+
+        public string GeneratePStashRemove(short slot)
+        {
+            return $"pstash {GenerateRemovePacket(slot)}";
+        }
+
         public string GenerateRCBList(CBListPacket packet)
         {
             string itembazar = string.Empty;
@@ -421,27 +432,31 @@ namespace OpenNos.GameObject.Helpers
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
-
-        public string GenerateGuri(byte type, byte argument, long CharacterId, int value = 0)
+        public string GenerateRemovePacket(short slot)
         {
-            switch (type)
-            {
-                case 2:
-                    return $"guri 2 {argument} {CharacterId}";
-
-                case 6:
-                    return $"guri 6 1 {CharacterId} 0 0";
-
-                case 10:
-                    return $"guri 10 {argument} {value} {CharacterId}";
-
-                case 15:
-                    return $"guri 15 {argument} 0 0";
-
-                default:
-                    return $"guri {type} {argument} {CharacterId} {value}";
-            }
+            return $"{slot}.-1.0.0.0";
         }
+
+        public string GenerateRp(int mapid, int x, int y, string param)
+        {
+            return $"rp {mapid} {x} {y} {param}";
+        }
+
+        public string GenerateShopMemo(int type, string message)
+        {
+            return $"s_memo {type} {message}";
+        }
+
+        public string GenerateStashRemove(short slot)
+        {
+            return $"stash {GenerateRemovePacket(slot)}";
+        }
+
+        public IEnumerable<string> GenerateVb()
+        {
+            return new[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
+        }
+
         #endregion
     }
 }

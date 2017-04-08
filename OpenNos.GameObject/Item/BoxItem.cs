@@ -16,7 +16,6 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -83,7 +82,6 @@ namespace OpenNos.GameObject
                                         session.CurrentMapInstance?.Broadcast(mate.GenerateOut());
                                     }
                                 }
-
                             }
                             else
                             {
@@ -99,6 +97,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 1:
                     if (Option == 0)
                     {

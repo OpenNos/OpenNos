@@ -40,8 +40,6 @@ namespace OpenNos.Data
 
         public short Compliment { get; set; }
 
-        public byte MaxMateCount { get; set; }
-
         public float Dignity { get; set; }
 
         public bool EmoticonsBlocked { get; set; }
@@ -91,6 +89,8 @@ namespace OpenNos.Data
         public int MasterPoints { get; set; }
 
         public int MasterTicket { get; set; }
+
+        public byte MaxMateCount { get; set; }
 
         public bool MinilandInviteBlocked { get; set; }
 

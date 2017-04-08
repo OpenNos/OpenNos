@@ -40,10 +40,10 @@ namespace OpenNos.GameObject
                 case 0:
                     if (ItemType == ItemType.Event)
                     {
-                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff( EffectValue));
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(EffectValue));
                         if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))
                         {
-                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(19, 1,session.Character.CharacterId, MappingHelper.GuriItemEffects[EffectValue]), session.Character.MapX, session.Character.MapY);
+                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(19, 1, session.Character.CharacterId, MappingHelper.GuriItemEffects[EffectValue]), session.Character.MapX, session.Character.MapY);
                         }
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
@@ -149,7 +149,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
-              
+
                 // dyes or waxes
                 case 10:
                 case 11:
@@ -182,6 +182,7 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     break;
+
                 // dignity restoration
                 case 14:
                     if ((EffectValue == 100 || EffectValue == 200) && session.Character.Dignity < 100 && !session.Character.IsVehicled)
@@ -192,7 +193,7 @@ namespace OpenNos.GameObject
                             session.Character.Dignity = 100;
                         }
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff( 49 - session.Character.Faction));
+                        session.SendPacket(session.Character.GenerateEff(49 - session.Character.Faction));
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -201,7 +202,7 @@ namespace OpenNos.GameObject
                     {
                         session.Character.Dignity = 100;
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff( 49 - session.Character.Faction));
+                        session.SendPacket(session.Character.GenerateEff(49 - session.Character.Faction));
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -214,7 +215,7 @@ namespace OpenNos.GameObject
                     {
                         if (Option == 0)
                         {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 3,session.Character.CharacterId, 1));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 3, session.Character.CharacterId, 1));
                         }
                     }
                     break;
@@ -225,7 +226,7 @@ namespace OpenNos.GameObject
                     {
                         if (Option == 0)
                         {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 4,session.Character.CharacterId, 1));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 4, session.Character.CharacterId, 1));
                         }
                     }
                     break;

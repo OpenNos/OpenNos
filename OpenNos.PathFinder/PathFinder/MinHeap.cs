@@ -1,25 +1,27 @@
-﻿using System;
+﻿using OpenNos.Pathfinding;
 using System.Collections.Generic;
-using OpenNos.Pathfinding;
 
-class MinHeap
+internal class MinHeap
 {
+    #region Members
+
     private List<Node> array = new List<Node>();
 
-    public void Push(Node element)
+    #endregion
+
+    #region Properties
+
+    public int Count
     {
-        array.Add(element);
-        int c = array.Count - 1;
-        int parent = (c - 1) >> 1;
-        while (c > 0 && array[c].CompareTo(array[parent]) < 0)
+        get
         {
-            Node tmp = array[c];
-            array[c] = array[parent];
-            array[parent] = tmp;
-            c = parent;
-            parent = (c - 1) >> 1;
+            return array.Count;
         }
     }
+
+    #endregion
+
+    #region Methods
 
     public Node Pop()
     {
@@ -50,11 +52,20 @@ class MinHeap
         return ret;
     }
 
-    public int Count
+    public void Push(Node element)
     {
-        get
+        array.Add(element);
+        int c = array.Count - 1;
+        int parent = (c - 1) >> 1;
+        while (c > 0 && array[c].CompareTo(array[parent]) < 0)
         {
-            return array.Count;
+            Node tmp = array[c];
+            array[c] = array[parent];
+            array[parent] = tmp;
+            c = parent;
+            parent = (c - 1) >> 1;
         }
     }
+
+    #endregion
 }

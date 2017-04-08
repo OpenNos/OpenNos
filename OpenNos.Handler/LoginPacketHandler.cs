@@ -17,12 +17,11 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Configuration;
 using System.Linq;
-using OpenNos.Core.Handling;
-using OpenNos.GameObject.Packets.ClientPackets;
 
 namespace OpenNos.Handler
 {

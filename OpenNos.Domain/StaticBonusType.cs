@@ -21,6 +21,5 @@ namespace OpenNos.Domain
         BackPack = 2,
         PetBasket = 3,
         PetBackPack = 4
-        
     }
 }

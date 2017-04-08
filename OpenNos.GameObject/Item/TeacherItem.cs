@@ -52,6 +52,7 @@ namespace OpenNos.GameObject
                         session.CurrentMapInstance?.Broadcast(mate.GenerateEff(198), mate.PositionX, mate.PositionY);
                     }
                     break;
+
                 case 13:
                     if (int.TryParse(packetsplit[3], out x1))
                     {

@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Core.Handling;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -23,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using OpenNos.Core.Handling;
 
 namespace OpenNos.Handler
 {
@@ -185,6 +185,7 @@ namespace OpenNos.Handler
                 }
             }
         }
+
         /// <summary>
         /// today_cts packet
         /// </summary>

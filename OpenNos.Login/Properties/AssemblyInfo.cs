@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 // need to access a type in this assembly from COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM 
+// The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("8267017b-5871-46a7-b4c9-5f50d801a0eb")]
 [assembly: Debuggable(DebuggableAttribute.DebuggingModes.Default | DebuggableAttribute.DebuggingModes.DisableOptimizations | DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints | DebuggableAttribute.DebuggingModes.EnableEditAndContinue)]
 [assembly: CompilationRelaxations(8)]

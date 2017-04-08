@@ -64,8 +64,6 @@ namespace OpenNos.DAL.EF
 
         public bool BuffBlocked { get; set; }
 
-        public byte MaxMateCount { get; set; }
-
         public long CharacterId { get; set; }
 
         public virtual ICollection<CharacterRelation> CharacterRelation1 { get; set; }
@@ -141,6 +139,8 @@ namespace OpenNos.DAL.EF
         public int MasterTicket { get; set; }
 
         public virtual ICollection<Mate> Mate { get; set; }
+
+        public byte MaxMateCount { get; set; }
 
         public bool MinilandInviteBlocked { get; set; }
 

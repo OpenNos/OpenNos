@@ -13,9 +13,9 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Domain;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -81,12 +81,12 @@ namespace OpenNos.GameObject
                                     $"pst 2 {mate.MateTransportId} {(mate.MateType == MateType.Partner ? "0" : "1")} {mate.Hp / mate.MaxHp * 100} {mate.Mp / mate.MaxMp * 100} {mate.Hp} {mate.Mp} 0 0 0"));
                     i = session.Character.Mates.Count(s => s.IsTeamMember);
                     str.Add(
-                        $"pst 1 {session.Character.CharacterId} {++i} {(int) (session.Character.Hp / session.Character.HPLoad() * 100)} {(int) (session.Character.Mp / session.Character.MPLoad() * 100)} {session.Character.HPLoad()} {session.Character.MPLoad()} {(byte) session.Character.Class} {(byte) session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}");
+                        $"pst 1 {session.Character.CharacterId} {++i} {(int)(session.Character.Hp / session.Character.HPLoad() * 100)} {(int)(session.Character.Mp / session.Character.MPLoad() * 100)} {session.Character.HPLoad()} {session.Character.MPLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}");
                 }
                 else
                 {
                     str.Add(
-                        $"pst 1 {session.Character.CharacterId} {++i} {(int) (session.Character.Hp / session.Character.HPLoad() * 100)} {(int) (session.Character.Mp / session.Character.MPLoad() * 100)} {session.Character.HPLoad()} {session.Character.MPLoad()} {(byte) session.Character.Class} {(byte) session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}{session.Character.Buff.GetAllActiveBuffs()}");
+                        $"pst 1 {session.Character.CharacterId} {++i} {(int)(session.Character.Hp / session.Character.HPLoad() * 100)} {(int)(session.Character.Mp / session.Character.MPLoad() * 100)} {session.Character.HPLoad()} {session.Character.MPLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}{session.Character.Buff.GetAllActiveBuffs()}");
                 }
             }
             return str;

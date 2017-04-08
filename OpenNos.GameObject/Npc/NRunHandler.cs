@@ -93,7 +93,6 @@ namespace OpenNos.GameObject
                         case 2:
                             if (mate != null)
                             {
-
                                 if (Session.Character.Level >= mate.Level)
                                 {
                                     Mate teammate = Session.Character.Mates.Where(s => s.IsTeamMember).FirstOrDefault(s => s.MateType == mate.MateType);
@@ -183,7 +182,6 @@ namespace OpenNos.GameObject
                                 mate.PositionY = (short)(Session.Character.PositionY + 1);
                                 mate.IsTeamMember = true;
                                 Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
-
                             }
                             else
                             {
@@ -231,7 +229,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            switch(npc.MapId)
+                            switch (npc.MapId)
                             {
                                 case 1:
                                     Session.Character.SetRespawnPoint(1, 79, 116);
@@ -285,7 +283,6 @@ namespace OpenNos.GameObject
                     }
                     if (Session.Character.Gold >= 500 * (1 + packet.Type))
                     {
-
                         Session.Character.LastPortal = currentRunningSeconds;
                         Session.Character.Gold -= 500 * (1 + packet.Type);
                         Session.SendPacket(Session.Character.GenerateGold());
@@ -309,7 +306,6 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 5000 * packet.Type)
                             {
-
                                 Session.Character.Gold -= 5000 * packet.Type;
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
@@ -329,7 +325,6 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 500)
                             {
-
                                 Session.Character.Gold -= 500;
                                 Session.SendPacket(Session.Character.GenerateGold());
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
@@ -348,7 +343,6 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
-
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }

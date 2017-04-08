@@ -13,11 +13,13 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Core.Handling;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
@@ -26,8 +28,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using OpenNos.Core.Handling;
-using OpenNos.GameObject.Packets.ClientPackets;
 
 namespace OpenNos.Handler
 {
@@ -789,7 +789,6 @@ namespace OpenNos.Handler
                                 short mapx = session.Character.PositionX;
                                 short mapId = session.Character.MapInstance.Map.MapId;
 
-                                
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
                                 Session.Character.Inventory.RemoveItemAmount(vnumToUse);
                             }
@@ -1104,7 +1103,6 @@ namespace OpenNos.Handler
             }
         }
 
-
         [Packet("hero")]
         public void Hero(string packet)
         {
@@ -1169,11 +1167,12 @@ namespace OpenNos.Handler
                         case (sbyte)PortalType.Effect:
                         case (sbyte)PortalType.ShopTeleport:
                             break;
+
                         default:
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                     }
-                    
+
                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance && !Session.CurrentMapInstance.InstanceBag.Lock)
                     {
                         if (Session.Character.CharacterId == Session.CurrentMapInstance.InstanceBag.Creator)
@@ -1191,7 +1190,7 @@ namespace OpenNos.Handler
                         return;
                     }
                     Session.SendPacket(Session.CurrentMapInstance.GenerateRsfn());
-                    
+
                     Session.Character.LastPortal = currentRunningSeconds;
 
                     if (ServerManager.Instance.GetMapInstance(portal.SourceMapInstanceId).MapInstanceType != MapInstanceType.BaseMapInstance && ServerManager.Instance.GetMapInstance(portal.DestinationMapInstanceId).MapInstanceType == MapInstanceType.BaseMapInstance)
@@ -1314,7 +1313,6 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateStat());
                                 }
                                 break;
-  
 
                             default:
                                 const int seed = 1012;

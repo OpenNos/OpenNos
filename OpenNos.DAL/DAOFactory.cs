@@ -13,7 +13,6 @@
  */
 
 using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.DAL.Mock;
 using System;
@@ -35,7 +34,6 @@ namespace OpenNos.DAL
         private static ICharacterSkillDAO _characterskillDAO;
         private static IComboDAO _comboDAO;
         private static IDropDAO _dropDAO;
-        private static IScriptedInstanceDAO _scriptedinstanceDAO;
         private static IFamilyCharacterDAO _familycharacterDAO;
         private static IFamilyDAO _familyDAO;
         private static IFamilyLogDAO _familylogDAO;
@@ -60,6 +58,7 @@ namespace OpenNos.DAL
         private static IRecipeItemDAO _recipeitemDAO;
         private static IRespawnDAO _respawnDAO;
         private static IRespawnMapTypeDAO _respawnMapTypeDAO;
+        private static IScriptedInstanceDAO _scriptedinstanceDAO;
         private static IShopDAO _shopDAO;
         private static IShopItemDAO _shopitemDAO;
         private static IShopSkillDAO _shopskillDAO;
@@ -132,25 +131,7 @@ namespace OpenNos.DAL
                 return _bazaarItemDAO;
             }
         }
-        public static IScriptedInstanceDAO TimeSpaceDAO
-        {
-            get
-            {
-                if (_scriptedinstanceDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _scriptedinstanceDAO = new ScriptedInstanceDAO();
-                    }
-                    else
-                    {
-                        _scriptedinstanceDAO = new EF.ScriptedInstanceDAO();
-                    }
-                }
 
-                return _scriptedinstanceDAO;
-            }
-        }
         public static ICardDAO CardDAO
         {
             get
@@ -908,6 +889,26 @@ namespace OpenNos.DAL
                 }
 
                 return _teleporterDAO;
+            }
+        }
+
+        public static IScriptedInstanceDAO TimeSpaceDAO
+        {
+            get
+            {
+                if (_scriptedinstanceDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _scriptedinstanceDAO = new ScriptedInstanceDAO();
+                    }
+                    else
+                    {
+                        _scriptedinstanceDAO = new EF.ScriptedInstanceDAO();
+                    }
+                }
+
+                return _scriptedinstanceDAO;
             }
         }
 

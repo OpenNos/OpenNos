@@ -15,7 +15,6 @@
 using OpenNos.DAL.EF.Entities;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Collections.Generic;
 
 namespace OpenNos.DAL.EF.DB
 {
@@ -102,6 +101,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<RespawnMapType> RespawnMapType { get; set; }
 
+        public virtual DbSet<ScriptedInstance> ScriptedInstance { get; set; }
+
         public virtual DbSet<Shop> Shop { get; set; }
 
         public virtual DbSet<ShopItem> ShopItem { get; set; }
@@ -115,8 +116,6 @@ namespace OpenNos.DAL.EF.DB
         public virtual DbSet<StaticBonus> StaticBonus { get; set; }
 
         public virtual DbSet<Teleporter> Teleporter { get; set; }
-
-        public virtual DbSet<ScriptedInstance> ScriptedInstance { get; set; }
 
         #endregion
 

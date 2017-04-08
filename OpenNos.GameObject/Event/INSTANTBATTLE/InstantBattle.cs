@@ -168,8 +168,6 @@ namespace OpenNos.GameObject.Event
             return dropParameters;
         }
 
-
-
         private static List<Tuple<short, int, short, short>> GetInstantBattleDrop(Map map, short instantbattletype, int wave)
         {
             List<Tuple<short, int, short, short>> dropParameters = new List<Tuple<short, int, short, short>>();

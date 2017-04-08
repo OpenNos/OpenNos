@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using CloneExtensions;
 using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Event;
@@ -26,10 +25,13 @@ namespace OpenNos.GameObject.Helpers
 {
     public class EventHelper
     {
-        #region Instantiation
+        #region Members
+
         private static EventHelper instance;
 
         #endregion
+
+        #region Properties
 
         public static EventHelper Instance
         {
@@ -42,7 +44,23 @@ namespace OpenNos.GameObject.Helpers
                 return instance;
             }
         }
+
+        #endregion
+
         #region Methods
+
+        public int CalculateComboPoint(int n)
+        {
+            int a = 4;
+            int b = 7;
+            for (int i = 0; i < n; i++)
+            {
+                int temp = a;
+                a = b;
+                b = temp + b;
+            }
+            return a;
+        }
 
         public void GenerateEvent(EventType type)
         {
@@ -96,12 +114,15 @@ namespace OpenNos.GameObject.Helpers
                 switch (evt.EventActionType)
                 {
                     #region EventForUser
+
                     case EventActionType.NPCDIALOG:
                         session.SendPacket(session.Character.GenerateNpcDialog((int)evt.Parameter));
                         break;
+
                     case EventActionType.SENDPACKET:
                         session.SendPacket((string)evt.Parameter);
                         break;
+
                         #endregion
                 }
             }
@@ -110,20 +131,22 @@ namespace OpenNos.GameObject.Helpers
                 switch (evt.EventActionType)
                 {
                     #region EventForUser
+
                     case EventActionType.NPCDIALOG:
                     case EventActionType.SENDPACKET:
                         if (session == null)
                         {
-
                             evt.MapInstance.Sessions.ToList().ForEach(e =>
                             {
                                 RunEvent(evt, e);
                             });
                         }
                         break;
+
                     #endregion
 
                     #region MapInstanceEvent
+
                     case EventActionType.REGISTEREVENT:
                         Tuple<string, List<EventContainer>> even = (Tuple<string, List<EventContainer>>)evt.Parameter;
                         switch (even.Item1)
@@ -131,14 +154,17 @@ namespace OpenNos.GameObject.Helpers
                             case "OnCharacterDiscoveringMap":
                                 even.Item2.ForEach(s => evt.MapInstance.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer, List<long>>(s, new List<long>())));
                                 break;
+
                             case "OnMoveOnMap":
                                 evt.MapInstance.OnMoveOnMapEvents.AddRange(even.Item2);
                                 break;
+
                             case "OnMapClean":
                                 evt.MapInstance.OnMapClean.AddRange(even.Item2);
                                 break;
                         }
                         break;
+
                     case EventActionType.CLOCK:
                         evt.MapInstance.InstanceBag.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
                         evt.MapInstance.InstanceBag.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
@@ -158,7 +184,7 @@ namespace OpenNos.GameObject.Helpers
                                     byte penalty = 0;
                                     if (penalty > (client.Character.Level - si.LevelMinimum) * 2)
                                     {
-                                        penalty = penalty > 100 ? (byte)100 : penalty;                              
+                                        penalty = penalty > 100 ? (byte)100 : penalty;
                                         client.SendPacket(client.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("TS_PENALTY"), penalty), 10));
                                     }
                                     int point = evt.MapInstance.InstanceBag.Point * (100 - penalty) / 100;
@@ -167,7 +193,7 @@ namespace OpenNos.GameObject.Helpers
                                     perfection += evt.MapInstance.InstanceBag.NpcsKilled == 0 ? 1 : 0;
                                     perfection += evt.MapInstance.InstanceBag.RoomsVisited >= si.RoomAmount ? 1 : 0;
 
-                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} { si.NpcAmount-evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
+                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} { si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
                                 }
                                 break;
                         }
@@ -211,7 +237,6 @@ namespace OpenNos.GameObject.Helpers
                     case EventActionType.REFRESHMAPITEMS:
                         evt.MapInstance.MapClear();
                         break;
-
 
                     case EventActionType.NPCSEFFECTCHANGESTATE:
                         evt.MapInstance.Npcs.ForEach(s => s.EffectActivated = (bool)evt.Parameter);
@@ -277,18 +302,7 @@ namespace OpenNos.GameObject.Helpers
                 }
             }
         }
-        public int CalculateComboPoint(int n)
-        {
-            int a = 4;
-            int b = 7;
-            for (int i = 0; i < n; i++)
-            {
-                int temp = a;
-                a = b;
-                b = temp + b;
-            }
-            return a;
-        }
+
         public void ScheduleEvent(TimeSpan timeSpan, EventContainer evt)
         {
             Observable.Timer(timeSpan).Subscribe(x =>
@@ -296,7 +310,6 @@ namespace OpenNos.GameObject.Helpers
                 RunEvent(evt);
             });
         }
-
 
         #endregion
     }

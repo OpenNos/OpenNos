@@ -13,20 +13,18 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Core.Handling;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
-using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Media;
 using System.Threading.Tasks;
-using OpenNos.Core.Handling;
 
 namespace OpenNos.Handler
 {
@@ -531,7 +529,7 @@ namespace OpenNos.Handler
                     player.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                     player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff( 8), player.Character.PositionX, player.Character.PositionY);
+                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(8), player.Character.PositionX, player.Character.PositionY);
 
                     player.Character.Skills[(short)(200 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
                     player.Character.Skills[(short)(201 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
@@ -648,7 +646,7 @@ namespace OpenNos.Handler
                     player = ServerManager.Instance.GetSessionByCharacterName(changeSpecialistLevelPacket.Name);
                 }
                 SpecialistInstance sp =
-                    player.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp,
+                    player.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,
                         InventoryType.Wear);
 
                 if (sp != null && Session.Character.UseSp)
@@ -932,7 +930,6 @@ namespace OpenNos.Handler
                         {
                             WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.First().Slot, inv.First().Type);
 
-
                             if (wearable != null)
                             {
                                 switch (wearable.Item.EquipmentSlot)
@@ -942,6 +939,7 @@ namespace OpenNos.Handler
                                     case EquipmentType.SecondaryWeapon:
                                         wearable.SetRarityPoint();
                                         break;
+
                                     case EquipmentType.Boots:
                                     case EquipmentType.Gloves:
                                         wearable.FireResistance = (short)(wearable.Item.FireResistance * upgrade);
@@ -1076,7 +1074,7 @@ namespace OpenNos.Handler
             Logger.Debug("Effect Command", Session.Character.GenerateIdentity());
             if (effectCommandpacket != null)
             {
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( effectCommandpacket.EffectId), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(effectCommandpacket.EffectId), Session.Character.PositionX, Session.Character.PositionY);
             }
             else
             {
@@ -1106,31 +1104,6 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$FairyXpRate VALUE", 10));
-            }
-        }
-
-        /// <summary>
-        /// $FairyXPRate Command
-        /// </summary>
-        /// <param name="heroXpRatePacket"></param>
-        public void HeroXpRate(HeroXpRate heroXpRatePacket)
-        {
-            Logger.Debug("Hero Xp Rate Changed", Session.Character.GenerateIdentity());
-            if (heroXpRatePacket != null)
-            {
-                if (heroXpRatePacket.Value <= 1000)
-                {
-                    ServerManager.Instance.HeroXpRate = heroXpRatePacket.Value;
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HEROXP_RATE_CHANGED"), 0));
-                }
-                else
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-                }
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay("$HeroXpRate VALUE", 10));
             }
         }
 
@@ -1272,7 +1245,7 @@ namespace OpenNos.Handler
         public void Guri(GuriCommandPacket guriCommandPacket)
         {
             Logger.Debug("Guri Command", Session.Character.GenerateIdentity());
-            Session.SendPacket(guriCommandPacket != null ? UserInterfaceHelper.Instance.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument,Session.Character.CharacterId, guriCommandPacket.Value) : Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
+            Session.SendPacket(guriCommandPacket != null ? UserInterfaceHelper.Instance.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, Session.Character.CharacterId, guriCommandPacket.Value) : Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
         }
 
         /// <summary>
@@ -1316,6 +1289,31 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        /// $FairyXPRate Command
+        /// </summary>
+        /// <param name="heroXpRatePacket"></param>
+        public void HeroXpRate(HeroXpRate heroXpRatePacket)
+        {
+            Logger.Debug("Hero Xp Rate Changed", Session.Character.GenerateIdentity());
+            if (heroXpRatePacket != null)
+            {
+                if (heroXpRatePacket.Value <= 1000)
+                {
+                    ServerManager.Instance.HeroXpRate = heroXpRatePacket.Value;
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HEROXP_RATE_CHANGED"), 0));
+                }
+                else
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$HeroXpRate VALUE", 10));
+            }
+        }
+
+        /// <summary>
         /// $Invisible Command
         /// </summary>
         /// <param name="invisiblePacket"></param>
@@ -1338,94 +1336,6 @@ namespace OpenNos.Handler
                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
             }
         }
-
-        /// <summary>
-        /// $Inventory Command
-        /// </summary>
-        /// <param name="inventoryPreviewPacket"></param>
-        public void ViewInventory(InventoryPreviewPacket inventoryPreviewPacket)
-        {
-            var player = Session;
-            if (inventoryPreviewPacket != null)
-            {
-                if (ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name) != null)
-                {
-                    player = ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name);
-                }
-            }
-            string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7";
-            // inv 3 used for miniland objects
-            if (player.Character.Inventory == null) return;
-            var listItems = player.Character.Inventory.GetAllItems();
-            foreach (ItemInstance inv in listItems)
-            {
-                switch (inv.Type)
-                {
-                    case InventoryType.Equipment:
-                        if (inv.Item.EquipmentSlot == EquipmentType.Sp)
-                        {
-                            SpecialistInstance specialistInstance = inv as SpecialistInstance;
-                            if (specialistInstance != null)
-                            {
-                                inv0 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
-                            }
-                        }
-                        else
-                        {
-                            WearableInstance wearableInstance = inv as WearableInstance;
-                            if (wearableInstance != null)
-                            {
-                                inv0 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
-                            }
-                        }
-                        break;
-
-                    case InventoryType.Main:
-                        inv1 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                        break;
-
-                    case InventoryType.Etc:
-                        inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                        break;
-
-                    case InventoryType.Miniland:
-                        inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
-                        break;
-
-                    case InventoryType.Specialist:
-                        SpecialistInstance specialist = inv as SpecialistInstance;
-                        if (specialist != null)
-                        {
-                            inv6 +=
-                                $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
-                        }
-                        break;
-
-                    case InventoryType.Costume:
-                        WearableInstance costumeInstance = inv as WearableInstance;
-                        if (costumeInstance != null)
-                        {
-                            inv7 +=
-                                $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
-                        }
-                        break;
-                    case InventoryType.Wear:
-                        break;
-                    case InventoryType.Bazaar:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            Session.SendPacket(inv0);
-            Session.SendPacket(inv1);
-            Session.SendPacket(inv2);
-            Session.SendPacket(inv6);
-            Session.SendPacket(inv7);
-        }
-
 
         /// <summary>
         /// $Kick Command
@@ -2130,7 +2040,6 @@ namespace OpenNos.Handler
                 short mapId;
                 if (short.TryParse(teleportPacket.Data, out mapId))
                 {
-                    
                     ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, teleportPacket.X, teleportPacket.Y);
                 }
                 else
@@ -2138,7 +2047,6 @@ namespace OpenNos.Handler
                     ClientSession session = ServerManager.Instance.GetSessionByCharacterName(teleportPacket.Data);
                     if (session != null)
                     {
-                        
                         short mapX = session.Character.PositionX;
                         short mapY = session.Character.PositionY;
                         if (session.Character.Miniland == session.Character.MapInstance)
@@ -2184,8 +2092,6 @@ namespace OpenNos.Handler
 
                         if (!session.Character.IsChangingMapInstance && Session.HasCurrentMapInstance)
                         {
-                            
-
                             List<MapCell> possibilities = new List<MapCell>();
                             for (short x = -6; x < 6; x++)
                             {
@@ -2351,6 +2257,97 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        /// $Inventory Command
+        /// </summary>
+        /// <param name="inventoryPreviewPacket"></param>
+        public void ViewInventory(InventoryPreviewPacket inventoryPreviewPacket)
+        {
+            var player = Session;
+            if (inventoryPreviewPacket != null)
+            {
+                if (ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name) != null)
+                {
+                    player = ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name);
+                }
+            }
+            string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7";
+
+            // inv 3 used for miniland objects
+            if (player.Character.Inventory == null) return;
+            var listItems = player.Character.Inventory.GetAllItems();
+            foreach (ItemInstance inv in listItems)
+            {
+                switch (inv.Type)
+                {
+                    case InventoryType.Equipment:
+                        if (inv.Item.EquipmentSlot == EquipmentType.Sp)
+                        {
+                            SpecialistInstance specialistInstance = inv as SpecialistInstance;
+                            if (specialistInstance != null)
+                            {
+                                inv0 +=
+                                    $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
+                            }
+                        }
+                        else
+                        {
+                            WearableInstance wearableInstance = inv as WearableInstance;
+                            if (wearableInstance != null)
+                            {
+                                inv0 +=
+                                    $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
+                            }
+                        }
+                        break;
+
+                    case InventoryType.Main:
+                        inv1 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
+                        break;
+
+                    case InventoryType.Etc:
+                        inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
+                        break;
+
+                    case InventoryType.Miniland:
+                        inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
+                        break;
+
+                    case InventoryType.Specialist:
+                        SpecialistInstance specialist = inv as SpecialistInstance;
+                        if (specialist != null)
+                        {
+                            inv6 +=
+                                $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
+                        }
+                        break;
+
+                    case InventoryType.Costume:
+                        WearableInstance costumeInstance = inv as WearableInstance;
+                        if (costumeInstance != null)
+                        {
+                            inv7 +=
+                                $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
+                        }
+                        break;
+
+                    case InventoryType.Wear:
+                        break;
+
+                    case InventoryType.Bazaar:
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            Session.SendPacket(inv0);
+            Session.SendPacket(inv1);
+            Session.SendPacket(inv2);
+            Session.SendPacket(inv6);
+            Session.SendPacket(inv7);
+        }
+
+        /// <summary>
         /// $WigColor Command
         /// </summary>
         /// <param name="wigColorPacket"></param>
@@ -2413,7 +2410,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug("Zoom Command", Session.Character.GenerateIdentity());
             Session.SendPacket(zoomPacket != null
-                ? UserInterfaceHelper.Instance.GenerateGuri(15, zoomPacket.Value,Session.Character.CharacterId)
+                ? UserInterfaceHelper.Instance.GenerateGuri(15, zoomPacket.Value, Session.Character.CharacterId)
                 : Session.Character.GenerateSay("$Zoom VALUE", 10));
         }
 

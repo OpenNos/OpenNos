@@ -1,13 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OpenNos.PathFinder
 {
-   public class Heuristic
+    public class Heuristic
     {
-       public static readonly Double SQRT_2 = Math.Sqrt(2);
+        #region Members
+
+        public static readonly Double SQRT_2 = Math.Sqrt(2);
+
+        #endregion
+
+        #region Methods
 
         public static double Chebyshev(int iDx, int iDy)
         {
@@ -32,5 +35,7 @@ namespace OpenNos.PathFinder
             int max = Math.Max(iDx, iDy);
             return min * SQRT_2 + max - min;
         }
+
+        #endregion
     }
 }
