@@ -1,5 +1,4 @@
 [<img src="https://discordapp.com/api/guilds/210791003735457793/widget.png?style=shield">](https://discord.gg/qdPMDv5)
-[<img src="https://img.shields.io/badge/Support-Us!-blue.svg">](https://www.paypal.me/OpenNosServer)
 
 # Information! #
 A master branch is to which we will push only stable changes that got confirmed, we develop now on dev branch, please dont ask for help with using dev branch, its unstable and designed only for advanced users.
