@@ -2,7 +2,7 @@
 [<img src="https://img.shields.io/badge/Support-Us!-blue.svg">](https://www.paypal.me/OpenNosServer)
 
 # Information! #
-This is a master branch to which we will push only stable changes that got confirmed, we develop now on dev branch, please dont ask for help for help with using dev branch, its unstable and designed only for advanced users.
+A master branch is to which we will push only stable changes that got confirmed, we develop now on dev branch, please dont ask for help with using dev branch, its unstable and designed only for advanced users.
 
 # Achtung! #
 We are not responsible of any damages caused by bad usage of our source: thermonuclear war, lit ssd's or getting fired because you spent whole night installing the required files. Please before asking questions or installing this source read this readme and also do a research, google is your friend. If you mess up when installing our source because you didnt follow it, we will laugh at you. A lot.
