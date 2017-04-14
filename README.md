@@ -16,13 +16,9 @@ This project is a community project not for commercial use. The emulator itself 
 
 This Website and Project is in no way affiliated with, authorized, maintained, sponsored or endorsed by Gameforge or any of its affiliates or subsidiaries. This is an independent and unofficial server for educational use ONLY. Using the Project might be against the TOS.
 
-# Attention! #
-This emulation software is not open source to host any private servers. It is open source to work together community-based.
-We do not provide any modified client files. The alorithms are based on our logic.
-
-### Before opening new issues troubleshooting can be found [here](TROUBLESHOOTING.md) ###
-### Read our [faq](FAQ.md) before asking questions ###
-### Contribution is only possible with Visual Studio 2015 (Community or other editions), Microsoft SQL Server 2016, [StyleCop extension](https://stylecop.codeplex.com/) and [ResX Resource Manager](https://resxresourcemanager.codeplex.com/) ###
+## Before opening new issues troubleshooting can be found [here](TROUBLESHOOTING.md) ##
+### Contribution is only possible with Visual Studio 2015 (Community or other editions), Microsoft SQL Server 2016 ###
+we recommend usage of [StyleCop extension](https://stylecop.codeplex.com/) and [ResX Resource Manager](https://resxresourcemanager.codeplex.com/).
 
 # Building the code #
 ## 1. Install SSDT For Visual Studio ##
