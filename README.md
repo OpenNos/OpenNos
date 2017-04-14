@@ -2,10 +2,10 @@
 [<img src="https://img.shields.io/badge/Support-Us!-blue.svg">](https://www.paypal.me/OpenNosServer)
 
 # Information! #
-This repository is no longer our main development repository. Code is now hosted privately until we think it is somewhat stable. When it is, we push all changes back to GitHub. Before you ask: No, you won't get access to the Repository unless you are:
-* a developer that is in our team
-* a tester invited by us
-Please do not ask us for invitation. You won't get one.
+This is a master branch to which we will push only stable changes that got confirmed, we develop now on dev branch, please dont ask for help for help with using dev branch, its unstable and designed only for advanced users.
+
+# Achtung! #
+We are not responsible of any damages caused by bad usage of our source: thermonuclear war, lit ssd's or getting fired because you spent whole night installing the required files. Please before asking questions or installing this source read this readme and also do a research, google is your friend. If you mess up when installing our source because you didnt follow it, we will laugh at you. A lot.
 
 # Instructions to contribute #
 
