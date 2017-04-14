@@ -1,4 +1,4 @@
-#Errors#
+# Errors #
 1. Database issues
   * 'update-database' doesn't work i get "No migration ... information".
   * Table 'account' already exists.
@@ -20,7 +20,7 @@
   * Monsters don't move
   * Recipes donesn't work
 
-#Fixes#
+# Fixes #
 1. Database issues
   1. Change Default project in Package Manager Console to OpenNos.EF.MySQL.
   2. Before using command update-database, make sure you dropped the opennos schema.
@@ -42,6 +42,6 @@
   * parse mv packets.
   * parse each recipe by clicking on them in game.
 
-#Unexpected behavior#
+# Unexpected behavior #
 - If project behaves unstable/improperly or something is off try to open a new issue explaining in details your problem with server
 - You can also contact us on [our discord server](https://discordapp.com/invite/N8eqPUh).
