@@ -109,7 +109,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                if (ConnectionLog.ContainsKey(client.IpAddress))
+                if (ConnectionLog.Any(c=>c.Key.Contains(client.IpAddress.Split(':')[0])))
                 {
                     return false;
                 }
