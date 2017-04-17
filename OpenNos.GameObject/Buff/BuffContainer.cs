@@ -64,7 +64,7 @@ namespace OpenNos.GameObject.Buff
             {
                 IndicatorBase[] items = new IndicatorBase[Indicators.Count];
                 Indicators.CopyTo(items);
-                foreach (IndicatorBase i in items.Where(s => !s.StaticBuff && !s.Disabled).ToList())
+                foreach (IndicatorBase i in items.Where(s => !IndicatorBase.StaticBuff && !s.Disabled).ToList())
                 {
                     i.Disable(Session);
                 }
@@ -79,7 +79,7 @@ namespace OpenNos.GameObject.Buff
                 {
                     IndicatorBase[] items = new IndicatorBase[Indicators.Count];
                     Indicators.CopyTo(items);
-                    foreach (IndicatorBase i in items.Where(s => !s.BadBuff && s.BuffLevel < level).ToList())
+                    foreach (IndicatorBase i in items.Where(s => !IndicatorBase.BadBuff && IndicatorBase.BuffLevel < level).ToList())
                     {
                         i.Disable(Session);
                     }
@@ -91,7 +91,7 @@ namespace OpenNos.GameObject.Buff
                 {
                     IndicatorBase[] items = new IndicatorBase[Indicators.Count];
                     Indicators.CopyTo(items);
-                    foreach (IndicatorBase i in items.Where(s => s.BadBuff && s.BuffLevel < level).ToList())
+                    foreach (IndicatorBase i in items.Where(s => IndicatorBase.BadBuff && IndicatorBase.BuffLevel < level).ToList())
                     {
                         i.Disable(Session);
                     }

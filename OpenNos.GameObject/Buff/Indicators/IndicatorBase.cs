@@ -24,9 +24,9 @@ namespace OpenNos.GameObject.Buff.Indicators
     {
         #region Members
 
-        public int BuffLevel = 1;
-        public bool BadBuff = false;
-        public bool StaticBuff = false;
+        public const int BuffLevel = 1;
+        public const bool BadBuff = false;
+        public const bool StaticBuff = false;
         public readonly List<BCardEntry> DelayedBuffs = new List<BCardEntry>();
         public readonly List<BCardEntry> DirectBuffs = new List<BCardEntry>();
         public int Level;
