@@ -103,7 +103,7 @@ namespace OpenNos.GameObject
             {
                 if (ConnectionLog.Any())
                 {
-                    foreach (var item in ConnectionLog.Where(cl => cl.Key.Equals(client.IpAddress) && (DateTime.Now - cl.Value).Seconds > 3).ToList())
+                    foreach (var item in ConnectionLog.Where(cl => cl.Key.Equals(client.IpAddress.Split(':')[1]) && (DateTime.Now - cl.Value).Seconds > 3).ToList())
                     {
                         ConnectionLog.Remove(item.Key);
                     }
