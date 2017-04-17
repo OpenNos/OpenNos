@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="EventActionType.cs" />
     <Compile Include="EventType.cs" />
+    <Compile Include="GeneralLogType.cs" />
     <Compile Include="MapInstanceType.cs" />
     <Compile Include="FamilyLogType.cs" />
     <Compile Include="FamilyAuthorityType.cs" />

@@ -76,7 +76,7 @@ namespace OpenNos.Handler
             AccountDTO loadedAccount = DAOFactory.AccountDAO.LoadByName(user.Name);
             if (loadedAccount != null && loadedAccount.Password.ToUpper().Equals(user.Password))
             {
-                DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.IpAddress, null, "Connection", "LoginServer");
+                DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.IpAddress, null, GeneralLogType.Connection, "LoginServer");
 
                 //check if the account is connected
                 if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("AccountIsConnected", loadedAccount.Name).Result)

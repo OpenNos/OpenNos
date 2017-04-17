@@ -30,23 +30,17 @@ namespace OpenNos.Import.Console
     {
         #region Methods
 
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
             // initialize logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-            System.Console.Title = $@"OpenNos Import Console v{fileVersionInfo.ProductVersion}";
+            System.Console.Title = $@"OpenNos Import Console v{fileVersionInfo.ProductVersion}dev";
             string text = $"IMPORT CONSOLE VERSION {fileVersionInfo.ProductVersion} by OpenNos Team";
-            if (args.Length == 0)
-            {
-                int offset = (System.Console.WindowWidth - text.Length) / 2;
-                System.Console.WriteLine(new string('=', System.Console.WindowWidth));
-                System.Console.SetCursorPosition(offset < 0 ? 0 : offset, System.Console.CursorTop);
-                System.Console.WriteLine(text + "\n" +
-                new string('=', System.Console.WindowWidth) + "\n");
-            }
-
+            int offset = System.Console.WindowWidth / 2 + text.Length / 2;
+            string separator = new string('=', System.Console.WindowWidth);
+            System.Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
             if (DataAccessHelper.Initialize())
             {
                 RegisterMappings();
