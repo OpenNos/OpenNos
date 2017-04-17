@@ -357,6 +357,10 @@ namespace OpenNos.GameObject
             {
                 try
                 {
+                    if (session.Character.IsExchanging)
+                        session.Character.CloseExchangeOrTrade();
+                    if (session.Character.HasShopOpened)
+                        session.Character.CloseShop();
                     LeaveMap(session.Character.CharacterId);
 
                     session.Character.IsChangingMapInstance = true;
