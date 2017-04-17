@@ -125,9 +125,9 @@ namespace OpenNos.GameObject
 
         public int HeroXpRate { get; set; }
 
-        public bool inBazaarRefreshMode { get; set; }
+        public bool InBazaarRefreshMode { get; set; }
 
-        public bool inFamilyRefreshMode { get; set; }
+        public bool InFamilyRefreshMode { get; set; }
 
         public List<MailDTO> Mails { get; private set; }
 
@@ -326,9 +326,9 @@ namespace OpenNos.GameObject
 
         public void BazaarRefresh(long BazaarItemId)
         {
-            inBazaarRefreshMode = true;
+            InBazaarRefreshMode = true;
             ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh", ServerGroup, BazaarItemId);
-            SpinWait.SpinUntil(() => !inBazaarRefreshMode);
+            SpinWait.SpinUntil(() => !InBazaarRefreshMode);
         }
 
         public void ChangeMap(long id, short? MapId = null, short? mapX = null, short? mapY = null)
@@ -462,7 +462,8 @@ namespace OpenNos.GameObject
                             foreach (ClientSession groupSession in g.Characters)
                             {
                                 ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMapInstance == groupSession.CurrentMapInstance);
-                                if (chara == null) continue;
+                                if (chara == null)
+                                    continue;
                                 groupSession.SendPacket(groupSession.Character.GeneratePinit());
                                 groupSession.Character.SendPst();
                             }
@@ -506,9 +507,9 @@ namespace OpenNos.GameObject
 
         public void FamilyRefresh(long FamilyId)
         {
-            inFamilyRefreshMode = true;
+            InFamilyRefreshMode = true;
             ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", ServerGroup, FamilyId);
-            SpinWait.SpinUntil(() => !inFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !InFamilyRefreshMode);
         }
 
         public MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
@@ -671,7 +672,7 @@ namespace OpenNos.GameObject
                                 targetSession.Character.SendPst();
                             }
                         }
-                        RemoveGroup(grp);
+                        _groups.Remove(grp.GroupId);
                     }
                     session.Character.Group = null;
                 }
@@ -818,7 +819,7 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("DROPS_LOADED"), _monsterDrops.GetAllItems().Sum(i => i.Count)));
 
-            // initialiize monsterskills
+            // initialize monsterskills
             _monsterSkills = new ThreadSafeSortedList<short, List<NpcMonsterSkill>>();
             foreach (var monsterSkillGrouping in DAOFactory.NpcMonsterSkillDAO.LoadAll().GroupBy(n => n.NpcMonsterVNum))
             {
@@ -839,7 +840,7 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count));
 
-            // intialize receipes
+            // intialize recipes
             _recipes = new ThreadSafeSortedList<int, List<Recipe>>();
             foreach (var recipeGrouping in DAOFactory.RecipeDAO.LoadAll().GroupBy(r => r.MapNpcId))
             {
@@ -1019,7 +1020,8 @@ namespace OpenNos.GameObject
         {
             if (raid == null)
                 raid = Instance.Raids.FirstOrDefault(s => s.IsMemberOfRaid(session.Character.CharacterId));
-            if (raid == null) return;
+            if (raid == null)
+                return;
             foreach (ClientSession targetSession in raid.Characters)
             {
                 targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_CLOSED"), 0));
@@ -1030,33 +1032,37 @@ namespace OpenNos.GameObject
 
         public void RaidLeave(ClientSession session)
         {
-            if (session == null) return;
-            if (Raids == null) return;
-            Raid raid = Instance.Raids.FirstOrDefault(s => s.IsMemberOfRaid(session.Character.CharacterId));
-            if (raid == null) return;
-            if (raid.Characters.Count > 1)
+            if (session == null || Raids == null)
             {
-                if (raid.Leader != session)
+                return;
+            }
+            Raid raid = Instance.Raids.FirstOrDefault(s => s.IsMemberOfRaid(session.Character.CharacterId));
+            if (raid != null)
+            {
+                if (raid.Characters.Count > 1)
                 {
-                    raid.Leave(session);
+                    if (raid.Leader != session)
+                    {
+                        raid.Leave(session);
+                    }
+                    else
+                    {
+                        raid.Leave(raid.Leader);
+                        raid.Leader.SendPacket(
+                            $"say 1 {raid.Leader.Character.CharacterId} 10 {Language.Instance.GetMessageFromKey("RAID_NEW_LEADER")}");
+                        raid.Leader.SendPacket(
+                            UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_NEW_LEADER"),
+                                0));
+                        raid.Leader.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                            string.Format(Language.Instance.GetMessageFromKey("LEAVE_RAID"), session.Character.Name), 0));
+                    }
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
+                    raid.UpdateVisual();
                 }
                 else
                 {
-                    raid.Leave(raid.Leader);
-                    raid.Leader.SendPacket(
-                        $"say 1 {raid.Leader.Character.CharacterId} 10 {Language.Instance.GetMessageFromKey("RAID_NEW_LEADER")}");
-                    raid.Leader.SendPacket(
-                        UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_NEW_LEADER"),
-                            0));
-                    raid.Leader.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
-                        string.Format(Language.Instance.GetMessageFromKey("LEAVE_RAID"), session.Character.Name), 0));
+                    RaidDisolve(session, raid);
                 }
-                session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
-                raid.UpdateVisual();
-            }
-            else
-            {
-                RaidDisolve(session, raid);
             }
         }
 
@@ -1248,7 +1254,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{ RandomNumber(0, 5) }"));
+                Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{RandomNumber(0, 5)}"));
             }
             catch (Exception e)
             {
@@ -1441,7 +1447,7 @@ namespace OpenNos.GameObject
                     BazaarList.Remove(bzlink);
                 }
             }
-            inBazaarRefreshMode = false;
+            InBazaarRefreshMode = false;
         }
 
         private void OnFamilyRefresh(object sender, EventArgs e)
@@ -1510,7 +1516,7 @@ namespace OpenNos.GameObject
                     FamilyList.Remove(fam);
                 }
             }
-            inFamilyRefreshMode = false;
+            InFamilyRefreshMode = false;
         }
 
         private void OnMessageSentToCharacter(object sender, EventArgs e)
@@ -1662,15 +1668,10 @@ namespace OpenNos.GameObject
                 Tuple<long?, string> kickedSession = (Tuple<long?, string>)sender;
 
                 ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
-                                                        && (string.IsNullOrEmpty(kickedSession.Item2) || s.Account.Name == kickedSession.Item2));
+                && (string.IsNullOrEmpty(kickedSession.Item2) || s.Account.Name == kickedSession.Item2));
 
                 targetSession?.Disconnect();
             }
-        }
-
-        private void RemoveGroup(Group grp)
-        {
-            _groups.Remove(grp.GroupId);
         }
 
         private void RemoveItemProcess()

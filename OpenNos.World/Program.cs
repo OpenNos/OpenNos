@@ -92,7 +92,7 @@ namespace OpenNos.World
             }
             else
             {
-                Console.ReadLine();
+                Console.ReadKey();
                 return;
             }
 
@@ -137,6 +137,8 @@ namespace OpenNos.World
             else
             {
                 Logger.Log.ErrorFormat("Could not retrieve ChannelId from Web API.");
+                Console.ReadKey();
+                return;
             }
         }
 
