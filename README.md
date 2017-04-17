@@ -15,7 +15,7 @@ This project is a community project not for commercial use. The emulator itself 
 This Website and Project is in no way affiliated with, authorized, maintained, sponsored or endorsed by Gameforge or any of its affiliates or subsidiaries. This is an independent and unofficial server for educational use ONLY. Using the Project might be against the TOS.
 
 ## Before opening new issues troubleshooting can be found [here](TROUBLESHOOTING.md) ##
-### Contribution is only possible with Visual Studio 2017 and Microsoft SQL Server 2016 ###
+### Contribution is only possible with Visual Studio 2017, additionally install .net framework 4.7 SDK and Microsoft SQL Server 2016 ###
 We recommend usage of [StyleCop extension](https://stylecop.codeplex.com/) and [ResX Resource Manager](https://resxresourcemanager.codeplex.com/).
 
 # Building the code #
