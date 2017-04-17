@@ -96,28 +96,6 @@ namespace OpenNos.Import.Console
 
                 if (key.KeyChar != 'n')
                 {
-                    factory.ImportMaps();
-                    factory.LoadMaps();
-                    factory.ImportRespawnMapType();
-                    factory.ImportMapType();
-                    factory.ImportMapTypeMap();
-                    ImportFactory.ImportAccounts();
-                    factory.ImportPortals();
-                    factory.ImportTimeSpaces();
-                    factory.ImportItems();
-                    factory.ImportSkills();
-                    factory.ImportCards();
-                    factory.ImportItemCards();
-                    factory.ImportSkillCards();
-                    factory.ImportNpcMonsters();
-                    factory.ImportNpcMonsterData();
-                    factory.ImportMapNpcs();
-                    factory.ImportMonsters();
-                    factory.ImportShops();
-                    factory.ImportTeleporters();
-                    factory.ImportShopItems();
-                    factory.ImportShopSkills();
-                    factory.ImportRecipe();
                 }
                 else
                 {

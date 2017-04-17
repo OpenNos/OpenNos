@@ -15,7 +15,6 @@
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.PathFinder;
-using OpenNos.Pathfinding;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -167,7 +166,7 @@ namespace OpenNos.GameObject
 
         public List<GridPos> PathSearch(GridPos cell1, GridPos cell2)
         {
-            return BestFirstSearch.findPath(cell1, cell2, Grid);
+            return BestFirstSearch.FindPath(cell1, cell2, Grid);
         }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)

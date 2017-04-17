@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenNos.Pathfinding
+namespace OpenNos.PathFinder
 {
     public class Node : GridPos, IComparable<Node>
     {

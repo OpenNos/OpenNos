@@ -25,7 +25,7 @@ namespace OpenNos.GameObject.Buff.Indicators.Item
             Name = "Armor Enhancement";
             Duration = 6000;
             Id = 117;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Defense, SubType.IncreasePercentage, 20, 0, false));
         }
 

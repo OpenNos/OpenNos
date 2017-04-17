@@ -25,7 +25,7 @@ namespace OpenNos.GameObject.Buff.Indicators.NoSP.Archer
             Name = "Ritual Of Hawk";
             Duration = 1800;
             Id = 30;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.Increase, 25, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.HitRate, SubType.Increase, 15, 0, false));
         }

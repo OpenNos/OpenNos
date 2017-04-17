@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
             Name = "The 2nd Triple Blessing";
             Duration = 150;
             Id = 141;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreasePercentage, 30, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Defense, SubType.DecreaseCriticalDamage, 20, 0, false));
         }
@@ -23,7 +23,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
         public override void Disable(ClientSession session)
         {
             base.Disable(session);
-            IndicatorBase buff = new ThirdBlessing(_level);
+            IndicatorBase buff = new ThirdBlessing(Level);
             session.Character.Buff.Add(buff);
         }
 

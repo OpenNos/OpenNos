@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Archer
             Name = "Miraclous Healing";
             Duration = 1800;
             Id = 328;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreasePercentage, 15, 0, false));
         }
 

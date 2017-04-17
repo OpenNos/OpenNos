@@ -22,6 +22,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OpenNos.Import.Console
 {
@@ -303,8 +304,7 @@ namespace OpenNos.Import.Console
                     {
                         continue;
                     }
-                    int mapid;
-                    if (!int.TryParse(linesave[0], out mapid))
+                    if (!int.TryParse(linesave[0], out int mapid))
                     {
                         continue;
                     }
@@ -2031,8 +2031,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
-                        string name;
-                        skill.Name = dictionaryIdLang.TryGetValue(currentLine[2], out name) ? name : string.Empty;
+                        skill.Name = dictionaryIdLang.TryGetValue(currentLine[2], out string name) ? name : string.Empty;
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "TYPE")
                     {
@@ -2478,8 +2477,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
-                        string name;
-                        item.Name = dictionaryName.TryGetValue(currentLine[2], out name) ? name : string.Empty;
+                        item.Name = dictionaryName.TryGetValue(currentLine[2], out string name) ? name : string.Empty;
                     }
                     else if (currentLine.Length > 7 && currentLine[1] == "INDEX")
                     {

@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Archer
             Name = "Critical Hit";
             Duration = 50;
             Id = 92;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreaseCriticalChance, 30, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreaseCriticalDamage, 50, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.Increase, 10, 0, true));

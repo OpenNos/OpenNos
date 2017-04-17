@@ -25,7 +25,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Archer
             Name = "Wind Walker";
             Duration = 4200;
             Id = 75;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Speed, SubType.Increase, 2, 0, false));
         }
 

@@ -25,7 +25,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Archer
             Name = "Hawk Eye";
             Duration = 3000;
             Id = 74;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Effect, SubType.EagleEyes, 1, 0, false));
         }
 

@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Archer
             Name = "Booster On";
             Duration = 50;
             Id = 136;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Speed, SubType.Increase, 10, 0, false));
         }
 
@@ -22,7 +22,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Archer
         public override void Disable(ClientSession session)
         {
             base.Disable(session);
-            IndicatorBase buff = new Haste(_level);
+            IndicatorBase buff = new Haste(Level);
             session.Character.Buff.Add(buff);
         }
 

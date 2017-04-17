@@ -1,5 +1,4 @@
-﻿using OpenNos.Pathfinding;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -10,7 +9,7 @@ namespace OpenNos.PathFinder
     {
         #region Methods
 
-        public static List<GridPos> findPath(GridPos start, GridPos end, GridPos[,] Grid)
+        public static List<GridPos> FindPath(GridPos start, GridPos end, GridPos[,] Grid)
         {
             Node[,] grid = new Node[Grid.GetLength(0), Grid.GetLength(1)];
             for (short y = 0; y < grid.GetLength(1); y++)

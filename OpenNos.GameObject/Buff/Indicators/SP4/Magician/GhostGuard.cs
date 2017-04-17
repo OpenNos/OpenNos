@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Magician
             Name = "Ghost Guard";
             Duration = 3000;
             Id = 156;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Speed, SubType.Increase, 4, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreaseCriticalDamage, 50, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreaseCriticalChance, 30, 0, false));

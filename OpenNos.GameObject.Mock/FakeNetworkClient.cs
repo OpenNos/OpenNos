@@ -123,7 +123,7 @@ namespace OpenNos.GameObject.Mock
 
         public void Initialize(EncryptionBase encryptor)
         {
-            // NOTHING TO DO HERE
+            // nothing to do here
         }
 
         /// <summary>

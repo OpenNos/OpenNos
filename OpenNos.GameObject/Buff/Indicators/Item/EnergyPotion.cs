@@ -25,7 +25,7 @@ namespace OpenNos.GameObject.Buff.Indicators.Item
             Name = "Energy Increase";
             Duration = 6000;
             Id = 118;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.HP, SubType.IncreasePercentage, 20, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.MP, SubType.IncreasePercentage, 20, 0, false));
         }

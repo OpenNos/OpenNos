@@ -15,7 +15,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Swordsman
             DirectBuffs.Add(new BCardEntry(Type.Speed, SubType.Increase, 2, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Defense, SubType.Decrease, 200, 0, false));
 
-            _level = Level;
+            base.Level = Level;
             DelayedBuffs.Add(new BCardEntry(Type.Speed, SubType.Increase, 4, 0, false));
             DelayedBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreasePercentage, 20, 0, true));
             Delay = 400;

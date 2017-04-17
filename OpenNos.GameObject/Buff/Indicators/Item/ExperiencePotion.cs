@@ -25,7 +25,7 @@ namespace OpenNos.GameObject.Buff.Indicators.Item
             Name = "Experience Increase";
             Duration = 6000;
             Id = 119;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Experience, SubType.IncreasePercentage, 20, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.JobExperience, SubType.IncreasePercentage, 20, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.SpExperience, SubType.IncreasePercentage, 20, 0, false));

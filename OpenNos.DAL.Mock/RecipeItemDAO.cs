@@ -23,12 +23,12 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
-        public RecipeItemDTO Insert(RecipeItemDTO recipeitem)
+        public new RecipeItemDTO Insert(RecipeItemDTO recipeitem)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<RecipeItemDTO> LoadAll()
+        public new IEnumerable<RecipeItemDTO> LoadAll()
         {
             throw new NotImplementedException();
         }

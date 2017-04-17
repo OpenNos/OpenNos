@@ -24,16 +24,16 @@ namespace OpenNos.GameObject.Buff.Indicators
     {
         #region Members
 
-        public const int _buffLevel = 1;
-        public const bool BadBuff = false;
-        public const bool StaticBuff = false;
+        public int BuffLevel = 1;
+        public bool BadBuff = false;
+        public bool StaticBuff = false;
         public readonly List<BCardEntry> DelayedBuffs = new List<BCardEntry>();
         public readonly List<BCardEntry> DirectBuffs = new List<BCardEntry>();
-        public int _level;
+        public int Level;
         public int Delay = -1;
         public int Duration;
         public int Id;
-        public int Interval = -1; // never used
+        public int Interval = -1;
         public string Name;
         public DateTime Start = DateTime.Now;
 
@@ -51,12 +51,12 @@ namespace OpenNos.GameObject.Buff.Indicators
         {
             if (!Disabled && session != null && session.HasSelectedCharacter)
             {
-                if (StaticBuff) // always true for now !ignore!
+                if (StaticBuff)
                 {
                     session.SendPacket($"vb {Id} 0 {Duration}");
                     session.SendPacket(session.Character.GenerateSay($"You are no longer under the effect {Name}.", 11));
                 }
-                session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.0 {_level}");
+                session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.0 {Level}");
                 session.SendPacket(session.Character.GenerateSay($"You are no longer under the effect {Name}.", 20));
                 Disabled = true;
                 if (DirectBuffs.Concat(DelayedBuffs).Any(s => s.Type == Type.Speed))
@@ -69,12 +69,12 @@ namespace OpenNos.GameObject.Buff.Indicators
 
         public virtual void Enable(ClientSession session)
         {
-            if (StaticBuff) // always true for now !ignore!
+            if (StaticBuff)
             {
                 session.SendPacket($"vb {Id} 1 {Duration}");
                 session.SendPacket(session.Character.GenerateSay($"You are under the effect {Name}.", 12));
             }
-            session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.{Duration} {_level}");
+            session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.{Duration} {Level}");
             session.SendPacket(session.Character.GenerateSay($"You are under the effect {Name}.", 20));
             if (DirectBuffs.Any(s => s.Type == Type.Speed))
             {

@@ -167,7 +167,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         public async Task ClearLowPriorityQueue()
         {
-            // do nothing
+            // nothing to do here
         }
 
         /// <summary>

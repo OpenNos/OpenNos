@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
             Name = "Eagle Spirit";
             Duration = 1800;
             Id = 151;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.HitRate, SubType.Increase, 30, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreaseCriticalChance, 10, 0, false));
         }

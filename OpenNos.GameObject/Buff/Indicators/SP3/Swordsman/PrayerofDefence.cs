@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
             Name = "Prayer of Defence";
             Duration = 1800;
             Id = 138;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.HP, SubType.IncreasePercentage, 15, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.MP, SubType.IncreasePercentage, 15, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Defense, SubType.IncreaseLevel, 1, 0, false));

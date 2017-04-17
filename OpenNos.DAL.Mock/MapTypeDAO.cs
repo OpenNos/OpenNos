@@ -28,7 +28,7 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public IEnumerable<MapTypeDTO> LoadAll()
+        public new IEnumerable<MapTypeDTO> LoadAll()
         {
             throw new NotImplementedException();
         }

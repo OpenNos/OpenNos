@@ -10,7 +10,7 @@
             Duration = 1;
             Id = 0;
 
-            _level = Level;
+            base.Level = Level;
         }
 
         #endregion
@@ -20,7 +20,7 @@
         public override void Enable(ClientSession session)
         {
             base.Enable(session);
-            int hpbonus = _level * 50;
+            int hpbonus = Level * 50;
             if (session.Character.Hp + hpbonus <= session.Character.HPLoad())
             {
                 session.Character.Hp += hpbonus;
@@ -30,7 +30,7 @@
                 hpbonus = (int)session.Character.HPLoad() - session.Character.Hp;
                 session.Character.Hp = (int)session.Character.HPLoad();
             }
-            int mpbonus = _level * 20;
+            int mpbonus = Level * 20;
             if (session.Character.Mp + mpbonus <= session.Character.MPLoad())
             {
                 session.Character.Mp += mpbonus;

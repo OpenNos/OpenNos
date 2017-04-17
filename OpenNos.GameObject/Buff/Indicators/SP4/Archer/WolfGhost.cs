@@ -12,7 +12,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.Increase, Level * 4, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Speed, SubType.Increase, 2, 0, false));
             Duration = 3000;
-            _level = Level;
+            base.Level = Level;
             Id = 153;
         }
 

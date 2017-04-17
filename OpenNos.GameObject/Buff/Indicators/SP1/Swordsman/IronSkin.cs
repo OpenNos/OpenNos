@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Swordsman
             Name = "Iron Skin";
             Duration = 300;
             Id = 71;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.DecreaseMeleePercentage, 20, 0, false, true));
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.DecreaseDistancePercentage, 65, 0, false, true));
             DelayedBuffs.Add(new BCardEntry(Type.Cooldown, SubType.DecreasePercentage, 15, 0, false));

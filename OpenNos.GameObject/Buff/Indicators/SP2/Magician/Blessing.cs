@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
             Name = "Blessing";
             Duration = 3000;
             Id = 91;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Defense, SubType.IncreaseLevel, 1, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Resistance, SubType.Increase, 5, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Defense, SubType.IncreaseMelee, Level * 2, 0, false));

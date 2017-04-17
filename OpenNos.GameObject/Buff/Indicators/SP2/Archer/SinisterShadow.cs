@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Archer
             Name = "Sinister Shadow";
             Duration = 40;
             Id = 631;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.Increase, 10, 0, true));
         }
 

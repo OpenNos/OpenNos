@@ -25,7 +25,7 @@ namespace OpenNos.GameObject.Buff.Indicators.Item
             Name = "Attack Enhancement";
             Duration = 6000;
             Id = 116;
-            _level = Level;
+            base.Level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreasePercentage, 20, 0, false));
         }
 

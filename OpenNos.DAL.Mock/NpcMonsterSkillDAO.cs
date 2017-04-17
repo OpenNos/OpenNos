@@ -40,7 +40,7 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public List<NpcMonsterSkillDTO> LoadAll()
+        public new List<NpcMonsterSkillDTO> LoadAll()
         {
             return _mockContainer.ToList();
         }

@@ -15,7 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.GameObject.Helpers;
-using OpenNos.Pathfinding;
+using OpenNos.PathFinder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
