@@ -8,7 +8,7 @@ namespace OpenNos.PathFinder
     public class BestFirstSearch
     {
         #region Methods
-        public static List<GridPos> FindPath(GridPos start, GridPos end, GridPos[,] Grid)
+        public static Node[,] FindPath(GridPos[,] Grid)
         {
             Node[,] grid = new Node[Grid.GetLength(0), Grid.GetLength(1)];
             for (short y = 0; y < grid.GetLength(1); y++)
@@ -23,7 +23,12 @@ namespace OpenNos.PathFinder
                     };
                 }
             }
+            return grid;
+        }
+        public static List<GridPos> FindPath(GridPos start, GridPos end, GridPos[,] Grid)
+        {
             Node node = new Node();
+            Node[,] grid = FindPath(Grid);
             Node Start = grid[start.X, start.Y];
             MinHeap path = new MinHeap();
 
@@ -82,7 +87,7 @@ namespace OpenNos.PathFinder
             return new List<GridPos>();
         }
 
-        public static void LoadBushFire(GridPos user, ref Node[,] mapGrid)
+        public static void LoadBrushFire(GridPos user, ref Node[,] mapGrid)
         {
             Node[,] grid = new Node[mapGrid.GetLength(0), mapGrid.GetLength(1)];
             for (short y = 0; y < grid.GetLength(1); y++)
