@@ -69,7 +69,7 @@
     <Compile Include="PathFinder\Heuristic.cs" />
     <Compile Include="PathFinder\MinHeap.cs" />
     <Compile Include="PathFinder\Node.cs" />
-    <Compile Include="PathFinder\Pathfinder.cs" />
+    <Compile Include="PathFinder\BestFirstSearch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

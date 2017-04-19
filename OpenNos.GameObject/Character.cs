@@ -20,6 +20,7 @@ using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Buff.BCard;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ServerPackets;
+using OpenNos.PathFinder;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
@@ -37,8 +38,7 @@ namespace OpenNos.GameObject
 
         private byte _cmapcount;
         private Random _random;
-        private byte _speed;
-
+        private byte _speed;  
         #endregion
 
         #region Instantiation
@@ -71,6 +71,7 @@ namespace OpenNos.GameObject
                 return ServerManager.Instance.CharacterRelations == null ? new List<CharacterRelationDTO>() : ServerManager.Instance.CharacterRelations.Where(s => s.CharacterId == CharacterId || s.RelatedCharacterId == CharacterId).ToList();
             }
         }
+        public Node[,] BrushFire { get; set; }
 
         public short CurrentMinigame { get; set; }
 

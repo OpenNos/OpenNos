@@ -950,10 +950,16 @@ namespace OpenNos.GameObject
                 RefreshRanking();
                 CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
                 PenaltyLogs = DAOFactory.PenaltyLogDAO.LoadAll().ToList();
-                ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance, new InstanceBag());
-                ArenaInstance.IsPVP = true;
-                FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance, new InstanceBag());
-                FamilyArenaInstance.IsPVP = true;
+                if (DAOFactory.MapDAO.LoadById(2006) != null)
+                {
+                    ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance, new InstanceBag());
+                    ArenaInstance.IsPVP = true;
+                }
+                if (DAOFactory.MapDAO.LoadById(2106) != null)
+                {
+                    FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance, new InstanceBag());
+                    FamilyArenaInstance.IsPVP = true;
+                }
                 LoadTimeSpaces();
             }
             catch (Exception ex)

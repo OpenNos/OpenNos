@@ -20,6 +20,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ClientPackets;
+using OpenNos.PathFinder;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
@@ -1732,7 +1733,9 @@ namespace OpenNos.Handler
                     }
                     Session.Character.PositionX = walkPacket.XCoordinate;
                     Session.Character.PositionY = walkPacket.YCoordinate;
-
+                    Node[,] BrushFire = BestFirstSearch.FindPath(Session.CurrentMapInstance.Map.Grid);
+                    BestFirstSearch.LoadBrushFire(new GridPos() { X = Session.Character.PositionX, Y = Session.Character.PositionY }, ref BrushFire);
+                    Session.Character.BrushFire = BrushFire;
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;
