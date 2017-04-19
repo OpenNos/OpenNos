@@ -25,6 +25,7 @@ namespace OpenNos.PathFinder
             }
             return grid;
         }
+
         public static List<GridPos> FindPath(GridPos start, GridPos end, GridPos[,] Grid)
         {
             Node node = new Node();
@@ -87,21 +88,9 @@ namespace OpenNos.PathFinder
             return new List<GridPos>();
         }
 
-        public static void LoadBrushFire(GridPos user, ref Node[,] mapGrid)
+        public static void LoadBrushFire(GridPos user, ref Node[,] mapGrid, short MaxDistance = 50)
         {
-            Node[,] grid = new Node[mapGrid.GetLength(0), mapGrid.GetLength(1)];
-            for (short y = 0; y < grid.GetLength(1); y++)
-            {
-                for (short x = 0; x < grid.GetLength(0); x++)
-                {
-                    grid[x, y] = new Node()
-                    {
-                        Value = mapGrid[x, y].Value,
-                        X = x,
-                        Y = y
-                    };
-                }
-            }
+            Node[,] grid = FindPath(mapGrid);
 
             Node node = new Node();
             Node Start = grid[user.X, user.Y];
@@ -136,7 +125,16 @@ namespace OpenNos.PathFinder
                     {
                         if (neighbor.F == 0)
                         {
-                            neighbor.F = Heuristic.Octile(Math.Abs(neighbor.X - node.X), Math.Abs(neighbor.Y - node.Y)) + node.F;
+                            double distance = Heuristic.Octile(Math.Abs(neighbor.X - node.X), Math.Abs(neighbor.Y - node.Y)) + node.F;
+                            if (distance > MaxDistance)
+                            {
+                                neighbor.Value = 1;
+                                continue;
+                            }
+                            else
+                            {
+                                neighbor.F = distance;
+                            }
                             mapGrid[neighbor.X, neighbor.Y].F = neighbor.F;
                         }
 
