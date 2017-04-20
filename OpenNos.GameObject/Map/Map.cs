@@ -164,10 +164,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public List<GridPos> PathSearch(GridPos cell1, GridPos cell2)
-        {
-            return BestFirstSearch.FindPath(cell1, cell2, Grid);
-        }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
         {

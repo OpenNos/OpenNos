@@ -1733,7 +1733,7 @@ namespace OpenNos.Handler
                     }
                     Session.Character.PositionX = walkPacket.XCoordinate;
                     Session.Character.PositionY = walkPacket.YCoordinate;
-                    Node[,] BrushFire = BestFirstSearch.FindPath(Session.CurrentMapInstance.Map.Grid);
+                    Node[,] BrushFire = BestFirstSearch.LoadGrid(Session.CurrentMapInstance.Map.Grid);
                     BestFirstSearch.LoadBrushFire(new GridPos() { X = Session.Character.PositionX, Y = Session.Character.PositionY }, ref BrushFire);
                     Session.Character.BrushFire = BrushFire;
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());

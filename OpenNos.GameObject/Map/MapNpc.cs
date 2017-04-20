@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
 
         public List<EventContainer> OnDeathEvents { get; set; }
 
-        public List<GridPos> Path { get; set; }
+        public List<Node> Path { get; set; }
 
         public List<Recipe> Recipes { get; set; }
 
@@ -117,7 +117,7 @@ namespace OpenNos.GameObject
             FirstY = MapY;
             EffectDelay = 4000;
             _movetime = ServerManager.Instance.RandomNumber(500, 3000);
-            Path = new List<GridPos>();
+            Path = new List<Node>();
             Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
             Target = -1;
             Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
@@ -260,11 +260,7 @@ namespace OpenNos.GameObject
                         LastEffect = DateTime.Now;
                         if (monster.CurrentHp < 1)
                         {
-                            if (IsMoving && !Path.Any())
-                            {
-                                Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
-                            }
-
+                            RemoveTarget();
                             monster.IsAlive = false;
                             monster.LastMove = DateTime.Now;
                             monster.CurrentHp = 0;
@@ -284,7 +280,8 @@ namespace OpenNos.GameObject
                         {
                             short xoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                             short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
-                            Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(monster.MapX + xoffset), Y = (short)(monster.MapY + yoffset) });
+                            //go to monster
+                            Path = BestFirstSearch.FindPath(new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(monster.MapX + xoffset), Y = (short)(monster.MapY + yoffset) }, MapInstance.Map.Grid);
                         }
                         if (DateTime.Now > LastMove && Npc.Speed > 0 && Path.Any())
                         {
@@ -307,11 +304,25 @@ namespace OpenNos.GameObject
                         }
                         if (Target != -1 && (MapId != monster.MapId || distance > maxDistance))
                         {
-                            Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
-                            Target = -1;
+                            RemoveTarget();
                         }
                     }
                 }
+            }
+        }
+
+
+        /// <summary>
+        /// Remove the current Target from Npc.
+        /// </summary>
+        internal void RemoveTarget()
+        {
+            if (Target != -1)
+            {
+                Path.Clear();
+                Target = -1;
+                //return to origin
+                Path = BestFirstSearch.FindPath(new Node { X = MapX, Y = MapY }, new Node { X = FirstX, Y = FirstY }, MapInstance.Map.Grid);
             }
         }
 
