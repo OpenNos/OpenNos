@@ -2450,11 +2450,13 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
                 }
             }
-            var playerSession = ServerManager.Instance.GetSessionByCharacterName(character.Name);
-            if (playerSession == null) return;
-            Session.SendPacket(Session.Character.GenerateSay("----- INFORMATIONS -----", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"ACTUAL IP : {playerSession.IpAddress}", 13));
-            Session.SendPacket(Session.Character.GenerateSay("-------------------", 13));
+            ClientSession session = ServerManager.Instance.GetSessionByCharacterName(character.Name);
+            if (session != null)
+            {
+                Session.SendPacket(Session.Character.GenerateSay("----- SESSION -----", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Current IP: {session.IpAddress}", 13));
+                Session.SendPacket(Session.Character.GenerateSay("----- ------------ -----", 13));
+            }
         }
 
         private async void ShutdownTask()
