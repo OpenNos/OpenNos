@@ -8,7 +8,7 @@ namespace OpenNos.PathFinder
     public class BestFirstSearch
     {
         #region Methods
-        public static List<GridPos> FindPath(GridPos start, GridPos end, GridPos[,] Grid)
+        public static Node[,] LoadGrid(GridPos[,] Grid)
         {
             Node[,] grid = new Node[Grid.GetLength(0), Grid.GetLength(1)];
             for (short y = 0; y < grid.GetLength(1); y++)
@@ -23,7 +23,13 @@ namespace OpenNos.PathFinder
                     };
                 }
             }
+            return grid;
+        }
+
+        public static List<Node> FindPath(GridPos start, GridPos end, GridPos[,] Grid)
+        {
             Node node = new Node();
+            Node[,] grid = LoadGrid(Grid);
             Node Start = grid[start.X, start.Y];
             MinHeap path = new MinHeap();
 
@@ -79,24 +85,12 @@ namespace OpenNos.PathFinder
                     }
                 }
             }
-            return new List<GridPos>();
+            return new List<Node>();
         }
 
-        public static void LoadBushFire(GridPos user, ref Node[,] mapGrid)
+        public static void LoadBrushFire(GridPos user, ref Node[,] mapGrid, short MaxDistance = 22)
         {
-            Node[,] grid = new Node[mapGrid.GetLength(0), mapGrid.GetLength(1)];
-            for (short y = 0; y < grid.GetLength(1); y++)
-            {
-                for (short x = 0; x < grid.GetLength(0); x++)
-                {
-                    grid[x, y] = new Node()
-                    {
-                        Value = mapGrid[x, y].Value,
-                        X = x,
-                        Y = y
-                    };
-                }
-            }
+            Node[,] grid = LoadGrid(mapGrid);
 
             Node node = new Node();
             Node Start = grid[user.X, user.Y];
@@ -131,7 +125,16 @@ namespace OpenNos.PathFinder
                     {
                         if (neighbor.F == 0)
                         {
-                            neighbor.F = Heuristic.Octile(Math.Abs(neighbor.X - node.X), Math.Abs(neighbor.Y - node.Y)) + node.F;
+                            double distance = Heuristic.Octile(Math.Abs(neighbor.X - node.X), Math.Abs(neighbor.Y - node.Y)) + node.F;
+                            if (distance > MaxDistance)
+                            {
+                                neighbor.Value = 1;
+                                continue;
+                            }
+                            else
+                            {
+                                neighbor.F = distance;
+                            }
                             mapGrid[neighbor.X, neighbor.Y].F = neighbor.F;
                         }
 
@@ -241,48 +244,9 @@ namespace OpenNos.PathFinder
             return neighbors;
         }
 
-        public static void ShowGrid(Node[,] grid)
+        public static List<Node> Backtrace(Node end)
         {
-            Console.Clear();
-            Console.Write(string.Concat(Enumerable.Repeat("-", grid.GetLength(0))));
-            for (int y = 0; y < grid.GetLength(1); y++)
-            {
-                for (int x = 0; x < grid.GetLength(0); x++)
-                {
-                    string value = grid[x, y].IsWalkable() ? " " : "X";
-                    if (value == " ")
-                    {
-                        if (grid[x, y].Opened)
-                        {
-                            value = "O";
-                        }
-                        else if (grid[x, y].Closed)
-                        {
-                            value = "C";
-                        }
-                    }
-                    if (x == 0)
-                    {
-                        Console.Write("|");
-                    }
-                    else
-                    {
-                        Console.Write(value);
-                    }
-                }
-                if (y != 0)
-                {
-                    Console.Write("|");
-                }
-                Console.Write("\n");
-            }
-            Console.Write(string.Concat(Enumerable.Repeat("-", grid.GetLength(0))));
-            Thread.Sleep(1000);
-        }
-
-        private static List<GridPos> Backtrace(Node end)
-        {
-            List<GridPos> path = new List<GridPos>();
+            List<Node> path = new List<Node>();
             while (end.Parent != null)
             {
                 end = end.Parent;
@@ -290,6 +254,23 @@ namespace OpenNos.PathFinder
             }
             path.Reverse();
             return path;
+        }
+
+        public static List<Node> TracePath(Node node, Node[,] MapGrid)
+        {
+            Node currentnode = MapGrid[node.X,node.Y];
+            List<Node> list = new List<Node>();
+            while (currentnode.F != 1 && currentnode.F != 0)
+            {
+                Node newnode = null;
+                newnode = BestFirstSearch.GetNeighbors(MapGrid, currentnode)?.OrderBy(s => s.F).FirstOrDefault();
+                if (newnode != null)
+                {
+                    list.Add(newnode);
+                    currentnode = newnode;
+                }
+            }
+            return list;
         }
         #endregion
     }

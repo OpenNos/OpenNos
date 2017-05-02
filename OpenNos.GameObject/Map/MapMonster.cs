@@ -81,7 +81,7 @@ namespace OpenNos.GameObject
 
         public List<EventContainer> OnDeathEvents { get; set; }
 
-        public List<GridPos> Path { get; set; }
+        public List<Node> Path { get; set; }
 
         public bool? ShouldRespawn { get; set; }
 
@@ -141,7 +141,7 @@ namespace OpenNos.GameObject
             FirstY = MapY;
             LastSkill = LastMove = LastEffect = DateTime.Now;
             Target = -1;
-            Path = new List<GridPos>();
+            Path = new List<Node>();
             IsAlive = true;
             ShouldRespawn = ShouldRespawn ?? true;
             Monster = ServerManager.Instance.GetNpc(MonsterVNum);
@@ -228,7 +228,6 @@ namespace OpenNos.GameObject
                     {
                         Target = session.Character.CharacterId;
                     }
-                    Path.Clear();
                 }
             }
         }
@@ -245,7 +244,6 @@ namespace OpenNos.GameObject
                     {
                         character.Session.SendPacket(GenerateEff(5000));
                     }
-                    Path.Clear();
                 }
             }
         }
@@ -259,11 +257,8 @@ namespace OpenNos.GameObject
             {
                 Path.Clear();
                 Target = -1;
-
-                if (!Path.Any() && Target == -1)
-                {
-                    Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
-                }
+                //return to origin
+                Path = BestFirstSearch.FindPath(new Node { X = MapX, Y = MapY }, new Node { X = FirstX, Y = FirstY }, MapInstance.Map.Grid);
             }
         }
 
@@ -273,22 +268,18 @@ namespace OpenNos.GameObject
         /// <param name="targetSession">The TargetSession to follow</param>
         private void FollowTarget(ClientSession targetSession)
         {
-            int distance = 0;
-
-            if (targetSession != null)
-            {
-                distance = Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = targetSession.Character.PositionX, Y = targetSession.Character.PositionY });
-            }
             if (IsMoving)
             {
                 short maxDistance = 22;
+                int distance = 0;
                 if (!Path.Any() && targetSession != null)
                 {
                     short xoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                     short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                     try
                     {
-                        Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(targetSession.Character.PositionX + xoffset), Y = (short)(targetSession.Character.PositionY + yoffset) });
+                        List<Node> list = BestFirstSearch.TracePath(new Node() { X = MapX, Y = MapY }, targetSession.Character.BrushFire);
+                        Path = list;
                     }
                     catch (Exception ex)
                     {
@@ -312,7 +303,7 @@ namespace OpenNos.GameObject
                              MapX = mapX;
                              MapY = mapY;
                          });
-
+                    distance = (int)Path.First().F;
                     Path.RemoveRange(0, maxindex);
                 }
 
@@ -1012,7 +1003,7 @@ namespace OpenNos.GameObject
                 CurrentMp = Monster.MaxMP;
                 MapX = FirstX;
                 MapY = FirstY;
-                Path = new List<GridPos>();
+                Path = new List<Node>();
                 MapInstance.Broadcast(GenerateIn());
             }
         }
