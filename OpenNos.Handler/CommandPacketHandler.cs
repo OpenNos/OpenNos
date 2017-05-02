@@ -640,15 +640,7 @@ namespace OpenNos.Handler
             Logger.Debug("Change SpecialistLevel Command", Session.Character.GenerateIdentity());
             if (changeSpecialistLevelPacket != null)
             {
-                var player = Session;
-                if (ServerManager.Instance.GetSessionByCharacterName(changeSpecialistLevelPacket.Name) != null)
-                {
-                    player = ServerManager.Instance.GetSessionByCharacterName(changeSpecialistLevelPacket.Name);
-                }
-                SpecialistInstance sp =
-                    player.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,
-                        InventoryType.Wear);
-
+                SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (sp != null && Session.Character.UseSp)
                 {
                     if (changeSpecialistLevelPacket.SpecialistLevel <= 255 &&
@@ -656,30 +648,22 @@ namespace OpenNos.Handler
                     {
                         sp.SpLevel = changeSpecialistLevelPacket.SpecialistLevel;
                         sp.XP = 0;
-                        player.SendPacket(Session.Character.GenerateLev());
-                        Session.SendPacket(
-                            UserInterfaceHelper.Instance.GenerateMsg(
-                                Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
-                        player.SendPacket(Session.Character.GenerateSki());
-                        player.Character.LearnSPSkill();
-                        player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
-                            ReceiverType.AllExceptMe);
-                        player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
-                            ReceiverType.AllExceptMe);
-                        player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8),
-                            Session.Character.PositionX, Session.Character.PositionY);
+                        Session.SendPacket(Session.Character.GenerateLev());
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
+                        Session.SendPacket(Session.Character.GenerateSki());
+                        Session.Character.LearnSPSkill();
+                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), Session.Character.PositionX, Session.Character.PositionY);
                     }
                     else
                     {
-                        Session.SendPacket(
-                            UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"),
-                                0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"),0));
                     }
                 }
                 else
                 {
-                    Session.SendPacket(
-                        UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                 }
             }
             else
@@ -2256,96 +2240,97 @@ namespace OpenNos.Handler
             }
         }
 
-        /// <summary>
-        /// $Inventory Command
-        /// </summary>
-        /// <param name="inventoryPreviewPacket"></param>
-        public void ViewInventory(InventoryPreviewPacket inventoryPreviewPacket)
-        {
-            var player = Session;
-            if (inventoryPreviewPacket != null)
-            {
-                if (ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name) != null)
-                {
-                    player = ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name);
-                }
-            }
-            string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7";
+        // fix, doesn't work, crashes. dont do the var player = Session; ever again ugly as yo momma
+        ///// <summary>
+        ///// $Inventory Command
+        ///// </summary>
+        ///// <param name="inventoryPreviewPacket"></param>
+        //public void ViewInventory(InventoryPreviewPacket inventoryPreviewPacket)
+        //{
+        //    var player = Session;
+        //    if (inventoryPreviewPacket != null)
+        //    {
+        //        if (ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name) != null)
+        //        {
+        //            player = ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name);
+        //        }
+        //    }
+        //    string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7";
 
-            // inv 3 used for miniland objects
-            if (player.Character.Inventory == null) return;
-            var listItems = player.Character.Inventory.GetAllItems();
-            foreach (ItemInstance inv in listItems)
-            {
-                switch (inv.Type)
-                {
-                    case InventoryType.Equipment:
-                        if (inv.Item.EquipmentSlot == EquipmentType.Sp)
-                        {
-                            SpecialistInstance specialistInstance = inv as SpecialistInstance;
-                            if (specialistInstance != null)
-                            {
-                                inv0 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
-                            }
-                        }
-                        else
-                        {
-                            WearableInstance wearableInstance = inv as WearableInstance;
-                            if (wearableInstance != null)
-                            {
-                                inv0 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
-                            }
-                        }
-                        break;
+        //    // inv 3 used for miniland objects
+        //    if (player.Character.Inventory == null) return;
+        //    var listItems = player.Character.Inventory.GetAllItems();
+        //    foreach (ItemInstance inv in listItems)
+        //    {
+        //        switch (inv.Type)
+        //        {
+        //            case InventoryType.Equipment:
+        //                if (inv.Item.EquipmentSlot == EquipmentType.Sp)
+        //                {
+        //                    SpecialistInstance specialistInstance = inv as SpecialistInstance;
+        //                    if (specialistInstance != null)
+        //                    {
+        //                        inv0 +=
+        //                            $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    WearableInstance wearableInstance = inv as WearableInstance;
+        //                    if (wearableInstance != null)
+        //                    {
+        //                        inv0 +=
+        //                            $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
+        //                    }
+        //                }
+        //                break;
 
-                    case InventoryType.Main:
-                        inv1 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                        break;
+        //            case InventoryType.Main:
+        //                inv1 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
+        //                break;
 
-                    case InventoryType.Etc:
-                        inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                        break;
+        //            case InventoryType.Etc:
+        //                inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
+        //                break;
 
-                    case InventoryType.Miniland:
-                        inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
-                        break;
+        //            case InventoryType.Miniland:
+        //                inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
+        //                break;
 
-                    case InventoryType.Specialist:
-                        SpecialistInstance specialist = inv as SpecialistInstance;
-                        if (specialist != null)
-                        {
-                            inv6 +=
-                                $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
-                        }
-                        break;
+        //            case InventoryType.Specialist:
+        //                SpecialistInstance specialist = inv as SpecialistInstance;
+        //                if (specialist != null)
+        //                {
+        //                    inv6 +=
+        //                        $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
+        //                }
+        //                break;
 
-                    case InventoryType.Costume:
-                        WearableInstance costumeInstance = inv as WearableInstance;
-                        if (costumeInstance != null)
-                        {
-                            inv7 +=
-                                $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
-                        }
-                        break;
+        //            case InventoryType.Costume:
+        //                WearableInstance costumeInstance = inv as WearableInstance;
+        //                if (costumeInstance != null)
+        //                {
+        //                    inv7 +=
+        //                        $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
+        //                }
+        //                break;
 
-                    case InventoryType.Wear:
-                        break;
+        //            case InventoryType.Wear:
+        //                break;
 
-                    case InventoryType.Bazaar:
-                        break;
+        //            case InventoryType.Bazaar:
+        //                break;
 
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            Session.SendPacket(inv0);
-            Session.SendPacket(inv1);
-            Session.SendPacket(inv2);
-            Session.SendPacket(inv6);
-            Session.SendPacket(inv7);
-        }
+        //            default:
+        //                throw new ArgumentOutOfRangeException();
+        //        }
+        //    }
+        //    Session.SendPacket(inv0);
+        //    Session.SendPacket(inv1);
+        //    Session.SendPacket(inv2);
+        //    Session.SendPacket(inv6);
+        //    Session.SendPacket(inv7);
+        //}
 
         /// <summary>
         /// $WigColor Command

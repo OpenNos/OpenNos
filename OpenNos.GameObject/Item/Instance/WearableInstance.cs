@@ -284,8 +284,6 @@ namespace OpenNos.GameObject
                 rare6 = rare6 * reducedchancefactor;
                 rare7 = rare7 * reducedchancefactor;
                 rare8 = rare8 * reducedchancefactor;
-
-                // rare8 = rare8 * reducedchancefactor;
             }
             if (session != null)
             {
@@ -472,8 +470,6 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-
-            // don't place under else.
             if (mode != RarifyMode.Drop && session != null)
             {
                 ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
@@ -570,8 +566,6 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-
-            // cannot sum higher than 5
             if (Upgrade < 6)
             {
                 short[] upsuccess = { 100, 100, 85, 70, 50, 20 };
