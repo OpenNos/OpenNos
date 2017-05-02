@@ -635,7 +635,7 @@ namespace OpenNos.GameObject
                 short[] cella;
                 short[] gem;
 
-                if (Rare == 8)
+                if (Rare >= 8)
                 {
                     upfix = new short[] { 50, 40, 70, 65, 80, 90, 95, 97, 98, 99 };
                     upfail = new short[] { 50, 40, 60, 50, 60, 70, 75, 77, 83, 89 };

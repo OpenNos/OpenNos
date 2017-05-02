@@ -248,7 +248,6 @@
     <Compile Include="FamilyCharacterDAO.cs" />
     <Compile Include="FamilyDAO.cs" />
     <Compile Include="FamilyLogDAO.cs" />
-    <Compile Include="Helpers\MigrationHelper.cs" />
     <Compile Include="MailDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="Entities\MapNpc.cs" />
@@ -396,9 +395,6 @@
     <None Include="Properties\SlowCheetah\SlowCheetah.Transforms.targets">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="DB\OpenNos.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
