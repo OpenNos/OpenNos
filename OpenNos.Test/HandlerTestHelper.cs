@@ -7,7 +7,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Mock;
 using OpenNos.Handler;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -42,7 +42,7 @@ namespace OpenNos.Test
             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
 
             // register for account login
-            ServerCommunicationClient.Instance.HubProxy.Invoke("RegisterAccountLogin", account.Name, 12345);
+            CommunicationServiceClient.Instance.RegisterAccountLogin(account.AccountId, 12345);
 
             // OpenNosEntryPoint -> LoadCharacterList
             client.ReceivePacket("12345");

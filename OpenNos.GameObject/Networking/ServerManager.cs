@@ -17,7 +17,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -327,7 +327,7 @@ namespace OpenNos.GameObject
         public void BazaarRefresh(long BazaarItemId)
         {
             InBazaarRefreshMode = true;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh", ServerGroup, BazaarItemId);
+            CommunicationServiceClient.Instance.UpdateBazaar(ServerGroup, BazaarItemId);
             SpinWait.SpinUntil(() => !InBazaarRefreshMode);
         }
 
@@ -508,7 +508,7 @@ namespace OpenNos.GameObject
         public void FamilyRefresh(long FamilyId)
         {
             InFamilyRefreshMode = true;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", ServerGroup, FamilyId);
+            CommunicationServiceClient.Instance.UpdateFamily(ServerGroup, FamilyId);
             SpinWait.SpinUntil(() => !InFamilyRefreshMode);
         }
 
@@ -1087,7 +1087,7 @@ namespace OpenNos.GameObject
         public void RelationRefresh(long RelationId)
         {
             inRelationRefreshMode = true;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerGroup, RelationId);
+            CommunicationServiceClient.Instance.UpdateRelation(ServerGroup, RelationId);
             SpinWait.SpinUntil(() => !inRelationRefreshMode);
         }
 

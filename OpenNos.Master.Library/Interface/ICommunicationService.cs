@@ -23,6 +23,14 @@ namespace OpenNos.Master.Library.Interface
         bool IsAccountConnected(long accountId);
 
         /// <summary>
+        /// Checks if the Character is connected
+        /// </summary>
+        /// <param name="worldGroup">Name of the WorldGroup to look on</param>
+        /// <param name="characterId">Id of the Character</param>
+        /// <returns></returns>
+        bool IsCharacterConnected(string worldGroup, long characterId);
+
+        /// <summary>
         /// Updates the Bazaar on the given WorldGroup
         /// </summary>
         /// <param name="worldGroup">WorldGroup the entry should be update on</param>
@@ -106,6 +114,14 @@ namespace OpenNos.Master.Library.Interface
         /// <param name="worldGroup">WorldGroup the Relations should be updated on</param>
         /// <param name="relationId">Id of the Relation that should be updated</param>
         void UpdateRelation(string worldGroup, long relationId);
+
+
+        /// <summary>
+        /// Registers a WorldServer
+        /// </summary>
+        /// <param name="worldServer">WorldServer object of the Server that should be registered</param>
+        /// <returns>ChannelId on success, else null</returns>
+        int? RegisterWorldServer(WorldServer worldServer);
 
         /// <summary>
         /// Generates the Stats from all Servers 

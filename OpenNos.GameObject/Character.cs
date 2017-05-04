@@ -20,8 +20,9 @@ using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Buff.BCard;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ServerPackets;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 using OpenNos.PathFinder;
-using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -798,10 +799,17 @@ namespace OpenNos.GameObject
                     foreach (CharacterRelationDTO relation in lst.Where(c => c.RelationType == CharacterRelationType.Friend))
                     {
                         long id2 = relation.RelatedCharacterId == CharacterId ? relation.CharacterId : relation.RelatedCharacterId;
-                        bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.Instance.ServerGroup, id2).Result;
+                        bool isOnline = CommunicationServiceClient.Instance.IsCharacterConnected(ServerManager.Instance.ServerGroup, id2);
                         result += $" {id2}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(id2).Name}";
                     }
-                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Name, charac.Name, result, ServerManager.Instance.ChannelId, MessageType.PrivateChat).Result;
+                    int? sentChannelId = CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                    {
+                        DestinationCharacterId = charac.CharacterId,
+                        SourceCharacterId = CharacterId,
+                        SourceWorldId = ServerManager.Instance.WorldId,
+                        Message = result,
+                        Type = MessageType.PrivateChat
+                    });
                 }
             }
         }
@@ -1656,7 +1664,7 @@ namespace OpenNos.GameObject
                 {
                     foreach (FamilyCharacter TargetCharacter in Family?.FamilyCharacters)
                     {
-                        bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.Instance.ServerGroup, TargetCharacter.Character.CharacterId).Result;
+                        bool isOnline = CommunicationServiceClient.Instance.IsCharacterConnected(ServerManager.Instance.ServerGroup, TargetCharacter.CharacterId);
                         str += $" {TargetCharacter.Character.CharacterId}|{Family.FamilyId}|{TargetCharacter.Character.Name}|{TargetCharacter.Character.Level}|{(byte)TargetCharacter.Character.Class}|{(byte)TargetCharacter.Authority}|{(byte)TargetCharacter.Rank}|{(isOnline ? 1 : 0)}|{TargetCharacter.Character.HeroLevel}";
                     }
                 }
@@ -1752,12 +1760,26 @@ namespace OpenNos.GameObject
                         fam.FamilyExperience -= CharacterHelper.LoadFamilyXPData(Family.FamilyLevel);
                         fam.FamilyLevel++;
                         Family.InsertFamilyLog(FamilyLogType.FamilyLevelUp, level: fam.FamilyLevel);
-                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Name, Family.FamilyId.ToString(), UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_UP")), 0), ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                        CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                        {
+                            DestinationCharacterId = Family.FamilyId,
+                            SourceCharacterId = CharacterId,
+                            SourceWorldId = ServerManager.Instance.WorldId,
+                            Message = UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_UP")), 0),
+                            Type = MessageType.Family
+                        });
                     }
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref famchar);
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                     ServerManager.Instance.FamilyRefresh(Family.FamilyId);
-                    int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                    CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                    {
+                        DestinationCharacterId = Family.FamilyId,
+                        SourceCharacterId = CharacterId,
+                        SourceWorldId = ServerManager.Instance.WorldId,
+                        Message = "fhis_stc",
+                        Type = MessageType.Family
+                    });
                 }
             }
         }
@@ -1788,7 +1810,7 @@ namespace OpenNos.GameObject
             foreach (CharacterRelationDTO relation in CharacterRelations.Where(c => c.RelationType == CharacterRelationType.Friend))
             {
                 long id = relation.RelatedCharacterId == CharacterId ? relation.CharacterId : relation.RelatedCharacterId;
-                bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.Instance.ServerGroup, id).Result;
+                bool isOnline = CommunicationServiceClient.Instance.IsCharacterConnected(ServerManager.Instance.ServerGroup, id);
                 result += $" {id}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(id).Name}";
             }
             return result;
@@ -3731,7 +3753,7 @@ namespace OpenNos.GameObject
         public void InsertOrUpdatePenalty(PenaltyLogDTO log)
         {
             DAOFactory.PenaltyLogDAO.InsertOrUpdate(ref log);
-            ServerCommunicationClient.Instance.HubProxy.Invoke("PenaltyLogRefresh", log.PenaltyLogId);
+            CommunicationServiceClient.Instance.RefreshPenalty(log.PenaltyLogId);
         }
 
         public bool IsBlockedByCharacter(long characterId)
@@ -4585,7 +4607,14 @@ namespace OpenNos.GameObject
                         else
                         {
                             ServerManager.Instance.FamilyRefresh(Family.FamilyId);
-                            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                            {
+                                DestinationCharacterId = Family.FamilyId,
+                                SourceCharacterId = CharacterId,
+                                SourceWorldId = ServerManager.Instance.WorldId,
+                                Message = "fhis_stc",
+                                Type = MessageType.Family
+                            });
                         }
                     }
 

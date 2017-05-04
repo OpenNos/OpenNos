@@ -111,6 +111,16 @@ namespace OpenNos.Master.Server
             return MSManager.Instance.ConnectedAccounts.Any(c => c.AccountId == accountId && c.ConnectedWorld != null);
         }
 
+        public bool IsCharacterConnected(string worldGroup, long characterId)
+        {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return false;
+            }
+
+            return MSManager.Instance.ConnectedAccounts.Any(c => c.ConnectedWorld.WorldGroup == worldGroup && c.CharacterId == characterId && c.ConnectedWorld != null);
+        }
+
         public bool IsLoginPermitted(long accountId, long sessionId)
         {
             if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))

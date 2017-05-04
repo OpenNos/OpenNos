@@ -19,7 +19,8 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Handler;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library;
+using OpenNos.Master.Library.Client;
 using System;
 using System.Configuration;
 using System.Diagnostics;
@@ -53,7 +54,7 @@ namespace OpenNos.Login
                     Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
 
                     // initialize api
-                    ServerCommunicationClient.Instance.InitializeAndRegisterCallbacks();
+                    CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);
 
                     // initialize DB
                     if (!DataAccessHelper.Initialize())
@@ -74,8 +75,6 @@ namespace OpenNos.Login
 
                         NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>("127.0.0.1", port, typeof(LoginPacketHandler), typeof(LoginEncryption), false);
 
-                        //cleanup api
-                        ServerCommunicationClient.Instance.HubProxy.Invoke("Cleanup");
                     }
                     catch (Exception ex)
                     {

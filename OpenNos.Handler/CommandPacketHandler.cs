@@ -19,7 +19,8 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -584,7 +585,14 @@ namespace OpenNos.Handler
                     if (player.Character.Family != null)
                     {
                         ServerManager.Instance.FamilyRefresh(player.Character.Family.FamilyId);
-                        int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, player.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                        CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                        {
+                            DestinationCharacterId = player.Character.Family.FamilyId,
+                            SourceCharacterId = Session.Character.CharacterId,
+                            SourceWorldId = ServerManager.Instance.WorldId,
+                            Message = "fhis_stc",
+                            Type = MessageType.Family
+                        });
                     }
                 }
                 else
@@ -1374,7 +1382,8 @@ namespace OpenNos.Handler
                     kickPacket.AccountName = string.Empty;
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                ServerCommunicationClient.Instance.HubProxy.Invoke("KickSession", kickPacket.SessionId, kickPacket.AccountName);
+                AccountDTO acc = DAOFactory.AccountDAO.LoadByName(kickPacket.AccountName);
+                CommunicationServiceClient.Instance.KickSession(acc?.AccountId, kickPacket.SessionId);
             }
             else
             {
@@ -1798,7 +1807,14 @@ namespace OpenNos.Handler
             Logger.Debug("Shout Command", Session.Character.GenerateIdentity());
             if (shoutPacket != null)
             {
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name, string.Empty, shoutPacket.Message, ServerManager.Instance.ChannelId, MessageType.Shout).Result;
+                CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                {
+                    DestinationCharacterId = null,
+                    SourceCharacterId = Session.Character.CharacterId,
+                    SourceWorldId = ServerManager.Instance.WorldId,
+                    Message = shoutPacket.Message,
+                    Type = MessageType.Shout
+                });
             }
         }
 

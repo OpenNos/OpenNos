@@ -20,8 +20,9 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ClientPackets;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 using OpenNos.PathFinder;
-using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -572,8 +573,14 @@ namespace OpenNos.Handler
                     if (chara != null)
                     {
                         //session is not on current server, check api if the target character is on another server
-                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name, chara.Name, $"talk  {Session.Character.CharacterId} {message}"
-                                                                         , ServerManager.Instance.ChannelId, MessageType.PrivateChat).Result;
+                        int? sentChannelId = CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                        {
+                            DestinationCharacterId = chara.CharacterId,
+                            SourceCharacterId = Session.Character.CharacterId,
+                            SourceWorldId = ServerManager.Instance.WorldId,
+                            Message = $"talk  {Session.Character.CharacterId} {message}",
+                            Type = MessageType.PrivateChat
+                        });
                         if (!sentChannelId.HasValue) //character is even offline on different world
                         {
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_OFFLINE")));
@@ -1786,7 +1793,14 @@ namespace OpenNos.Handler
                         return;
                     }
                 }
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name, characterName, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5), ServerManager.Instance.ChannelId, packetsplit[0] == "GM" ? MessageType.WhisperGM : MessageType.Whisper).Result;
+                int? sentChannelId = CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                {
+                    DestinationCharacterId = receiver.CharacterId,
+                    SourceCharacterId = Session.Character.CharacterId,
+                    SourceWorldId = ServerManager.Instance.WorldId,
+                    Message = Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5),
+                    Type = packetsplit[0] == "GM" ? MessageType.WhisperGM : MessageType.Whisper
+                });
                 if (sentChannelId == null)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));

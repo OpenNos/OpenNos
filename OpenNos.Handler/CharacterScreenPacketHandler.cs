@@ -5,7 +5,7 @@ using OpenNos.Data;
 using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using OpenNos.GameObject;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -202,9 +202,17 @@ namespace OpenNos.Handler
             if (Session.Account == null)
             {
                 bool hasRegisteredAccountLogin = true;
+                AccountDTO account = null;
+                if (loginPacketParts.Length > 4)
+                {
+                    account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+                }
                 try
                 {
-                    hasRegisteredAccountLogin = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("HasRegisteredAccountLogin", loginPacketParts[4], Session.SessionId).Result;
+                    if (account != null)
+                    {
+                        hasRegisteredAccountLogin = CommunicationServiceClient.Instance.IsLoginPermitted(account.AccountId, Convert.ToInt32(loginPacketParts[2]));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -214,8 +222,6 @@ namespace OpenNos.Handler
                 }
                 if (loginPacketParts.Length > 4 && hasRegisteredAccountLogin)
                 {
-                    AccountDTO account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
-
                     if (account != null)
                     {
                         if (account.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])))
@@ -337,7 +343,7 @@ namespace OpenNos.Handler
                         Session.SendPacket("OK");
 
                         // Inform everyone about connected character
-                        ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectCharacter", ServerManager.Instance.ServerGroup, ServerManager.Instance.WorldId, Session.Character.Name, Session.Character.CharacterId);
+                        CommunicationServiceClient.Instance.ConnectCharacter(ServerManager.Instance.WorldId, character.CharacterId);
                     }
                 }
             }

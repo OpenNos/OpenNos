@@ -5,19 +5,25 @@ using OpenNos.Master.Library.Interface;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Master.Library.Data;
+using System.Configuration;
 
 namespace OpenNos.Master.Library.Client
 {
     public class CommunicationServiceClient : ICommunicationService
     {
+        private static CommunicationServiceClient _instance;
         private IScsServiceClient<ICommunicationService> _client;
 
-        public CommunicationServiceClient(string ip, int port)
+        public CommunicationServiceClient()
         {
+            string ip = ConfigurationManager.AppSettings["MasterIP"];
+            int port = Convert.ToInt32(ConfigurationManager.AppSettings["MasterPort"]);
             _client = ScsServiceClientBuilder.CreateClient<ICommunicationService>(new ScsTcpEndPoint(ip, port));
 
             _client.Connect();
         }
+
+        public static CommunicationServiceClient Instance => _instance ?? (_instance = new CommunicationServiceClient());
 
         public CommunicationStates CommunicationState
         {
@@ -62,6 +68,11 @@ namespace OpenNos.Master.Library.Client
             return _client.ServiceProxy.IsAccountConnected(accountId);
         }
 
+        public bool IsCharacterConnected(string worldGroup, long characterId)
+        {
+            return _client.ServiceProxy.IsCharacterConnected(worldGroup, characterId);
+        }
+
         public bool IsLoginPermitted(long accountId, long sessionId)
         {
             return _client.ServiceProxy.IsLoginPermitted(accountId, sessionId);
@@ -80,6 +91,11 @@ namespace OpenNos.Master.Library.Client
         public void RegisterAccountLogin(long accountId, long sessionId)
         {
             _client.ServiceProxy.RegisterAccountLogin(accountId, sessionId);
+        }
+
+        public int? RegisterWorldServer(WorldServer worldServer)
+        {
+            return _client.ServiceProxy.RegisterWorldServer(worldServer);
         }
 
         public IEnumerable<string> RetrieveServerStatistics()

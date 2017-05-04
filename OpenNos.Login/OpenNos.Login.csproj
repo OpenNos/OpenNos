@@ -295,9 +295,9 @@
       <Project>{a6748a8d-0d96-41b9-a110-dbf692afc56d}</Project>
       <Name>OpenNos.Handler</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.WebApi.Reference\OpenNos.WebApi.Reference.csproj">
-      <Project>{f36e27ab-7274-48d5-8693-1ccf7919d32c}</Project>
-      <Name>OpenNos.WebApi.Reference</Name>
+    <ProjectReference Include="..\OpenNos.Master.Library\OpenNos.Master.Library.csproj">
+      <Project>{8FABDA5B-C873-4E32-A78F-08A9A4768595}</Project>
+      <Name>OpenNos.Master.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

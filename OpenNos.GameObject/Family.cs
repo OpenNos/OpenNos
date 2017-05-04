@@ -15,7 +15,8 @@
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
 
@@ -113,7 +114,14 @@ namespace OpenNos.GameObject
             };
             DAOFactory.FamilyLogDAO.InsertOrUpdate(ref log);
             ServerManager.Instance.FamilyRefresh(FamilyId);
-            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+            {
+                DestinationCharacterId = FamilyId,
+                SourceCharacterId = 0,
+                SourceWorldId = ServerManager.Instance.WorldId,
+                Message = "fhis_stc",
+                Type = MessageType.Family
+            });
         }
 
         internal Family DeepCopy()

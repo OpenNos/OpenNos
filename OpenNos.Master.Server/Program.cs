@@ -7,7 +7,7 @@ using OpenNos.DAL;
 using OpenNos.DAL.EF;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
-using OpenNos.Master.Interface;
+using OpenNos.Master.Library.Interface;
 
 using System;
 using System.Collections.Generic;

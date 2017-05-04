@@ -20,7 +20,8 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Handler;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 using System;
 using System.Configuration;
 using System.Diagnostics;
@@ -77,8 +78,8 @@ namespace OpenNos.World
             string separator = new string('=', Console.WindowWidth);
             Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
 
-            // initialize api
-            ServerCommunicationClient.Instance.InitializeAndRegisterCallbacks();
+            // initialize new CommunicationServiceClient
+            CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);
 
             // initialize DB
             if (DataAccessHelper.Initialize())
@@ -127,7 +128,7 @@ namespace OpenNos.World
 
             ServerManager.Instance.ServerGroup = ConfigurationManager.AppSettings["ServerGroup"];
             int sessionLimit = Convert.ToInt32(ConfigurationManager.AppSettings["SessionLimit"]);
-            int? newChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("RegisterWorldserver", ServerManager.Instance.ServerGroup, new WorldserverDTO(ServerManager.Instance.WorldId, new ScsTcpEndPoint(ConfigurationManager.AppSettings["IPADDRESS"], port), sessionLimit)).Result;
+            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new WorldServer(ServerManager.Instance.WorldId, new ScsTcpEndPoint(ConfigurationManager.AppSettings["IPADDRESS"], port), sessionLimit, ServerManager.Instance.ServerGroup));
 
             if (newChannelId.HasValue)
             {
@@ -145,7 +146,7 @@ namespace OpenNos.World
         {
             string serverGroup = ConfigurationManager.AppSettings["ServerGroup"];
             int port = Convert.ToInt32(ConfigurationManager.AppSettings["WorldPort"]);
-            ServerCommunicationClient.Instance.HubProxy.Invoke("UnregisterWorldserver", serverGroup, new ScsTcpEndPoint(ConfigurationManager.AppSettings["IPADDRESS"], port)).Wait();
+            CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.SaveAll();

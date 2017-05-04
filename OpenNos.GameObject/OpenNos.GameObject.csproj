@@ -425,17 +425,13 @@
       <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>
       <Name>OpenNos.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.Master.Library\OpenNos.Master.Library.csproj">
+      <Project>{8FABDA5B-C873-4E32-A78F-08A9A4768595}</Project>
+      <Name>OpenNos.Master.Library</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenNos.PathFinder\OpenNos.PathFinder.csproj">
       <Project>{4BC2B4B0-2A38-4274-98A2-37CEF5F03B42}</Project>
       <Name>OpenNos.PathFinder</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.WebApi.Reference\OpenNos.WebApi.Reference.csproj">
-      <Project>{F36E27AB-7274-48D5-8693-1CCF7919D32C}</Project>
-      <Name>OpenNos.WebApi.Reference</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.WebApi.SelfHost\OpenNos.WebApi.SelfHost.csproj">
-      <Project>{5D69B6BE-062B-408D-913E-5CD2F21D5D17}</Project>
-      <Name>OpenNos.WebApi.SelfHost</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
