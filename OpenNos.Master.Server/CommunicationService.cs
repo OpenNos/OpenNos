@@ -1,24 +1,55 @@
 ﻿using OpenNos.Core.Networking.Communication.ScsServices.Service;
-using OpenNos.Master.Interface;
+using OpenNos.Master.Library.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenNos.Master.Library;
+using OpenNos.Domain;
+using OpenNos.Master.Library.Data;
+using OpenNos.DAL;
+using OpenNos.Core;
 
 namespace OpenNos.Master.Server
 {
     class CommunicationService : ScsService, ICommunicationService
     {
+        public bool Authenticate(string authKey)
+        {
+            if (string.IsNullOrWhiteSpace(authKey))
+            {
+                return false;
+            }
+
+            // TODO: Add WorldGroup Authentification via Database or Config File
+            if (authKey == "OpenNos-New-MS-Testkey")
+            {
+                MSManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
+                return true;
+            }
+
+            return false;
+
+        }
+
         public void Cleanup()
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
             MSManager.Instance.ConnectedAccounts.Clear();
             MSManager.Instance.WorldServers.Clear();
         }
 
         public bool ConnectAccount(Guid worldId, long accountId, long sessionId)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return false;
+            }
+
             AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a=>a.AccountId.Equals(accountId) && a.SessionId.Equals(sessionId));
             if(account!= null)
             {
@@ -29,16 +60,40 @@ namespace OpenNos.Master.Server
 
         public bool ConnectCharacter(Guid worldId, long characterId)
         {
-            throw new NotImplementedException();
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return false;
+            }
+
+            //Multiple WorldGroups not yet supported by DAOFactory
+            long accountId = DAOFactory.CharacterDAO.LoadById(characterId)?.AccountId ?? 0;
+
+            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a=>a.AccountId.Equals(accountId) && a.ConnectedWorld.Id.Equals(worldId));
+            if(account != null)
+            {
+                account.CharacterId = characterId;
+                return true;
+            }
+            return false;
         }
 
         public void DisconnectAccount(long accountId)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
             MSManager.Instance.ConnectedAccounts.RemoveAll(c => c.CharacterId.Equals(accountId));
         }
 
         public void DisconnectCharacter(Guid worldId, long characterId)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
             foreach (AccountConnection account in MSManager.Instance.ConnectedAccounts.Where(c => c.CharacterId.Equals(characterId) && c.ConnectedWorld.Equals(worldId)))
             {
                 account.CharacterId = 0;
@@ -48,16 +103,31 @@ namespace OpenNos.Master.Server
 
         public bool IsAccountConnected(long accountId)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return false;
+            }
+
             return MSManager.Instance.ConnectedAccounts.Any(c => c.AccountId == accountId && c.ConnectedWorld != null);
         }
 
         public bool IsLoginPermitted(long accountId, long sessionId)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return false;
+            }
+
             return MSManager.Instance.ConnectedAccounts.Any(s => s.AccountId.Equals(accountId) && s.SessionId.Equals(sessionId) && s.ConnectedWorld == null);
         }
 
         public void KickSession(long? accountId, long? sessionId)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
             foreach (WorldServer world in MSManager.Instance.WorldServers)
             {
                 world.ServiceClient.GetClientProxy<ICommunicationService>().KickSession(accountId, sessionId);
@@ -74,20 +144,38 @@ namespace OpenNos.Master.Server
 
         public void RefreshPenalty(int penaltyId)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
             foreach (WorldServer world in MSManager.Instance.WorldServers)
             {
                 world.ServiceClient.GetClientProxy<ICommunicationService>().RefreshPenalty(penaltyId);
             }
-            //TODO: Add Login Server refresh
+            foreach (IScsServiceClient login in MSManager.Instance.LoginServers)
+            {
+                login.GetClientProxy<ICommunicationService>().RefreshPenalty(penaltyId);
+            }
         }
 
         public void RegisterAccountLogin(long accountId, long sessionId)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
             MSManager.Instance.ConnectedAccounts.Add(new AccountConnection(accountId, sessionId));
         }
 
         public int? RegisterWorldServer(WorldServer worldServer)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return null;
+            }
+
             worldServer.ServiceClient = CurrentClient;
             worldServer.ChannelId = Enumerable.Range(1, 30).Except(MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldServer.WorldGroup)).OrderBy(w => w.ChannelId).Select(w => w.ChannelId)).First();
             MSManager.Instance.WorldServers.Add(worldServer);
@@ -96,22 +184,112 @@ namespace OpenNos.Master.Server
 
         public IEnumerable<string> RetrieveServerStatistics()
         {
-            throw new NotImplementedException();
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return null;
+            }
+
+            List<string> result = new List<string>();
+
+            try
+            {
+                List<string> groups = new List<string>();
+                foreach (string s in MSManager.Instance.WorldServers.Select(s => s.WorldGroup))
+                {
+                    if (!groups.Contains(s))
+                    {
+                        groups.Add(s);
+                    }
+                }
+                int totalsessions = 0;
+                foreach (string s in groups)
+                {
+                    result.Add($"==={s}===");
+                    int groupsessions = 0;
+                    foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(s)))
+                    {
+                        int sessions = MSManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.Id.Equals(world.Id) == true);
+                        result.Add($"Channel {world.ChannelId}: {sessions} Sessions");
+                        groupsessions += sessions;
+                    }
+                    result.Add($"Group Total: {groupsessions} Sessions");
+                    totalsessions += groupsessions;
+                }
+                result.Add($"Environment Total: {totalsessions} Sessions");
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error("Error while retreiving server Statistics:", ex);
+            }
+
+            return result;
         }
 
-        public int? SendMessageToCharacter(string worldGroup, long sourceCharacterId, long? destinationCharacterId, string messagePacket, int sourceChannel, OpenNos.Domain.MessageType messageType)
+        public int? SendMessageToCharacter(SCSCharacterMessage message)
         {
-            throw new NotImplementedException();
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return null;
+            }
+
+            WorldServer sourceWorld = MSManager.Instance.WorldServers.FirstOrDefault(s => s.Id.Equals(message.SourceWorldId));
+            if (message == null || message.Message == null || sourceWorld == null)
+            {
+                return null;
+            }
+            switch (message.Type)
+            {
+                case MessageType.Family:
+                case MessageType.FamilyChat:
+                    foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w=>w.WorldGroup.Equals(sourceWorld.WorldGroup)))
+                    {
+                        world.ServiceClient.GetClientProxy<ICommunicationService>().SendMessageToCharacter(message);
+                    }
+                    return -1;
+
+                case MessageType.PrivateChat:
+                case MessageType.Whisper:
+                case MessageType.WhisperGM:
+                    if (message.DestinationCharacterId.HasValue)
+                    {
+                        AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.CharacterId.Equals(message.DestinationCharacterId.Value));
+                        if (account != null && account.ConnectedWorld != null)
+                        {
+                            account.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationService>().SendMessageToCharacter(message);
+                            return account.ConnectedWorld.ChannelId;
+                        }
+                    }
+                    break;
+
+                case MessageType.Shout:
+                    foreach (WorldServer world in MSManager.Instance.WorldServers)
+                    {
+                        world.ServiceClient.GetClientProxy<ICommunicationService>().SendMessageToCharacter(message);
+                    }
+                    return -1;
+            }
+            return null;
         }
 
         public void UnregisterWorldServer(Guid worldId)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
             MSManager.Instance.WorldServers.RemoveAll(w=>w.Id.Equals(worldId));
         }
 
         public void UpdateBazaar(string worldGroup, long bazaarItemId)
         {
-            foreach(WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldGroup)))
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
+            foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldGroup)))
             {
                 world.ServiceClient.GetClientProxy<ICommunicationService>().UpdateBazaar(worldGroup, bazaarItemId);
             }
@@ -119,6 +297,11 @@ namespace OpenNos.Master.Server
 
         public void UpdateFamily(string worldGroup, long familyId)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
             foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldGroup)))
             {
                 world.ServiceClient.GetClientProxy<ICommunicationService>().UpdateFamily(worldGroup, familyId);
@@ -127,6 +310,11 @@ namespace OpenNos.Master.Server
 
         public void UpdateRelation(string worldGroup, long relationId)
         {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
             foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldGroup)))
             {
                 world.ServiceClient.GetClientProxy<ICommunicationService>().UpdateRelation(worldGroup, relationId);

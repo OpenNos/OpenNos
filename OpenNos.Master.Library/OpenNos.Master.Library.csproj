@@ -40,15 +40,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\CommunicationServiceClient.cs" />
+    <Compile Include="Data\AccountConnection.cs" />
+    <Compile Include="Interface\ICommunicationService.cs" />
+    <Compile Include="Data\SCSCharacterMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorldServer.cs" />
-    <Compile Include="WorldServerGroup.cs" />
+    <Compile Include="Data\WorldServer.cs" />
+    <Compile Include="Data\WorldServerGroup.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
       <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
       <Name>OpenNos.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.Domain\OpenNos.Domain.csproj">
+      <Project>{20ADDDDD-DAD9-44F3-9BEB-026C73090660}</Project>
+      <Name>OpenNos.Domain</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

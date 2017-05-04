@@ -1,10 +1,8 @@
 ﻿using OpenNos.Core.Networking.Communication.ScsServices.Service;
-using OpenNos.Core.Networking.Communication.ScsServices.Client;
 using System;
-using System.Collections.Generic;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 
-namespace OpenNos.Master.Library
+namespace OpenNos.Master.Library.Data
 {
     [Serializable]
     public class WorldServer

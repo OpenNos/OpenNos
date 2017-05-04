@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OpenNos.Master.Library
+namespace OpenNos.Master.Library.Data
 {
     public class WorldServerGroup
     {

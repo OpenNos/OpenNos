@@ -1,15 +1,20 @@
 ﻿using OpenNos.Core.Networking.Communication.ScsServices.Service;
-using OpenNos.Data;
-using OpenNos.Domain;
-using OpenNos.Master.Library;
+using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
 
-namespace OpenNos.Master.Interface
+namespace OpenNos.Master.Library.Interface
 {
     [ScsService(Version = "1.0.0.0")]
     public interface ICommunicationService
     {
+        /// <summary>
+        /// Authenticates a Client to the Service
+        /// </summary>
+        /// <param name="authKey">The private Authentication key</param>
+        /// <returns>true if successful, else false</returns>
+        bool Authenticate(string authKey);
+
         /// <summary>
         /// Checks if the Account is already connected
         /// </summary>
@@ -96,13 +101,6 @@ namespace OpenNos.Master.Interface
         void RegisterAccountLogin(long accountId, long sessionId);
 
         /// <summary>
-        /// Registers a new WorldServer
-        /// </summary>
-        /// <param name="worldServer">WorldServer object of the Server that should be registered</param>
-        /// <returns>ChannelId of the WorldServer</returns>
-        int? RegisterWorldServer(WorldServer worldServer);
-
-        /// <summary>
         /// Updates the Relations on the given WorldGroup
         /// </summary>
         /// <param name="worldGroup">WorldGroup the Relations should be updated on</param>
@@ -118,14 +116,9 @@ namespace OpenNos.Master.Interface
         /// <summary>
         /// Sends a Message to a specific Character
         /// </summary>
-        /// <param name="worldGroup">WorldGroup that should be operated on</param>
-        /// <param name="sourceCharacterId">CharacterId of the Sender</param>
-        /// <param name="destinationCharacterId">CharacterId of the Receiver</param>
-        /// <param name="messagePacket">The actual Message</param>
-        /// <param name="sourceChannel">Channel we sent the Message from</param>
-        /// <param name="messageType">Type of the Message</param>
-        /// <returns></returns>
-        int? SendMessageToCharacter(string worldGroup, long sourceCharacterId, long? destinationCharacterId, string messagePacket, int sourceChannel, MessageType messageType);
+        /// <param name="message">The SCSCharacterMessage object containing all required informations</param>
+        /// <returns>null if there was an error, otherwise the receiving ChannelId or -1, if the MessageType is a broadcast</returns>
+        int? SendMessageToCharacter(SCSCharacterMessage message);
 
         /// <summary>
         /// Unregisters a previously registered World Server
