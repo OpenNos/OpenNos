@@ -6,24 +6,61 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Master.Library.Data;
 using System.Configuration;
+using OpenNos.DAL;
 
 namespace OpenNos.Master.Library.Client
 {
     public class CommunicationServiceClient : ICommunicationService
     {
+        #region Members
+
         private static CommunicationServiceClient _instance;
         private IScsServiceClient<ICommunicationService> _client;
+        private CommunicationClient _commClient;
+
+        #endregion
+
+        #region Instantiation
 
         public CommunicationServiceClient()
         {
             string ip = ConfigurationManager.AppSettings["MasterIP"];
             int port = Convert.ToInt32(ConfigurationManager.AppSettings["MasterPort"]);
-            _client = ScsServiceClientBuilder.CreateClient<ICommunicationService>(new ScsTcpEndPoint(ip, port));
-
+            _commClient = new CommunicationClient();
+            _client = ScsServiceClientBuilder.CreateClient<ICommunicationService>(new ScsTcpEndPoint(ip, port), _commClient);
+            
             _client.Connect();
         }
 
+        #endregion
+
+        #region Properties
+
         public static CommunicationServiceClient Instance => _instance ?? (_instance = new CommunicationServiceClient());
+
+        #endregion
+
+        #region Events
+
+        public event EventHandler BazaarRefresh;
+
+        public event EventHandler CharacterConnectedEvent;
+
+        public event EventHandler CharacterDisconnectedEvent;
+
+        public event EventHandler FamilyRefresh;
+
+        public event EventHandler MessageSentToCharacter;
+
+        public event EventHandler PenaltyLogRefresh;
+
+        public event EventHandler RelationRefresh;
+
+        public event EventHandler SessionKickedEvent;
+
+        #endregion
+
+        #region Methods
 
         public CommunicationStates CommunicationState
         {
@@ -98,6 +135,11 @@ namespace OpenNos.Master.Library.Client
             return _client.ServiceProxy.RegisterWorldServer(worldServer);
         }
 
+        public string RetrieveRegisteredWorldServers(long sessionId)
+        {
+            return _client.ServiceProxy.RetrieveRegisteredWorldServers(sessionId);
+        }
+
         public IEnumerable<string> RetrieveServerStatistics()
         {
             return _client.ServiceProxy.RetrieveServerStatistics();
@@ -127,5 +169,50 @@ namespace OpenNos.Master.Library.Client
         {
             _client.ServiceProxy.UpdateRelation(worldGroup, relationId);
         }
+
+        internal void OnUpdateBazaar(long bazaarItemId)
+        {
+            BazaarRefresh(bazaarItemId, null);
+        }
+
+        internal void OnCharacterConnected(long characterId)
+        {
+            string characterName = DAOFactory.CharacterDAO.LoadById(characterId)?.Name;
+            CharacterConnectedEvent(new Tuple<long, string>(characterId, characterName), null);
+        }
+
+        internal void OnCharacterDisconnected(long characterId)
+        {
+            string characterName = DAOFactory.CharacterDAO.LoadById(characterId)?.Name;
+            CharacterDisconnectedEvent(new Tuple<long, string>(characterId, characterName), null);
+        }
+
+        internal void OnUpdateFamily(long familyId)
+        {
+            FamilyRefresh(familyId, null);
+        }
+
+        internal void OnSendMessageToCharacter(SCSCharacterMessage message)
+        {
+            MessageSentToCharacter(message, null);
+        }
+
+        internal void OnUpdatePenaltyLog(int penaltyLogId)
+        {
+            PenaltyLogRefresh(penaltyLogId, null);
+        }
+
+        internal void OnUpdateRelation(long relationId)
+        {
+            RelationRefresh(relationId, null);
+        }
+
+        internal void OnKickSession(long? accountId, long? sessionId)
+        {
+            SessionKickedEvent(new Tuple<long?, long?>(accountId, sessionId), null);
+        }
+
+        #endregion
+
     }
 }

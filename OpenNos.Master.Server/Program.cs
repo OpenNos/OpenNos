@@ -40,7 +40,7 @@ namespace OpenNos.Master.Server
                 FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
                 Console.Title = $"OpenNos Master Server v{fileVersionInfo.ProductVersion}dev";
-                string ipAddress = ConfigurationManager.AppSettings["MasterIPAddress"];
+                string ipAddress = ConfigurationManager.AppSettings["MasterIP"];
                 int port = Convert.ToInt32(ConfigurationManager.AppSettings["MasterPort"]);
                 string text = $"MASTER SERVER v{fileVersionInfo.ProductVersion}dev - PORT : {port} by OpenNos Team";
                 int offset = Console.WindowWidth / 2 + text.Length / 2;

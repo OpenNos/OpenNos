@@ -168,8 +168,8 @@ namespace OpenNos.GameObject
         public void Destroy()
         {
             // unregister from WCF events
-            ServerCommunicationClient.Instance.CharacterConnectedEvent -= OnOtherCharacterConnected;
-            ServerCommunicationClient.Instance.CharacterDisconnectedEvent -= OnOtherCharacterDisconnected;
+            CommunicationServiceClient.Instance.CharacterConnectedEvent -= OnOtherCharacterConnected;
+            CommunicationServiceClient.Instance.CharacterDisconnectedEvent -= OnOtherCharacterDisconnected;
 
             // do everything necessary before removing client, DB save, Whatever
             if (HasSelectedCharacter)
@@ -293,8 +293,8 @@ namespace OpenNos.GameObject
             Character = character;
 
             // register WCF events
-            ServerCommunicationClient.Instance.CharacterConnectedEvent += OnOtherCharacterConnected;
-            ServerCommunicationClient.Instance.CharacterDisconnectedEvent += OnOtherCharacterDisconnected;
+            CommunicationServiceClient.Instance.CharacterConnectedEvent += OnOtherCharacterConnected;
+            CommunicationServiceClient.Instance.CharacterDisconnectedEvent += OnOtherCharacterDisconnected;
 
             HasSelectedCharacter = true;
 
@@ -499,21 +499,18 @@ namespace OpenNos.GameObject
 
         private void OnOtherCharacterConnected(object sender, EventArgs e)
         {
-            Tuple<string, string, long> loggedInCharacter = (Tuple<string, string, long>)sender;
-            if (ServerManager.Instance.ServerGroup != loggedInCharacter.Item1)
+            Tuple<long, string> loggedInCharacter = (Tuple<long, string>)sender;
+
+            if (Character.IsFriendOfCharacter(loggedInCharacter.Item1))
             {
-                return;
-            }
-            if (Character.IsFriendOfCharacter(loggedInCharacter.Item3))
-            {
-                if (Character != null && Character.Name != loggedInCharacter.Item2)
+                if (Character != null && Character.CharacterId != loggedInCharacter.Item1)
                 {
                     _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), loggedInCharacter.Item2), 10));
-                    _client.SendPacket(Character.GenerateFinfo(loggedInCharacter.Item3, true));
+                    _client.SendPacket(Character.GenerateFinfo(loggedInCharacter.Item1, true));
                 }
             }
-            FamilyCharacter chara = Character.Family?.FamilyCharacters.FirstOrDefault(s => s.CharacterId == loggedInCharacter.Item3);
-            if (chara != null && loggedInCharacter.Item3 != Character?.CharacterId)
+            FamilyCharacter chara = Character.Family?.FamilyCharacters.FirstOrDefault(s => s.CharacterId == loggedInCharacter.Item1);
+            if (chara != null && loggedInCharacter.Item1 != Character?.CharacterId)
             {
                 _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_FAMILY_LOGGED_IN"), loggedInCharacter.Item2, Language.Instance.GetMessageFromKey(chara.Authority.ToString().ToUpper())), 10));
             }
@@ -521,17 +518,14 @@ namespace OpenNos.GameObject
 
         private void OnOtherCharacterDisconnected(object sender, EventArgs e)
         {
-            Tuple<string, string, long> loggedOutCharacter = (Tuple<string, string, long>)sender;
-            if (ServerManager.Instance.ServerGroup != loggedOutCharacter.Item1)
-            {
-                return;
-            }
-            if (Character.IsFriendOfCharacter(loggedOutCharacter.Item3))
+            Tuple<long, string> loggedOutCharacter = (Tuple<long, string>)sender;
 
-                if (Character != null && Character.Name != loggedOutCharacter.Item2)
+            if (Character.IsFriendOfCharacter(loggedOutCharacter.Item1))
+
+                if (Character != null && Character.CharacterId != loggedOutCharacter.Item1)
                 {
                     _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item2), 10));
-                    _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item3, false));
+                    _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item1, false));
                 }
         }
 

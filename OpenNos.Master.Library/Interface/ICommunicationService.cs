@@ -81,7 +81,7 @@ namespace OpenNos.Master.Library.Interface
         void UpdateFamily(string worldGroup, long familyId);
 
         /// <summary>
-        /// Checks if the Account is allowed to login and
+        /// Checks if the Account is allowed to login
         /// </summary>
         /// <param name="accountId">Id of the Account</param>
         /// <param name="sessionId">Id of the Session that should be validated</param>
@@ -128,6 +128,12 @@ namespace OpenNos.Master.Library.Interface
         /// </summary>
         /// <returns>the actual result</returns>
         IEnumerable<string> RetrieveServerStatistics();
+
+        /// <summary>
+        /// Generates the Channel Selection Packet
+        /// </summary>
+        /// <returns>the actual packet</returns>
+        string RetrieveRegisteredWorldServers(long sessionId);
 
         /// <summary>
         /// Sends a Message to a specific Character
