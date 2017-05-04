@@ -54,7 +54,7 @@ namespace OpenNos.Login
                     Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
 
                     // initialize api
-                    CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);
+                    Console.Write(CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]));
 
                     // initialize DB
                     if (!DataAccessHelper.Initialize())

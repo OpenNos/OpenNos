@@ -1,9 +1,9 @@
-﻿using OpenNos.Core.Networking.Communication.ScsServices.Client;
+﻿using Hik.Communication.ScsServices.Client;
 using System;
 using System.Collections.Generic;
 using OpenNos.Master.Library.Interface;
-using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
-using OpenNos.Core.Networking.Communication.Scs.Communication;
+using Hik.Communication.Scs.Communication.EndPoints.Tcp;
+using Hik.Communication.Scs.Communication;
 using OpenNos.Master.Library.Data;
 using System.Configuration;
 using OpenNos.DAL;
@@ -28,7 +28,6 @@ namespace OpenNos.Master.Library.Client
             int port = Convert.ToInt32(ConfigurationManager.AppSettings["MasterPort"]);
             _commClient = new CommunicationClient();
             _client = ScsServiceClientBuilder.CreateClient<ICommunicationService>(new ScsTcpEndPoint(ip, port), _commClient);
-            
             _client.Connect();
         }
 
@@ -130,7 +129,7 @@ namespace OpenNos.Master.Library.Client
             _client.ServiceProxy.RegisterAccountLogin(accountId, sessionId);
         }
 
-        public int? RegisterWorldServer(WorldServer worldServer)
+        public int? RegisterWorldServer(SerializableWorldServer worldServer)
         {
             return _client.ServiceProxy.RegisterWorldServer(worldServer);
         }

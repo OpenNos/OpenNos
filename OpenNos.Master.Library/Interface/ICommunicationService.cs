@@ -1,4 +1,4 @@
-﻿using OpenNos.Core.Networking.Communication.ScsServices.Service;
+﻿using Hik.Communication.ScsServices.Service;
 using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
@@ -119,9 +119,9 @@ namespace OpenNos.Master.Library.Interface
         /// <summary>
         /// Registers a WorldServer
         /// </summary>
-        /// <param name="worldServer">WorldServer object of the Server that should be registered</param>
+        /// <param name="worldServer">SerializableWorldServer object of the Server that should be registered</param>
         /// <returns>ChannelId on success, else null</returns>
-        int? RegisterWorldServer(WorldServer worldServer);
+        int? RegisterWorldServer(SerializableWorldServer worldServer);
 
         /// <summary>
         /// Generates the Stats from all Servers 

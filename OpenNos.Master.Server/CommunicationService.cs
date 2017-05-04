@@ -1,4 +1,5 @@
-﻿using OpenNos.Core.Networking.Communication.ScsServices.Service;
+﻿using Hik.Communication.ScsServices.Service;
+using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Master.Library.Interface;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using OpenNos.Domain;
 using OpenNos.Master.Library.Data;
 using OpenNos.DAL;
 using OpenNos.Core;
+using System.Configuration;
 
 namespace OpenNos.Master.Server
 {
@@ -22,7 +24,7 @@ namespace OpenNos.Master.Server
             }
 
             // TODO: Add WorldGroup Authentification via Database or Config File
-            if (authKey == "OpenNos-New-MS-Testkey")
+            if (authKey == ConfigurationManager.AppSettings["MasterAuthKey"])
             {
                 MSManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
                 return true;
@@ -187,17 +189,18 @@ namespace OpenNos.Master.Server
             MSManager.Instance.ConnectedAccounts.Add(new AccountConnection(accountId, sessionId));
         }
 
-        public int? RegisterWorldServer(WorldServer worldServer)
+        public int? RegisterWorldServer(SerializableWorldServer worldServer)
         {
             if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
             {
                 return null;
             }
+            WorldServer ws = new WorldServer(worldServer.Id, new ScsTcpEndPoint(worldServer.EndPointIP, worldServer.EndPointPort), worldServer.AccountLimit, worldServer.WorldGroup);
 
-            worldServer.ServiceClient = CurrentClient;
-            worldServer.ChannelId = Enumerable.Range(1, 30).Except(MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldServer.WorldGroup)).OrderBy(w => w.ChannelId).Select(w => w.ChannelId)).First();
-            MSManager.Instance.WorldServers.Add(worldServer);
-            return worldServer.ChannelId;
+            ws.ServiceClient = CurrentClient;
+            ws.ChannelId = Enumerable.Range(1, 30).Except(MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldServer.WorldGroup)).OrderBy(w => w.ChannelId).Select(w => w.ChannelId)).First();
+            MSManager.Instance.WorldServers.Add(ws);
+            return ws.ChannelId;
         }
 
         public string RetrieveRegisteredWorldServers(long sessionId)

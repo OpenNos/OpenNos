@@ -163,7 +163,7 @@
     <value>Failed to send packet {0} to client {1}, {2}.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>LoginServer started successfully.</value>
+    <value>MasterServer started successfully.</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>

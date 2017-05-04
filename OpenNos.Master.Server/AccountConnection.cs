@@ -11,7 +11,8 @@ namespace OpenNos.Master.Library.Data
     {
         public AccountConnection(long accountId, long session)
         {
-
+            AccountId = accountId;
+            SessionId = session;
         }
 
         public long AccountId { get; private set; }

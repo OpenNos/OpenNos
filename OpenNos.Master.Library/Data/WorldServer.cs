@@ -1,10 +1,9 @@
-﻿using OpenNos.Core.Networking.Communication.ScsServices.Service;
+﻿using Hik.Communication.ScsServices.Service;
 using System;
-using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 
 namespace OpenNos.Master.Library.Data
 {
-    [Serializable]
     public class WorldServer
     {
         #region Instantiation
@@ -32,6 +31,8 @@ namespace OpenNos.Master.Library.Data
         public Guid Id { get; set; }
 
         public string WorldGroup { get; set; }
+
+        public SerializableWorldServer Serializable { get; private set; }
 
         #endregion
     }

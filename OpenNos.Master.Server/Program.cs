@@ -1,8 +1,8 @@
 ﻿using log4net;
 
 using OpenNos.Core;
-using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
-using OpenNos.Core.Networking.Communication.ScsServices.Service;
+using Hik.Communication.Scs.Communication.EndPoints.Tcp;
+using Hik.Communication.ScsServices.Service;
 using OpenNos.DAL;
 using OpenNos.DAL.EF;
 using OpenNos.DAL.EF.Helpers;
@@ -24,8 +24,6 @@ namespace OpenNos.Master.Server
     class Program
     {
         private static ManualResetEvent run = new ManualResetEvent(true);
-        private static IScsServiceApplication _server;
-        private static CommunicationService _communicationService;
 
         static void Main(string[] args)
         {
@@ -62,12 +60,13 @@ namespace OpenNos.Master.Server
                     RegisterMappings();
 
                     // configure Services and Service Host
-                    _server = ScsServiceBuilder.CreateService(new ScsTcpEndPoint(ipAddress, port));
-                    _communicationService = new CommunicationService();
+                    IScsServiceApplication _server = ScsServiceBuilder.CreateService(new ScsTcpEndPoint(ipAddress, port));
 
-                    _server.AddService<ICommunicationService, CommunicationService>(_communicationService);
+                    _server.AddService<ICommunicationService, CommunicationService>(new CommunicationService());
+                    _server.ClientConnected += OnClientConnected;
 
                     _server.Start();
+                    Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
                 }
                 catch (Exception ex)
                 {
@@ -79,6 +78,11 @@ namespace OpenNos.Master.Server
                 Logger.Log.Error("General Error", ex);
                 Console.ReadKey();
             }
+        }
+
+        private static void OnClientConnected(object sender, ServiceClientEventArgs e)
+        {
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + e.Client.ClientId);
         }
 
         private static void RegisterMappings()

@@ -14,7 +14,7 @@
 
 using log4net;
 using OpenNos.Core;
-using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
@@ -128,7 +128,7 @@ namespace OpenNos.World
 
             ServerManager.Instance.ServerGroup = ConfigurationManager.AppSettings["ServerGroup"];
             int sessionLimit = Convert.ToInt32(ConfigurationManager.AppSettings["SessionLimit"]);
-            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new WorldServer(ServerManager.Instance.WorldId, new ScsTcpEndPoint(ConfigurationManager.AppSettings["IPADDRESS"], port), sessionLimit, ServerManager.Instance.ServerGroup));
+            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ConfigurationManager.AppSettings["IPADDRESS"], port, sessionLimit, ServerManager.Instance.ServerGroup));
 
             if (newChannelId.HasValue)
             {

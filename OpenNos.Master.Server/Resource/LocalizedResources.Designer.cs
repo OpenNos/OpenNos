@@ -241,7 +241,7 @@ namespace OpenNos.Master.Server.Resource {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die LoginServer started successfully. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die MasterServer started successfully. ähnelt.
         /// </summary>
         internal static string STARTED {
             get {

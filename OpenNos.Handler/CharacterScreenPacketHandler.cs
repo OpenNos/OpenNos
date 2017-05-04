@@ -211,7 +211,7 @@ namespace OpenNos.Handler
                 {
                     if (account != null)
                     {
-                        hasRegisteredAccountLogin = CommunicationServiceClient.Instance.IsLoginPermitted(account.AccountId, Convert.ToInt32(loginPacketParts[2]));
+                        hasRegisteredAccountLogin = CommunicationServiceClient.Instance.IsLoginPermitted(account.AccountId, Session.SessionId);
                     }
                 }
                 catch (Exception ex)
