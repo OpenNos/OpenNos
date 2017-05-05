@@ -190,7 +190,7 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-
+            MSManager.Instance.ConnectedAccounts.RemoveAll(a=>a.AccountId.Equals(accountId));
             MSManager.Instance.ConnectedAccounts.Add(new AccountConnection(accountId, sessionId));
         }
 
