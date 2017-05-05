@@ -3,10 +3,11 @@
 using OpenNos.Core;
 using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using Hik.Communication.ScsServices.Service;
+
 using OpenNos.DAL;
-using OpenNos.DAL.EF;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
+using OpenNos.GameObject;
 using OpenNos.Master.Library.Interface;
 
 using System;
@@ -17,8 +18,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using OpenNos.DAL.EF.Entities;
-using OpenNos.GameObject;
 
 namespace OpenNos.Master.Server
 {

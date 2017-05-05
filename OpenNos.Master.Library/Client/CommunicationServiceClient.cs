@@ -176,44 +176,44 @@ namespace OpenNos.Master.Library.Client
 
         internal void OnUpdateBazaar(long bazaarItemId)
         {
-            BazaarRefresh(bazaarItemId, null);
+            BazaarRefresh?.Invoke(bazaarItemId, null);
         }
 
         internal void OnCharacterConnected(long characterId)
         {
             string characterName = DAOFactory.CharacterDAO.LoadById(characterId)?.Name;
-            CharacterConnectedEvent(new Tuple<long, string>(characterId, characterName), null);
+            CharacterConnectedEvent?.Invoke(new Tuple<long, string>(characterId, characterName), null);
         }
 
         internal void OnCharacterDisconnected(long characterId)
         {
             string characterName = DAOFactory.CharacterDAO.LoadById(characterId)?.Name;
-            CharacterDisconnectedEvent(new Tuple<long, string>(characterId, characterName), null);
+            CharacterDisconnectedEvent?.Invoke(new Tuple<long, string>(characterId, characterName), null);
         }
 
         internal void OnUpdateFamily(long familyId)
         {
-            FamilyRefresh(familyId, null);
+            FamilyRefresh?.Invoke(familyId, null);
         }
 
         internal void OnSendMessageToCharacter(SCSCharacterMessage message)
         {
-            MessageSentToCharacter(message, null);
+            MessageSentToCharacter?.Invoke(message, null);
         }
 
         internal void OnUpdatePenaltyLog(int penaltyLogId)
         {
-            PenaltyLogRefresh(penaltyLogId, null);
+            PenaltyLogRefresh?.Invoke(penaltyLogId, null);
         }
 
         internal void OnUpdateRelation(long relationId)
         {
-            RelationRefresh(relationId, null);
+            RelationRefresh?.Invoke(relationId, null);
         }
 
         internal void OnKickSession(long? accountId, long? sessionId)
         {
-            SessionKickedEvent(new Tuple<long?, long?>(accountId, sessionId), null);
+            SessionKickedEvent?.Invoke(new Tuple<long?, long?>(accountId, sessionId), null);
         }
 
         #endregion
