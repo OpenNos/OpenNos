@@ -1862,7 +1862,14 @@ namespace OpenNos.Handler
             Logger.Debug(shutdownAllPacket.ToString(), Session.Character.GenerateIdentity());
             if (shutdownAllPacket != null)
             {
-                CommunicationServiceClient.Instance.Shutdown(shutdownAllPacket.WorldGroup);
+                if (!string.IsNullOrEmpty(shutdownAllPacket.WorldGroup))
+                {
+                    CommunicationServiceClient.Instance.Shutdown(shutdownAllPacket.WorldGroup);
+                }
+                else
+                {
+                    CommunicationServiceClient.Instance.Shutdown(ServerManager.Instance.ServerGroup);
+                }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
             else
@@ -2322,8 +2329,7 @@ namespace OpenNos.Handler
                             SpecialistInstance specialistInstance = inv as SpecialistInstance;
                             if (specialistInstance != null)
                             {
-                                inv0 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
+                                inv0 += $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
                             }
                         }
                         else
@@ -2331,8 +2337,7 @@ namespace OpenNos.Handler
                             WearableInstance wearableInstance = inv as WearableInstance;
                             if (wearableInstance != null)
                             {
-                                inv0 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
+                                inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
                             }
                         }
                         break;
