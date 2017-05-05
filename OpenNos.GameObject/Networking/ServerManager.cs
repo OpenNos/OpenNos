@@ -1566,7 +1566,7 @@ namespace OpenNos.GameObject
                                     Message = targetSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MESSAGE_SENT_TO_CHARACTER"), targetSession.Character.Name, ChannelId), 11),
                                     Type = MessageType.PrivateChat
                                 });
-                                targetSession.SendPacket($"{message.Message} <{Language.Instance.GetMessageFromKey("CHANNEL")}: {message.SourceWorldId}>");
+                                targetSession.SendPacket($"{message.Message} <{Language.Instance.GetMessageFromKey("CHANNEL")}: {CommunicationServiceClient.Instance.GetChannelIdByWorldId(message.SourceWorldId)}>");
                             }
                             else
                             {
@@ -1594,7 +1594,7 @@ namespace OpenNos.GameObject
                                     {
                                         if (s.Character.Family.FamilyId == message.DestinationCharacterId)
                                         {
-                                            s.SendPacket($"say 1 0 6 <{Language.Instance.GetMessageFromKey("CHANNEL")}: {message.SourceWorldId}>{message.Message}");
+                                            s.SendPacket($"say 1 0 6 <{Language.Instance.GetMessageFromKey("CHANNEL")}: {CommunicationServiceClient.Instance.GetChannelIdByWorldId(message.SourceWorldId)}>{message.Message}");
                                         }
                                     }
                                 }

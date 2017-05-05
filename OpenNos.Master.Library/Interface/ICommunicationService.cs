@@ -72,6 +72,13 @@ namespace OpenNos.Master.Library.Interface
         /// <param name="characterId">Id of the disconnecting Character</param>
         void DisconnectCharacter(Guid worldId, long characterId);
 
+        /// <summary>
+        /// Gets the ChannelId by the given WorldId
+        /// </summary>
+        /// <param name="worldId">Id of the World</param>
+        /// <returns>ChannelId on success, otherwise null</returns>
+        int? GetChannelIdByWorldId(Guid worldId);
+
 
         /// <summary>
         /// Updates a Family on the given WorldGroup

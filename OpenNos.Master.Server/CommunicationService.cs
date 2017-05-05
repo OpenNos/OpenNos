@@ -111,6 +111,11 @@ namespace OpenNos.Master.Server
             }
         }
 
+        public int? GetChannelIdByWorldId(Guid worldId)
+        {
+            return MSManager.Instance.WorldServers.FirstOrDefault(w => w.Id == worldId)?.ChannelId;
+        }
+
         public bool IsAccountConnected(long accountId)
         {
             if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))

@@ -99,6 +99,11 @@ namespace OpenNos.Master.Library.Client
             _client.ServiceProxy.DisconnectCharacter(worldId, characterId);
         }
 
+        public int? GetChannelIdByWorldId(Guid worldId)
+        {
+            return _client.ServiceProxy.GetChannelIdByWorldId(worldId);
+        }
+
         public bool IsAccountConnected(long accountId)
         {
             return _client.ServiceProxy.IsAccountConnected(accountId);
