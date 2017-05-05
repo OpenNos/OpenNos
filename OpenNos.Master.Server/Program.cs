@@ -66,6 +66,7 @@ namespace OpenNos.Master.Server
 
                     _server.AddService<ICommunicationService, CommunicationService>(new CommunicationService());
                     _server.ClientConnected += OnClientConnected;
+                    _server.ClientDisconnected += OnClientDisconnected;
 
                     _server.Start();
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
@@ -85,6 +86,11 @@ namespace OpenNos.Master.Server
         private static void OnClientConnected(object sender, ServiceClientEventArgs e)
         {
             Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + e.Client.ClientId);
+        }
+
+        private static void OnClientDisconnected(object sender, ServiceClientEventArgs e)
+        {
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);
         }
 
         private static void RegisterMappings()
