@@ -821,6 +821,8 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Invisible", 12));
             Session.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$KickSession ACCOUNTNAME <SESSIONID>", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$MapDance", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 12));
@@ -834,10 +836,11 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$RemoveMob", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(%)", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME(%)", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(*)", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME(*)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shout SENDPACKET", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$ShutdownAll WORLDGROUP(*)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
@@ -1845,8 +1848,26 @@ namespace OpenNos.Handler
             }
             else
             {
-                ServerManager.Instance.TaskShutdown = new Task(ShutdownTask);
+                ServerManager.Instance.TaskShutdown = new Task(ServerManager.Instance.ShutdownTask);
                 ServerManager.Instance.TaskShutdown.Start();
+            }
+        }
+
+        /// <summary>
+        /// $ShutdownAll Command
+        /// </summary>
+        /// <param name="shutdownAllPacket"></param>
+        public void ShutdownAll(ShutdownAllPacket shutdownAllPacket)
+        {
+            Logger.Debug(shutdownAllPacket.ToString(), Session.Character.GenerateIdentity());
+            if (shutdownAllPacket != null)
+            {
+                CommunicationServiceClient.Instance.Shutdown(shutdownAllPacket.WorldGroup);
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$ShutdownAll WORLDGROUP(*)", 10));
             }
         }
 
@@ -2486,60 +2507,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("----- INFORMATIONS -----", 13));
             Session.SendPacket(Session.Character.GenerateSay($"ACTUAL IP : {playerSession.IpAddress}", 13));
             Session.SendPacket(Session.Character.GenerateSay("-------------------", 13));
-        }
-
-        private async void ShutdownTask()
-        {
-            string message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
-            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 60 * 4; i++)
-            {
-                await Task.Delay(1000);
-                if (ServerManager.Instance.ShutdownStop)
-                {
-                    ServerManager.Instance.ShutdownStop = false;
-                    return;
-                }
-            }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
-            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 30; i++)
-            {
-                await Task.Delay(1000);
-                if (ServerManager.Instance.ShutdownStop)
-                {
-                    ServerManager.Instance.ShutdownStop = false;
-                    return;
-                }
-            }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
-            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 30; i++)
-            {
-                await Task.Delay(1000);
-                if (ServerManager.Instance.ShutdownStop)
-                {
-                    ServerManager.Instance.ShutdownStop = false;
-                    return;
-                }
-            }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
-            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 10; i++)
-            {
-                await Task.Delay(1000);
-                if (ServerManager.Instance.ShutdownStop)
-                {
-                    ServerManager.Instance.ShutdownStop = false;
-                    return;
-                }
-            }
-            ServerManager.Instance.SaveAll();
-            Environment.Exit(0);
         }
 
         #endregion

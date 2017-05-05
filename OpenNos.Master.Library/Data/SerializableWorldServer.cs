@@ -10,11 +10,10 @@ namespace OpenNos.Master.Library.Data
         public SerializableWorldServer(Guid id, string epIP, int epPort, int accountLimit, string worldGroup)
         {
             Id = id;
-            EndPointIP=epIP;
+            EndPointIP = epIP;
             EndPointPort = epPort;
             AccountLimit = accountLimit;
             WorldGroup = worldGroup;
-
         }
 
         #endregion

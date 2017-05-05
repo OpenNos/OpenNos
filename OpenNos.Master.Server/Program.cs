@@ -1,32 +1,32 @@
-﻿using log4net;
-
-using OpenNos.Core;
-using Hik.Communication.Scs.Communication.EndPoints.Tcp;
+﻿using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using Hik.Communication.ScsServices.Service;
-
+using log4net;
+using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Master.Library.Interface;
-
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 
 namespace OpenNos.Master.Server
 {
-
-    class Program
+    internal class Program
     {
+        #region Members
+
         private static ManualResetEvent run = new ManualResetEvent(true);
 
-        static void Main(string[] args)
+        #endregion
+
+        #region Methods
+
+        private static void Main(string[] args)
         {
             try
             {
@@ -150,5 +150,7 @@ namespace OpenNos.Master.Server
             DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
             DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstance)).InitializeMapper();
         }
+
+        #endregion
     }
 }

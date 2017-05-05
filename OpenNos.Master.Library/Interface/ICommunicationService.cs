@@ -122,6 +122,11 @@ namespace OpenNos.Master.Library.Interface
         /// <param name="relationId">Id of the Relation that should be updated</param>
         void UpdateRelation(string worldGroup, long relationId);
 
+        /// <summary>
+        /// Shutdown given WorldGroup or WorldServer
+        /// </summary>
+        /// <param name="worldGroup">WorldGroup that should be shut down</param>
+        void Shutdown(string worldGroup);
 
         /// <summary>
         /// Registers a WorldServer

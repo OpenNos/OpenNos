@@ -359,9 +359,13 @@ namespace OpenNos.GameObject
                 try
                 {
                     if (session.Character.IsExchanging)
+                    {
                         session.Character.CloseExchangeOrTrade();
+                    }
                     if (session.Character.HasShopOpened)
+                    {
                         session.Character.CloseShop();
+                    }
                     LeaveMap(session.Character.CharacterId);
 
                     session.Character.IsChangingMapInstance = true;
@@ -1317,7 +1321,7 @@ namespace OpenNos.GameObject
                 BotProcess();
             });
 
-            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
+            EventHelper.Instance.RunEvent(new EventContainer(Instance.GetMapInstance(Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
             foreach (Schedule schedul in Schedules)
             {
                 Observable.Timer(TimeSpan.FromSeconds(EventHelper.Instance.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
@@ -1344,6 +1348,7 @@ namespace OpenNos.GameObject
             CommunicationServiceClient.Instance.RelationRefresh += OnRelationRefresh;
             CommunicationServiceClient.Instance.BazaarRefresh += OnBazaarRefresh;
             CommunicationServiceClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
+            CommunicationServiceClient.Instance.ShutdownEvent += OnShutdown;
             _lastGroupId = 1;
             _lastRaidId = 1;
         }
@@ -1353,7 +1358,10 @@ namespace OpenNos.GameObject
             BazaarList = new List<BazaarItemLink>();
             foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
             {
-                BazaarItemLink item = new BazaarItemLink { BazaarItem = bz };
+                BazaarItemLink item = new BazaarItemLink
+                {
+                    BazaarItem = bz
+                };
                 CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
                 if (chara != null)
                 {
@@ -1435,7 +1443,10 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        BazaarItemLink item = new BazaarItemLink { BazaarItem = bzdto };
+                        BazaarItemLink item = new BazaarItemLink
+                        {
+                            BazaarItem = bzdto
+                        };
                         if (chara != null)
                         {
                             item.Owner = chara.Name;
@@ -1670,6 +1681,20 @@ namespace OpenNos.GameObject
             inRelationRefreshMode = false;
         }
 
+        private void OnShutdown(object sender, EventArgs e)
+        {
+            if (Instance.TaskShutdown != null)
+            {
+                Instance.ShutdownStop = true;
+                Instance.TaskShutdown = null;
+            }
+            else
+            {
+                Instance.TaskShutdown = new Task(Instance.ShutdownTask);
+                Instance.TaskShutdown.Start();
+            }
+        }
+
         private void OnSessionKicked(object sender, EventArgs e)
         {
             if (sender != null)
@@ -1707,6 +1732,60 @@ namespace OpenNos.GameObject
             {
                 Logger.Error(e);
             }
+        }
+
+        public async void ShutdownTask()
+        {
+            string message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 60 * 4; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 30; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 30; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 10; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            Instance.SaveAll();
+            Environment.Exit(0);
         }
 
         #endregion

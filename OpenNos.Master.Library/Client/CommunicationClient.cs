@@ -1,15 +1,13 @@
-﻿using OpenNos.Master.Library.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using OpenNos.Master.Library.Data;
+using OpenNos.Master.Library.Interface;
 
 namespace OpenNos.Master.Library.Client
 {
-    class CommunicationClient : ICommunicationClient
+    internal class CommunicationClient : ICommunicationClient
     {
+        #region Methods
+
         public void CharacterConnected(long characterId)
         {
             CommunicationServiceClient.Instance.OnCharacterConnected(characterId);
@@ -28,6 +26,11 @@ namespace OpenNos.Master.Library.Client
         public void SendMessageToCharacter(SCSCharacterMessage message)
         {
             CommunicationServiceClient.Instance.OnSendMessageToCharacter(message);
+        }
+
+        public void Shutdown()
+        {
+            CommunicationServiceClient.Instance.OnShutdown();
         }
 
         public void UpdateBazaar(long bazaarItemId)
@@ -49,5 +52,7 @@ namespace OpenNos.Master.Library.Client
         {
             CommunicationServiceClient.Instance.OnUpdateRelation(relationId);
         }
+
+        #endregion
     }
 }

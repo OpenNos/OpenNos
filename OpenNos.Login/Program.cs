@@ -48,13 +48,16 @@ namespace OpenNos.Login
 
                     Console.Title = $"OpenNos Login Server v{fileVersionInfo.ProductVersion}dev";
                     int port = Convert.ToInt32(ConfigurationManager.AppSettings["LoginPort"]);
-                    string text = $"LOGIN SERVER v{fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
+                    string text = $"LOGIN SERVER v{fileVersionInfo.ProductVersion}dev - PORT : {port} by OpenNos Team";
                     int offset = Console.WindowWidth / 2 + text.Length / 2;
                     string separator = new string('=', Console.WindowWidth);
                     Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
 
                     // initialize api
-                    Console.Write(CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]));
+                    if (CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]))
+                    {
+                        Logger.Log.Info(Language.Instance.GetMessageFromKey("API_INITIALIZED"));
+                    }
 
                     // initialize DB
                     if (!DataAccessHelper.Initialize())

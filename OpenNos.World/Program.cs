@@ -73,13 +73,16 @@ namespace OpenNos.World
 
             Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}dev";
             int port = Convert.ToInt32(ConfigurationManager.AppSettings["WorldPort"]);
-            string text = $"WORLD SERVER v{fileVersionInfo.ProductVersion} - by OpenNos Team";
+            string text = $"WORLD SERVER v{fileVersionInfo.ProductVersion}dev - by OpenNos Team";
             int offset = Console.WindowWidth / 2 + text.Length / 2;
             string separator = new string('=', Console.WindowWidth);
             Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
 
-            // initialize new CommunicationServiceClient
-            CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);
+            // initialize api
+            if (CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]))
+            {
+                Logger.Log.Info(Language.Instance.GetMessageFromKey("API_INITIALIZED"));
+            }
 
             // initialize DB
             if (DataAccessHelper.Initialize())

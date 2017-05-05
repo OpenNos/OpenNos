@@ -121,6 +121,7 @@
     <Compile Include="Packets\ClientPackets\RselPacket.cs" />
     <Compile Include="Packets\ClientPackets\RstartPacket.cs" />
     <Compile Include="Packets\ClientPackets\RxitPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ShutdownAllPacket.cs" />
     <Compile Include="ScriptedInstance.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />

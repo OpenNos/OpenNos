@@ -15,6 +15,8 @@ namespace OpenNos.Master.Library.Interface
 
         void SendMessageToCharacter(SCSCharacterMessage message);
 
+        void Shutdown();
+
         void UpdatePenaltyLog(int penaltyLogId);
 
         void UpdateRelation(long relationId);

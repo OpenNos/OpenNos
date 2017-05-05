@@ -214,6 +214,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to API communication has been initialized..
+        /// </summary>
+        internal static string API_INITIALIZED {
+            get {
+                return ResourceManager.GetString("API_INITIALIZED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Archer.
         /// </summary>
         internal static string ARCHER {
@@ -3189,6 +3198,15 @@ namespace OpenNos.World.Resource {
         internal static string RESTORE_DIGNITY {
             get {
                 return ResourceManager.GetString("RESTORE_DIGNITY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot connect to Master Server! Trying again in 5 seconds....
+        /// </summary>
+        internal static string RETRY_CONNECTION {
+            get {
+                return ResourceManager.GetString("RETRY_CONNECTION", resourceCulture);
             }
         }
         

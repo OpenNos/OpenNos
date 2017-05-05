@@ -1,6 +1,6 @@
-﻿using Hik.Communication.ScsServices.Service;
+﻿using Hik.Communication.Scs.Communication.EndPoints.Tcp;
+using Hik.Communication.ScsServices.Service;
 using System;
-using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 
 namespace OpenNos.Master.Library.Data
 {
@@ -26,13 +26,13 @@ namespace OpenNos.Master.Library.Data
 
         public ScsTcpEndPoint Endpoint { get; set; }
 
-        public IScsServiceClient ServiceClient { get; set; }
-
         public Guid Id { get; set; }
 
-        public string WorldGroup { get; set; }
-
         public SerializableWorldServer Serializable { get; private set; }
+
+        public IScsServiceClient ServiceClient { get; set; }
+
+        public string WorldGroup { get; set; }
 
         #endregion
     }

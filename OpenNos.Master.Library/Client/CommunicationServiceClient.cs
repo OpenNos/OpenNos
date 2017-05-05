@@ -1,12 +1,13 @@
-﻿using Hik.Communication.ScsServices.Client;
+﻿using Hik.Communication.Scs.Communication;
+using Hik.Communication.Scs.Communication.EndPoints.Tcp;
+using Hik.Communication.ScsServices.Client;
+using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Master.Library.Data;
+using OpenNos.Master.Library.Interface;
 using System;
 using System.Collections.Generic;
-using OpenNos.Master.Library.Interface;
-using Hik.Communication.Scs.Communication.EndPoints.Tcp;
-using Hik.Communication.Scs.Communication;
-using OpenNos.Master.Library.Data;
 using System.Configuration;
-using OpenNos.DAL;
 
 namespace OpenNos.Master.Library.Client
 {
@@ -28,14 +29,19 @@ namespace OpenNos.Master.Library.Client
             int port = Convert.ToInt32(ConfigurationManager.AppSettings["MasterPort"]);
             _commClient = new CommunicationClient();
             _client = ScsServiceClientBuilder.CreateClient<ICommunicationService>(new ScsTcpEndPoint(ip, port), _commClient);
-            _client.Connect();
+            while (_client.CommunicationState != CommunicationStates.Connected)
+            {
+                try
+                {
+                    _client.Connect();
+                }
+                catch
+                {
+                    Logger.Log.Error(Language.Instance.GetMessageFromKey("RETRY_CONNECTION"));
+                    System.Threading.Thread.Sleep(5000);
+                }
+            }
         }
-
-        #endregion
-
-        #region Properties
-
-        public static CommunicationServiceClient Instance => _instance ?? (_instance = new CommunicationServiceClient());
 
         #endregion
 
@@ -57,9 +63,13 @@ namespace OpenNos.Master.Library.Client
 
         public event EventHandler SessionKickedEvent;
 
+        public event EventHandler ShutdownEvent;
+
         #endregion
 
-        #region Methods
+        #region Properties
+
+        public static CommunicationServiceClient Instance => _instance ?? (_instance = new CommunicationServiceClient());
 
         public CommunicationStates CommunicationState
         {
@@ -68,6 +78,10 @@ namespace OpenNos.Master.Library.Client
                 return _client.CommunicationState;
             }
         }
+
+        #endregion
+
+        #region Methods
 
         public bool Authenticate(string authKey)
         {
@@ -154,6 +168,11 @@ namespace OpenNos.Master.Library.Client
             return _client.ServiceProxy.SendMessageToCharacter(message);
         }
 
+        public void Shutdown(string worldGroup)
+        {
+            _client.ServiceProxy.Shutdown(worldGroup);
+        }
+
         public void UnregisterWorldServer(Guid worldId)
         {
             _client.ServiceProxy.UnregisterWorldServer(worldId);
@@ -174,11 +193,6 @@ namespace OpenNos.Master.Library.Client
             _client.ServiceProxy.UpdateRelation(worldGroup, relationId);
         }
 
-        internal void OnUpdateBazaar(long bazaarItemId)
-        {
-            BazaarRefresh?.Invoke(bazaarItemId, null);
-        }
-
         internal void OnCharacterConnected(long characterId)
         {
             string characterName = DAOFactory.CharacterDAO.LoadById(characterId)?.Name;
@@ -191,14 +205,29 @@ namespace OpenNos.Master.Library.Client
             CharacterDisconnectedEvent?.Invoke(new Tuple<long, string>(characterId, characterName), null);
         }
 
-        internal void OnUpdateFamily(long familyId)
+        internal void OnKickSession(long? accountId, long? sessionId)
         {
-            FamilyRefresh?.Invoke(familyId, null);
+            SessionKickedEvent?.Invoke(new Tuple<long?, long?>(accountId, sessionId), null);
         }
 
         internal void OnSendMessageToCharacter(SCSCharacterMessage message)
         {
             MessageSentToCharacter?.Invoke(message, null);
+        }
+
+        internal void OnShutdown()
+        {
+            ShutdownEvent?.Invoke(null, null);
+        }
+
+        internal void OnUpdateBazaar(long bazaarItemId)
+        {
+            BazaarRefresh?.Invoke(bazaarItemId, null);
+        }
+
+        internal void OnUpdateFamily(long familyId)
+        {
+            FamilyRefresh?.Invoke(familyId, null);
         }
 
         internal void OnUpdatePenaltyLog(int penaltyLogId)
@@ -211,12 +240,6 @@ namespace OpenNos.Master.Library.Client
             RelationRefresh?.Invoke(relationId, null);
         }
 
-        internal void OnKickSession(long? accountId, long? sessionId)
-        {
-            SessionKickedEvent?.Invoke(new Tuple<long?, long?>(accountId, sessionId), null);
-        }
-
         #endregion
-
     }
 }

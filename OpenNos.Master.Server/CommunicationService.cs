@@ -1,21 +1,21 @@
-﻿using Hik.Communication.ScsServices.Service;
-using Hik.Communication.Scs.Communication.EndPoints.Tcp;
+﻿using Hik.Communication.Scs.Communication.EndPoints.Tcp;
+using Hik.Communication.ScsServices.Service;
+using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Domain;
+using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Domain;
-using OpenNos.Master.Library.Data;
-using OpenNos.DAL;
-using OpenNos.Core;
 using System.Configuration;
+using System.Linq;
 
 namespace OpenNos.Master.Server
 {
-    class CommunicationService : ScsService, ICommunicationService
+    internal class CommunicationService : ScsService, ICommunicationService
     {
+        #region Methods
+
         public bool Authenticate(string authKey)
         {
             if (string.IsNullOrWhiteSpace(authKey))
@@ -31,7 +31,6 @@ namespace OpenNos.Master.Server
             }
 
             return false;
-
         }
 
         public void Cleanup()
@@ -52,10 +51,10 @@ namespace OpenNos.Master.Server
                 return false;
             }
 
-            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a=>a.AccountId.Equals(accountId) && a.SessionId.Equals(sessionId));
-            if(account!= null)
+            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId) && a.SessionId.Equals(sessionId));
+            if (account != null)
             {
-                account.ConnectedWorld = MSManager.Instance.WorldServers.FirstOrDefault(w=>w.Id.Equals(worldId));
+                account.ConnectedWorld = MSManager.Instance.WorldServers.FirstOrDefault(w => w.Id.Equals(worldId));
             }
             return account.ConnectedWorld == null ? false : true;
         }
@@ -70,11 +69,11 @@ namespace OpenNos.Master.Server
             //Multiple WorldGroups not yet supported by DAOFactory
             long accountId = DAOFactory.CharacterDAO.LoadById(characterId)?.AccountId ?? 0;
 
-            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a=>a.AccountId.Equals(accountId) && a.ConnectedWorld.Id.Equals(worldId));
-            if(account != null)
+            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId) && a.ConnectedWorld.Id.Equals(worldId));
+            if (account != null)
             {
                 account.CharacterId = characterId;
-                foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w=>w.WorldGroup.Equals(account.ConnectedWorld.WorldGroup)))
+                foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(account.ConnectedWorld.WorldGroup)))
                 {
                     world.ServiceClient.GetClientProxy<ICommunicationClient>().CharacterConnected(characterId);
                 }
@@ -190,7 +189,7 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-            MSManager.Instance.ConnectedAccounts.RemoveAll(a=>a.AccountId.Equals(accountId));
+            MSManager.Instance.ConnectedAccounts.RemoveAll(a => a.AccountId.Equals(accountId));
             MSManager.Instance.ConnectedAccounts.Add(new AccountConnection(accountId, sessionId));
         }
 
@@ -200,10 +199,11 @@ namespace OpenNos.Master.Server
             {
                 return null;
             }
-            WorldServer ws = new WorldServer(worldServer.Id, new ScsTcpEndPoint(worldServer.EndPointIP, worldServer.EndPointPort), worldServer.AccountLimit, worldServer.WorldGroup);
-
-            ws.ServiceClient = CurrentClient;
-            ws.ChannelId = Enumerable.Range(1, 30).Except(MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldServer.WorldGroup)).OrderBy(w => w.ChannelId).Select(w => w.ChannelId)).First();
+            WorldServer ws = new WorldServer(worldServer.Id, new ScsTcpEndPoint(worldServer.EndPointIP, worldServer.EndPointPort), worldServer.AccountLimit, worldServer.WorldGroup)
+            {
+                ServiceClient = CurrentClient,
+                ChannelId = Enumerable.Range(1, 30).Except(MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldServer.WorldGroup)).OrderBy(w => w.ChannelId).Select(w => w.ChannelId)).First()
+            };
             MSManager.Instance.WorldServers.Add(ws);
             return ws.ChannelId;
         }
@@ -216,12 +216,12 @@ namespace OpenNos.Master.Server
 
             foreach (WorldServer world in MSManager.Instance.WorldServers.OrderBy(w => w.WorldGroup))
             {
-                if(lastGroup != world.WorldGroup)
+                if (lastGroup != world.WorldGroup)
                 {
                     worldCount++;
                 }
                 lastGroup = world.WorldGroup;
-                int slotsLeft = world.AccountLimit - MSManager.Instance.ConnectedAccounts.Count(a=>a.ConnectedWorld?.WorldGroup == world.WorldGroup);
+                int slotsLeft = world.AccountLimit - MSManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.WorldGroup == world.WorldGroup);
                 int channelcolor = (world.AccountLimit / slotsLeft) + 1;
 
                 channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:{channelcolor}:{worldCount}.{world.ChannelId}.{world.WorldGroup} ";
@@ -263,7 +263,6 @@ namespace OpenNos.Master.Server
                     totalsessions += groupsessions;
                 }
                 result.Add($"Environment Total: {totalsessions} Sessions");
-
             }
             catch (Exception ex)
             {
@@ -289,7 +288,7 @@ namespace OpenNos.Master.Server
             {
                 case MessageType.Family:
                 case MessageType.FamilyChat:
-                    foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w=>w.WorldGroup.Equals(sourceWorld.WorldGroup)))
+                    foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(sourceWorld.WorldGroup)))
                     {
                         world.ServiceClient.GetClientProxy<ICommunicationClient>().SendMessageToCharacter(message);
                     }
@@ -326,7 +325,7 @@ namespace OpenNos.Master.Server
                 return;
             }
 
-            MSManager.Instance.WorldServers.RemoveAll(w=>w.Id.Equals(worldId));
+            MSManager.Instance.WorldServers.RemoveAll(w => w.Id.Equals(worldId));
         }
 
         public void UpdateBazaar(string worldGroup, long bazaarItemId)
@@ -355,6 +354,29 @@ namespace OpenNos.Master.Server
             }
         }
 
+        public void Shutdown(string worldGroup)
+        {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
+            if (worldGroup == "*")
+            {
+                foreach (WorldServer world in MSManager.Instance.WorldServers)
+                {
+                    world.ServiceClient.GetClientProxy<ICommunicationClient>().Shutdown();
+                }
+            }
+            else
+            {
+                foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldGroup)))
+                {
+                    world.ServiceClient.GetClientProxy<ICommunicationClient>().Shutdown();
+                }
+            }
+        }
+
         public void UpdateRelation(string worldGroup, long relationId)
         {
             if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
@@ -367,5 +389,7 @@ namespace OpenNos.Master.Server
                 world.ServiceClient.GetClientProxy<ICommunicationClient>().UpdateRelation(relationId);
             }
         }
+
+        #endregion
     }
 }

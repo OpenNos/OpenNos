@@ -1414,4 +1414,10 @@
   <data name="YOU_GET_PET" xml:space="preserve">
     <value>You get a pet.</value>
   </data>
+  <data name="API_INITIALIZED" xml:space="preserve">
+    <value>API communication has been initialized.</value>
+  </data>
+  <data name="RETRY_CONNECTION" xml:space="preserve">
+    <value>Cannot connect to Master Server! Trying again in 5 seconds...</value>
+  </data>
 </root>
