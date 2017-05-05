@@ -7,6 +7,7 @@ using Hik.Communication.Scs.Communication;
 using OpenNos.Master.Library.Data;
 using System.Configuration;
 using OpenNos.DAL;
+using OpenNos.Core;
 
 namespace OpenNos.Master.Library.Client
 {
@@ -28,7 +29,19 @@ namespace OpenNos.Master.Library.Client
             int port = Convert.ToInt32(ConfigurationManager.AppSettings["MasterPort"]);
             _commClient = new CommunicationClient();
             _client = ScsServiceClientBuilder.CreateClient<ICommunicationService>(new ScsTcpEndPoint(ip, port), _commClient);
-            _client.Connect();
+            while (_client.CommunicationState != CommunicationStates.Connected)
+            {
+                try
+                {
+                    _client.Connect();
+                }
+                catch
+                {
+                    Logger.Log.Error("Cannot connect to Master Server! Trying again in 5 seconds...");
+                    System.Threading.Thread.Sleep(5000);
+                }
+            }
+
         }
 
         #endregion
