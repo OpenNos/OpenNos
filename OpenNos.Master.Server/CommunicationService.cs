@@ -90,7 +90,7 @@ namespace OpenNos.Master.Server
                 return;
             }
 
-            MSManager.Instance.ConnectedAccounts.RemoveAll(c => c.AccountId.Equals(accountId));
+            MSManager.Instance.ConnectedAccounts.RemoveAll(c => c.CharacterId.Equals(accountId));
         }
 
         public void DisconnectCharacter(Guid worldId, long characterId)
@@ -100,7 +100,7 @@ namespace OpenNos.Master.Server
                 return;
             }
 
-            foreach (AccountConnection account in MSManager.Instance.ConnectedAccounts.Where(c => c.CharacterId.Equals(characterId) && c.ConnectedWorld.Id.Equals(worldId)))
+            foreach (AccountConnection account in MSManager.Instance.ConnectedAccounts.Where(c => c.CharacterId.Equals(characterId) && c.ConnectedWorld.Equals(worldId)))
             {
                 foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(account.ConnectedWorld.WorldGroup)))
                 {
@@ -133,7 +133,7 @@ namespace OpenNos.Master.Server
                 return false;
             }
 
-            return MSManager.Instance.ConnectedAccounts.Any(c => c.ConnectedWorld != null && c.ConnectedWorld.WorldGroup == worldGroup && c.CharacterId == characterId);
+            return MSManager.Instance.ConnectedAccounts.Any(c => c.ConnectedWorld.WorldGroup == worldGroup && c.CharacterId == characterId && c.ConnectedWorld != null);
         }
 
         public bool IsLoginPermitted(long accountId, long sessionId)
