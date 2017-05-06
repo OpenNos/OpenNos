@@ -9,11 +9,25 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reactive.Linq;
 
 namespace OpenNos.Master.Server
 {
     internal class CommunicationService : ScsService, ICommunicationService
     {
+        #region Instantiation
+        public CommunicationService()
+        {
+            Observable.Interval(TimeSpan.FromMinutes(1)).Subscribe(x =>
+            {
+                foreach(AccountConnection account in MSManager.Instance.ConnectedAccounts.Where(a=>a.LastPulse.AddMinutes(5) <= DateTime.Now))
+                {
+                    KickSession(account.AccountId, null);
+                }
+            });
+        }
+        #endregion
+
         #region Methods
 
         public bool Authenticate(string authKey)
@@ -388,6 +402,11 @@ namespace OpenNos.Master.Server
             {
                 world.ServiceClient.GetClientProxy<ICommunicationClient>().UpdateRelation(relationId);
             }
+        }
+
+        public void PulseAccount(long accountId)
+        {
+            
         }
 
         #endregion

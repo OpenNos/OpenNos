@@ -1213,6 +1213,7 @@ namespace OpenNos.Handler
                 Session.Disconnect();
             }
             Session.Character.DeleteTimeout();
+            CommunicationServiceClient.Instance.PulseAccount(Session.Account.AccountId);
         }
 
         [Packet("req_info")]

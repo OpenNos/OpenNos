@@ -23,6 +23,12 @@ namespace OpenNos.Master.Library.Interface
         bool IsAccountConnected(long accountId);
 
         /// <summary>
+        /// Refreshes the Pulse Timer for the given account
+        /// </summary>
+        /// <param name="accountId">Id of the Account</param>
+        void PulseAccount(long accountId);
+
+        /// <summary>
         /// Checks if the Character is connected
         /// </summary>
         /// <param name="worldGroup">Name of the WorldGroup to look on</param>

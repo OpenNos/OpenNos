@@ -1,4 +1,6 @@
-﻿namespace OpenNos.Master.Library.Data
+﻿using System;
+
+namespace OpenNos.Master.Library.Data
 {
     internal class AccountConnection
     {
@@ -8,6 +10,7 @@
         {
             AccountId = accountId;
             SessionId = session;
+            LastPulse = DateTime.Now;
         }
 
         #endregion
@@ -17,6 +20,8 @@
         public long AccountId { get; private set; }
 
         public long CharacterId { get; set; }
+
+        public DateTime LastPulse { get; set; }
 
         public WorldServer ConnectedWorld { get; set; }
 

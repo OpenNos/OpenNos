@@ -138,6 +138,11 @@ namespace OpenNos.Master.Library.Client
             _client.ServiceProxy.KickSession(accountId, sessionId);
         }
 
+        public void PulseAccount(long accountId)
+        {
+            _client.ServiceProxy.PulseAccount(accountId);
+        }
+
         public void RefreshPenalty(int penaltyId)
         {
             _client.ServiceProxy.RefreshPenalty(penaltyId);
