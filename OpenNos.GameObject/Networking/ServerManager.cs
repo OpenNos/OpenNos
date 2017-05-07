@@ -345,11 +345,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void ChangeMapInstance(long characterId, Guid mapInstanceId, object startX, object startY)
-        {
-            throw new NotImplementedException();
-        }
-
         // Both partly
         public void ChangeMapInstance(long id, Guid MapInstanceId, int? mapX = null, int? mapY = null)
         {
@@ -618,6 +613,11 @@ namespace OpenNos.GameObject
         public ClientSession GetSessionByCharacterName(string name)
         {
             return Sessions.SingleOrDefault(s => s.Character.Name == name);
+        }
+
+        public ClientSession GetSessionBySessionId(int sessionId)
+        {
+            return Sessions.SingleOrDefault(s => s.SessionId == sessionId);
         }
 
         public Skill GetSkill(short skillVNum)
@@ -1169,6 +1169,60 @@ namespace OpenNos.GameObject
             Broadcast($"msg 2 {message}");
         }
 
+        public async void ShutdownTask()
+        {
+            string message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 60 * 4; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 30; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 30; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 10; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            Instance.SaveAll();
+            Environment.Exit(0);
+        }
+
         public void TeleportOnRandomPlaceInMap(ClientSession Session, Guid guid)
         {
             MapInstance map = GetMapInstance(guid);
@@ -1681,6 +1735,19 @@ namespace OpenNos.GameObject
             inRelationRefreshMode = false;
         }
 
+        private void OnSessionKicked(object sender, EventArgs e)
+        {
+            if (sender != null)
+            {
+                Tuple<long?, long?> kickedSession = (Tuple<long?, long?>)sender;
+
+                ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
+                && (!kickedSession.Item1.HasValue || s.Account.AccountId == kickedSession.Item2));
+
+                targetSession?.Disconnect();
+            }
+        }
+
         private void OnShutdown(object sender, EventArgs e)
         {
             if (Instance.TaskShutdown != null)
@@ -1692,19 +1759,6 @@ namespace OpenNos.GameObject
             {
                 Instance.TaskShutdown = new Task(Instance.ShutdownTask);
                 Instance.TaskShutdown.Start();
-            }
-        }
-
-        private void OnSessionKicked(object sender, EventArgs e)
-        {
-            if (sender != null)
-            {
-                Tuple<long?, long?> kickedSession = (Tuple<long?, long?>)sender;
-
-                ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
-                && (!kickedSession.Item1.HasValue || s.Account.AccountId == kickedSession.Item2));
-
-                targetSession?.Disconnect();
             }
         }
 
@@ -1732,60 +1786,6 @@ namespace OpenNos.GameObject
             {
                 Logger.Error(e);
             }
-        }
-
-        public async void ShutdownTask()
-        {
-            string message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
-            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 60 * 4; i++)
-            {
-                await Task.Delay(1000);
-                if (Instance.ShutdownStop)
-                {
-                    Instance.ShutdownStop = false;
-                    return;
-                }
-            }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
-            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 30; i++)
-            {
-                await Task.Delay(1000);
-                if (Instance.ShutdownStop)
-                {
-                    Instance.ShutdownStop = false;
-                    return;
-                }
-            }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
-            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 30; i++)
-            {
-                await Task.Delay(1000);
-                if (Instance.ShutdownStop)
-                {
-                    Instance.ShutdownStop = false;
-                    return;
-                }
-            }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
-            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 10; i++)
-            {
-                await Task.Delay(1000);
-                if (Instance.ShutdownStop)
-                {
-                    Instance.ShutdownStop = false;
-                    return;
-                }
-            }
-            Instance.SaveAll();
-            Environment.Exit(0);
         }
 
         #endregion

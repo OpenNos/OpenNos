@@ -706,7 +706,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("---------CHANNEL INFO---------", 11));
             foreach (ClientSession session in ServerManager.Instance.Sessions)
             {
-                Session.SendPacket(Session.Character.GenerateSay($"CharacterName: {session.Character.Name} SessionId:{session.SessionId}", 12));
+                Session.SendPacket(Session.Character.GenerateSay($"CharacterName: {session.Character.Name} SessionId: {session.SessionId}", 12));
             }
             Session.SendPacket(Session.Character.GenerateSay("---------------------------------------", 11));
         }
@@ -720,8 +720,21 @@ namespace OpenNos.Handler
             Logger.Debug("CharStat Command", Session.Character.GenerateIdentity());
             if (characterStatsPacket != null)
             {
+                int sessionId = 0;
                 string name = characterStatsPacket.CharacterName;
-                if (!string.IsNullOrEmpty(name))
+                if (int.TryParse(characterStatsPacket.CharacterName, out sessionId))
+                {
+                    if (ServerManager.Instance.GetSessionBySessionId(sessionId) != null)
+                    {
+                        Character character = ServerManager.Instance.GetSessionBySessionId(sessionId).Character;
+                        SendStats(character);
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                    }
+                }
+                else if (!string.IsNullOrEmpty(name))
                 {
                     if (ServerManager.Instance.GetSessionByCharacterName(name) != null)
                     {
@@ -782,6 +795,7 @@ namespace OpenNos.Handler
             // TODO: Command displaying detailed informations about commands
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
             Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$AddPet VNUM LEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$AddSkill SKILLID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ArenaWinner", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
@@ -794,6 +808,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$ChangeDignity AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$ChannelInfo", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Clear INVENTORYTYPE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
@@ -806,8 +821,8 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$DropRate VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Event EVENT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$FairyXpRate VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$FairyXpRate VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME(*) VNUM AMOUNT RARE UPGRADE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift VNUM AMOUNT RARE UPGRADE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$GodMode", 12));
@@ -820,14 +835,15 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Invisible", 12));
             Session.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$KickSession ACCOUNTNAME <SESSIONID>", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$MapDance", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Music BGM", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME DURATION(MINUTES) REASON", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Packet STRING", 12));
             Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Position", 12));
@@ -836,16 +852,17 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$RemoveMob", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(*)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME(*)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shout SENDPACKET", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ShutdownAll WORLDGROUP(*)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Stat", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SummonNPC MONSTERVNUM", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 12));
             Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME(*)", 12));
@@ -2482,17 +2499,17 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Fraction: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
             Session.SendPacket(Session.Character.GenerateSay("----- --------- -----", 13));
-            AccountDTO acc = DAOFactory.AccountDAO.LoadById(character.AccountId);
-            if (acc != null)
+            AccountDTO account = DAOFactory.AccountDAO.LoadById(character.AccountId);
+            if (account != null)
             {
                 Session.SendPacket(Session.Character.GenerateSay("----- ACCOUNT -----", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Id: {acc.AccountId}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Name: {acc.Name}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Authority: {acc.Authority}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"RegistrationIP: {acc.RegistrationIP}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Email: {acc.Email}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Id: {account.AccountId}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Name: {account.Name}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Authority: {account.Authority}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"RegistrationIP: {account.RegistrationIP}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Email: {account.Email}", 13));
                 Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
-                IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => s.AccountId == acc.AccountId).ToList();
+                IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => s.AccountId == account.AccountId).ToList();
                 PenaltyLogDTO penalty = penaltyLogs.LastOrDefault(s => s.DateEnd > DateTime.Now);
                 if (penalty != null)
                 {
@@ -2507,11 +2524,13 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
                 }
             }
-            var playerSession = ServerManager.Instance.GetSessionByCharacterName(character.Name);
-            if (playerSession == null) return;
-            Session.SendPacket(Session.Character.GenerateSay("----- INFORMATIONS -----", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"ACTUAL IP : {playerSession.IpAddress}", 13));
-            Session.SendPacket(Session.Character.GenerateSay("-------------------", 13));
+            ClientSession session = ServerManager.Instance.GetSessionByCharacterName(character.Name);
+            if (session != null)
+            {
+                Session.SendPacket(Session.Character.GenerateSay("----- INFORMATIONS -----", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Current IP: {session.IpAddress}", 13));
+                Session.SendPacket(Session.Character.GenerateSay("-------------------", 13));
+            }
         }
 
         #endregion
