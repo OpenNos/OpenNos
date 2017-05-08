@@ -650,8 +650,10 @@ namespace OpenNos.Handler
                         sp.XP = 0;
                         Session.SendPacket(Session.Character.GenerateLev());
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
-                        Session.SendPacket(Session.Character.GenerateSki());
                         Session.Character.LearnSPSkill();
+                        Session.SendPacket(Session.Character.GenerateSki());
+                        Session.SendPackets(Session.Character.GenerateQuicklist());
+                        Session.Character.Skills.GetAllItems().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), Session.Character.PositionX, Session.Character.PositionY);
