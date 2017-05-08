@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
 
         private byte _cmapcount;
         private Random _random;
-        private byte _speed;  
+        private byte _speed;
         #endregion
 
         #region Instantiation
@@ -593,7 +593,14 @@ namespace OpenNos.GameObject
                         }
                         if (change)
                         {
-                            Session.SendPacket(GenerateStat());
+                            if (Session.Character.Group != null)
+                            {
+                                Session.Character.Group.Characters.ForEach(s => ServerManager.Instance.GetSessionByCharacterId(s.Character.CharacterId)?.SendPacket(Session.Character.GenerateStat()));
+                            }
+                            else
+                            {
+                                Session.SendPacket(GenerateStat());
+                            }
                         }
                     }
                 }
