@@ -284,8 +284,6 @@ namespace OpenNos.GameObject.Helpers
                         break;
 
                     case EventActionType.SPAWNONLASTENTRY:
-
-                        //TODO REVIEW THIS CASE
                         Character lastincharacter = evt.MapInstance.Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
                         List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
                         MapCell hornSpawn = new MapCell
