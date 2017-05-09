@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
 
         private byte _cmapcount;
         private Random _random;
-        private byte _speed;  
+        private byte _speed;
         #endregion
 
         #region Instantiation
@@ -593,7 +593,14 @@ namespace OpenNos.GameObject
                         }
                         if (change)
                         {
-                            Session.SendPacket(GenerateStat());
+                            if (Session.Character.Group != null)
+                            {
+                                Session.Character.Group.Characters.ForEach(s => ServerManager.Instance.GetSessionByCharacterId(s.Character.CharacterId)?.SendPacket(Session.Character.GenerateStat()));
+                            }
+                            else
+                            {
+                                Session.SendPacket(GenerateStat());
+                            }
                         }
                     }
                 }
@@ -3866,8 +3873,6 @@ namespace OpenNos.GameObject
             if (SkillsSp.Count != SkillSpCount)
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                Session.SendPacket(GenerateSki());
-                Session.SendPackets(GenerateQuicklist());
             }
         }
 
@@ -4664,6 +4669,9 @@ namespace OpenNos.GameObject
                             specialist.XP = 0;
                         }
                         LearnSPSkill();
+                        Skills.GetAllItems().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
+                        Session.SendPacket(GenerateSki());
+                        Session.SendPackets(GenerateQuicklist());
 
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);

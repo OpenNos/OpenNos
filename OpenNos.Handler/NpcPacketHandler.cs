@@ -139,6 +139,13 @@ namespace OpenNos.Handler
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_SP"), 0));
                                     return;
                                 }
+
+                                if (Session.Character.Skills.GetAllItems().Any(s=>s.LastUse.AddMilliseconds(s.Skill.Cooldown *100) > DateTime.Now))
+                                {
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_NEED_COOLDOWN"), 0));
+                                    return;
+                                }
+
                                 Skill skillinfo = ServerManager.Instance.GetSkill(buyPacket.Slot);
                                 if (Session.Character.Skills.GetAllItems().Any(s => s.SkillVNum == buyPacket.Slot) || skillinfo == null)
                                 {

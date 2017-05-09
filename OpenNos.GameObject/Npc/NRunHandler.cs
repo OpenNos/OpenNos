@@ -340,7 +340,7 @@ namespace OpenNos.GameObject
                 case 132:
                     if (npc != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                       TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
