@@ -23,8 +23,10 @@ using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace OpenNos.Handler
@@ -709,6 +711,65 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay($"CharacterName: {session.Character.Name} SessionId: {session.SessionId}", 12));
             }
             Session.SendPacket(Session.Character.GenerateSay("---------------------------------------", 11));
+        }
+
+
+        /// <summary>
+        /// $CharEdit Command
+        /// </summary>
+        /// <param name="characterEditPacket"></param>
+        public void CharacterEdit(CharacterEditPacket characterEditPacket)
+        {
+            Logger.Debug("ChannelInfo Command", Session.Character.GenerateIdentity());
+            if (characterEditPacket != null)
+            {
+                if (characterEditPacket.Property != null && !string.IsNullOrEmpty(characterEditPacket.Data))
+                {
+                    PropertyInfo propertyInfo = Session.Character.GetType().GetProperty(characterEditPacket.Property);
+                    if (propertyInfo != null)
+                    {
+                        propertyInfo.SetValue(Session.Character, Convert.ChangeType(characterEditPacket.Data, propertyInfo.PropertyType));
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                    }
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$CharEdit PROPERTY DATA", 10));
+            }
+        }
+
+        [Obsolete("its a WIP useless command used to display properties")]
+        [Packet("$LstProp")]
+        public void LstProp(string packet)
+        {
+            if (Session.Account.Authority >= AuthorityType.GameMaster)
+            {
+                string[] packetsplit = packet.Split(' ');
+                if (packetsplit.Length > 2)
+                {
+                    if (packetsplit[2] == "Character")
+                    {
+                        PropertyInfo[] properties = Session.Character.GetType().GetProperties();
+                        int i = 0;
+                        foreach (PropertyInfo propertyInfo in properties)
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay($"NR.{i} | name: {propertyInfo.Name}, type: {propertyInfo.PropertyType}, value: {propertyInfo.GetValue(Session.Character)}", 11));
+                            i++;
+                        }
+                    }
+                    if (packetsplit[2] == "Account")
+                    {
+                        PropertyInfo[] properties = Session.Account.GetType().GetProperties();
+                        int i = 0;
+                        foreach (PropertyInfo propertyInfo in properties)
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay($"NR.{i} | name: {propertyInfo.Name}, type: {propertyInfo.PropertyType}, value: {propertyInfo.GetValue(Session.Character)}", 11));
+                            i++;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
