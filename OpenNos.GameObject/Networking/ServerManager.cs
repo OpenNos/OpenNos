@@ -1159,7 +1159,6 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            //PropertyInfo propertyinfo = session.Character.GetType().GetProperties().Single(pi => pi.Name == property);
             PropertyInfo propertyinfo = session.Character.GetType().GetProperty(property);
             propertyinfo.SetValue(session.Character, value, null);
         }

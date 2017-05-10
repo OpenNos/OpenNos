@@ -1832,12 +1832,12 @@ namespace OpenNos.Handler
             Logger.Debug("SearchItem Command", Session.Character.GenerateIdentity());
             if (searchItemPacket != null)
             {
-                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(searchItemPacket.Name).OrderBy(s => s.VNum).ToList();
+                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(searchItemPacket.Name != null ? string.Empty : searchItemPacket.Name).OrderBy(s => s.VNum).Take(200).ToList();
                 if (itemlist.Any())
                 {
                     foreach (ItemDTO item in itemlist)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay($"Item: {item.Name} VNum: {item.VNum}", 12));
+                        Session.SendPacket(Session.Character.GenerateSay($"Item: {(item.Name != null ? "none" : item.Name)} VNum: {item.VNum}", 12));
                     }
                 }
                 else
