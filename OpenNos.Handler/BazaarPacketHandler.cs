@@ -133,33 +133,41 @@ namespace OpenNos.Handler
                 int soldedamount = bz.Amount - Item.Amount;
                 long taxes = bz.MedalUsed ? 0 : (long)(bz.Price * 0.10 * soldedamount);
                 long price = bz.Price * soldedamount - taxes;
-                if (Session.Character.Gold + price <= ServerManager.Instance.MaxGold)
+                if (Session.Character.Inventory.CanAddItem(Item.ItemVNum))
                 {
-                    Session.Character.Gold += price;
-                    Session.SendPacket(Session.Character.GenerateGold());
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REMOVE_FROM_BAZAAR"), price), 10));
-                    if (Item.Amount != 0)
+                    if (Session.Character.Gold + price <= ServerManager.Instance.MaxGold)
                     {
-                        ItemInstance newBz = Item.DeepCopy();
-                        newBz.Id = Guid.NewGuid();
-                        newBz.Type = newBz.Item.Type;
+                        Session.Character.Gold += price;
+                        Session.SendPacket(Session.Character.GenerateGold());
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REMOVE_FROM_BAZAAR"), price), 10));
+                        if (Item.Amount != 0)
+                        {
+                            ItemInstance newBz = Item.DeepCopy();
+                            newBz.Id = Guid.NewGuid();
+                            newBz.Type = newBz.Item.Type;
 
-                        List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(newBz);
+                            List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(newBz);
+                        }
+                        Session.SendPacket($"rc_scalc 1 {bz.Price} {bz.Amount - Item.Amount} {bz.Amount} {taxes} {price + taxes}");
+
+                        if (DAOFactory.BazaarItemDAO.LoadById(bz.BazaarItemId) != null)
+                        {
+                            DAOFactory.BazaarItemDAO.Delete(bz.BazaarItemId);
+                        }
+
+                        DAOFactory.IteminstanceDAO.Delete(Item.Id);
+
+                        ServerManager.Instance.BazaarRefresh(bz.BazaarItemId);
                     }
-                    Session.SendPacket($"rc_scalc 1 {bz.Price} {bz.Amount - Item.Amount} {bz.Amount} {taxes} {price + taxes}");
-
-                    if (DAOFactory.BazaarItemDAO.LoadById(bz.BazaarItemId) != null)
+                    else
                     {
-                        DAOFactory.BazaarItemDAO.Delete(bz.BazaarItemId);
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                        Session.SendPacket($"rc_scalc 1 {bz.Price} 0 {bz.Amount} 0 0");
                     }
-
-                    DAOFactory.IteminstanceDAO.Delete(Item.Id);
-
-                    ServerManager.Instance.BazaarRefresh(bz.BazaarItemId);
                 }
                 else
                 {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE")));
                     Session.SendPacket($"rc_scalc 1 {bz.Price} 0 {bz.Amount} 0 0");
                 }
             }
