@@ -2073,7 +2073,7 @@ namespace OpenNos.Import.Console
                         if (skill.Class > 31)
                         {
                             SkillDTO firstskill = skills.FirstOrDefault(s => s.Class == skill.Class);
-                            if (firstskill == null || skill.SkillVNum <= firstskill.ItemVNum + 10)
+                            if (firstskill == null || skill.SkillVNum <= firstskill.SkillVNum + 10)
                             {
                                 switch (skill.Class)
                                 {
