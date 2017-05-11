@@ -14,9 +14,6 @@ namespace OpenNos.GameObject
         [PacketIndex(0)]
         public byte Level { get; set; }
 
-        [PacketIndex(1)]
-        public string Name { get; set; }
-
         #endregion
     }
 }

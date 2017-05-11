@@ -13,8 +13,6 @@ namespace OpenNos.GameObject
         [PacketIndex(0)]
         public byte HeroLevel { get; set; }
 
-        [PacketIndex(1)]
-        public string Name { get; set; }
         #endregion
     }
 }

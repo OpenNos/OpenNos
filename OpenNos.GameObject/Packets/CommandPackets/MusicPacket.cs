@@ -11,7 +11,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         [PacketIndex(0)]
-        public short Music { get; set; }
+        public int Music { get; set; }
 
         #endregion
     }

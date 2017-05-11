@@ -390,12 +390,7 @@ namespace OpenNos.Handler
             Logger.Debug("Change Class Command", Session.Character.GenerateIdentity());
             if (changeClassPacket != null)
             {
-                var player = Session;
-                if (ServerManager.Instance.GetSessionByCharacterName(changeClassPacket.Name) != null)
-                {
-                    player = ServerManager.Instance.GetSessionByCharacterName(changeClassPacket.Name);
-                }
-                player.Character.ChangeClass(changeClassPacket.ClassType);
+                Session.Character.ChangeClass(changeClassPacket.ClassType);
             }
             else
             {
@@ -482,21 +477,16 @@ namespace OpenNos.Handler
             {
                 if (changeHeroLevelPacket.HeroLevel <= 255)
                 {
-                    var player = Session;
-                    if (ServerManager.Instance.GetSessionByCharacterName(changeHeroLevelPacket.Name) != null)
-                    {
-                        player = ServerManager.Instance.GetSessionByCharacterName(changeHeroLevelPacket.Name);
-                    }
-                    player.Character.HeroLevel = changeHeroLevelPacket.HeroLevel;
-                    player.Character.HeroXp = 0;
+                    Session.Character.HeroLevel = changeHeroLevelPacket.HeroLevel;
+                    Session.Character.HeroXp = 0;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
-                    player.SendPacket(player.Character.GenerateLev());
-                    player.SendPacket(player.Character.GenerateStatInfo());
-                    player.SendPacket(player.Character.GenerateStatChar());
-                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX, Session.Character.PositionY);
-                    player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.SendPacket(Session.Character.GenerateLev());
+                    Session.SendPacket(Session.Character.GenerateStatInfo());
+                    Session.SendPacket(Session.Character.GenerateStatChar());
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), Session.Character.PositionX, Session.Character.PositionY);
                 }
                 else
                 {
@@ -518,30 +508,36 @@ namespace OpenNos.Handler
             Logger.Debug("Change JobLevel Command", Session.Character.GenerateIdentity());
             if (changeJobLevelPacket != null)
             {
-                var player = Session;
-                if (ServerManager.Instance.GetSessionByCharacterName(changeJobLevelPacket.Name) != null)
+                if ((Session.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20 || Session.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 255) && changeJobLevelPacket.JobLevel > 0)
                 {
-                    player = ServerManager.Instance.GetSessionByCharacterName(changeJobLevelPacket.Name);
-                }
-                if ((player.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20 || player.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 255) && changeJobLevelPacket.JobLevel > 0)
-                {
-                    player.Character.JobLevel = changeJobLevelPacket.JobLevel;
-                    player.Character.JobLevelXp = 0;
-                    player.Character.Skills.ClearAll();
-                    player.SendPacket(Session.Character.GenerateLev());
-                    player.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
-                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(8), player.Character.PositionX, player.Character.PositionY);
-
-                    player.Character.Skills[(short)(200 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
-                    player.Character.Skills[(short)(201 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
-                    player.Character.Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = player.Character.CharacterId };
-                    if (!player.Character.UseSp)
+                    Session.Character.JobLevel = changeJobLevelPacket.JobLevel;
+                    Session.Character.JobLevelXp = 0;
+                    Session.Character.Skills.ClearAll();
+                    Session.SendPacket(Session.Character.GenerateLev());
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.Character.Skills[(short)(200 + 20 * (byte)Session.Character.Class)] = new CharacterSkill
                     {
-                        player.SendPacket(player.Character.GenerateSki());
+                        SkillVNum = (short)(200 + 20 * (byte)Session.Character.Class),
+                        CharacterId = Session.Character.CharacterId
+                    };
+                    Session.Character.Skills[(short)(201 + 20 * (byte)Session.Character.Class)] = new CharacterSkill
+                    {
+                        SkillVNum = (short)(201 + 20 * (byte)Session.Character.Class),
+                        CharacterId = Session.Character.CharacterId
+                    };
+                    Session.Character.Skills[236] = new CharacterSkill
+                    {
+                        SkillVNum = 236,
+                        CharacterId = Session.Character.CharacterId
+                    };
+                    if (!Session.Character.UseSp)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSki());
                     }
-                    player.Character.LearnAdventurerSkill();
+                    Session.Character.LearnAdventurerSkill();
                 }
                 else
                 {
@@ -565,31 +561,26 @@ namespace OpenNos.Handler
             {
                 if (changeLevelPacket.Level > 0)
                 {
-                    var player = Session;
-                    if (ServerManager.Instance.GetSessionByCharacterName(changeLevelPacket.Name) != null)
-                    {
-                        player = ServerManager.Instance.GetSessionByCharacterName(changeLevelPacket.Name);
-                    }
-                    player.Character.Level = changeLevelPacket.Level;
-                    player.Character.LevelXp = 0;
-                    player.Character.Hp = (int)player.Character.HPLoad();
-                    player.Character.Mp = (int)player.Character.MPLoad();
-                    player.SendPacket(player.Character.GenerateStat());
-                    player.SendPacket(player.Character.GenerateStatInfo());
-                    player.SendPacket(player.Character.GenerateStatChar());
+                    Session.Character.Level = changeLevelPacket.Level;
+                    Session.Character.LevelXp = 0;
+                    Session.Character.Hp = (int)Session.Character.HPLoad();
+                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                    Session.SendPacket(Session.Character.GenerateStat());
+                    Session.SendPacket(Session.Character.GenerateStatInfo());
+                    Session.SendPacket(Session.Character.GenerateStatChar());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
-                    player.SendPacket(player.Character.GenerateLev());
-                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(6), player.Character.PositionX, player.Character.PositionY);
-                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(198), player.Character.PositionX, player.Character.PositionY);
-                    ServerManager.Instance.UpdateGroup(player.Character.CharacterId);
-                    if (player.Character.Family != null)
+                    Session.SendPacket(Session.Character.GenerateLev());
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), Session.Character.PositionX, Session.Character.PositionY);
+                    ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
+                    if (Session.Character.Family != null)
                     {
-                        ServerManager.Instance.FamilyRefresh(player.Character.Family.FamilyId);
+                        ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                         CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
                         {
-                            DestinationCharacterId = player.Character.Family.FamilyId,
+                            DestinationCharacterId = Session.Character.Family.FamilyId,
                             SourceCharacterId = Session.Character.CharacterId,
                             SourceWorldId = ServerManager.Instance.WorldId,
                             Message = "fhis_stc",
@@ -619,16 +610,11 @@ namespace OpenNos.Handler
             {
                 if (changeReputationPacket.Reputation > 0)
                 {
-                    var player = Session;
-                    if (ServerManager.Instance.GetSessionByCharacterName(changeReputationPacket.Name) != null)
-                    {
-                        player = ServerManager.Instance.GetSessionByCharacterName(changeReputationPacket.Name);
-                    }
-                    player.Character.Reput = changeReputationPacket.Reputation;
-                    player.SendPacket(Session.Character.GenerateFd());
+                    Session.Character.Reput = changeReputationPacket.Reputation;
+                    Session.SendPacket(Session.Character.GenerateFd());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"), 0));
-                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                 }
                 else
                 {
@@ -650,46 +636,29 @@ namespace OpenNos.Handler
             Logger.Debug("Change SpecialistLevel Command", Session.Character.GenerateIdentity());
             if (changeSpecialistLevelPacket != null)
             {
-                var player = Session;
-                if (ServerManager.Instance.GetSessionByCharacterName(changeSpecialistLevelPacket.Name) != null)
-                {
-                    player = ServerManager.Instance.GetSessionByCharacterName(changeSpecialistLevelPacket.Name);
-                }
-                SpecialistInstance sp =
-                    player.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,
-                        InventoryType.Wear);
-
+                SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (sp != null && Session.Character.UseSp)
                 {
-                    if (changeSpecialistLevelPacket.SpecialistLevel <= 255 &&
-                        changeSpecialistLevelPacket.SpecialistLevel > 0)
+                    if (changeSpecialistLevelPacket.SpecialistLevel <= 255 && changeSpecialistLevelPacket.SpecialistLevel > 0)
                     {
                         sp.SpLevel = changeSpecialistLevelPacket.SpecialistLevel;
                         sp.XP = 0;
-                        player.SendPacket(Session.Character.GenerateLev());
-                        Session.SendPacket(
-                            UserInterfaceHelper.Instance.GenerateMsg(
-                                Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
-                        player.SendPacket(Session.Character.GenerateSki());
-                        player.Character.LearnSPSkill();
-                        player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
-                            ReceiverType.AllExceptMe);
-                        player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
-                            ReceiverType.AllExceptMe);
-                        player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8),
-                            Session.Character.PositionX, Session.Character.PositionY);
+                        Session.SendPacket(Session.Character.GenerateLev());
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
+                        Session.SendPacket(Session.Character.GenerateSki());
+                        Session.Character.LearnSPSkill();
+                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), Session.Character.PositionX, Session.Character.PositionY);
                     }
                     else
                     {
-                        Session.SendPacket(
-                            UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"),
-                                0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
                     }
                 }
                 else
                 {
-                    Session.SendPacket(
-                        UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                 }
             }
             else
@@ -736,39 +705,6 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$CharEdit PROPERTY DATA", 10));
-            }
-        }
-
-        [Obsolete("its a WIP useless command used to display properties")]
-        [Packet("$LstProp")]
-        public void LstProp(string packet)
-        {
-            if (Session.Account.Authority >= AuthorityType.GameMaster)
-            {
-                string[] packetsplit = packet.Split(' ');
-                if (packetsplit.Length > 2)
-                {
-                    if (packetsplit[2] == "Character")
-                    {
-                        PropertyInfo[] properties = Session.Character.GetType().GetProperties();
-                        int i = 0;
-                        foreach (PropertyInfo propertyInfo in properties)
-                        {
-                            Session.SendPacket(Session.Character.GenerateSay($"NR.{i} | name: {propertyInfo.Name}, type: {propertyInfo.PropertyType}, value: {propertyInfo.GetValue(Session.Character)}", 11));
-                            i++;
-                        }
-                    }
-                    if (packetsplit[2] == "Account")
-                    {
-                        PropertyInfo[] properties = Session.Account.GetType().GetProperties();
-                        int i = 0;
-                        foreach (PropertyInfo propertyInfo in properties)
-                        {
-                            Session.SendPacket(Session.Character.GenerateSay($"NR.{i} | name: {propertyInfo.Name}, type: {propertyInfo.PropertyType}, value: {propertyInfo.GetValue(Session.Character)}", 11));
-                            i++;
-                        }
-                    }
-                }
             }
         }
 
@@ -937,118 +873,91 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
         }
 
-        // TODO: Convert that to PacketDefinition
-        [Packet("$CreateItem")]
-        public void CreateItem(string packet)
+        /// <summary>
+        /// $CreateItem Packet
+        /// </summary>
+        /// <param name="createItemPacket"></param>
+        public void CreateItem(CreateItemPacket createItemPacket)
         {
-            if (Session.Account.Authority >= AuthorityType.GameMaster)
+            if (createItemPacket != null)
             {
-                Logger.Debug(packet, Session.Character.GenerateIdentity());
-                string[] packetsplit = packet.Split(' ');
-                byte amount = 1, upgrade = 0, design = 0;
+                Logger.Debug(createItemPacket.ToString(), Session.Character.GenerateIdentity());
+                short vnum = createItemPacket.VNum;
                 sbyte rare = 0;
-                short vnum;
-                if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
+                byte upgrade = 0, amount = 1, design = 0;
+                if (vnum == 1046)
                 {
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 10));
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 10));
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 10));
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 10));
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 10));
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 10));
+                    return; // cannot create gold as item, use $Gold instead
                 }
-                else if (short.TryParse(packetsplit[2], out vnum))
+                Item iteminfo = ServerManager.Instance.GetItem(vnum);
+                if (iteminfo != null)
                 {
-                    if (vnum == 1046)
+                    if (iteminfo.IsColored || iteminfo.VNum == 302)
                     {
-                        return; // cannot create gold as item, use $Gold instead
+                        if (createItemPacket.Design.HasValue)
+                        {
+                            design = createItemPacket.Design.Value;
+                        }
                     }
-
-                    Item iteminfo = ServerManager.Instance.GetItem(vnum);
-                    if (iteminfo != null)
+                    else if (iteminfo.Type == 0)
                     {
-                        if (iteminfo.IsColored || iteminfo.VNum == 302)
+                        if (createItemPacket.Upgrade.HasValue)
                         {
-                            if (packetsplit.Length > 3)
+                            upgrade = createItemPacket.Upgrade.Value;
+                            if (iteminfo.EquipmentSlot != EquipmentType.Sp && upgrade == 0 && iteminfo.BasicUpgrade != 0)
                             {
-                                byte.TryParse(packetsplit[3], out design);
+                                upgrade = iteminfo.BasicUpgrade;
                             }
                         }
-                        else if (iteminfo.Type == 0)
+                        if (createItemPacket.Design.HasValue)
                         {
-                            switch (packetsplit.Length)
+                            if (iteminfo.EquipmentSlot == EquipmentType.Sp)
                             {
-                                case 4:
-                                    sbyte.TryParse(packetsplit[3], out rare);
-                                    break;
-
-                                case 5:
-                                    if (iteminfo.EquipmentSlot == EquipmentType.Sp)
-                                    {
-                                        byte.TryParse(packetsplit[3], out upgrade);
-                                        upgrade = upgrade > 15 ? (byte)15 : upgrade;
-                                        byte.TryParse(packetsplit[4], out design);
-                                    }
-                                    else
-                                    {
-                                        sbyte.TryParse(packetsplit[3], out rare);
-                                        byte.TryParse(packetsplit[4], out upgrade);
-                                        upgrade = upgrade > 10 ? (byte)10 : upgrade;
-                                        if (upgrade == 0)
-                                        {
-                                            if (iteminfo.BasicUpgrade != 0)
-                                            {
-                                                upgrade = iteminfo.BasicUpgrade;
-                                            }
-                                        }
-                                    }
-                                    break;
+                                design = createItemPacket.Design.Value;
+                            }
+                            else
+                            {
+                                rare = (sbyte)createItemPacket.Design.Value;
                             }
                         }
-                        else
-                        {
-                            if (packetsplit.Length > 3 && !byte.TryParse(packetsplit[3], out amount))
-                            {
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-                                return;
-                            }
-                        }
+                    }
+                    if (createItemPacket.Design.HasValue && !createItemPacket.Upgrade.HasValue)
+                    {
                         amount = amount > 99 ? (byte)99 : amount;
-                        List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, Rare: rare, Upgrade: upgrade, Design: design);
-                        if (inv.Any())
+                    }
+                    List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, Rare: rare, Upgrade: upgrade, Design: design);
+                    if (inv.Any())
+                    {
+                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.First().Slot, inv.First().Type);
+                        if (wearable != null)
                         {
-                            WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.First().Slot, inv.First().Type);
-
-                            if (wearable != null)
+                            switch (wearable.Item.EquipmentSlot)
                             {
-                                switch (wearable.Item.EquipmentSlot)
-                                {
-                                    case EquipmentType.Armor:
-                                    case EquipmentType.MainWeapon:
-                                    case EquipmentType.SecondaryWeapon:
-                                        wearable.SetRarityPoint();
-                                        break;
+                                case EquipmentType.Armor:
+                                case EquipmentType.MainWeapon:
+                                case EquipmentType.SecondaryWeapon:
+                                    wearable.SetRarityPoint();
+                                    break;
 
-                                    case EquipmentType.Boots:
-                                    case EquipmentType.Gloves:
-                                        wearable.FireResistance = (short)(wearable.Item.FireResistance * upgrade);
-                                        wearable.DarkResistance = (short)(wearable.Item.DarkResistance * upgrade);
-                                        wearable.LightResistance = (short)(wearable.Item.LightResistance * upgrade);
-                                        wearable.WaterResistance = (short)(wearable.Item.WaterResistance * upgrade);
-                                        break;
-                                }
+                                case EquipmentType.Boots:
+                                case EquipmentType.Gloves:
+                                    wearable.FireResistance = (short)(wearable.Item.FireResistance * upgrade);
+                                    wearable.DarkResistance = (short)(wearable.Item.DarkResistance * upgrade);
+                                    wearable.LightResistance = (short)(wearable.Item.LightResistance * upgrade);
+                                    wearable.WaterResistance = (short)(wearable.Item.WaterResistance * upgrade);
+                                    break;
                             }
-                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
                         }
-                        else
-                        {
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
-                        }
+                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
                     }
                     else
                     {
-                        UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_ITEM"), 0);
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                     }
+                }
+                else
+                {
+                    UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_ITEM"), 0);
                 }
             }
         }
@@ -1062,25 +971,21 @@ namespace OpenNos.Handler
             Logger.Debug("PortalTo Command", Session.Character.GenerateIdentity());
             if (portalToPacket != null)
             {
-                if (!Session.HasCurrentMapInstance)
+                if (Session.HasCurrentMapInstance)
                 {
-                    return;
+                    Portal portal = new Portal
+                    {
+                        SourceMapId = Session.Character.MapId,
+                        SourceX = Session.Character.PositionX,
+                        SourceY = Session.Character.PositionY,
+                        DestinationMapId = portalToPacket.DestinationMapId,
+                        DestinationX = portalToPacket.DestinationX,
+                        DestinationY = portalToPacket.DestinationY,
+                        Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
+                    };
+                    Session.CurrentMapInstance.Portals.Add(portal);
+                    Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
                 }
-                short mapId = Session.Character.MapId;
-                short mapX = Session.Character.PositionX;
-                short mapY = Session.Character.PositionY;
-                Portal portal = new Portal
-                {
-                    SourceMapId = mapId,
-                    SourceX = mapX,
-                    SourceY = mapY,
-                    DestinationMapId = portalToPacket.DestinationMapId,
-                    DestinationX = portalToPacket.DestinationX,
-                    DestinationY = portalToPacket.DestinationY,
-                    Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
-                };
-                Session.CurrentMapInstance.Portals.Add(portal);
-                Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
             }
             else
             {
@@ -1412,7 +1317,6 @@ namespace OpenNos.Handler
             Session.Character.Invisible = !Session.Character.Invisible;
             Session.Character.InvisibleGm = !Session.Character.InvisibleGm;
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateInvisible());
-
             Session.SendPacket(Session.Character.GenerateEq());
             if (Session.Character.InvisibleGm)
             {
@@ -1437,9 +1341,9 @@ namespace OpenNos.Handler
             {
                 if (kickPacket.CharacterName == "*")
                 {
-                    foreach (ClientSession cs in ServerManager.Instance.Sessions)
+                    foreach (ClientSession session in ServerManager.Instance.Sessions)
                     {
-                        cs.Disconnect();
+                        session.Disconnect();
                     }
                 }
                 ServerManager.Instance.Kick(kickPacket.CharacterName);
@@ -1482,7 +1386,6 @@ namespace OpenNos.Handler
             if (killPacket != null)
             {
                 string name = killPacket.CharacterName;
-
                 long? id = ServerManager.Instance.GetProperty<long?>(name, nameof(Character.CharacterId));
 
                 if (id != null)
@@ -1600,11 +1503,10 @@ namespace OpenNos.Handler
             Logger.Debug("Music Command", Session.Character.GenerateIdentity());
             if (musicPacket != null)
             {
-                if (musicPacket.Music > -1)
+                if (musicPacket.Music >= 0)
                 {
                     Session.CurrentMapInstance?.Broadcast($"bgm {musicPacket.Music}");
                 }
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
             else
             {
@@ -1733,7 +1635,7 @@ namespace OpenNos.Handler
             Logger.Debug("Rarify Command", Session.Character.GenerateIdentity());
             if (rarifyPacket != null)
             {
-                if (rarifyPacket.Slot > -1)
+                if (rarifyPacket.Slot >= 0)
                 {
                     WearableInstance wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(rarifyPacket.Slot, 0);
                     wearableInstance?.RarifyItem(Session, rarifyPacket.Mode, rarifyPacket.Protection);
@@ -1788,12 +1690,12 @@ namespace OpenNos.Handler
             Logger.Debug("RemovePortal Command", Session.Character.GenerateIdentity());
             if (Session.HasCurrentMapInstance)
             {
-                Portal pt = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapInstanceId == Session.Character.MapInstanceId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
-                if (pt != null)
+                Portal portal = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapInstanceId == Session.Character.MapInstanceId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
+                if (portal != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
-                    Session.CurrentMapInstance.Portals.Remove(pt);
-                    Session.CurrentMapInstance?.Broadcast(pt.GenerateGp());
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), portal.SourceMapId, portal.SourceX, portal.SourceY), 12));
+                    Session.CurrentMapInstance.Portals.Remove(portal);
+                    Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
                 }
                 else
                 {
@@ -1811,7 +1713,7 @@ namespace OpenNos.Handler
             Logger.Debug("Resize Packet", Session.Character.GenerateIdentity());
             if (resizePacket != null)
             {
-                if (resizePacket.Value > -1)
+                if (resizePacket.Value >= 0)
                 {
                     Session.Character.Size = resizePacket.Value;
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateScal());
@@ -1860,7 +1762,7 @@ namespace OpenNos.Handler
             Logger.Debug("SearchMonster Command", Session.Character.GenerateIdentity());
             if (searchMonsterPacket != null)
             {
-                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(searchMonsterPacket.Name).OrderBy(s => s.NpcMonsterVNum).ToList();
+                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(searchMonsterPacket.Name).OrderBy(s => s.NpcMonsterVNum).Take(200).ToList();
                 if (monsterlist.Any())
                 {
                     foreach (NpcMonsterDTO npcMonster in monsterlist)
@@ -2037,18 +1939,13 @@ namespace OpenNos.Handler
             {
                 if (Session.IsOnMap && Session.HasCurrentMapInstance)
                 {
-                    Random random = new Random();
-
-                    short vnum = summonPacket.NpcMonsterVNum;
-                    byte amount = summonPacket.Amount;
-                    bool isMoving = summonPacket.IsMoving;
-
-                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(vnum);
+                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(summonPacket.NpcMonsterVNum);
                     if (npcmonster == null)
                     {
                         return;
                     }
-                    for (int i = 0; i < amount; i++)
+                    Random random = new Random();
+                    for (int i = 0; i < summonPacket.Amount; i++)
                     {
                         List<MapCell> possibilities = new List<MapCell>();
                         for (short x = -4; x < 5; x++)
@@ -2070,7 +1967,17 @@ namespace OpenNos.Handler
 
                         if (Session.HasCurrentMapInstance)
                         {
-                            MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstance.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId(), ShouldRespawn = false };
+                            MapMonster monster = new MapMonster
+                            {
+                                MonsterVNum = summonPacket.NpcMonsterVNum,
+                                MapY = Session.Character.PositionY,
+                                MapX = Session.Character.PositionX,
+                                MapId = Session.Character.MapInstance.Map.MapId,
+                                Position = (byte)Session.Character.Direction,
+                                IsMoving = summonPacket.IsMoving,
+                                MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId(),
+                                ShouldRespawn = false
+                            };
                             monster.Initialize(Session.CurrentMapInstance);
                             Session.CurrentMapInstance.AddMonster(monster);
                             Session.CurrentMapInstance.Broadcast(monster.GenerateIn());
@@ -2090,23 +1997,19 @@ namespace OpenNos.Handler
         /// <param name="summonPacket"></param>
         public void SummonNPC(SummonNPCPacket summonPacket)
         {
+            // TODO: Fix it, doesn't work!
             Logger.Debug("SummonNPC Command", Session.GenerateIdentity());
             if (summonPacket != null)
             {
                 if (Session.IsOnMap && Session.HasCurrentMapInstance)
                 {
-                    Random random = new Random();
-
-                    short vnum = summonPacket.NpcMonsterVNum;
-                    byte amount = summonPacket.Amount;
-                    bool isMoving = summonPacket.IsMoving;
-
-                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(vnum);
+                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(summonPacket.NpcMonsterVNum);
                     if (npcmonster == null)
                     {
                         return;
                     }
-                    for (int i = 0; i < amount; i++)
+                    Random random = new Random();
+                    for (int i = 0; i < summonPacket.Amount; i++)
                     {
                         List<MapCell> possibilities = new List<MapCell>();
                         for (short x = -4; x < 5; x++)
@@ -2125,10 +2028,18 @@ namespace OpenNos.Handler
                                 break;
                             }
                         }
-
                         if (Session.HasCurrentMapInstance)
                         {
-                            MapNpc monster = new MapNpc { NpcVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstance.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapNpcId = Session.CurrentMapInstance.GetNextMonsterId() };
+                            MapNpc monster = new MapNpc
+                            {
+                                NpcVNum = summonPacket.NpcMonsterVNum,
+                                MapY = Session.Character.PositionY,
+                                MapX = Session.Character.PositionX,
+                                MapId = Session.Character.MapInstance.Map.MapId,
+                                Position = (byte)Session.Character.Direction,
+                                IsMoving = summonPacket.IsMoving,
+                                MapNpcId = Session.CurrentMapInstance.GetNextMonsterId()
+                            };
                             monster.Initialize(Session.CurrentMapInstance);
                             Session.CurrentMapInstance.AddNPC(monster);
                             Session.CurrentMapInstance.Broadcast(monster.GenerateIn());
@@ -2203,9 +2114,7 @@ namespace OpenNos.Handler
             Random random = new Random();
             if (teleportToMePacket != null)
             {
-                string name = teleportToMePacket.CharacterName;
-
-                if (name == "*")
+                if (teleportToMePacket.CharacterName == "*")
                 {
                     foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId))
                     {
@@ -2247,7 +2156,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(name);
+                    ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(teleportToMePacket.CharacterName);
 
                     if (targetSession != null && !targetSession.Character.IsChangingMapInstance)
                     {
@@ -2366,7 +2275,7 @@ namespace OpenNos.Handler
             Logger.Debug("Upgrade Command", Session.Character.GenerateIdentity());
             if (upgradePacket != null)
             {
-                if (upgradePacket.Slot > -1)
+                if (upgradePacket.Slot >= 0)
                 {
                     WearableInstance wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(upgradePacket.Slot, 0);
                     wearableInstance?.UpgradeItem(Session, upgradePacket.Mode, upgradePacket.Protection, true);
@@ -2384,87 +2293,88 @@ namespace OpenNos.Handler
         /// <param name="inventoryPreviewPacket"></param>
         public void ViewInventory(InventoryPreviewPacket inventoryPreviewPacket)
         {
-            var player = Session;
+            //TODO: Fix it! Doesn't work. Copycat of GenerateStartupInventory()
+            Logger.Debug("Inventory Command", Session.Character.GenerateIdentity());
             if (inventoryPreviewPacket != null)
             {
+                ClientSession session = Session;
                 if (ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name) != null)
                 {
-                    player = ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name);
+                    session = ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name);
                 }
-            }
-            string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7";
-
-            // inv 3 used for miniland objects
-            if (player.Character.Inventory == null) return;
-            var listItems = player.Character.Inventory.GetAllItems();
-            foreach (ItemInstance inv in listItems)
-            {
-                switch (inv.Type)
+                string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7";
+                // inv 3 used for miniland objects
+                if (session.Character.Inventory == null) return;
+                var listItems = session.Character.Inventory.GetAllItems();
+                foreach (ItemInstance inv in listItems)
                 {
-                    case InventoryType.Equipment:
-                        if (inv.Item.EquipmentSlot == EquipmentType.Sp)
-                        {
-                            SpecialistInstance specialistInstance = inv as SpecialistInstance;
-                            if (specialistInstance != null)
+                    switch (inv.Type)
+                    {
+                        case InventoryType.Equipment:
+                            if (inv.Item.EquipmentSlot == EquipmentType.Sp)
                             {
-                                inv0 += $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
+                                SpecialistInstance specialistInstance = inv as SpecialistInstance;
+                                if (specialistInstance != null)
+                                {
+                                    inv0 += $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
+                                }
                             }
-                        }
-                        else
-                        {
-                            WearableInstance wearableInstance = inv as WearableInstance;
-                            if (wearableInstance != null)
+                            else
                             {
-                                inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
+                                WearableInstance wearableInstance = inv as WearableInstance;
+                                if (wearableInstance != null)
+                                {
+                                    inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
+                                }
                             }
-                        }
-                        break;
+                            break;
 
-                    case InventoryType.Main:
-                        inv1 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                        break;
+                        case InventoryType.Main:
+                            inv1 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
+                            break;
 
-                    case InventoryType.Etc:
-                        inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                        break;
+                        case InventoryType.Etc:
+                            inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
+                            break;
 
-                    case InventoryType.Miniland:
-                        inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
-                        break;
+                        case InventoryType.Miniland:
+                            inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
+                            break;
 
-                    case InventoryType.Specialist:
-                        SpecialistInstance specialist = inv as SpecialistInstance;
-                        if (specialist != null)
-                        {
-                            inv6 +=
-                                $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
-                        }
-                        break;
+                        case InventoryType.Specialist:
+                            SpecialistInstance specialist = inv as SpecialistInstance;
+                            if (specialist != null)
+                            {
+                                inv6 +=
+                                    $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
+                            }
+                            break;
 
-                    case InventoryType.Costume:
-                        WearableInstance costumeInstance = inv as WearableInstance;
-                        if (costumeInstance != null)
-                        {
-                            inv7 +=
-                                $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
-                        }
-                        break;
+                        case InventoryType.Costume:
+                            WearableInstance costumeInstance = inv as WearableInstance;
+                            if (costumeInstance != null)
+                            {
+                                inv7 +=
+                                    $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
+                            }
+                            break;
 
-                    case InventoryType.Wear:
-                        break;
+                        case InventoryType.Wear:
+                            break;
 
-                    case InventoryType.Bazaar:
-                        break;
+                        case InventoryType.Bazaar:
+                            break;
 
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
+                Session.SendPacket(inv0);
+                Session.SendPacket(inv1);
+                Session.SendPacket(inv2);
+                Session.SendPacket(inv6);
+                Session.SendPacket(inv7);
             }
-            Session.SendPacket(inv0);
-            Session.SendPacket(inv1);
-            Session.SendPacket(inv2);
-            Session.SendPacket(inv6);
-            Session.SendPacket(inv7);
         }
 
         /// <summary>
