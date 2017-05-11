@@ -488,10 +488,10 @@ namespace OpenNos.Core
             return string.Empty;
         }
 
-        private static PacketDefinition SetDeserializationInformations(PacketDefinition packetDefinition, string packetContent, string header)
+        private static PacketDefinition SetDeserializationInformations(PacketDefinition packetDefinition, string packetContent, string packetHeader)
         {
             packetDefinition.OriginalContent = packetContent;
-            packetDefinition.OriginalHeader = header;
+            packetDefinition.OriginalHeader = packetHeader;
             return packetDefinition;
         }
 
