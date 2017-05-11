@@ -492,8 +492,6 @@ namespace OpenNos.Core
         {
             packetDefinition.OriginalContent = packetContent;
             packetDefinition.OriginalHeader = header;
-            packetDefinition.IsCallbackPacket = packetContent.Split(' ', '^')[1].ElementAt(0) == '#';
-
             return packetDefinition;
         }
 
