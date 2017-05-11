@@ -492,7 +492,7 @@ namespace OpenNos.Core
         {
             packetDefinition.OriginalContent = packetContent;
             packetDefinition.OriginalHeader = header;
-            packetDefinition.IsCallBackPacket = packetContent.Split(' ', '^')[1].ElementAt(0) == '#';
+            packetDefinition.IsCallbackPacket = packetContent.Split(' ', '^')[1].ElementAt(0) == '#';
 
             return packetDefinition;
         }

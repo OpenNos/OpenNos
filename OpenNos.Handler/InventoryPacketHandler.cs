@@ -1616,7 +1616,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(Session.Character.GenerateIdentity(), useItemPacket.ToString());
             ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(useItemPacket.Slot, useItemPacket.Type);
-            inv?.Item.Use(Session, ref inv, useItemPacket.IsCallBackPacket ? (byte)255 : (byte)0, useItemPacket.OriginalContent.Split(' ','^'));
+            inv?.Item.Use(Session, ref inv, useItemPacket.IsCallbackPacket ? (byte)255 : (byte)0, useItemPacket.OriginalContent.Split(' ','^'));
         }
 
         /// <summary>

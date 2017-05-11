@@ -22,7 +22,7 @@ namespace OpenNos.Core
 
         public string OriginalHeader { get; set; }
 
-        public bool IsCallBackPacket { get; set; }
+        public bool IsCallbackPacket { get; set; }
 
         #endregion
     }
