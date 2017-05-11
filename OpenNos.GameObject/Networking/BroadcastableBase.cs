@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;

@@ -85,9 +85,11 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                Mate mate = new Mate(session.Character, (short)box.HoldingVNum, 1, MateType.Pet);
-                                mate.Attack = box.SpDamage;
-                                mate.Defence = box.SpDefence;
+                                Mate mate = new Mate(session.Character, box.HoldingVNum, 1, MateType.Pet)
+                                {
+                                    Attack = box.SpDamage,
+                                    Defence = box.SpDefence
+                                };
                                 if (session.Character.AddPet(mate))
                                 {
                                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);

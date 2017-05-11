@@ -108,6 +108,7 @@ namespace OpenNos.GameObject
             WaterResistance = item.WaterResistance;
         }
 
+        //TODO: Convert to PacketDefinition
         public abstract void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null);
 
         #endregion

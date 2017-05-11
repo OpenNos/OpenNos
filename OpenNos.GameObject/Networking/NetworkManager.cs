@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
 
             if (fallbackEncryptor != null)
             {
-                _fallbackEncryptor = (EncryptionBase)Activator.CreateInstance(fallbackEncryptor);
+                _fallbackEncryptor = (EncryptionBase)Activator.CreateInstance(fallbackEncryptor); // reflection, TODO: optimize.
             }
 
             _server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));

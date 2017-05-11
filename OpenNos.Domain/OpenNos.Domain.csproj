@@ -94,6 +94,7 @@
     <Compile Include="MonsterType.cs" />
     <Compile Include="PenaltyType.cs" />
     <Compile Include="PortalType.cs" />
+    <Compile Include="ReceiverType.cs" />
     <Compile Include="RequestExchangeType.cs" />
     <Compile Include="StaticBonusType.cs" />
     <Compile Include="TargetHitType.cs" />

@@ -1412,7 +1412,7 @@
     <value>No family warehouse found.</value>
   </data>
   <data name="YOU_GET_PET" xml:space="preserve">
-    <value>You get a pet.</value>
+    <value>You get a pet called {0}.</value>
   </data>
   <data name="API_INITIALIZED" xml:space="preserve">
     <value>Master Server communication has been initialized.</value>

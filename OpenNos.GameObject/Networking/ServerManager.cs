@@ -39,6 +39,7 @@ namespace OpenNos.GameObject
         public bool ShutdownStop;
 
         private static readonly List<Item> _items = new List<Item>();
+
         private static readonly ConcurrentDictionary<Guid, MapInstance> _mapinstances = new ConcurrentDictionary<Guid, MapInstance>();
 
         private static readonly List<Map> _maps = new List<Map>();
@@ -89,7 +90,6 @@ namespace OpenNos.GameObject
 
         private ServerManager()
         {
-            // do nothing
         }
 
         #endregion
@@ -408,10 +408,14 @@ namespace OpenNos.GameObject
                         s.PositionY = (short)(session.Character.PositionY + 1);
                     });
 
-                    session.SendPacket(session.Character.GeneratePinit()); // clear party list
+                    session.SendPacket(session.Character.GeneratePinit());
                     session.Character.SendPst();
                     session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
                     session.SendPacket(session.Character.GenerateScpStc());
+                    foreach (Mate mate in session.Character.Mates)
+                    {
+                        session.CurrentMapInstance.Broadcast(mate.GenerateIn());
+                    }
 
                     session.CurrentMapInstance.Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm).ToList().ForEach(s =>
                     {
@@ -463,7 +467,9 @@ namespace OpenNos.GameObject
                             {
                                 ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMapInstance == groupSession.CurrentMapInstance);
                                 if (chara == null)
+                                {
                                     continue;
+                                }
                                 groupSession.SendPacket(groupSession.Character.GeneratePinit());
                                 groupSession.Character.SendPst();
                             }

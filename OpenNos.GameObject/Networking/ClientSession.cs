@@ -228,8 +228,7 @@ namespace OpenNos.GameObject
             IsAuthenticated = true;
         }
 
-        // [Obsolete("Primitive string operations will be removed in future, use PacketDefinition
-        // SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
+        //[Obsolete("Primitive string operations will be removed in future, use PacketDefinition SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
         public void SendPacket(string packet, byte priority = 10)
         {
             if (!IsDisposing)
@@ -272,8 +271,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        // [Obsolete("Primitive string operations will be removed in future, use PacketDefinition
-        // SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
+        //[Obsolete("Primitive string operations will be removed in future, use PacketDefinition SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
         public void SendPackets(IEnumerable<string> packets, byte priority = 10)
         {
             if (!IsDisposing)
@@ -316,7 +314,7 @@ namespace OpenNos.GameObject
 
         private void GenerateHandlerReferences(Type type, bool isWorldServer)
         {
-            IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) // shitty but it works
+            IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) // shitty but it works, reflection?
                                                             : type.Assembly.GetTypes().Where(p =>
                                                             {
                                                                 Type interfaceType = type.GetInterfaces().FirstOrDefault();

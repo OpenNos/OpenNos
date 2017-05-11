@@ -40,6 +40,7 @@ namespace OpenNos.GameObject
         private byte _cmapcount;
         private Random _random;
         private byte _speed;
+
         #endregion
 
         #region Instantiation
@@ -61,6 +62,8 @@ namespace OpenNos.GameObject
 
         public AuthorityType Authority { get; set; }
 
+        public Node[,] BrushFire { get; set; }
+
         public BuffContainer Buff { get; internal set; }
 
         public bool CanFight => !IsSitting && ExchangeInfo == null;
@@ -72,7 +75,6 @@ namespace OpenNos.GameObject
                 return ServerManager.Instance.CharacterRelations == null ? new List<CharacterRelationDTO>() : ServerManager.Instance.CharacterRelations.Where(s => s.CharacterId == CharacterId || s.RelatedCharacterId == CharacterId).ToList();
             }
         }
-        public Node[,] BrushFire { get; set; }
 
         public short CurrentMinigame { get; set; }
 
@@ -399,7 +401,7 @@ namespace OpenNos.GameObject
             {
                 Mates.Add(mate);
                 MapInstance.Broadcast(mate.GenerateIn());
-                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 12));
                 Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                 Session.SendPackets(Session.Character.GenerateScP());
                 Session.SendPackets(Session.Character.GenerateScN());
@@ -1252,6 +1254,14 @@ namespace OpenNos.GameObject
 
                 case 10:
                     baseDamage += baseDamage * 2;
+                    break;
+
+                // sush don't tell ciapa
+                default:
+                    if (mainUpgrade > 10)
+                    {
+                        baseDamage += baseDamage * (mainUpgrade / 5);
+                    }
                     break;
             }
             if (skill.Type == 1)

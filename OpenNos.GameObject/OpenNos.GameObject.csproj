@@ -394,7 +394,6 @@
     <Compile Include="Networking\ServerManager.cs" />
     <Compile Include="Networking\BroadcastPacket.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
-    <Compile Include="Networking\ReceiverType.cs" />
     <Compile Include="Npc\NpcMonster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\CharacterHelper.cs" />

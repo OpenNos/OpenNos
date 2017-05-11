@@ -473,5 +473,14 @@ namespace OpenNos.Import.Console.Resource {
                 return ResourceManager.GetString("TELEPORTERS_PARSED", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} timespaces parsed.
+        /// </summary>
+        internal static string TIMESPACES_PARSED {
+            get {
+                return ResourceManager.GetString("TIMESPACES_PARSED", resourceCulture);
+            }
+        }
     }
 }

@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -115,7 +116,6 @@ namespace OpenNos.GameObject
 
                 client.Disconnect();
                 Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + client.ClientId);
-
                 // session = null;
             }
         }

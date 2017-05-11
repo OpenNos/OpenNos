@@ -255,4 +255,7 @@
   <data name="PARSE_ITEMCARDS" xml:space="preserve">
     <value>Do you want to parse ItemCards?</value>
   </data>
+  <data name="TIMESPACES_PARSED" xml:space="preserve">
+    <value>{0} timespaces parsed</value>
+  </data>
 </root>

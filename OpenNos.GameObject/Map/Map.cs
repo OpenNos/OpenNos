@@ -164,7 +164,6 @@ namespace OpenNos.GameObject
             }
         }
 
-
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
         {
             short MinX = (short)(-xpoint + firstX);
