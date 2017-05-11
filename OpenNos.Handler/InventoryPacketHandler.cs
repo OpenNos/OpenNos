@@ -1608,18 +1608,15 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("u_i")]
-        public void UseItem(string packet)
+        /// <summary>
+        /// u_i packet
+        /// </summary>
+        /// <param name="useItemPacket"></param>
+        public void UseItem(UseItemPacket useItemPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ', '^');
-            short slot;
-            byte type;
-            if (packetsplit.Length > 5 && short.TryParse(packetsplit[5], out slot) && byte.TryParse(packetsplit[4], out type))
-            {
-                ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot, (InventoryType)type);
-                inv?.Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#' ? (byte)255 : (byte)0, packetsplit);
-            }
+            Logger.Debug(Session.Character.GenerateIdentity(), useItemPacket.ToString());
+            ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(useItemPacket.Slot, useItemPacket.Type);
+            inv?.Item.Use(Session, ref inv, useItemPacket.IsCallBackPacket ? (byte)255 : (byte)0, useItemPacket.OriginalContent.Split(' ','^'));
         }
 
         /// <summary>

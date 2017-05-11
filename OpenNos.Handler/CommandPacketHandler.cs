@@ -923,7 +923,7 @@ namespace OpenNos.Handler
                     }
                     if (createItemPacket.Design.HasValue && !createItemPacket.Upgrade.HasValue)
                     {
-                        amount = amount > 99 ? (byte)99 : amount;
+                        amount = createItemPacket.Design.Value > 99 ? (byte)99 : createItemPacket.Design.Value;
                     }
                     List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, Rare: rare, Upgrade: upgrade, Design: design);
                     if (inv.Any())

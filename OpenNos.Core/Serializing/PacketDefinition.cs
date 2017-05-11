@@ -22,6 +22,8 @@ namespace OpenNos.Core
 
         public string OriginalHeader { get; set; }
 
+        public bool IsCallBackPacket { get; set; }
+
         #endregion
     }
 }

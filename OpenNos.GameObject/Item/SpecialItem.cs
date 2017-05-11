@@ -389,9 +389,7 @@ namespace OpenNos.GameObject
                     {
                         if (session.Character.MaxMateCount < 30)
                         {
-                            session.SendPacket(
-                                session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GET_PET_PLACES"),
-                                    10));
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GET_PET_PLACES"), 10));
                             session.SendPacket(session.Character.GenerateScpStc());
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         }
@@ -427,9 +425,7 @@ namespace OpenNos.GameObject
                         });
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         session.SendPacket(session.Character.GenerateExts());
-                        session.SendPacket(
-                            session.Character.GenerateSay(
-                                string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
 

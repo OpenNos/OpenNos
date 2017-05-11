@@ -272,6 +272,8 @@ namespace OpenNos.GameObject
             }
         }
 
+        // [Obsolete("Primitive string operations will be removed in future, use PacketDefinition
+        // SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
         public void SendPackets(IEnumerable<string> packets, byte priority = 10)
         {
             if (!IsDisposing)
@@ -409,8 +411,7 @@ namespace OpenNos.GameObject
                         if (!int.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) &&
                             nextKeepaliveIdentity != LastKeepAliveIdentity + 1)
                         {
-                            Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"),
-                                _client.ClientId);
+                            Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"), _client.ClientId);
                             _client.Disconnect();
                             return;
                         }

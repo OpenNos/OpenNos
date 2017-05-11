@@ -39,7 +39,7 @@ namespace OpenNos.GameObject
 
         private byte _cmapcount;
         private Random _random;
-        private byte _speed;  
+        private byte _speed;
         #endregion
 
         #region Instantiation

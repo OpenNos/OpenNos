@@ -38,9 +38,8 @@ namespace OpenNos.Core
             {
                 var serializationInformation = GetSerializationInformation(packetType);
                 PacketDefinition deserializedPacket = (PacketDefinition)Activator.CreateInstance(packetType); // reflection is bad, improve?
-
+                SetDeserializationInformations(deserializedPacket, packetContent, serializationInformation.Key.Item2);
                 deserializedPacket = Deserialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
-
                 return deserializedPacket;
             }
             catch (Exception)
@@ -83,8 +82,7 @@ namespace OpenNos.Core
         /// given BaseType.
         /// </summary>
         /// <typeparam name="TBaseType">The BaseType to generate serialization informations</typeparam>
-        public static void Initialize<TBaseType>()
-                    where TBaseType : PacketDefinition
+        public static void Initialize<TBaseType>() where TBaseType : PacketDefinition
         {
             if (!IsInitialized)
             {
@@ -99,8 +97,7 @@ namespace OpenNos.Core
         /// <typeparam name="TPacket">The type of the PacketDefinition</typeparam>
         /// <param name="packet">The object reference of the PacketDefinition</param>
         /// <returns>The serialized string.</returns>
-        public static string Serialize<TPacket>(TPacket packet)
-                                    where TPacket : PacketDefinition
+        public static string Serialize<TPacket>(TPacket packet) where TPacket : PacketDefinition
         {
             try
             {
@@ -495,6 +492,7 @@ namespace OpenNos.Core
         {
             packetDefinition.OriginalContent = packetContent;
             packetDefinition.OriginalHeader = header;
+            packetDefinition.IsCallBackPacket = packetContent.Split(' ', '^')[1].ElementAt(0) == '#';
 
             return packetDefinition;
         }
