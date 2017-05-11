@@ -12,18 +12,22 @@
  * GNU General Public License for more details.
  */
 
-using System;
-
 namespace OpenNos.Domain
 {
-    public class Schedule
+    public enum BazaarListType : byte
     {
-        #region Properties
-
-        public EventType Event { get; set; }
-
-        public TimeSpan Time { get; set; }
-
-        #endregion
+        Default = 0,
+        Weapon = 1,
+        Armor = 2,
+        Equipment = 3,
+        Jewelery = 4,
+        Specialist = 5,
+        Pet = 6,
+        Npc = 7,
+        Shell = 8,
+        Main = 9,
+        Usable = 10,
+        Other = 11,
+        Vehicle = 12
     }
 }

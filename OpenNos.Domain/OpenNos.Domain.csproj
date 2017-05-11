@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BazaarListType.cs" />
     <Compile Include="EventActionType.cs" />
     <Compile Include="EventType.cs" />
     <Compile Include="GeneralLogType.cs" />
@@ -94,7 +95,6 @@
     <Compile Include="PenaltyType.cs" />
     <Compile Include="PortalType.cs" />
     <Compile Include="RequestExchangeType.cs" />
-    <Compile Include="Schedule.cs" />
     <Compile Include="StaticBonusType.cs" />
     <Compile Include="TargetHitType.cs" />
     <Compile Include="TimeSpaceType.cs" />

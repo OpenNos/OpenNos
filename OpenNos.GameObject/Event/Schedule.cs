@@ -12,12 +12,19 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.Domain
+using OpenNos.Domain;
+using System;
+
+namespace OpenNos.GameObject
 {
-    public enum GeneralLogType
+    public class Schedule
     {
-        Connection,
-        Promotion,
-        Demotion
+        #region Properties
+
+        public EventType Event { get; set; }
+
+        public TimeSpan Time { get; set; }
+
+        #endregion
     }
 }

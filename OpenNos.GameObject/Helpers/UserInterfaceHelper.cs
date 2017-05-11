@@ -231,39 +231,39 @@ namespace OpenNos.GameObject.Helpers
 
                 switch (packet.TypeFilter)
                 {
-                    case 1://weapon
-                        if (bz.Item.Item.Type == InventoryType.Equipment && bz.Item.Item.ItemType == ItemType.Weapon)//WeaponFilter
-                            if (packet.SubTypeFilter == 0 || ((bz.Item.Item.Class + 1 >> packet.SubTypeFilter) & 1) == 1)//Class Filter
+                    case BazaarListType.Weapon:
+                        if (bz.Item.Item.Type == InventoryType.Equipment && bz.Item.Item.ItemType == ItemType.Weapon)
+                            if (packet.SubTypeFilter == 0 || ((bz.Item.Item.Class + 1 >> packet.SubTypeFilter) & 1) == 1)
                                 if (packet.LevelFilter == 0 || packet.LevelFilter == 11 && bz.Item.Item.IsHeroic || bz.Item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && bz.Item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9)//Level filter
-                                    if (packet.RareFilter == 0 || packet.RareFilter == bz.Item.Rare + 1) //rare filter
-                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == bz.Item.Upgrade + 1) //upgrade filter
+                                    if (packet.RareFilter == 0 || packet.RareFilter == bz.Item.Rare + 1)
+                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == bz.Item.Upgrade + 1)
                                             bzlist.Add(bz);
                         break;
 
-                    case 2://armor
+                    case BazaarListType.Armor:
                         if (bz.Item.Item.Type == InventoryType.Equipment && bz.Item.Item.ItemType == ItemType.Armor)
-                            if (packet.SubTypeFilter == 0 || ((bz.Item.Item.Class + 1 >> packet.SubTypeFilter) & 1) == 1)//Class Filter
+                            if (packet.SubTypeFilter == 0 || ((bz.Item.Item.Class + 1 >> packet.SubTypeFilter) & 1) == 1)
                                 if (packet.LevelFilter == 0 || packet.LevelFilter == 11 && bz.Item.Item.IsHeroic || bz.Item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && bz.Item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9)//Level filter
-                                    if (packet.RareFilter == 0 || packet.RareFilter == bz.Item.Rare + 1) //rare filter
-                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == bz.Item.Upgrade + 1) //upgrade filter
+                                    if (packet.RareFilter == 0 || packet.RareFilter == bz.Item.Rare + 1)
+                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == bz.Item.Upgrade + 1)
                                             bzlist.Add(bz);
                         break;
 
-                    case 3://Equipment
+                    case BazaarListType.Equipment:
                         if (bz.Item.Item.Type == InventoryType.Equipment && bz.Item.Item.ItemType == ItemType.Fashion)
                             if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 2 && bz.Item.Item.EquipmentSlot == EquipmentType.Mask || packet.SubTypeFilter == 1 && bz.Item.Item.EquipmentSlot == EquipmentType.Hat || packet.SubTypeFilter == 6 && bz.Item.Item.EquipmentSlot == EquipmentType.CostumeHat || packet.SubTypeFilter == 5 && bz.Item.Item.EquipmentSlot == EquipmentType.CostumeSuit || packet.SubTypeFilter == 3 && bz.Item.Item.EquipmentSlot == EquipmentType.Gloves || packet.SubTypeFilter == 4 && bz.Item.Item.EquipmentSlot == EquipmentType.Boots)
                                 if (packet.LevelFilter == 0 || packet.LevelFilter == 11 && bz.Item.Item.IsHeroic || bz.Item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && bz.Item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9)//Level filter
                                     bzlist.Add(bz);
                         break;
 
-                    case 4://Access
+                    case BazaarListType.Jewelery:
                         if (bz.Item.Item.Type == InventoryType.Equipment && bz.Item.Item.ItemType == ItemType.Jewelery)
                             if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 2 && bz.Item.Item.EquipmentSlot == EquipmentType.Ring || packet.SubTypeFilter == 1 && bz.Item.Item.EquipmentSlot == EquipmentType.Necklace || packet.SubTypeFilter == 5 && bz.Item.Item.EquipmentSlot == EquipmentType.Amulet || packet.SubTypeFilter == 3 && bz.Item.Item.EquipmentSlot == EquipmentType.Bracelet || packet.SubTypeFilter == 4 && (bz.Item.Item.EquipmentSlot == EquipmentType.Fairy || bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 5))
                                 if (packet.LevelFilter == 0 || packet.LevelFilter == 11 && bz.Item.Item.IsHeroic || bz.Item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && bz.Item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9)//Level filter
                                     bzlist.Add(bz);
                         break;
 
-                    case 5://Specialist
+                    case BazaarListType.Specialist:
                         if (bz.Item.Item.Type == InventoryType.Equipment)
                             if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 2)
                             {
@@ -325,65 +325,65 @@ namespace OpenNos.GameObject.Helpers
                             }
                         break;
 
-                    case 6://Pet
+                    case BazaarListType.Pet:
                         if (bz.Item.Item.Type == InventoryType.Equipment)
                             if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 0)
                             {
                                 BoxInstance instance = bz.Item as BoxInstance;
-                                if (instance != null && (packet.LevelFilter == 0 || instance.SpLevel < packet.LevelFilter * 10 + 1 && instance.SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
+                                if (instance != null && (packet.LevelFilter == 0 || instance.SpLevel < packet.LevelFilter * 10 + 1 && instance.SpLevel >= packet.LevelFilter * 10 - 9))
                                     if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && ((BoxInstance)bz.Item).HoldingVNum == 0 || packet.SubTypeFilter == 2 && ((BoxInstance)bz.Item).HoldingVNum != 0)
                                         bzlist.Add(bz);
                             }
                         break;
 
-                    case 7://Npc
+                    case BazaarListType.Npc:
                         if (bz.Item.Item.Type == InventoryType.Equipment)
                             if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 1)
                             {
                                 BoxInstance box = bz.Item as BoxInstance;
-                                if (box != null && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
+                                if (box != null && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))
                                     if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && ((BoxInstance)bz.Item).HoldingVNum == 0 || packet.SubTypeFilter == 2 && ((BoxInstance)bz.Item).HoldingVNum != 0)
                                         bzlist.Add(bz);
                             }
                         break;
 
-                    case 12://Vehicle
+                    case BazaarListType.Shell:
+                        if (bz.Item.Item.Type == InventoryType.Equipment)
+                            if (bz.Item.Item.ItemType == ItemType.Shell)
+                                if (packet.SubTypeFilter == 0 || bz.Item.Item.ItemSubType == bz.Item.Item.ItemSubType + 1)
+                                    if (packet.RareFilter == 0 || packet.RareFilter == bz.Item.Rare + 1)
+                                    {
+                                        BoxInstance box = bz.Item as BoxInstance;
+                                        if (box != null && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))
+                                            bzlist.Add(bz);
+                                    }
+                        break;
+
+                    case BazaarListType.Main:
+                        if (bz.Item.Item.Type == InventoryType.Main)
+                            if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && bz.Item.Item.ItemType == ItemType.Main || packet.SubTypeFilter == 2 && bz.Item.Item.ItemType == ItemType.Upgrade || packet.SubTypeFilter == 3 && bz.Item.Item.ItemType == ItemType.Production || packet.SubTypeFilter == 4 && bz.Item.Item.ItemType == ItemType.Special || packet.SubTypeFilter == 5 && bz.Item.Item.ItemType == ItemType.Potion || packet.SubTypeFilter == 6 && bz.Item.Item.ItemType == ItemType.Event)
+                                bzlist.Add(bz);
+                        break;
+
+                    case BazaarListType.Usable:
+                        if (bz.Item.Item.Type == InventoryType.Etc)
+                            if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && bz.Item.Item.ItemType == ItemType.Food || packet.SubTypeFilter == 2 && bz.Item.Item.ItemType == ItemType.Snack || packet.SubTypeFilter == 3 && bz.Item.Item.ItemType == ItemType.Magical || packet.SubTypeFilter == 4 && bz.Item.Item.ItemType == ItemType.Part || packet.SubTypeFilter == 5 && bz.Item.Item.ItemType == ItemType.Teacher || packet.SubTypeFilter == 6 && bz.Item.Item.ItemType == ItemType.Sell)
+                                bzlist.Add(bz);
+                        break;
+
+                    case BazaarListType.Other:
+                        if (bz.Item.Item.Type == InventoryType.Equipment)
+                            if (bz.Item.Item.ItemType == ItemType.Box && !bz.Item.Item.IsHolder)
+                                bzlist.Add(bz);
+                        break;
+
+                    case BazaarListType.Vehicle:
                         if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 4)
                         {
                             BoxInstance box = bz.Item as BoxInstance;
                             if (box != null && (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && box.HoldingVNum == 0 || packet.SubTypeFilter == 2 && box.HoldingVNum != 0))
                                 bzlist.Add(bz);
                         }
-                        break;
-
-                    case 8://Shell
-                        if (bz.Item.Item.Type == InventoryType.Equipment)
-                            if (bz.Item.Item.ItemType == ItemType.Shell)
-                                if (packet.SubTypeFilter == 0 || bz.Item.Item.ItemSubType == bz.Item.Item.ItemSubType + 1)
-                                    if (packet.RareFilter == 0 || packet.RareFilter == bz.Item.Rare + 1) //rare filter
-                                    {
-                                        BoxInstance box = bz.Item as BoxInstance;
-                                        if (box != null && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
-                                            bzlist.Add(bz);
-                                    }
-                        break;
-
-                    case 9://Main
-                        if (bz.Item.Item.Type == InventoryType.Main)
-                            if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && bz.Item.Item.ItemType == ItemType.Main || packet.SubTypeFilter == 2 && bz.Item.Item.ItemType == ItemType.Upgrade || packet.SubTypeFilter == 3 && bz.Item.Item.ItemType == ItemType.Production || packet.SubTypeFilter == 4 && bz.Item.Item.ItemType == ItemType.Special || packet.SubTypeFilter == 5 && bz.Item.Item.ItemType == ItemType.Potion || packet.SubTypeFilter == 6 && bz.Item.Item.ItemType == ItemType.Event)
-                                bzlist.Add(bz);
-                        break;
-
-                    case 10://Usable
-                        if (bz.Item.Item.Type == InventoryType.Etc)
-                            if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && bz.Item.Item.ItemType == ItemType.Food || packet.SubTypeFilter == 2 && bz.Item.Item.ItemType == ItemType.Snack || packet.SubTypeFilter == 3 && bz.Item.Item.ItemType == ItemType.Magical || packet.SubTypeFilter == 4 && bz.Item.Item.ItemType == ItemType.Part || packet.SubTypeFilter == 5 && bz.Item.Item.ItemType == ItemType.Teacher || packet.SubTypeFilter == 6 && bz.Item.Item.ItemType == ItemType.Sell)
-                                bzlist.Add(bz);
-                        break;
-
-                    case 11://Others
-                        if (bz.Item.Item.Type == InventoryType.Equipment)
-                            if (bz.Item.Item.ItemType == ItemType.Box && !bz.Item.Item.IsHolder)
-                                bzlist.Add(bz);
                         break;
 
                     default:

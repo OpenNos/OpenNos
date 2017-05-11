@@ -105,6 +105,7 @@
   <ItemGroup>
     <Compile Include="Buff\Indicators\NoSP\Archer\RitualOfHawk.cs" />
     <Compile Include="Event\EventContainer.cs" />
+    <Compile Include="Event\Schedule.cs" />
     <Compile Include="Helpers\EventHelper.cs" />
     <Compile Include="Event\EventSchedule.cs" />
     <Compile Include="Event\INSTANTBATTLE\InstantBattle.cs" />
