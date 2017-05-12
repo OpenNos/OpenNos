@@ -18,6 +18,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Packets.ClientPackets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,6 +112,7 @@ namespace OpenNos.Handler
 
                         break;
                     }
+
                 case BuyShopType.ItemShop:
                     {
                         // load shop
@@ -487,22 +489,15 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("pdtse")]
-        public void Pdtse(string packet)
+        public void Pdtse(PdtsePacket pdtsePacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length < 4 || !Session.HasCurrentMapInstance)
+            Logger.Debug(Session.Character.GenerateIdentity(), pdtsePacket.ToString());
+            if (!Session.HasCurrentMapInstance)
             {
                 return;
             }
-            byte type;
-            short VNum;
-            if (!byte.TryParse(packetsplit[2], out type) || !short.TryParse(packetsplit[3], out VNum))
-            {
-                return;
-            }
-            if (type == 1)
+            short VNum = pdtsePacket.VNum;
+            if (pdtsePacket.Type == 1)
             {
                 MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
                 if (npc != null)
@@ -599,7 +594,7 @@ namespace OpenNos.Handler
                 }
             }
             /*
-             *   packet.Users.ForEach(u =>
+            packet.Users.ForEach(u =>
             {
                 Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId);
                 if (mate != null)
@@ -698,14 +693,12 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("shopping")]
-        public void Shopping(string packet)
+        public void Shopping(ShoppingPacket shoppingPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
-            byte type, typeshop = 0;
-            int NpcId;
-            if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type) || Session.Character.IsShopping || !Session.HasCurrentMapInstance)
+            Logger.Debug(Session.Character.GenerateIdentity(), shoppingPacket.ToString());
+            byte type = shoppingPacket.Type, typeshop = 0;
+            int NpcId = shoppingPacket.NpcId;
+            if (Session.Character.IsShopping || !Session.HasCurrentMapInstance)
             {
                 return;
             }
@@ -810,63 +803,43 @@ namespace OpenNos.Handler
             Session.SendPacket($"n_inv 2 {mapnpc.MapNpcId} 0 {typeshop}{shoplist}");
         }
 
-        [Packet("npc_req")]
-        public void ShowShop(string packet)
+        public void ShowShop(RequestNpcPacket requestNpcPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
-            long owner;
-            if (packetsplit.Length > 2)
+            Logger.Debug(Session.Character.GenerateIdentity(), requestNpcPacket.ToString());
+            long owner = requestNpcPacket.Owner;
+            if (!Session.HasCurrentMapInstance)
             {
-                int mode;
-                if (!int.TryParse(packetsplit[2], out mode) || !Session.HasCurrentMapInstance)
+                return;
+            }
+            if (requestNpcPacket.Type == 1)
+            {
+                // User Shop
+                KeyValuePair<long, MapShop> shopList = Session.CurrentMapInstance.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
+                LoadShopItem(owner, shopList);
+            }
+            else
+            {
+                // Npc Shop , ignore if has drop
+                MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(requestNpcPacket.Owner));
+                if (npc == null)
                 {
                     return;
                 }
-                if (mode == 1)
+                if (npc.Npc.Drops.Any(s => s.MonsterVNum != null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                 {
-                    // User Shop
-                    if (packetsplit.Length <= 3)
-                    {
-                        return;
-                    }
-                    if (!long.TryParse(packetsplit[3], out owner))
-                    {
-                        return;
-                    }
-                    KeyValuePair<long, MapShop> shopList = Session.CurrentMapInstance.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
-                    LoadShopItem(owner, shopList);
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 4, $"#guri^400^{npc.MapNpcId}"));
                 }
-                else
+                else if (npc.Npc.VNumRequired > 0 && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                 {
-                    // Npc Shop , ignore if has drop
-                    short MapNpcId;
-                    if (!short.TryParse(packetsplit[3], out MapNpcId))
-                    {
-                        return;
-                    }
-                    MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
-                    if (npc == null)
-                    {
-                        return;
-                    }
-                    if (npc.Npc.Drops.Any(s => s.MonsterVNum != null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
-                    {
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 4, $"#guri^400^{npc.MapNpcId}"));
-                    }
-                    else if (npc.Npc.VNumRequired > 0 && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
-                    {
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(6000, 4, $"#guri^400^{npc.MapNpcId}"));
-                    }
-                    else if (npc.Npc.MaxHP == 0 && npc.Npc.Drops.All(s => s.MonsterVNum == null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
-                    {
-                        // #guri^710^X^Y^MapNpcId
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 1, $"#guri^710^162^85^{npc.MapNpcId}"));
-                    }
-                    else if (!string.IsNullOrEmpty(npc.GetNpcDialog()))
-                    {
-                        Session.SendPacket(npc.GetNpcDialog());
-                    }
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(6000, 4, $"#guri^400^{npc.MapNpcId}"));
+                }
+                else if (npc.Npc.MaxHP == 0 && npc.Npc.Drops.All(s => s.MonsterVNum == null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 1, $"#guri^710^162^85^{npc.MapNpcId}")); // #guri^710^X^Y^MapNpcId
+                }
+                else if (!string.IsNullOrEmpty(npc.GetNpcDialog()))
+                {
+                    Session.SendPacket(npc.GetNpcDialog());
                 }
             }
         }

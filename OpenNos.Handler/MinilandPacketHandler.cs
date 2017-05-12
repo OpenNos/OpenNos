@@ -48,7 +48,7 @@ namespace OpenNos.Handler
         #region Methods
 
         /// <summary>
-        /// mJoinPacket packet
+        /// mjoin packet
         /// </summary>
         /// <param name="mJoinPacket"></param>
         public void JoinMiniland(MJoinPacket mJoinPacket)
@@ -67,6 +67,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// mg packet
+        /// </summary>
+        /// <param name="packet"></param>
         public void MinigamePlay(MinigamePacket packet)
         {
             ClientSession client = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Miniland == Session.Character.MapInstance);
@@ -268,6 +272,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// addobj packet
+        /// </summary>
+        /// <param name="packet"></param>
         public void MinilandAddObject(AddobjPacket packet)
         {
             ItemInstance minilandobject = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Slot, InventoryType.Miniland);
@@ -277,7 +285,7 @@ namespace OpenNos.Handler
                 {
                     if (Session.Character.MinilandState == MinilandState.LOCK)
                     {
-                        MinilandObject mo = new MinilandObject
+                        MinilandObject minilandobj = new MinilandObject
                         {
                             CharacterId = Session.Character.CharacterId,
                             ItemInstance = minilandobject,
@@ -296,18 +304,18 @@ namespace OpenNos.Handler
                             switch (minilandobject.Item.ItemSubType)
                             {
                                 case 2:
-                                    mo.MapX = 31;
-                                    mo.MapY = 3;
+                                    minilandobj.MapX = 31;
+                                    minilandobj.MapY = 3;
                                     break;
 
                                 case 0:
-                                    mo.MapX = 24;
-                                    mo.MapY = 7;
+                                    minilandobj.MapX = 24;
+                                    minilandobj.MapY = 7;
                                     break;
 
                                 case 1:
-                                    mo.MapX = 21;
-                                    mo.MapY = 4;
+                                    minilandobj.MapX = 21;
+                                    minilandobj.MapY = 4;
                                     break;
                             }
 
@@ -322,10 +330,10 @@ namespace OpenNos.Handler
                         {
                             Session.Character.WareHouseSize = minilandobject.Item.MinilandObjectPoint;
                         }
-                        Session.Character.MinilandObjects.Add(mo);
-                        Session.SendPacket(mo.GenerateMinilandEffect(false));
+                        Session.Character.MinilandObjects.Add(minilandobj);
+                        Session.SendPacket(minilandobj.GenerateMinilandEffect(false));
                         Session.SendPacket(Session.Character.GenerateMinilandPoint());
-                        Session.SendPacket(mo.GenerateMinilandObject(false));
+                        Session.SendPacket(minilandobj.GenerateMinilandObject(false));
                     }
                     else
                     {
@@ -339,6 +347,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// mledit packet
+        /// </summary>
+        /// <param name="mlEditPacket"></param>
         public void MinilandEdit(MLEditPacket mlEditPacket)
         {
             switch (mlEditPacket.Type)
@@ -376,6 +388,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// rmvobj packet
+        /// </summary>
+        /// <param name="packet"></param>
         public void MinilandRemoveObject(RmvobjPacket packet)
         {
             ItemInstance minilandobject = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Slot, InventoryType.Miniland);
@@ -403,6 +419,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// useobj packet
+        /// </summary>
+        /// <param name="packet"></param>
         public void UseMinilandObject(UseobjPacket packet)
         {
             ClientSession client = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Miniland == Session.Character.MapInstance);

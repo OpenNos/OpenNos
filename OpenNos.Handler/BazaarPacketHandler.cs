@@ -45,7 +45,7 @@ namespace OpenNos.Handler
         #region Methods
 
         /// <summary>
-        /// c_buy cBuyPacket
+        /// c_buy packet
         /// </summary>
         /// <param name="cBuyPacket"></param>
         public void BuyBazaar(CBuyPacket cBuyPacket)
@@ -118,7 +118,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// c_scalc cScalcPacket
+        /// c_scalc packet
         /// </summary>
         /// <param name="cScalcPacket"></param>
         public void GetBazaar(CScalcPacket cScalcPacket)
@@ -170,7 +170,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// c_skill cSkillPacket
+        /// c_skill packet
         /// </summary>
         /// <param name="cSkillPacket"></param>
         public void OpenBazaar(CSkillPacket cSkillPacket)
@@ -191,7 +191,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// c_blist cbListPacket
+        /// c_blist packet
         /// </summary>
         /// <param name="cbListPacket"></param>
         public void RefreshBazarList(CBListPacket cbListPacket)
@@ -201,7 +201,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// c_slist csListPacket
+        /// c_slist packet
         /// </summary>
         /// <param name="csListPacket"></param>
         public void RefreshPersonalBazarList(CSListPacket csListPacket)
@@ -277,7 +277,7 @@ namespace OpenNos.Handler
 
             DAOFactory.IteminstanceDAO.InsertOrUpdate(bazar);
 
-            BazaarItemDTO bz = new BazaarItemDTO
+            BazaarItemDTO bazaarItem = new BazaarItemDTO
             {
                 Amount = bazar.Amount,
                 DateStart = DateTime.Now,
@@ -289,8 +289,8 @@ namespace OpenNos.Handler
                 ItemInstanceId = bazar.Id
             };
 
-            DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bz);
-            ServerManager.Instance.BazaarRefresh(bz.BazaarItemId);
+            DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bazaarItem);
+            ServerManager.Instance.BazaarRefresh(bazaarItem.BazaarItemId);
 
             Session.Character.Gold -= tax;
             Session.SendPacket(Session.Character.GenerateGold());

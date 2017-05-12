@@ -105,6 +105,7 @@
     <Compile Include="Networking\INetworkClient.cs" />
     <Compile Include="Handling\IPacketHandler.cs" />
     <Compile Include="Networking\NetworkClient.cs" />
+    <Compile Include="Serializing\PacketAliasAttribute.cs" />
     <Compile Include="Threading\ConcurrentQueueExtensions.cs" />
     <Compile Include="Threading\ThreadSafeGenericList.cs" />
     <Compile Include="Threading\ThreadSafeSortedList.cs" />

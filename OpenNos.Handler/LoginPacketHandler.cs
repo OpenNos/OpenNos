@@ -57,7 +57,10 @@ namespace OpenNos.Handler
             return channelpacket;
         }
 
-        // updated
+        /// <summary>
+        /// login packet
+        /// </summary>
+        /// <param name="loginPacket"></param>
         public void VerifyLogin(LoginPacket loginPacket)
         {
             if (loginPacket == null)
