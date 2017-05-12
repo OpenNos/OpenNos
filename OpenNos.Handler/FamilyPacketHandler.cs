@@ -217,23 +217,12 @@ namespace OpenNos.Handler
             Session.SendPacket("today_stc");
         }
 
-        [Packet(":")]
-        public void FamilyChat(string packet)
+        public void FamilyChat(FamilyChatPacket familyChatPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
-                string msg = string.Empty;
-                int i = 0;
-                foreach (string str in packet.Split(' '))
-                {
-                    if (i != 0)
-                    {
-                        msg += str + " ";
-                    }
-                    i++;
-                }
-                msg = msg.Substring(1);
+                string msg = familyChatPacket.Message.Substring(1);
                 string ccmsg = $"[{Session.Character.Name}]:{msg}";
                 if (Session.Account.Authority == AuthorityType.GameMaster)
                 {
@@ -278,9 +267,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void FamilyDeposit(FDepositPacket packet)
         {
-            if (Session.Character.Family == null ||
-                 !
-              (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
+            if (Session.Character.Family == null || !(Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
               || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
               || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType != FamilyAuthorityType.NONE
               || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType != FamilyAuthorityType.NONE
