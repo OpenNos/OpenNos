@@ -118,7 +118,17 @@
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="NpcToSummon.cs" />
     <Compile Include="MonsterToSummon.cs" />
+    <Compile Include="Packets\ClientPackets\BlDelPacket.cs" />
+    <Compile Include="Packets\ClientPackets\BlInsPacket.cs" />
+    <Compile Include="Packets\ClientPackets\BtkPacket.cs" />
     <Compile Include="Packets\ClientPackets\EscapePacket.cs" />
+    <Compile Include="Packets\ClientPackets\FInsPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GameStartPacket.cs" />
+    <Compile Include="Packets\ClientPackets\HeroPacket.cs" />
+    <Compile Include="Packets\ClientPackets\NcifPacket.cs" />
+    <Compile Include="Packets\ClientPackets\QSetPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ReqInfoPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RevivalPacket.cs" />
     <Compile Include="Packets\ClientPackets\RselPacket.cs" />
     <Compile Include="Packets\ClientPackets\RstartPacket.cs" />
     <Compile Include="Packets\ClientPackets\RxitPacket.cs" />
@@ -126,6 +136,8 @@
     <Compile Include="Packets\CommandPackets\CreateItemPacket.cs" />
     <Compile Include="Packets\CommandPackets\ShutdownAllPacket.cs" />
     <Compile Include="Packets\CommandPackets\CharacterEditPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FDelPacket.cs" />
+    <Compile Include="Packets\ServerPackets\TalkPacket.cs" />
     <Compile Include="ScriptedInstance.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />
@@ -282,7 +294,6 @@
     <Compile Include="Packets\ClientPackets\ExchangeRequestPacket.cs" />
     <Compile Include="Packets\ClientPackets\CClosePacket.cs" />
     <Compile Include="Packets\ClientPackets\FhisctsPacket.cs" />
-    <Compile Include="Packets\ClientPackets\GameStart.cs" />
     <Compile Include="Packets\ClientPackets\FrankCtsPacket.cs" />
     <Compile Include="Packets\ClientPackets\GetPacket.cs" />
     <Compile Include="Packets\ClientPackets\FStashEndPacket.cs" />

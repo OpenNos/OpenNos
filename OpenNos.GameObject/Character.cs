@@ -401,10 +401,10 @@ namespace OpenNos.GameObject
             {
                 Mates.Add(mate);
                 MapInstance.Broadcast(mate.GenerateIn());
-                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 12));
+                Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 12));
                 Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
-                Session.SendPackets(Session.Character.GenerateScP());
-                Session.SendPackets(Session.Character.GenerateScN());
+                Session.SendPackets(GenerateScP());
+                Session.SendPackets(GenerateScN());
                 return true;
             }
             return false;
@@ -444,23 +444,23 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateTit());
             Session.SendPacket(GenerateStat());
             Session.CurrentMapInstance?.Broadcast(Session, GenerateEq());
-            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);
+            Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
-            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), PositionX, PositionY);
+            Session.CurrentMapInstance?.Broadcast(GenerateEff(196), PositionX, PositionY);
             int faction = 1 + ServerManager.Instance.RandomNumber(0, 2);
             Faction = faction;
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
             Session.SendPacket("scr 0 0 0 0 0 0");
             Session.SendPacket(GenerateFaction());
             Session.SendPacket(GenerateStatChar());
-            Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
+            Session.SendPacket(GenerateEff(4799 + faction));
             Session.SendPacket(GenerateCond());
             Session.SendPacket(GenerateLev());
             Session.CurrentMapInstance?.Broadcast(Session, GenerateCMode());
             Session.CurrentMapInstance?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
             Session.CurrentMapInstance?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
-            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), PositionX, PositionY);
-            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
+            Session.CurrentMapInstance?.Broadcast(GenerateEff(6), PositionX, PositionY);
+            Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
             foreach (CharacterSkill skill in Skills.GetAllItems())
             {
                 if (skill.SkillVNum >= 200)
@@ -511,7 +511,7 @@ namespace OpenNos.GameObject
             Session.CurrentMapInstance?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
             Session.CurrentMapInstance?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
             Session.CurrentMapInstance?.Broadcast(GenerateCMode());
-            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), PositionX, PositionY);
+            Session.CurrentMapInstance?.Broadcast(GenerateEff(196), PositionX, PositionY);
         }
 
         public void CharacterLife()
@@ -529,7 +529,7 @@ namespace OpenNos.GameObject
                 WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
                 if (CurrentMinigame != 0 && LastEffect.AddSeconds(3) <= DateTime.Now)
                 {
-                    MapInstance.Broadcast(Session.Character.GenerateEff(CurrentMinigame));
+                    MapInstance.Broadcast(GenerateEff(CurrentMinigame));
                     LastEffect = DateTime.Now;
                 }
 
@@ -539,14 +539,14 @@ namespace OpenNos.GameObject
                     {
                         if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
                         {
-                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue + (Class == ClassType.Adventurer ? 0 : (byte)Class - 1)), PositionX, PositionY);
+                            Session.CurrentMapInstance?.Broadcast(GenerateEff(amulet.Item.EffectValue + (Class == ClassType.Adventurer ? 0 : (byte)Class - 1)), PositionX, PositionY);
                         }
                         else
                         {
-                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue), PositionX, PositionY);
+                            Session.CurrentMapInstance?.Broadcast(GenerateEff(amulet.Item.EffectValue), PositionX, PositionY);
                         }
                     }
-                    Session.Character.Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateEff(3007)));
+                    Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateEff(3007)));
                     LastEffect = DateTime.Now;
                 }
 
@@ -658,7 +658,7 @@ namespace OpenNos.GameObject
                                     Session.SendPacket(GenerateCond());
                                     Session.SendPacket(GenerateLev());
                                     SpCooldown = 30;
-                                    if (Session.Character?.SkillsSp != null)
+                                    if (SkillsSp != null)
                                     {
                                         foreach (CharacterSkill ski in SkillsSp.GetAllItems().Where(s => !s.CanBeUsed()))
                                         {
@@ -671,7 +671,7 @@ namespace OpenNos.GameObject
                                     Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), SpCooldown), 11));
                                     Session.SendPacket($"sd {SpCooldown}");
                                     Session.CurrentMapInstance?.Broadcast(GenerateCMode());
-                                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, Session.Character.CharacterId), PositionX, PositionY);
+                                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, CharacterId), PositionX, PositionY);
 
                                     // ms_c
                                     Session.SendPacket(GenerateSki());
@@ -1514,7 +1514,15 @@ namespace OpenNos.GameObject
                 ClientSession session = monsterToAttack.MapInstance.GetSessionByCharacterId(kvp.Key);
                 if (session != null)
                 {
-                    int distance = Map.GetDistance(new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }, new MapCell { X = session.Character.PositionX, Y = session.Character.PositionY });
+                    int distance = Map.GetDistance(new MapCell
+                    {
+                        X = monsterToAttack.MapX,
+                        Y = monsterToAttack.MapY
+                    }, new MapCell
+                    {
+                        X = session.Character.PositionX,
+                        Y = session.Character.PositionY
+                    });
                     if (distance < nearestDistance)
                     {
                         nearestDistance = distance;
@@ -2318,7 +2326,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePStashAll()
         {
-            string stash = $"pstash_all {(Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)}";
+            string stash = $"pstash_all {(StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)}";
             foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.PetWarehouse))
             {
                 stash += $" {item.GenerateStashPacket()}";
@@ -3497,6 +3505,15 @@ namespace OpenNos.GameObject
             return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}{Buff.GetAllActiveBuffs()}";
         }
 
+        public TalkPacket GenerateTalk(string message)
+        {
+            return new TalkPacket()
+            {
+                CharacterId = CharacterId,
+                Message = message
+            };
+        }
+
         public string GenerateTit()
         {
             return $"tit {Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper())} {Name}";
@@ -4013,7 +4030,7 @@ namespace OpenNos.GameObject
         {
             Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
-            MapInstance.Broadcast(Session.Character.GenerateEff(3005), PositionX, PositionY);
+            MapInstance.Broadcast(GenerateEff(3005), PositionX, PositionY);
             Session.SendPacket("shop_end 1");
         }
 
@@ -4541,7 +4558,7 @@ namespace OpenNos.GameObject
                     Hp = (int)HPLoad();
                     Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
-                    Session.SendPacket(Session.Character.GenerateEff(5));
+                    Session.SendPacket(GenerateEff(5));
                 }
 
                 if (Inventory != null)
@@ -4630,8 +4647,8 @@ namespace OpenNos.GameObject
 
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), PositionX, PositionY);
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(GenerateEff(6), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
                     ServerManager.Instance.UpdateGroup(CharacterId);
                 }
 
@@ -4683,8 +4700,8 @@ namespace OpenNos.GameObject
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
                     LearnAdventurerSkill();
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
                 }
                 if (specialist != null)
                 {
@@ -4705,8 +4722,8 @@ namespace OpenNos.GameObject
                         LearnSPSkill();
 
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
-                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);
-                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
+                        Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
+                        Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
                     }
                 }
                 t = HeroXPLoad();
@@ -4725,8 +4742,8 @@ namespace OpenNos.GameObject
                     Session.SendPacket(GenerateStat());
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_LEVELUP"), 0));
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
                 }
                 Session.SendPacket(GenerateLev());
             }
