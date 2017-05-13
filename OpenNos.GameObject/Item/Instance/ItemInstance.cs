@@ -95,7 +95,7 @@ namespace OpenNos.GameObject
                     return $"ivn 3 {Slot}.{ItemVNum}.{Amount}";
 
                 case InventoryType.Specialist:
-                    return $"ivn 6 {Slot}.{ItemVNum}.{Rare}.{Upgrade}.{(this as SpecialistInstance).SpStoneUpgrade}";
+                    return $"ivn 6 {Slot}.{ItemVNum}.{Rare}.{Upgrade}.{(this as SpecialistInstance)?.SpStoneUpgrade}";
 
                 case InventoryType.Costume:
                     return $"ivn 7 {Slot}.{ItemVNum}.{Rare}.{Upgrade}.0";
