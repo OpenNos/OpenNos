@@ -230,8 +230,7 @@ namespace OpenNos.Handler
                     {
                         //1seed
                     }
-                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId,
-                           Session.Character.MapX, Session.Character.MapY);
+                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
                 }
             }
         }

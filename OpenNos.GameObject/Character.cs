@@ -1995,14 +1995,13 @@ namespace OpenNos.GameObject
                                         }
 
                                         long? owner = dropOwner;
-                                        Observable.Timer(TimeSpan.FromMilliseconds(500))
-                                       .Subscribe(o =>
-                                       {
-                                           if (Session.HasCurrentMapInstance)
-                                           {
-                                               Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
-                                           }
-                                       });
+                                        Observable.Timer(TimeSpan.FromMilliseconds(500)).Subscribe(o =>
+                                        {
+                                            if (Session.HasCurrentMapInstance)
+                                            {
+                                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                                            }
+                                        });
                                     }
                                 }
                             }
