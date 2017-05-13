@@ -1226,6 +1226,7 @@ namespace OpenNos.GameObject
                 }
             }
             Instance.SaveAll();
+            CommunicationServiceClient.Instance.UnregisterWorldServer(WorldId);
             Environment.Exit(0);
         }
 
