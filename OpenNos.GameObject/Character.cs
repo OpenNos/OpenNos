@@ -4321,7 +4321,7 @@ namespace OpenNos.GameObject
                     AttachmentRarity = (byte)rare,
                     AttachmentUpgrade = upgrade,
                     IsSenderCopy = false,
-                    Title = isNosmall ? "NOSMALL" : "NOSTALE",
+                    Title = isNosmall ? "NOSMALL" : Name,
                     AttachmentVNum = vnum,
                     SenderClass = Class,
                     SenderGender = Gender,
