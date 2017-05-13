@@ -108,7 +108,10 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return ServerManager.Instance.FamilyList.ToList().FirstOrDefault(s => s != null && s.FamilyCharacters.Any(c => c != null && c.CharacterId == CharacterId));
+                lock (ServerManager.Instance.FamilyList)
+                {
+                    return ServerManager.Instance.FamilyList.FirstOrDefault(s => s != null && s.FamilyCharacters.Any(c => c != null && c.CharacterId == CharacterId));
+                }
             }
         }
 
