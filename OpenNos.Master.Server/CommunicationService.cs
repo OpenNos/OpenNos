@@ -228,8 +228,9 @@ namespace OpenNos.Master.Server
                     worldCount++;
                 }
                 lastGroup = world.WorldGroup;
-                int slotsLeft = world.AccountLimit - MSManager.Instance.ConnectedAccounts.CountLinq(a => a.ConnectedWorld?.WorldGroup == world.WorldGroup);
-                int channelcolor = (world.AccountLimit / slotsLeft) + 1;
+                
+                int currentlyConnectedAccounts = MSManager.Instance.ConnectedAccounts.CountLinq(a => a.ConnectedWorld?.WorldGroup == world.WorldGroup);
+                int channelcolor = (int)Math.Round(((double)currentlyConnectedAccounts / world.AccountLimit) * 20) + 1;
 
                 channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:{channelcolor}:{worldCount}.{world.ChannelId}.{world.WorldGroup} ";
             }
