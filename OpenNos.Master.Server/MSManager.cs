@@ -1,6 +1,7 @@
 ﻿using Hik.Communication.ScsServices.Service;
 using OpenNos.Master.Library.Data;
 using System.Collections.Generic;
+using OpenNos.Core;
 
 namespace OpenNos.Master.Server
 {
@@ -10,6 +11,7 @@ namespace OpenNos.Master.Server
 
         private static MSManager _instance;
 
+
         #endregion
 
         #region Instantiation
@@ -18,7 +20,7 @@ namespace OpenNos.Master.Server
         {
             WorldServers = new List<WorldServer>();
             LoginServers = new List<IScsServiceClient>();
-            ConnectedAccounts = new List<AccountConnection>();
+            ConnectedAccounts = new ThreadSafeGenericList<AccountConnection>();
             AuthentificatedClients = new List<long>();
         }
 
@@ -30,7 +32,8 @@ namespace OpenNos.Master.Server
 
         public List<long> AuthentificatedClients { get; set; }
 
-        public List<AccountConnection> ConnectedAccounts { get; set; }
+        //public List<AccountConnection> ConnectedAccounts { get; set; }
+        public ThreadSafeGenericList<AccountConnection> ConnectedAccounts { get; set; }
 
         public List<IScsServiceClient> LoginServers { get; set; }
 
