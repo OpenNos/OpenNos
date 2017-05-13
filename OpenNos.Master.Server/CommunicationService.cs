@@ -31,7 +31,6 @@ namespace OpenNos.Master.Server
                 return false;
             }
 
-            // TODO: Add WorldGroup Authentification via Database or Config File
             if (authKey == ConfigurationManager.AppSettings["MasterAuthKey"])
             {
                 MSManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
@@ -334,6 +333,7 @@ namespace OpenNos.Master.Server
             }
 
             MSManager.Instance.WorldServers.RemoveAll(w => w.Id.Equals(worldId));
+            MSManager.Instance.ConnectedAccounts.RemoveAll(a => a.ConnectedWorld.Id.Equals(worldId));
         }
 
         public void UpdateBazaar(string worldGroup, long bazaarItemId)
