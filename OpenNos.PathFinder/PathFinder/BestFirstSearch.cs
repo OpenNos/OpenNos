@@ -258,8 +258,12 @@ namespace OpenNos.PathFinder
 
         public static List<Node> TracePath(Node node, Node[,] MapGrid)
         {
-            Node currentnode = MapGrid[node.X,node.Y];
             List<Node> list = new List<Node>();
+            if (MapGrid == null)
+            {
+                return list;
+            }
+            Node currentnode = MapGrid[node.X, node.Y];
             while (currentnode.F != 1 && currentnode.F != 0)
             {
                 Node newnode = null;
