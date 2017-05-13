@@ -266,7 +266,7 @@ namespace OpenNos.GameObject
 
         public int CountItem(int itemVNum)
         {
-            return GetAllItems().Where(s => s.ItemVNum == itemVNum).Sum(i => i.Amount);
+            return GetAllItems().Where(s => s.ItemVNum == itemVNum && s.Type != InventoryType.FamilyWareHouse && s.Type != InventoryType.Bazaar && s.Type != InventoryType.Warehouse && s.Type != InventoryType.PetWarehouse).Sum(i => i.Amount);
         }
 
         public int CountItemInAnInventory(InventoryType inv)
@@ -603,7 +603,7 @@ namespace OpenNos.GameObject
                 Logger.Debug(Owner.Session.GenerateIdentity(), $"vnum: {vnum} amount: {amount}");
                 int remainingAmount = amount;
 
-                foreach (ItemInstance inventory in GetAllItems().Where(s => s.ItemVNum == vnum && s.Type != InventoryType.Wear).OrderBy(i => i.Slot))
+                foreach (ItemInstance inventory in GetAllItems().Where(s => s.ItemVNum == vnum && s.Type != InventoryType.Wear && s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse && s.Type != InventoryType.Warehouse && s.Type != InventoryType.PetWarehouse).OrderBy(i => i.Slot))
                 {
                     if (remainingAmount > 0)
                     {
@@ -727,7 +727,7 @@ namespace OpenNos.GameObject
             {
                 inventoryitemids.Add(itemfree.Id);
             }
-            return GetAllItems().Where(i => inventoryitemids.Contains(i.Id)).OrderBy(i => i.Slot).FirstOrDefault();
+            return GetAllItems().Where(i => inventoryitemids.Contains(i.Id) && i.Type != InventoryType.Wear && i.Type != InventoryType.PetWarehouse && i.Type != InventoryType.FamilyWareHouse && i.Type != InventoryType.Warehouse && i.Type != InventoryType.Bazaar).OrderBy(i => i.Slot).FirstOrDefault();
         }
 
         private short? GetFreeSlot(InventoryType type, int backPack)

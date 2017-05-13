@@ -1606,7 +1606,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ', '^');
             short slot;
             byte type;
-            if (packetsplit.Length > 5 && short.TryParse(packetsplit[5], out slot) && byte.TryParse(packetsplit[4], out type))
+            if (packetsplit.Length > 5 && short.TryParse(packetsplit[5], out slot) && byte.TryParse(packetsplit[4], out type) && type != (byte)InventoryType.FamilyWareHouse && type != (byte)InventoryType.Bazaar && type != (byte)InventoryType.Warehouse && type != (byte)InventoryType.PetWarehouse)
             {
                 ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot, (InventoryType)type);
                 inv?.Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#' ? (byte)255 : (byte)0, packetsplit);
