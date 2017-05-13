@@ -4163,8 +4163,6 @@ namespace OpenNos.GameObject
                     // be sure that noone tries to edit while saving is currently editing
                     lock (Inventory)
                     {
-                        DAOFactory.BazaarItemDAO.RemoveOutDated();
-
                         // load and concat inventory with equipment
                         List<ItemInstance> inventories = Inventory.GetAllItems();
                         IEnumerable<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
