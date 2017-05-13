@@ -362,7 +362,7 @@ namespace OpenNos.GameObject
 
         public void FDepositItem(InventoryType inventory, byte slot, byte amount, byte newSlot, ref ItemInstance item, ref ItemInstance itemdest)
         {
-            if (item != null && amount <= item.Amount && amount > 0)
+            if (item != null && amount <= item.Amount && amount > 0 && item.Item.IsTradable && !item.IsBound)
             {
                 FamilyCharacter fhead = Owner.Family?.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
                 if (fhead == null)
