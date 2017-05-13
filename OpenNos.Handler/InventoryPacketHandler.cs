@@ -1611,6 +1611,10 @@ namespace OpenNos.Handler
         public void UseItem(UseItemPacket useItemPacket)
         {
             Logger.Debug(Session.Character.GenerateIdentity(), useItemPacket.ToString());
+            if ((byte)useItemPacket.Type >= 9)
+            {
+                return;
+            }
             ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(useItemPacket.Slot, useItemPacket.Type);
             string[] packetsplit = useItemPacket.OriginalContent.Split(' ', '^');
             inv?.Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#' ? (byte)255 : (byte)0, packetsplit);
