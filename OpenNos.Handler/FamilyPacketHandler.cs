@@ -222,7 +222,7 @@ namespace OpenNos.Handler
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
-                string msg = familyChatPacket.Message.Substring(1);
+                string msg = familyChatPacket.Message;
                 string ccmsg = $"[{Session.Character.Name}]:{msg}";
                 if (Session.Account.Authority == AuthorityType.GameMaster)
                 {
