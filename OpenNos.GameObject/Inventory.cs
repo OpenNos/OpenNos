@@ -603,7 +603,7 @@ namespace OpenNos.GameObject
                 Logger.Debug(Owner.Session.GenerateIdentity(), $"vnum: {vnum} amount: {amount}");
                 int remainingAmount = amount;
 
-                foreach (ItemInstance inventory in GetAllItems().Where(s => s.ItemVNum == vnum && s.Type != InventoryType.Wear).OrderBy(i => i.Slot))
+                foreach (ItemInstance inventory in GetAllItems().Where(s => s.ItemVNum == vnum && s.Type != InventoryType.Wear && s.Type != InventoryType.Bazaar && s.Type != InventoryType.Warehouse && s.Type != InventoryType.PetWarehouse && s.Type != InventoryType.FamilyWareHouse).OrderBy(i => i.Slot))
                 {
                     if (remainingAmount > 0)
                     {
