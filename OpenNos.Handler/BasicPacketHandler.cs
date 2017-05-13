@@ -892,7 +892,7 @@ namespace OpenNos.Handler
                         Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_NAME_PET")));
                         Session.SendPacket(Session.Character.GeneratePinit());
-                        Session.Character.SendPst();
+                        Session.SendPackets(Session.Character.GeneratePst());
                         Session.SendPackets(Session.Character.GenerateScP());
                         Session.Character.Inventory.RemoveItemAmount(petnameVNum);
                     }
@@ -1626,7 +1626,7 @@ namespace OpenNos.Handler
             Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
 
             Session.SendPacket(Session.Character.GeneratePinit());
-            Session.Character.SendPst();
+            Session.SendPackets(Session.Character.GeneratePst());
 
             Session.SendPacket("zzim");
             Session.SendPacket($"twk 2 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
