@@ -191,7 +191,7 @@ namespace OpenNos.GameObject
                             break;
                     }
                     Session.SendPacket(Session.Character.GeneratePinit());
-                    Session.Character.SendPst();
+                    Session.SendPackets(Session.Character.GeneratePst());
                     break;
 
                 case 10:

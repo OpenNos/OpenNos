@@ -400,31 +400,24 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateCond());
                     session.SendPacket(session.Character.GenerateCMap());
                     session.SendPacket(session.Character.GenerateStatChar());
-
                     session.SendPacket(session.Character.GeneratePairy());
-                    session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
-                    {
-                        s.PositionX = (short)(session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
-                        s.PositionY = (short)(session.Character.PositionY + 1);
-                    });
-
                     session.SendPacket(session.Character.GeneratePinit());
-                    session.Character.SendPst();
-                    session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
+                    session.SendPackets(session.Character.GeneratePst());
+                    session.SendPacket(session.Character.GenerateAct());
                     session.SendPacket(session.Character.GenerateScpStc());
-                    foreach (Mate mate in session.Character.Mates)
-                    {
-                        session.CurrentMapInstance.Broadcast(mate.GenerateIn());
-                    }
 
                     session.CurrentMapInstance.Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm).ToList().ForEach(s =>
                     {
                         session.SendPacket(s.Character.GenerateIn());
                         session.SendPacket(s.Character.GenerateGidx());
+                        s.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(m =>
+                        {
+                            session.SendPacket(m.GenerateIn());
+                        });
                     });
 
-                    session.SendPackets(session.CurrentMapInstance.GetMapItems());
 
+                    session.SendPackets(session.CurrentMapInstance.GetMapItems());
                     MapInstancePortalHandler.GenerateMinilandEntryPortals(session.CurrentMapInstance.Map.MapId, session.Character.Miniland.MapInstanceId).ForEach(p => session.SendPacket(p.GenerateGp()));
 
                     if (session.CurrentMapInstance.InstanceBag.Clock.Enabled)
@@ -443,6 +436,12 @@ namespace OpenNos.GameObject
                     }
                     if (!session.Character.InvisibleGm)
                     {
+                        session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m =>
+                        {
+                            m.PositionX = (short)(session.Character.PositionX + (m.MateType == MateType.Partner ? -1 : 1));
+                            m.PositionY = (short)(session.Character.PositionY + 1);
+                            session.CurrentMapInstance.Broadcast(m.GenerateIn());
+                        });
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                     }
@@ -471,7 +470,7 @@ namespace OpenNos.GameObject
                                     continue;
                                 }
                                 groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                                groupSession.Character.SendPst();
+                                groupSession.SendPackets(groupSession.Character.GeneratePst());
                             }
                         }
                     }
@@ -482,8 +481,7 @@ namespace OpenNos.GameObject
                     }
                     session.Character.IsChangingMapInstance = false;
                     session.SendPacket(session.Character.GenerateMinimapPosition());
-                    session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(
-                         e =>
+                    session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>
                          {
                              if (!e.Item2.Contains(session.Character.CharacterId))
                              {
@@ -660,11 +658,11 @@ namespace OpenNos.GameObject
                         foreach (ClientSession groupSession in grp.Characters)
                         {
                             groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                            groupSession.Character.SendPst();
+                            groupSession.SendPackets(session.Character.GeneratePst());
                             groupSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
                         session.SendPacket(session.Character.GeneratePinit());
-                        session.Character.SendPst();
+                        session.SendPackets(session.Character.GeneratePst());
                         Broadcast(session.Character.GeneratePidx(true));
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                     }
@@ -680,7 +678,7 @@ namespace OpenNos.GameObject
                                 Broadcast(targetSession.Character.GeneratePidx(true));
                                 grp.LeaveGroup(targetSession);
                                 targetSession.SendPacket(targetSession.Character.GeneratePinit());
-                                targetSession.Character.SendPst();
+                                targetSession.SendPackets(targetSession.Character.GeneratePst());
                             }
                         }
                         _groups.Remove(grp.GroupId);
@@ -1259,7 +1257,7 @@ namespace OpenNos.GameObject
                         foreach (ClientSession session in groupMembers)
                         {
                             session.SendPacket(session.Character.GeneratePinit());
-                            session.Character.SendPst();
+                            session.SendPackets(session.Character.GeneratePst());
                         }
                     }
                 }
