@@ -133,7 +133,11 @@ namespace OpenNos.GameObject
             List<CharacterSkill> skillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.Instance.GetAllSkill().Where(ski => ski.Class == Item.Morph + 31 && ski.LevelMinimum <= SpLevel))
             {
-                skillsSp.Add(new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
+                skillsSp.Add(new CharacterSkill
+                {
+                    SkillVNum = ski.SkillVNum,
+                    CharacterId = CharacterId
+                });
             }
             byte spdestroyed = 0;
             if (Rare == -2)

@@ -577,6 +577,9 @@ namespace OpenNos.GameObject.Helpers
             }
             switch (upgrade)
             {
+                case 0:
+                    break;
+
                 case 1:
                     point += 5;
                     break;
