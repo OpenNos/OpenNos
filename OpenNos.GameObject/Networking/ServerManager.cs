@@ -1154,6 +1154,7 @@ namespace OpenNos.GameObject
         {
             List<ClientSession> sessions = Sessions.Where(c => c.IsConnected).ToList();
             sessions.ForEach(s => s.Character?.Save());
+            DAOFactory.BazaarItemDAO.RemoveOutDated();
         }
 
         public void SetProperty(long charId, string property, object value)
@@ -1224,6 +1225,7 @@ namespace OpenNos.GameObject
                 }
             }
             Instance.SaveAll();
+            CommunicationServiceClient.Instance.UnregisterWorldServer(WorldId);
             Environment.Exit(0);
         }
 

@@ -188,6 +188,10 @@ namespace OpenNos.Handler
                         return;
                 }
             }
+            else
+            {
+                Session.SendPacket("cancel 2 0");
+            }
         }
 
         /// <summary>
@@ -752,6 +756,7 @@ namespace OpenNos.Handler
                                                 ski.Hit = 0;
                                             }
                                             IEnumerable<ClientSession> playersInAOERange = ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
+                                            int count = 0;
                                             foreach (ClientSession character in playersInAOERange)
                                             {
                                                 if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
@@ -760,6 +765,7 @@ namespace OpenNos.Handler
                                                     {
                                                         if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Citadel))
                                                         {
+                                                            count++;
                                                             PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
                                                         }
                                                     }
@@ -768,6 +774,7 @@ namespace OpenNos.Handler
                                                 {
                                                     if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
                                                     {
+                                                        count++;
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
                                                     }
                                                 }
@@ -775,11 +782,12 @@ namespace OpenNos.Handler
                                                 {
                                                     if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
                                                     {
+                                                        count++;
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
                                                     }
                                                 }
                                             }
-                                            if (playerToAttack.Character.Hp <= 0)
+                                            if (playerToAttack.Character.Hp <= 0 || count == 0)
                                             {
                                                 Session.SendPacket($"cancel 2 {targetId}");
                                             }

@@ -72,7 +72,10 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return ServerManager.Instance.CharacterRelations == null ? new List<CharacterRelationDTO>() : ServerManager.Instance.CharacterRelations.Where(s => s.CharacterId == CharacterId || s.RelatedCharacterId == CharacterId).ToList();
+                lock (ServerManager.Instance.CharacterRelations)
+                {
+                    return ServerManager.Instance.CharacterRelations == null ? new List<CharacterRelationDTO>() : ServerManager.Instance.CharacterRelations.Where(s => s.CharacterId == CharacterId || s.RelatedCharacterId == CharacterId).ToList();
+                }
             }
         }
 
@@ -108,7 +111,10 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return ServerManager.Instance.FamilyList.ToList().FirstOrDefault(s => s != null && s.FamilyCharacters.Any(c => c != null && c.CharacterId == CharacterId));
+                lock (ServerManager.Instance.FamilyList)
+                {
+                    return ServerManager.Instance.FamilyList.FirstOrDefault(s => s != null && s.FamilyCharacters.Any(c => c != null && c.CharacterId == CharacterId));
+                }
             }
         }
 
@@ -609,6 +615,10 @@ namespace OpenNos.GameObject
                     if (LastSkillUse.AddSeconds(15) >= DateTime.Now && LastSpGaugeRemove.AddSeconds(1) <= DateTime.Now)
                     {
                         SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                        if (specialist == null)
+                        {
+                            return;
+                        }
                         byte spType = 0;
 
                         if (specialist.Item.Morph > 1 && specialist.Item.Morph < 8 || specialist.Item.Morph > 9 && specialist.Item.Morph < 16)
@@ -4160,8 +4170,6 @@ namespace OpenNos.GameObject
                     // be sure that noone tries to edit while saving is currently editing
                     lock (Inventory)
                     {
-                        DAOFactory.BazaarItemDAO.RemoveOutDated();
-
                         // load and concat inventory with equipment
                         List<ItemInstance> inventories = Inventory.GetAllItems();
                         IEnumerable<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
@@ -4320,7 +4328,7 @@ namespace OpenNos.GameObject
                     AttachmentRarity = (byte)rare,
                     AttachmentUpgrade = upgrade,
                     IsSenderCopy = false,
-                    Title = isNosmall ? "NOSMALL" : "NOSTALE",
+                    Title = isNosmall ? "NOSMALL" : Name,
                     AttachmentVNum = vnum,
                     SenderClass = Class,
                     SenderGender = Gender,

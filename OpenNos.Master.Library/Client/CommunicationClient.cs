@@ -1,6 +1,7 @@
 ﻿using System;
 using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
+using System.Threading.Tasks;
 
 namespace OpenNos.Master.Library.Client
 {
@@ -10,47 +11,47 @@ namespace OpenNos.Master.Library.Client
 
         public void CharacterConnected(long characterId)
         {
-            CommunicationServiceClient.Instance.OnCharacterConnected(characterId);
+            Task.Run(() => CommunicationServiceClient.Instance.OnCharacterConnected(characterId));
         }
 
         public void CharacterDisconnected(long characterId)
         {
-            CommunicationServiceClient.Instance.OnCharacterDisconnected(characterId);
+            Task.Run(() => CommunicationServiceClient.Instance.OnCharacterDisconnected(characterId));
         }
 
         public void KickSession(long? accountId, long? sessionId)
         {
-            CommunicationServiceClient.Instance.OnKickSession(accountId, sessionId);
+            Task.Run(() => CommunicationServiceClient.Instance.OnKickSession(accountId, sessionId));
         }
 
         public void SendMessageToCharacter(SCSCharacterMessage message)
         {
-            CommunicationServiceClient.Instance.OnSendMessageToCharacter(message);
+            Task.Run(() => CommunicationServiceClient.Instance.OnSendMessageToCharacter(message));
         }
 
         public void Shutdown()
         {
-            CommunicationServiceClient.Instance.OnShutdown();
+            Task.Run(() => CommunicationServiceClient.Instance.OnShutdown());
         }
 
         public void UpdateBazaar(long bazaarItemId)
         {
-            CommunicationServiceClient.Instance.OnUpdateBazaar(bazaarItemId);
+            Task.Run(() => CommunicationServiceClient.Instance.OnUpdateBazaar(bazaarItemId));
         }
 
         public void UpdateFamily(long familyId)
         {
-            CommunicationServiceClient.Instance.OnUpdateFamily(familyId);
+            Task.Run(() => CommunicationServiceClient.Instance.OnUpdateFamily(familyId));
         }
 
         public void UpdatePenaltyLog(int penaltyLogId)
         {
-            CommunicationServiceClient.Instance.OnUpdatePenaltyLog(penaltyLogId);
+            Task.Run(() => CommunicationServiceClient.Instance.OnUpdatePenaltyLog(penaltyLogId));
         }
 
         public void UpdateRelation(long relationId)
         {
-            CommunicationServiceClient.Instance.OnUpdateRelation(relationId);
+            Task.Run(() => CommunicationServiceClient.Instance.OnUpdateRelation(relationId));
         }
 
         #endregion

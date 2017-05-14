@@ -1712,11 +1712,11 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;
 
-                    Session.CurrentMapInstance.OnMoveOnMapEvents.ForEach(e =>
+                    Session.CurrentMapInstance?.OnMoveOnMapEvents?.ForEach(e =>
                     {
                         EventHelper.Instance.RunEvent(e);
                     });
-                    Session.CurrentMapInstance.OnMoveOnMapEvents.RemoveAll(s => s != null);
+                    Session.CurrentMapInstance?.OnMoveOnMapEvents?.RemoveAll(s => s != null);
                 }
                 else
                 {

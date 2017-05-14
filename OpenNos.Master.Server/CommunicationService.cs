@@ -18,13 +18,7 @@ namespace OpenNos.Master.Server
         #region Instantiation
         public CommunicationService()
         {
-            Observable.Interval(TimeSpan.FromMinutes(1)).Subscribe(x =>
-            {
-                foreach(AccountConnection account in MSManager.Instance.ConnectedAccounts.Where(a=>a.LastPulse.AddMinutes(5) <= DateTime.Now))
-                {
-                    KickSession(account.AccountId, null);
-                }
-            });
+
         }
         #endregion
 
@@ -37,7 +31,6 @@ namespace OpenNos.Master.Server
                 return false;
             }
 
-            // TODO: Add WorldGroup Authentification via Database or Config File
             if (authKey == ConfigurationManager.AppSettings["MasterAuthKey"])
             {
                 MSManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
@@ -235,8 +228,9 @@ namespace OpenNos.Master.Server
                     worldCount++;
                 }
                 lastGroup = world.WorldGroup;
-                int slotsLeft = world.AccountLimit - MSManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.WorldGroup == world.WorldGroup);
-                int channelcolor = (world.AccountLimit / slotsLeft) + 1;
+                
+                int currentlyConnectedAccounts = MSManager.Instance.ConnectedAccounts.CountLinq(a => a.ConnectedWorld?.WorldGroup == world.WorldGroup);
+                int channelcolor = (int)Math.Round(((double)currentlyConnectedAccounts / world.AccountLimit) * 20) + 1;
 
                 channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:{channelcolor}:{worldCount}.{world.ChannelId}.{world.WorldGroup} ";
             }
@@ -269,7 +263,7 @@ namespace OpenNos.Master.Server
                     int groupsessions = 0;
                     foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(s)))
                     {
-                        int sessions = MSManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.Id.Equals(world.Id) == true);
+                        int sessions = MSManager.Instance.ConnectedAccounts.CountLinq(a => a.ConnectedWorld?.Id.Equals(world.Id) == true);
                         result.Add($"Channel {world.ChannelId}: {sessions} Sessions");
                         groupsessions += sessions;
                     }
@@ -340,6 +334,7 @@ namespace OpenNos.Master.Server
             }
 
             MSManager.Instance.WorldServers.RemoveAll(w => w.Id.Equals(worldId));
+            MSManager.Instance.ConnectedAccounts.RemoveAll(a => a.ConnectedWorld.Id.Equals(worldId));
         }
 
         public void UpdateBazaar(string worldGroup, long bazaarItemId)
@@ -406,7 +401,29 @@ namespace OpenNos.Master.Server
 
         public void PulseAccount(long accountId)
         {
-            
+            Logger.Log.Debug("PulseAccount");
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId));
+            if (account != null)
+            {
+                account.LastPulse = DateTime.Now;
+            }
+        }
+
+        public void CleanupOutdatedSession()
+        {
+            AccountConnection[] tmp = new AccountConnection[MSManager.Instance.ConnectedAccounts.Count + 20];
+            lock (MSManager.Instance.ConnectedAccounts)
+            {
+                MSManager.Instance.ConnectedAccounts.CopyTo(tmp);
+            }
+            foreach (AccountConnection account in tmp.Where(a => a != null && a.LastPulse.AddMinutes(5) <= DateTime.Now))
+            {
+                KickSession(account.AccountId, null);
+            }
         }
 
         #endregion
