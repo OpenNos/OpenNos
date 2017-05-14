@@ -314,7 +314,7 @@
     <Compile Include="Packets\ClientPackets\NpinfoPacket.cs" />
     <Compile Include="Packets\ClientPackets\PclPacket.cs" />
     <Compile Include="Packets\ClientPackets\CSkillPacket.cs" />
-    <Compile Include="Packets\ClientPackets\FauthPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FAuthPacket.cs" />
     <Compile Include="Packets\ClientPackets\TodayPacket.cs" />
     <Compile Include="Packets\ClientPackets\WhisperPacket.cs" />
     <Compile Include="Packets\ClientPackets\PLeavePacket.cs" />

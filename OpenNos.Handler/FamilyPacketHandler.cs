@@ -51,51 +51,51 @@ namespace OpenNos.Handler
         /// <summary>
         /// fauth packet
         /// </summary>
-        /// <param name="packet"></param>
-        public void ChangeAuthority(FauthPacket packet)
+        /// <param name="fAuthPacket"></param>
+        public void ChangeAuthority(FAuthPacket fAuthPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             if (Session.Character.Family == null || Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
             {
                 return;
             }
-            Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChanged, Session.Character.Name, authority: packet.MemberType, righttype: packet.AuthorityId + 1, rightvalue: packet.Value);
-            switch (packet.MemberType)
+            Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChanged, Session.Character.Name, authority: fAuthPacket.MemberType, righttype: fAuthPacket.AuthorityId + 1, rightvalue: fAuthPacket.Value);
+            switch (fAuthPacket.MemberType)
             {
                 case FamilyAuthority.Manager:
-                    switch (packet.AuthorityId)
+                    switch (fAuthPacket.AuthorityId)
                     {
                         case 0:
-                            Session.Character.Family.ManagerCanInvite = packet.Value == 1;
+                            Session.Character.Family.ManagerCanInvite = fAuthPacket.Value == 1;
                             break;
 
                         case 1:
-                            Session.Character.Family.ManagerCanNotice = packet.Value == 1;
+                            Session.Character.Family.ManagerCanNotice = fAuthPacket.Value == 1;
                             break;
 
                         case 2:
-                            Session.Character.Family.ManagerCanShout = packet.Value == 1;
+                            Session.Character.Family.ManagerCanShout = fAuthPacket.Value == 1;
                             break;
 
                         case 3:
-                            Session.Character.Family.ManagerCanGetHistory = packet.Value == 1;
+                            Session.Character.Family.ManagerCanGetHistory = fAuthPacket.Value == 1;
                             break;
 
                         case 4:
-                            Session.Character.Family.ManagerAuthorityType = (FamilyAuthorityType)packet.Value;
+                            Session.Character.Family.ManagerAuthorityType = (FamilyAuthorityType)fAuthPacket.Value;
                             break;
                     }
                     break;
 
                 case FamilyAuthority.Member:
-                    switch (packet.AuthorityId)
+                    switch (fAuthPacket.AuthorityId)
                     {
                         case 0:
-                            Session.Character.Family.MemberCanGetHistory = packet.Value == 1;
+                            Session.Character.Family.MemberCanGetHistory = fAuthPacket.Value == 1;
                             break;
 
                         case 1:
-                            Session.Character.Family.MemberAuthorityType = (FamilyAuthorityType)packet.Value;
+                            Session.Character.Family.MemberAuthorityType = (FamilyAuthorityType)fAuthPacket.Value;
                             break;
                     }
                     break;
@@ -124,9 +124,9 @@ namespace OpenNos.Handler
 
             if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
             {
-                foreach (ClientSession s in Session.Character.Group.Characters)
+                foreach (ClientSession session in Session.Character.Group.Characters)
                 {
-                    if (s.Character.Family != null || s.Character.FamilyCharacter != null)
+                    if (session.Character.Family != null || session.Character.FamilyCharacter != null)
                     {
                         return;
                     }
@@ -155,14 +155,14 @@ namespace OpenNos.Handler
                 DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
 
                 ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_FOUNDED"), name), 0));
-                foreach (ClientSession c in Session.Character.Group.Characters)
+                foreach (ClientSession session in Session.Character.Group.Characters)
                 {
                     FamilyCharacterDTO familyCharacter = new FamilyCharacterDTO
                     {
-                        CharacterId = c.Character.CharacterId,
+                        CharacterId = session.Character.CharacterId,
                         DailyMessage = string.Empty,
                         Experience = 0,
-                        Authority = Session.Character.CharacterId == c.Character.CharacterId ? FamilyAuthority.Head : FamilyAuthority.Assistant,
+                        Authority = Session.Character.CharacterId == session.Character.CharacterId ? FamilyAuthority.Head : FamilyAuthority.Assistant,
                         FamilyId = family.FamilyId,
                         Rank = 0
                     };
@@ -180,8 +180,8 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("%Cridefamille")]
         [Packet("%Familyshout")]
+        [Packet("%Cridefamille")]
         public void FamilyCall(string packet)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
@@ -221,6 +221,10 @@ namespace OpenNos.Handler
             Session.SendPacket("today_stc");
         }
 
+        /// <summary>
+        /// : packet
+        /// </summary>
+        /// <param name="familyChatPacket"></param>
         public void FamilyChat(FamilyChatPacket familyChatPacket)
         {
             if (string.IsNullOrEmpty(familyChatPacket.Message))
@@ -229,7 +233,7 @@ namespace OpenNos.Handler
             }
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
-            { 
+            {
                 string msg = familyChatPacket.Message;
                 string ccmsg = $"[{Session.Character.Name}]:{msg}";
                 if (Session.Account.Authority == AuthorityType.GameMaster)
@@ -272,8 +276,8 @@ namespace OpenNos.Handler
         /// <summary>
         /// f_deposit packet
         /// </summary>
-        /// <param name="packet"></param>
-        public void FamilyDeposit(FDepositPacket packet)
+        /// <param name="fDepositPacket"></param>
+        public void FamilyDeposit(FDepositPacket fDepositPacket)
         {
             if (Session.Character.Family == null || !(Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
               || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
@@ -286,11 +290,11 @@ namespace OpenNos.Handler
                 return;
             }
 
-            ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory);
-            ItemInstance itemdest = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.NewSlot, InventoryType.FamilyWareHouse);
+            ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(fDepositPacket.Slot, fDepositPacket.Inventory);
+            ItemInstance itemdest = Session.Character.Family.Warehouse.LoadBySlotAndType(fDepositPacket.NewSlot, InventoryType.FamilyWareHouse);
 
             // check if the destination slot is out of range
-            if (packet.NewSlot > Session.Character.Family.WarehouseSize)
+            if (fDepositPacket.NewSlot > Session.Character.Family.WarehouseSize)
             {
                 return;
             }
@@ -302,7 +306,7 @@ namespace OpenNos.Handler
             }
 
             // actually move the item from source to destination
-            Session.Character.Inventory.FDepositItem(packet.Inventory, packet.Slot, packet.Amount, packet.NewSlot, ref item, ref itemdest);
+            Session.Character.Inventory.FDepositItem(fDepositPacket.Inventory, fDepositPacket.Slot, fDepositPacket.Amount, fDepositPacket.NewSlot, ref item, ref itemdest);
         }
 
         /// <summary>
@@ -335,7 +339,7 @@ namespace OpenNos.Handler
             sessions.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
         }
 
-        [Packet("%Familykick")]
+        [Packet("%Familydismiss")]
         [Packet("%Rejetdefamille")]
         public void FamilyKick(string packet)
         {
@@ -426,13 +430,13 @@ namespace OpenNos.Handler
         /// <summary>
         /// glist packet
         /// </summary>
-        /// <param name="glistPacket"></param>
-        public void FamilyList(GListPacket glistPacket)
+        /// <param name="gListPacket"></param>
+        public void FamilyList(GListPacket gListPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
-                if (glistPacket.Type == 2)
+                if (gListPacket.Type == 2)
                 {
                     Session.SendPacket(Session.Character.GenerateGInfo());
                     Session.SendPacket(Session.Character.GenerateFamilyMember());
@@ -649,14 +653,10 @@ namespace OpenNos.Handler
         /// <param name="fReposPacket"></param>
         public void FamilyRepos(FReposPacket fReposPacket)
         {
-            if (Session.Character.Family == null ||
-                !
-             (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
+            if (Session.Character.Family == null || !(Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
              || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
              || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL
-             || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL
-             )
-            )
+             || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL))
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
                 return;
@@ -672,8 +672,8 @@ namespace OpenNos.Handler
                 return;
             }
 
-            var sourceInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(fReposPacket.OldSlot, InventoryType.FamilyWareHouse);
-            var destinationInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(fReposPacket.NewSlot, InventoryType.FamilyWareHouse);
+            ItemInstance sourceInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(fReposPacket.OldSlot, InventoryType.FamilyWareHouse);
+            ItemInstance destinationInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(fReposPacket.NewSlot, InventoryType.FamilyWareHouse);
 
             if (sourceInventory != null && fReposPacket.Amount <= sourceInventory.Amount)
             {
@@ -736,38 +736,34 @@ namespace OpenNos.Handler
         /// <summary>
         /// f_withdraw packet
         /// </summary>
-        /// <param name="packet"></param>
-        public void FamilyWithdraw(FWithdrawPacket packet)
+        /// <param name="fWithdrawPacket"></param>
+        public void FamilyWithdraw(FWithdrawPacket fWithdrawPacket)
         {
-            if (Session.Character.Family == null ||
-              !
-           (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
+            if (Session.Character.Family == null || !(Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
            || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
            || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL
-           || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL
-           )
-          )
+           || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL))
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
                 return;
             }
-            ItemInstance previousInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.Slot, InventoryType.FamilyWareHouse);
-            if (packet.Amount <= 0 || previousInventory == null || packet.Amount > previousInventory.Amount)
+            ItemInstance previousInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(fWithdrawPacket.Slot, InventoryType.FamilyWareHouse);
+            if (fWithdrawPacket.Amount <= 0 || previousInventory == null || fWithdrawPacket.Amount > previousInventory.Amount)
             {
                 return;
             }
             ItemInstance item2 = previousInventory.DeepCopy();
             item2.Id = Guid.NewGuid();
-            item2.Amount = packet.Amount;
+            item2.Amount = fWithdrawPacket.Amount;
             item2.CharacterId = Session.Character.CharacterId;
 
-            previousInventory.Amount -= packet.Amount;
+            previousInventory.Amount -= fWithdrawPacket.Amount;
             if (previousInventory.Amount <= 0)
             {
                 previousInventory = null;
             }
             List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(item2, item2.Item.Type);
-            Session.SendPacket(UserInterfaceHelper.Instance.GenerateFStashRemove(packet.Slot));
+            Session.SendPacket(UserInterfaceHelper.Instance.GenerateFStashRemove(fWithdrawPacket.Slot));
             if (previousInventory != null)
             {
                 DAOFactory.IteminstanceDAO.InsertOrUpdate(previousInventory);
@@ -777,12 +773,12 @@ namespace OpenNos.Handler
                 FamilyCharacter fhead = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
                 if (fhead == null)
                     return;
-                DAOFactory.IteminstanceDAO.DeleteFromSlotAndType(fhead.CharacterId, packet.Slot, InventoryType.FamilyWareHouse);
+                DAOFactory.IteminstanceDAO.DeleteFromSlotAndType(fhead.CharacterId, fWithdrawPacket.Slot, InventoryType.FamilyWareHouse);
             }
-            Session.Character.Family.InsertFamilyLog(FamilyLogType.WareHouseRemoved, Session.Character.Name, message: $"{item2.ItemVNum}|{packet.Amount}");
+            Session.Character.Family.InsertFamilyLog(FamilyLogType.WareHouseRemoved, Session.Character.Name, message: $"{item2.ItemVNum}|{fWithdrawPacket.Amount}");
         }
 
-        [Packet("%FamilyInvite")]
+        [Packet("%Familyinvite")]
         [Packet("%Invitationdefamille")]
         public void InviteFamily(string packet)
         {
