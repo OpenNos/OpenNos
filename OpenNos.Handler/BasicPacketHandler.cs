@@ -298,7 +298,7 @@ namespace OpenNos.Handler
                     {
                         foreach (MapNpc npc in Session.CurrentMapInstance.Npcs)
                         {
-                            if (npc.MapNpcId == ncifPacket.TargetId)
+                            if (npc.MapNpcId == (int)ncifPacket.TargetId)
                             {
                                 NpcMonster npcinfo = ServerManager.Instance.GetNpc(npc.NpcVNum);
                                 if (npcinfo == null)
@@ -308,9 +308,9 @@ namespace OpenNos.Handler
                                 Session.SendPacket($"st 2 {ncifPacket.TargetId} {npcinfo.Level} {npcinfo.HeroLevel} 100 100 50000 50000");
                             }
                         }
-                        foreach (var player in Session.CurrentMapInstance.Sessions)
+                        foreach (ClientSession session in Session.CurrentMapInstance.Sessions)
                         {
-                            Mate mate = player.Character.Mates.FirstOrDefault(s => s.MateTransportId == ncifPacket.TargetId);
+                            Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == (int)ncifPacket.TargetId);
                             if (mate != null)
                             {
                                 Session.SendPacket(mate.GenerateStatInfo());
@@ -325,7 +325,7 @@ namespace OpenNos.Handler
                     {
                         foreach (MapMonster monster in Session.CurrentMapInstance.Monsters)
                         {
-                            if (monster.MapMonsterId == ncifPacket.TargetId)
+                            if (monster.MapMonsterId == (int)ncifPacket.TargetId)
                             {
                                 NpcMonster monsterinfo = ServerManager.Instance.GetNpc(monster.MonsterVNum);
                                 if (monsterinfo == null)
@@ -1085,10 +1085,10 @@ namespace OpenNos.Handler
         /// <summary>
         /// RstartPacket packet
         /// </summary>
-        /// <param name="packet"></param>
-        public void GetRStart(RstartPacket packet)
+        /// <param name="rStartPacket"></param>
+        public void GetRStart(RStartPacket rStartPacket)
         {
-            if (packet.Type == 1)
+            if (rStartPacket.Type == 1)
             {
                 Session.CurrentMapInstance.InstanceBag.Lock = true;
                 Preq(new PreqPacket());
@@ -1227,7 +1227,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.CurrentMapInstance.Broadcast(Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId)?.GenerateRest());
+                    Session.CurrentMapInstance.Broadcast(Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == (int)u.UserId)?.GenerateRest());
                 }
             });
         }
@@ -1688,6 +1688,10 @@ namespace OpenNos.Handler
             Session.Character.DeleteTimeout();
         }
 
+        /// <summary>
+        /// walk packet
+        /// </summary>
+        /// <param name="walkPacket"></param>
         public void Walk(WalkPacket walkPacket)
         {
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
@@ -1706,7 +1710,11 @@ namespace OpenNos.Handler
                     Session.Character.PositionX = walkPacket.XCoordinate;
                     Session.Character.PositionY = walkPacket.YCoordinate;
                     Node[,] BrushFire = BestFirstSearch.LoadGrid(Session.CurrentMapInstance.Map.Grid);
-                    BestFirstSearch.LoadBrushFire(new GridPos() { X = Session.Character.PositionX, Y = Session.Character.PositionY }, ref BrushFire);
+                    BestFirstSearch.LoadBrushFire(new GridPos()
+                    {
+                        X = Session.Character.PositionX,
+                        Y = Session.Character.PositionY
+                    }, ref BrushFire);
                     Session.Character.BrushFire = BrushFire;
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
                     Session.SendPacket(Session.Character.GenerateCond());

@@ -114,6 +114,10 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateGInfo());
         }
 
+        /// <summary>
+        /// glmk packet
+        /// </summary>
+        /// <param name="createFamilyPacket"></param>
         public void CreateFamily(CreateFamilyPacket createFamilyPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
@@ -297,6 +301,10 @@ namespace OpenNos.Handler
             Session.Character.Inventory.FDepositItem(packet.Inventory, packet.Slot, packet.Amount, packet.NewSlot, ref item, ref itemdest);
         }
 
+        /// <summary>
+        /// glrm packet
+        /// </summary>
+        /// <param name="familyDissmissPacket"></param>
         public void FamilyDismiss(FamilyDismissPacket familyDissmissPacket)
         {
             if (Session.Character.Family == null || Session.Character.FamilyCharacter == null || Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
@@ -411,6 +419,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// glist packet
+        /// </summary>
+        /// <param name="glistPacket"></param>
         public void FamilyList(GListPacket glistPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
@@ -426,6 +438,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// fmg packet
+        /// </summary>
+        /// <param name="familyManagementPacket"></param>
         public void FamilyManagement(FamilyManagementPacket familyManagementPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
@@ -814,6 +830,10 @@ namespace OpenNos.Handler
             Session.Character.FamilyInviteCharacters.Add(otherSession.Character.CharacterId);
         }
 
+        /// <summary>
+        /// gjoin packet
+        /// </summary>
+        /// <param name="joinFamilyPacket"></param>
         public void JoinFamily(JoinFamilyPacket joinFamilyPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);

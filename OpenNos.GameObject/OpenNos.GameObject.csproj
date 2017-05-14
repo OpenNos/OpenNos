@@ -137,8 +137,8 @@
     <Compile Include="Packets\ClientPackets\ReqInfoPacket.cs" />
     <Compile Include="Packets\ClientPackets\RequestNpcPacket.cs" />
     <Compile Include="Packets\ClientPackets\RevivalPacket.cs" />
-    <Compile Include="Packets\ClientPackets\RselPacket.cs" />
-    <Compile Include="Packets\ClientPackets\RstartPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RSelPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RStartPacket.cs" />
     <Compile Include="Packets\ClientPackets\RxitPacket.cs" />
     <Compile Include="Packets\ClientPackets\SellPacket.cs" />
     <Compile Include="Packets\ClientPackets\ShoppingPacket.cs" />
