@@ -577,9 +577,6 @@ namespace OpenNos.GameObject.Helpers
             }
             switch (upgrade)
             {
-                case 0:
-                    break;
-
                 case 1:
                     point += 5;
                     break;
@@ -639,11 +636,11 @@ namespace OpenNos.GameObject.Helpers
                 case 15:
                     point += 173;
                     break;
+            }
 
-                //lil easter egg;)
-                default:
-                    point += 173 + (25 + (5 * (upgrade - 15)));
-                    break;
+            if (upgrade > 15)
+            {
+                point += 173 + (25 + (5 * (upgrade - 15)));
             }
 
             return point;
