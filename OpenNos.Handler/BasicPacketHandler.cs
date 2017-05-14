@@ -550,6 +550,10 @@ namespace OpenNos.Handler
         /// <param name="btkPacket"></param>
         public void FriendTalk(BtkPacket btkPacket)
         {
+            if (string.IsNullOrEmpty(btkPacket.Message))
+            {
+                return;
+            }
             string message = btkPacket.Message;
             if (message.Length > 60)
             {
