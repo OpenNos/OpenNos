@@ -1752,6 +1752,7 @@ namespace OpenNos.Handler
         {
             try
             {
+                // TODO: Implement WhisperSupport
                 if (string.IsNullOrEmpty(whisperPacket.Message))
                 {
                     return;
@@ -1759,7 +1760,6 @@ namespace OpenNos.Handler
                 string characterName = whisperPacket.Message.Split(' ')[whisperPacket.Message.StartsWith("GM ") ? 1 : 0];
                 string message = string.Empty;
                 string[] packetsplit = whisperPacket.Message.Split(' ');
-
                 for (int i = packetsplit[0] == "GM" ? 2 : 1; i < packetsplit.Length; i++)
                 {
                     message += packetsplit[i] + " ";
@@ -1768,11 +1768,14 @@ namespace OpenNos.Handler
                 {
                     message = message.Substring(0, 60);
                 }
-
                 message = message.Trim();
 
                 Session.SendPacket(Session.Character.GenerateSpk(message, 5));
                 CharacterDTO receiver = DAOFactory.CharacterDAO.LoadByName(characterName);
+                if (receiver.CharacterId == Session.Character.CharacterId)
+                {
+                    return;
+                }
                 if (receiver != null)
                 {
                     if (Session.Character.IsBlockedByCharacter(receiver.CharacterId))
