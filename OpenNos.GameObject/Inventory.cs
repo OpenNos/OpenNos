@@ -266,7 +266,7 @@ namespace OpenNos.GameObject
 
         public int CountItem(int itemVNum)
         {
-            return GetAllItems().Where(s => s.ItemVNum == itemVNum).Sum(i => i.Amount);
+            return GetAllItems().Where(s => s.ItemVNum == itemVNum && s.Type != InventoryType.FamilyWareHouse && s.Type != InventoryType.Bazaar && s.Type != InventoryType.Warehouse && s.Type != InventoryType.PetWarehouse).Sum(i => i.Amount);
         }
 
         public int CountItemInAnInventory(InventoryType inv)
@@ -362,7 +362,7 @@ namespace OpenNos.GameObject
 
         public void FDepositItem(InventoryType inventory, byte slot, byte amount, byte newSlot, ref ItemInstance item, ref ItemInstance itemdest)
         {
-            if (item != null && amount <= item.Amount && amount > 0)
+            if (item != null && amount <= item.Amount && amount > 0 && item.Item.IsTradable && !item.IsBound)
             {
                 FamilyCharacter fhead = Owner.Family?.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
                 if (fhead == null)
@@ -727,7 +727,7 @@ namespace OpenNos.GameObject
             {
                 inventoryitemids.Add(itemfree.Id);
             }
-            return GetAllItems().Where(i => inventoryitemids.Contains(i.Id)).OrderBy(i => i.Slot).FirstOrDefault();
+            return GetAllItems().Where(i => inventoryitemids.Contains(i.Id) && i.Type != InventoryType.Wear && i.Type != InventoryType.PetWarehouse && i.Type != InventoryType.FamilyWareHouse && i.Type != InventoryType.Warehouse && i.Type != InventoryType.Bazaar).OrderBy(i => i.Slot).FirstOrDefault();
         }
 
         private short? GetFreeSlot(InventoryType type, int backPack)

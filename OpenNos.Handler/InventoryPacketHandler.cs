@@ -199,6 +199,8 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             long gold;
+            if (packetsplit.Length < 3)
+                return;
             long.TryParse(packetsplit[2], out gold);
             byte[] type = new byte[10], qty = new byte[10];
             short[] slot = new short[10];

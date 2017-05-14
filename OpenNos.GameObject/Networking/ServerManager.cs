@@ -1257,6 +1257,7 @@ namespace OpenNos.GameObject
                         foreach (ClientSession session in groupMembers)
                         {
                             session.SendPacket(session.Character.GeneratePinit());
+                            session.Character.Group.Characters.ForEach(s => session.SendPacket(s.Character.GenerateStat()));
                             session.SendPackets(session.Character.GeneratePst());
                         }
                     }

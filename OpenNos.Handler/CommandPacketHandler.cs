@@ -643,8 +643,10 @@ namespace OpenNos.Handler
                         sp.XP = 0;
                         Session.SendPacket(Session.Character.GenerateLev());
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
-                        Session.SendPacket(Session.Character.GenerateSki());
                         Session.Character.LearnSPSkill();
+                        Session.SendPacket(Session.Character.GenerateSki());
+                        Session.SendPackets(Session.Character.GenerateQuicklist());
+                        Session.Character.Skills.GetAllItems().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), Session.Character.PositionX, Session.Character.PositionY);
@@ -2286,95 +2288,6 @@ namespace OpenNos.Handler
             }
         }
 
-        /// <summary>
-        /// $Inventory Command
-        /// </summary>
-        /// <param name="inventoryPreviewPacket"></param>
-        public void ViewInventory(InventoryPreviewPacket inventoryPreviewPacket)
-        {
-            //TODO: Fix it! Doesn't work. Copycat of GenerateStartupInventory()
-            Logger.Debug("Inventory Command", Session.Character.GenerateIdentity());
-            if (inventoryPreviewPacket != null)
-            {
-                ClientSession session = Session;
-                if (ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name) != null)
-                {
-                    session = ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name);
-                }
-                string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7";
-                // inv 3 used for miniland objects
-                if (session.Character.Inventory == null) return;
-                var listItems = session.Character.Inventory.GetAllItems();
-                foreach (ItemInstance inv in listItems)
-                {
-                    switch (inv.Type)
-                    {
-                        case InventoryType.Equipment:
-                            if (inv.Item.EquipmentSlot == EquipmentType.Sp)
-                            {
-                                SpecialistInstance specialistInstance = inv as SpecialistInstance;
-                                if (specialistInstance != null)
-                                {
-                                    inv0 += $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
-                                }
-                            }
-                            else
-                            {
-                                WearableInstance wearableInstance = inv as WearableInstance;
-                                if (wearableInstance != null)
-                                {
-                                    inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
-                                }
-                            }
-                            break;
-
-                        case InventoryType.Main:
-                            inv1 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                            break;
-
-                        case InventoryType.Etc:
-                            inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                            break;
-
-                        case InventoryType.Miniland:
-                            inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
-                            break;
-
-                        case InventoryType.Specialist:
-                            SpecialistInstance specialist = inv as SpecialistInstance;
-                            if (specialist != null)
-                            {
-                                inv6 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
-                            }
-                            break;
-
-                        case InventoryType.Costume:
-                            WearableInstance costumeInstance = inv as WearableInstance;
-                            if (costumeInstance != null)
-                            {
-                                inv7 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
-                            }
-                            break;
-
-                        case InventoryType.Wear:
-                            break;
-
-                        case InventoryType.Bazaar:
-                            break;
-
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
-                Session.SendPacket(inv0);
-                Session.SendPacket(inv1);
-                Session.SendPacket(inv2);
-                Session.SendPacket(inv6);
-                Session.SendPacket(inv7);
-            }
-        }
 
         /// <summary>
         /// $WigColor Command
@@ -2497,9 +2410,9 @@ namespace OpenNos.Handler
             ClientSession session = ServerManager.Instance.GetSessionByCharacterName(character.Name);
             if (session != null)
             {
-                Session.SendPacket(Session.Character.GenerateSay("----- INFORMATIONS -----", 13));
+                Session.SendPacket(Session.Character.GenerateSay("----- SESSION -----", 13));
                 Session.SendPacket(Session.Character.GenerateSay($"Current IP: {session.IpAddress}", 13));
-                Session.SendPacket(Session.Character.GenerateSay("-------------------", 13));
+                Session.SendPacket(Session.Character.GenerateSay("----- ------------ -----", 13));
             }
         }
 

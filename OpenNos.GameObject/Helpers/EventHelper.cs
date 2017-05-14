@@ -284,8 +284,6 @@ namespace OpenNos.GameObject.Helpers
                         break;
 
                     case EventActionType.SPAWNONLASTENTRY:
-
-                        //TODO REVIEW THIS CASE
                         Character lastincharacter = evt.MapInstance.Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
                         List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
                         MapCell hornSpawn = new MapCell
@@ -294,7 +292,7 @@ namespace OpenNos.GameObject.Helpers
                             Y = lastincharacter?.PositionY ?? 140
                         };
                         long hornTarget = lastincharacter?.CharacterId ?? -1;
-                        summonParameters.Add(new MonsterToSummon((short)evt.Parameter, hornSpawn, hornTarget, true, new List<EventContainer>()));
+                        summonParameters.Add(new MonsterToSummon(Convert.ToInt16(evt.Parameter), hornSpawn, hornTarget, true, new List<EventContainer>()));
                         evt.MapInstance.SummonMonsters(summonParameters);
                         break;
 

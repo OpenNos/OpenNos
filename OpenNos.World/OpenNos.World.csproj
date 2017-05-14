@@ -223,6 +223,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalizedResources.pl.resx</DependentUpon>
     </Compile>
+     <Compile Include="Resource\LocalizedResources.th.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocalizedResources.th.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resource\LocalizedResources1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -258,6 +263,10 @@
       <IsTransformFile>True</IsTransformFile>
     </None>
     <None Include="App.Release.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
+    <None Include="App.TH.config">
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
     </None>
@@ -334,6 +343,11 @@
     <EmbeddedResource Include="Resource\LocalizedResources.fr.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedResources.fr.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\LocalizedResources.th.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LocalizedResources.th.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource\LocalizedResources.resx">
