@@ -9,7 +9,7 @@ namespace OpenNos.GameObject.Packets.ClientPackets
         #region Properties
 
         [PacketIndex(0)]
-        public sbyte Type { get; set; }
+        public byte Type { get; set; }
 
         [PacketIndex(1)]
         public long CharacterId { get; set; }

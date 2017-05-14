@@ -155,7 +155,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// compl
+        /// compl packet
         /// </summary>
         /// <param name="complimentPacket"></param>
         public void Compliment(ComplimentPacket complimentPacket)
@@ -608,13 +608,13 @@ namespace OpenNos.Handler
                                 {
                                     switch (fInsPacket.Type)
                                     {
-                                        case -1:
+                                        case 1:
                                             Session.Character.AddRelation(characterId, CharacterRelationType.Friend);
                                             Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
                                             otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
                                             break;
 
-                                        case -99:
+                                        case 2:
                                             otherSession.SendPacket(Language.Instance.GetMessageFromKey("FRIEND_REJECTED"));
                                             break;
 
@@ -629,7 +629,7 @@ namespace OpenNos.Handler
                                 }
                                 else
                                 {
-                                    otherSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#fins^-1^{Session.Character.CharacterId} #fins^-99^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("FRIEND_ADD"), Session.Character.Name)}"));
+                                    otherSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#fins^1^{Session.Character.CharacterId} #fins^2^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("FRIEND_ADD"), Session.Character.Name)}"));
                                     Session.Character.FriendRequestCharacters.Add(characterId);
                                 }
                             }
