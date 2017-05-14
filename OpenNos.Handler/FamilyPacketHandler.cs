@@ -223,9 +223,13 @@ namespace OpenNos.Handler
 
         public void FamilyChat(FamilyChatPacket familyChatPacket)
         {
+            if (string.IsNullOrEmpty(familyChatPacket.Message))
+            {
+                return;
+            }
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
-            {
+            { 
                 string msg = familyChatPacket.Message;
                 string ccmsg = $"[{Session.Character.Name}]:{msg}";
                 if (Session.Account.Authority == AuthorityType.GameMaster)

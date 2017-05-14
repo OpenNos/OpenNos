@@ -630,13 +630,17 @@ namespace OpenNos.Handler
         /// <summary>
         /// say_p packet
         /// </summary>
-        /// <param name="packet"></param>
-        public void PetTalk(SayPPacket packet)
+        /// <param name="sayPPacket"></param>
+        public void PetTalk(SayPPacket sayPPacket)
         {
-            Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == packet.PetId);
+            if (string.IsNullOrEmpty(sayPPacket.Message))
+            {
+                return;
+            }
+            Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == sayPPacket.PetId);
             if (mate != null)
             {
-                Session.CurrentMapInstance.Broadcast(mate.GenerateSay(packet.Message, 2));
+                Session.CurrentMapInstance.Broadcast(mate.GenerateSay(sayPPacket.Message, 2));
             }
         }
 

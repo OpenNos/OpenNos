@@ -541,7 +541,10 @@ namespace OpenNos.Handler
         /// <param name="groupSayPacket"></param>
         public void GroupTalk(GroupSayPacket groupSayPacket)
         {
-            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(groupSayPacket.Message, 3), ReceiverType.Group);
+            if (!string.IsNullOrEmpty(groupSayPacket.Message))
+            {
+                ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(groupSayPacket.Message, 3), ReceiverType.Group);
+            }
         }
 
         /// <summary>
@@ -1075,6 +1078,10 @@ namespace OpenNos.Handler
         /// <param name="heroPacket"></param>
         public void Hero(HeroPacket heroPacket)
         {
+            if (string.IsNullOrEmpty(heroPacket.Message))
+            {
+                return;
+            }
             if (Session.Character.IsReputHero() >= 3)
             {
                 heroPacket.Message = heroPacket.Message.Trim();
@@ -1329,9 +1336,12 @@ namespace OpenNos.Handler
         /// <param name="sayPacket"></param>
         public void Say(SayPacket sayPacket)
         {
+            if (string.IsNullOrEmpty(sayPacket.Message))
+            {
+                return;
+            }
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             string message = sayPacket.Message;
-
             if (Session.Character.IsMuted() && penalty != null)
             {
                 if (Session.Character.Gender == GenderType.Female)
@@ -1349,10 +1359,6 @@ namespace OpenNos.Handler
             }
             else
             {
-                if (message == null)
-                {
-                    return;
-                }
                 string language = new CultureInfo(ConfigurationManager.AppSettings["Language"]).EnglishName;
                 if (message.Split(' ').Length > 3 && ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(message))
                 {
@@ -1745,6 +1751,10 @@ namespace OpenNos.Handler
         {
             try
             {
+                if (string.IsNullOrEmpty(whisperPacket.Message))
+                {
+                    return;
+                }
                 string characterName = whisperPacket.Message.Split(' ')[whisperPacket.Message.StartsWith("GM ") ? 1 : 0];
                 string message = string.Empty;
                 string[] packetsplit = whisperPacket.Message.Split(' ');
