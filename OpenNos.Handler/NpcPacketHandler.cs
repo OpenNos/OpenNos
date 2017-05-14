@@ -195,7 +195,7 @@ namespace OpenNos.Handler
                                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                                             return;
                                         }
-                                        foreach (var skill in Session.Character.Skills.GetAllItems())
+                                        foreach (CharacterSkill skill in Session.Character.Skills.GetAllItems())
                                         {
                                             if (skillinfo.CastId == skill.Skill.CastId && skill.Skill.SkillVNum < 200)
                                             {
@@ -489,6 +489,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// pdtse packet
+        /// </summary>
+        /// <param name="pdtsePacket"></param>
         public void Pdtse(PdtsePacket pdtsePacket)
         {
             Logger.Debug(Session.Character.GenerateIdentity(), pdtsePacket.ToString());
@@ -502,7 +506,15 @@ namespace OpenNos.Handler
                 MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
                 if (npc != null)
                 {
-                    int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = npc.MapX, Y = npc.MapY });
+                    int distance = Map.GetDistance(new MapCell
+                    {
+                        X = Session.Character.PositionX,
+                        Y = Session.Character.PositionY
+                    }, new MapCell
+                    {
+                        X = npc.MapX,
+                        Y = npc.MapY
+                    });
                     if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
                     {
                         Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
@@ -524,7 +536,15 @@ namespace OpenNos.Handler
                 MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
                 if (npc != null)
                 {
-                    int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = npc.MapX, Y = npc.MapY });
+                    int distance = Map.GetDistance(new MapCell
+                    {
+                        X = Session.Character.PositionX,
+                        Y = Session.Character.PositionY
+                    }, new MapCell
+                    {
+                        X = npc.MapX,
+                        Y = npc.MapY
+                    });
                     if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
                     {
                         Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
@@ -620,21 +640,23 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("sell")]
-        public void SellShop(string packet)
+        /// <summary>
+        /// sell packet
+        /// </summary>
+        /// <param name="sellPacket"></param>
+        public void SellShop(SellPacket sellPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
+            Logger.Debug(Session.Character.GenerateIdentity(), sellPacket.ToString());
             if (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
             {
                 return;
             }
-            if (packetsplit.Length > 6)
+            if (sellPacket.Amount.HasValue && sellPacket.Slot.HasValue)
             {
-                InventoryType type;
-                byte amount, slot;
+                InventoryType type = (InventoryType)sellPacket.Data;
+                byte amount = sellPacket.Amount.Value, slot = sellPacket.Slot.Value;
 
-                if (!Enum.TryParse(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount) || type == InventoryType.Bazaar)
+                if (type == InventoryType.Bazaar)
                 {
                     return;
                 }
@@ -666,10 +688,9 @@ namespace OpenNos.Handler
                 Session.Character.Inventory.RemoveItemAmountFromInventory(amount, inv.Id);
                 Session.SendPacket(Session.Character.GenerateGold());
             }
-            else if (packetsplit.Length == 5)
+            else
             {
-                short vnum;
-                short.TryParse(packetsplit[4], out vnum);
+                short vnum = sellPacket.Data;
                 CharacterSkill skill = Session.Character.Skills[vnum];
                 if (skill == null || vnum == 200 + 20 * (byte)Session.Character.Class || vnum == 201 + 20 * (byte)Session.Character.Class)
                 {
@@ -678,7 +699,7 @@ namespace OpenNos.Handler
                 Session.Character.Gold -= skill.Skill.Price;
                 Session.SendPacket(Session.Character.GenerateGold());
 
-                foreach (var loadedSkill in Session.Character.Skills.GetAllItems())
+                foreach (CharacterSkill loadedSkill in Session.Character.Skills.GetAllItems())
                 {
                     if (skill.Skill.SkillVNum == loadedSkill.Skill.UpgradeSkill)
                     {
@@ -693,6 +714,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// shopping packet
+        /// </summary>
+        /// <param name="shoppingPacket"></param>
         public void Shopping(ShoppingPacket shoppingPacket)
         {
             Logger.Debug(Session.Character.GenerateIdentity(), shoppingPacket.ToString());
@@ -803,6 +828,10 @@ namespace OpenNos.Handler
             Session.SendPacket($"n_inv 2 {mapnpc.MapNpcId} 0 {typeshop}{shoplist}");
         }
 
+        /// <summary>
+        /// npc_req packet
+        /// </summary>
+        /// <param name="requestNpcPacket"></param>
         public void ShowShop(RequestNpcPacket requestNpcPacket)
         {
             Logger.Debug(Session.Character.GenerateIdentity(), requestNpcPacket.ToString());
