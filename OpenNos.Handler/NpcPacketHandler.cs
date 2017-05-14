@@ -820,7 +820,7 @@ namespace OpenNos.Handler
             else
             {
                 // Npc Shop , ignore if has drop
-                MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(requestNpcPacket.Owner));
+                MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((int)requestNpcPacket.Owner));
                 if (npc == null)
                 {
                     return;
