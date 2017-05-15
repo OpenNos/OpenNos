@@ -1106,7 +1106,7 @@ namespace OpenNos.GameObject
             if (!map.Equals(default(KeyValuePair<Guid, MapInstance>)))
             {
                 map.Value.Dispose();
-                ((IDictionary)_mapinstances).Remove(map);
+                ((IDictionary)_mapinstances).Remove(map.Key);
             }
         }
 

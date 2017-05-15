@@ -529,6 +529,7 @@ namespace OpenNos.GameObject
             if (disposing)
             {
                 _monsters.Dispose();
+                _npcs.Dispose();
             }
         }
 
