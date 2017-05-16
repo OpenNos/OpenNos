@@ -1526,38 +1526,46 @@ namespace OpenNos.Handler
                 {
                     mutePacket.Duration = 60;
                 }
-
                 mutePacket.Reason = mutePacket.Reason?.Trim();
-                CharacterDTO characterToMute = DAOFactory.CharacterDAO.LoadByName(mutePacket.CharacterName);
-                if (characterToMute != null)
-                {
-                    ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == mutePacket.CharacterName);
-                    session?.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), mutePacket.Reason, mutePacket.Duration)));
-                    if (session != null && !session.Character.IsMuted())
-                    {
-                        PenaltyLogDTO log = new PenaltyLogDTO
-                        {
-                            AccountId = characterToMute.AccountId,
-                            Reason = mutePacket.Reason,
-                            Penalty = PenaltyType.Muted,
-                            DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddMinutes(mutePacket.Duration),
-                            AdminName = Session.Character.Name
-                        };
-
-                        session.Character.InsertOrUpdatePenalty(log);
-                    }
-
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-                }
+                MuteMethod(mutePacket.CharacterName, mutePacket.Reason, mutePacket.Duration);
             }
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME DURATION(MINUTES) REASON", 10));
+            }
+        }
+
+        /// <summary>
+        /// private mute method
+        /// </summary>
+        /// <param name="characterName"></param>
+        /// <param name="reason"></param>
+        /// <param name="duration"></param>
+        private void MuteMethod(string characterName, string reason, int duration)
+        {
+            CharacterDTO characterToMute = DAOFactory.CharacterDAO.LoadByName(characterName);
+            if (characterToMute != null)
+            {
+                ClientSession session = ServerManager.Instance.GetSessionByCharacterName(characterName);
+                if (session != null && !session.Character.IsMuted())
+                {
+                    session?.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
+                }
+                PenaltyLogDTO log = new PenaltyLogDTO
+                {
+                    AccountId = characterToMute.AccountId,
+                    Reason = reason,
+                    Penalty = PenaltyType.Muted,
+                    DateStart = DateTime.Now,
+                    DateEnd = DateTime.Now.AddMinutes(duration),
+                    AdminName = Session.Character.Name
+                };
+                Session.Character.InsertOrUpdatePenalty(log);
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
             }
         }
 
@@ -1902,6 +1910,60 @@ namespace OpenNos.Handler
             if (eventPacket != null)
             {
                 EventHelper.Instance.GenerateEvent(eventPacket.EventType);
+            }
+        }
+
+        /// <summary>
+        /// $Warn Command
+        /// </summary>
+        /// <param name="warningPacket"></param>
+        public void Warn(WarningPacket warningPacket)
+        {
+            Logger.Debug(warningPacket.ToString(), Session.Character.GenerateIdentity());
+            if (warningPacket != null)
+            {
+                string characterName = warningPacket.CharacterName;
+                CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
+                if (character != null)
+                {
+                    PenaltyLogDTO log = new PenaltyLogDTO
+                    {
+                        AccountId = character.AccountId,
+                        Reason = warningPacket.Reason,
+                        Penalty = PenaltyType.Warning,
+                        DateStart = DateTime.Now,
+                        DateEnd = DateTime.Now,
+                        AdminName = Session.Character.Name
+                    };
+                    Session.Character.InsertOrUpdatePenalty(log);
+                    int penaltyCount = DAOFactory.PenaltyLogDAO.LoadByAccount(character.AccountId).Count(p => p.Penalty == PenaltyType.Warning);
+                    switch (penaltyCount)
+                    {
+                        case 2:
+                            MuteMethod(characterName, "Auto-Warning mute: 2 strikes", 30);
+                            break;
+                        case 3:
+                            MuteMethod(characterName, "Auto-Warning mute: 3 strikes", 60);
+                            break;
+                        case 4:
+                            MuteMethod(characterName, "Auto-Warning mute: 4 strikes", 720);
+                            break;
+                        case 5:
+                            MuteMethod(characterName, "Auto-Warning mute: 5 strikes", 1440);
+                            break;
+                        case 6:
+                            MuteMethod(characterName, "You've been THUNDERSTRUCK", 6969); // imagined number as for I = √(-1), complex z = a + bi
+                            break;
+                    }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$Warn CHARACTERNAME REASON", 10));
             }
         }
 
@@ -2481,18 +2543,19 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
                 IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => s.AccountId == account.AccountId).ToList();
                 PenaltyLogDTO penalty = penaltyLogs.LastOrDefault(s => s.DateEnd > DateTime.Now);
+                Session.SendPacket(Session.Character.GenerateSay("----- PENALTY -----", 13));
                 if (penalty != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateSay("----- PENALTY -----", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"Type: {penalty.Penalty}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"AdminName: {penalty.AdminName}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"Reason: {penalty.Reason}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"DateStart: {penalty.DateStart}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"DateEnd: {penalty.DateEnd}", 13));
-                    Session.SendPacket(Session.Character.GenerateSay($"Bans: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Banned)}", 13));
-                    Session.SendPacket(Session.Character.GenerateSay($"Mutes: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Muted)}", 13));
-                    Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
                 }
+                Session.SendPacket(Session.Character.GenerateSay($"Bans: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Banned)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Mutes: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Muted)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Warnings: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Warning)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
             }
             ClientSession session = ServerManager.Instance.GetSessionByCharacterName(character.Name);
             if (session != null)
