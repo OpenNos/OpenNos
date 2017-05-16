@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL;
 using OpenNos.Data;
 using System.Collections.Generic;
 
@@ -24,6 +25,7 @@ namespace OpenNos.GameObject
         public Skill()
         {
             Combos = new List<ComboDTO>();
+            Cards = new List<SkillCardDTO>();
         }
 
         #endregion
@@ -31,6 +33,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<ComboDTO> Combos { get; set; }
+        public List<SkillCardDTO> Cards { get; set; }
 
         #endregion
 

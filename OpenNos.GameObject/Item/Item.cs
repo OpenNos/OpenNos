@@ -12,7 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL;
 using OpenNos.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -29,6 +32,10 @@ namespace OpenNos.GameObject
             InitializeItem(item);
         }
 
+        #endregion
+
+        #region Properties
+        public List<ItemCardDTO> Cards { get; set; }
         #endregion
 
         #region Methods
@@ -106,6 +113,7 @@ namespace OpenNos.GameObject
             WaitDelay = item.WaitDelay;
             WaterElement = item.WaterElement;
             WaterResistance = item.WaterResistance;
+            Cards = DAOFactory.ItemCardDAO.LoadByItemVNum(item.VNum).ToList();
         }
 
         //TODO: Convert to PacketDefinition

@@ -166,6 +166,8 @@ namespace OpenNos.GameObject
 
         public int XPRate { get; set; }
 
+        public List<Card> Cards { get; set; }
+
         #endregion
 
         #region Methods
@@ -189,7 +191,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.RemoveVehicle();
                 }
-                Session.Character.Buff.Clear();
+                Session.Character.DisableBuffs(true, true);
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
@@ -226,7 +228,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.RemoveVehicle();
                 }
-                Session.Character.Buff.Clear();
+                Session.Character.DisableBuffs(true, true);
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
@@ -894,9 +896,18 @@ namespace OpenNos.GameObject
             {
                 Skill skill = (Skill)skillDTO;
                 skill.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList());
+                skill.Cards.AddRange(DAOFactory.SkillCardDAO.LoadBySkillVNum(skill.SkillVNum).ToList());
                 _skills.Add(skill);
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
+
+            // initialize buffs
+            Cards = new List<Card>();
+            foreach (CardDTO cardDTO in DAOFactory.CardDAO.LoadAll())
+            {
+                Cards.Add((Card)cardDTO);
+            }
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), _skills.Count));
 
             // intialize mapnpcs
             _mapNpcs = new ThreadSafeSortedList<short, List<MapNpc>>();

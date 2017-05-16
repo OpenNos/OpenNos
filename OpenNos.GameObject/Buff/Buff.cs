@@ -12,23 +12,35 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.GameObject.Buff.BCard;
+using System;
+using System.Linq;
+using System.Reactive.Linq;
+using OpenNos.Data;
+using System.Collections.Generic;
 
-namespace OpenNos.GameObject.Buff.Indicators.SP1.Archer
+namespace OpenNos.GameObject
 {
-    public class WindWalker : IndicatorBase
+    public class Buff
     {
-        #region Instantiation
+        #region Members
+        
+        public int Level;
+        public Card Card { get; set; }
+        public DateTime Start { get; set; }
+        public bool StaticBuff { get; set; }
+        public List<BCardDTO> DirectBuffs { get; set; }
+        public List<BCardDTO> DelayedBuffs { get; set; }
 
-        public WindWalker(int Level)
+    
+        public Buff(int id, byte level)
         {
-            Name = "Wind Walker";
-            Duration = 4200;
-            Id = 75;
-            base.Level = Level;
-            DirectBuffs.Add(new BCardEntry(Type.Speed, SubType.Increase, 2, 0, false));
+            Card = ServerManager.Instance.Cards.FirstOrDefault(s => s.CardId == id);
+            Level = level;
+            Start = DateTime.Now;
         }
+        
 
         #endregion
+
     }
 }

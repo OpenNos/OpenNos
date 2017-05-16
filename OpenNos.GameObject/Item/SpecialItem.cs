@@ -15,8 +15,6 @@
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.GameObject.Buff.Indicators;
-using OpenNos.GameObject.Buff.Indicators.Item;
 using OpenNos.GameObject.Helpers;
 using System;
 using System.Linq;
@@ -37,6 +35,14 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
+            inv.Item.Cards.ForEach(c =>
+            {
+                if (ServerManager.Instance.RandomNumber() < c.CardChance)
+                {
+                    session.Character.AddBuff(new Buff(c.CardId, session.Character.Level));
+                }
+            });
+
             switch (Effect)
             {
                 // sp point potions
@@ -95,32 +101,6 @@ namespace OpenNos.GameObject
 
                 //Atk/Def/HP/Exp potions
                 case 6600:
-                    switch (EffectValue)
-                    {
-                        case 1:
-                            IndicatorBase buff1 = new AttackPotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
-                            session.Character.Buff.Add(buff1);
-                            break;
-
-                        case 2:
-                            IndicatorBase buff2 = new DefensePotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
-                            session.Character.Buff.Add(buff2);
-                            break;
-
-                        case 3:
-                            IndicatorBase buff3 = new EnergyPotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
-                            session.Character.Buff.Add(buff3);
-                            break;
-
-                        case 4:
-                            IndicatorBase buff4 = new ExperiencePotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
-                            session.Character.Buff.Add(buff4);
-                            break;
-                    }
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
 
