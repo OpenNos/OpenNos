@@ -866,6 +866,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Warn CHARACTERNAME REASON", 12));
             Session.SendPacket(Session.Character.GenerateSay("$XpRate VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
@@ -1003,15 +1004,15 @@ namespace OpenNos.Handler
             {
                 string name = demotePacket.CharacterName;
                 AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
-                if (account != null)
+                if (account != null && account.Authority >= AuthorityType.User)
                 {
-                    account.Authority = AuthorityType.User;
+                    account.Authority -= 1;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                     if (session != null)
                     {
-                        session.Account.Authority = AuthorityType.User;
-                        session.Character.Authority = AuthorityType.User;
+                        session.Account.Authority -= 1;
+                        session.Character.Authority -= 1;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
                         DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
                     }
@@ -1604,15 +1605,15 @@ namespace OpenNos.Handler
             {
                 string name = promotePacket.CharacterName;
                 AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
-                if (account != null)
+                if (account != null && account.Authority >= AuthorityType.User && account.Authority < AuthorityType.GameMaster)
                 {
-                    account.Authority = AuthorityType.GameMaster;
+                    account.Authority += 1;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                     if (session != null)
                     {
-                        session.Account.Authority = AuthorityType.GameMaster;
-                        session.Character.Authority = AuthorityType.GameMaster;
+                        session.Account.Authority += 1;
+                        session.Character.Authority += 1;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
                         DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Promotion, $"by: {Session.Character.Name}");
                     }
