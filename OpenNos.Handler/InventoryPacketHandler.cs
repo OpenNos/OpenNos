@@ -1699,10 +1699,29 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateStatChar());
                 Session.Character.SkillsSp = new ThreadSafeSortedList<int, CharacterSkill>();
+                byte couter = 0;
                 foreach (Skill ski in ServerManager.Instance.GetAllSkill())
                 {
-                    if (ski.Class == Session.Character.Morph + 31 && sp.SpLevel >= ski.LevelMinimum)
+                    if (ski.Class == Session.Character.Morph + 31 && sp.SpLevel >= ski.LevelMinimum && couter < 11)
                     {
+                        if(ski.SecondarySkillVNum != 0)
+                        {
+                            Skill skicombo = ServerManager.Instance.GetSkill(ski.SecondarySkillVNum);
+                            if(skicombo.SecondarySkillVNum != 0)
+                            {
+                                Session.Character.SkillsSp[skicombo.SecondarySkillVNum] = new CharacterSkill { SkillVNum = skicombo.SecondarySkillVNum, Character = Session.Character.CharacterId };
+                            }
+                            Session.Character.SkillsSp[ski.SecondarySkillVNum] = new CharacterSkill { SkillVNum = ski.SecondarySkillVNum, CharacterId = Session.Character.CharacterId };
+                        }
+                        if(ski.SkillVNum == 1187) // harded code
+                        {
+                            Session.Character.SkillsSp[1191] = new CharacterSkill { SkillVNum = 1191, CharacterId = Session.Character.CharacterId };
+                            Session.Character.SkillsSp[1192] = new CharacterSkill { SkillVNum = 1192, CharacterId = Session.Character.CharacterId };
+                            Session.Character.SkillsSp[1193] = new CharacterSkill { SkillVNum = 1193, CharacterId = Session.Character.CharacterId };
+                            Session.Character.SkillsSp[1194] = new CharacterSkill { SkillVNum = 1194, CharacterId = Session.Character.CharacterId };
+                            Session.Character.SkillsSp[1195] = new CharacterSkill { SkillVNum = 1195, CharacterId = Session.Character.CharacterId };
+                        }
+                        couter++ ;
                         Session.Character.SkillsSp[ski.SkillVNum] = new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId };
                     }
                 }

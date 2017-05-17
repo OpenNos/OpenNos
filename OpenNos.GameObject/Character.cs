@@ -3909,11 +3909,30 @@ namespace OpenNos.GameObject
                 specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
             }
             byte SkillSpCount = (byte)SkillsSp.Count;
+            byte couter = 0;
             SkillsSp = new ThreadSafeSortedList<int, CharacterSkill>();
             foreach (Skill ski in ServerManager.Instance.GetAllSkill())
             {
-                if (specialist != null && ski.Class == Morph + 31 && specialist.SpLevel >= ski.LevelMinimum)
+                if (specialist != null && ski.Class == Morph + 31 && specialist.SpLevel >= ski.LevelMinimum && couter < 11)
                 {
+                    if(ski.SecondarySkillVNum != 0)
+                    {
+                        Skill skicombo = ServerManager.Instance.GetSkill(ski.SecondarySkillVNum);
+                        if(skicombo.SecondarySkillVNum != 0)
+                        {
+                            SkillsSp[skicombo.SecondarySkillVNum] = new CharacterSkill { SkillVNum = skicombo.SecondarySkillVNum, Character = CharacterId };
+                        }
+                        SkillsSp[ski.SecondarySkillVNum] = new CharacterSkill { SkillVNum = ski.SecondarySkillVNum, CharacterId = CharacterId };
+                    }
+                    if(ski.SkillVNum == 1187) // harded code
+                    {
+                        SkillsSp[1191] = new CharacterSkill { SkillVNum = 1191, CharacterId = CharacterId };
+                        SkillsSp[1192] = new CharacterSkill { SkillVNum = 1192, CharacterId = CharacterId };
+                        SkillsSp[1193] = new CharacterSkill { SkillVNum = 1193, CharacterId = CharacterId };
+                        SkillsSp[1194] = new CharacterSkill { SkillVNum = 1194, CharacterId = CharacterId };
+                        SkillsSp[1195] = new CharacterSkill { SkillVNum = 1195, CharacterId = CharacterId };
+                    }
+                    couter++;
                     SkillsSp[ski.SkillVNum] = new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = CharacterId };
                 }
             }

@@ -2249,10 +2249,10 @@ namespace OpenNos.Import.Console
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
                                 }
-                                if (currentLine[3] == "68")
+                                if (currentLine[3] == "68" && currentLine[4] == "0")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
-                                    skill.SecondarySkillVNum = short.Parse(currentLine[6]);
+                                    skill.SecondarySkillVNum = (short)(short.Parse(currentLine[6]) / 4);
                                 }
                                 if (currentLine[3] == "69")
                                 {
@@ -2282,15 +2282,35 @@ namespace OpenNos.Import.Console
 
                             case "1":
                                 skill.ElementalDamage = short.Parse(currentLine[5]); // Divide by 4(?)
+                                if (currentLine[3] == "68" && currentLine[4] == "0")
+                                {
+                                    skill.SkillChance = short.Parse(currentLine[5]);
+                                    skill.SecondarySkillVNum = (short)(short.Parse(currentLine[6]) / 4);
+                                }
                                 break;
 
                             case "2":
+                                if (currentLine[3] == "68" && currentLine[4] == "0")
+                                {
+                                    skill.SkillChance = short.Parse(currentLine[5]);
+                                    skill.SecondarySkillVNum = (short)(short.Parse(currentLine[6]) / 4);
+                                }
                                 break;
 
                             case "3":
+                                if (currentLine[3] == "68" && currentLine[4] == "0")
+                                {
+                                    skill.SkillChance = short.Parse(currentLine[5]);
+                                    skill.SecondarySkillVNum = (short)(short.Parse(currentLine[6]) / 4);
+                                }
                                 break;
 
                             case "4":
+                                if (currentLine[3] == "68" && currentLine[4] == "0")
+                                {
+                                    skill.SkillChance = short.Parse(currentLine[5]);
+                                    skill.SecondarySkillVNum = (short)(short.Parse(currentLine[6]) / 4);
+                                }
                                 break;
                         }
                     }
