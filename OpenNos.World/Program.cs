@@ -14,7 +14,6 @@
 
 using log4net;
 using OpenNos.Core;
-using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;

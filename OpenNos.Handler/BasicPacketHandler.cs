@@ -24,6 +24,7 @@ using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 using OpenNos.PathFinder;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
@@ -1691,6 +1692,12 @@ namespace OpenNos.Handler
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage));
                 }
+            }
+
+            IEnumerable<PenaltyLogDTO> warning = DAOFactory.PenaltyLogDAO.LoadByAccount(Session.Character.AccountId).Where(p => p.Penalty == PenaltyType.Warning);
+            if (warning != null)
+            {
+                Session.SendPacket(string.Format(Language.Instance.GetMessageFromKey("WARNING_INFO"), warning.Count()));
             }
 
             // finfo - friends info

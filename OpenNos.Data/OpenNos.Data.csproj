@@ -127,8 +127,8 @@
     <Compile Include="UsableInstanceDTO.cs" />
     <Compile Include="UserDTO.cs" />
     <Compile Include="WearableInstanceDTO.cs" />
-    <Compile Include="WorldserverDTO.cs" />
-    <Compile Include="WorldserverGroupDTO.cs" />
+    <Compile Include="WorldServerDTO.cs" />
+    <Compile Include="WorldServerGroupDTO.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">

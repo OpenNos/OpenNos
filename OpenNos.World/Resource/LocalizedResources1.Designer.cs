@@ -3850,6 +3850,24 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You&apos;ve been warned for: {0}.
+        /// </summary>
+        internal static string WARNING {
+            get {
+                return ResourceManager.GetString("WARNING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You&apos;ve been warned: {0} times..
+        /// </summary>
+        internal static string WARNING_INFO {
+            get {
+                return ResourceManager.GetString("WARNING_INFO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spring^Melody.
         /// </summary>
         internal static string WELCOME_MUSIC_INFO {
@@ -3940,7 +3958,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You ask for an exchange with: {0}.
+        ///   Looks up a localized string similar to You ask for an exchange with: {0}..
         /// </summary>
         internal static string YOU_ASK_FOR_EXCHANGE {
             get {
@@ -3949,7 +3967,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You get a pet called {0}..
+        ///   Looks up a localized string similar to You get a pet called: {0}..
         /// </summary>
         internal static string YOU_GET_PET {
             get {

@@ -1926,6 +1926,11 @@ namespace OpenNos.Handler
                 CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
                 if (character != null)
                 {
+                    ClientSession session = ServerManager.Instance.GetSessionByCharacterName(characterName);
+                    if (session != null)
+                    {
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("WARNING"), warningPacket.Reason)));
+                    }
                     PenaltyLogDTO log = new PenaltyLogDTO
                     {
                         AccountId = character.AccountId,

@@ -221,7 +221,7 @@ namespace OpenNos.Handler
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log.Error("WCF Communication Failed.", ex);
+                    Logger.Log.Error("MS Communication Failed.", ex);
                     Session.Disconnect();
                     return;
                 }

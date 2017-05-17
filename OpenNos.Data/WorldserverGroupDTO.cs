@@ -2,14 +2,14 @@
 
 namespace OpenNos.Data
 {
-    public class WorldserverGroupDTO
+    public class WorldServerGroupDTO
     {
         #region Instantiation
 
-        public WorldserverGroupDTO(string groupName, WorldserverDTO firstWorldserver)
+        public WorldServerGroupDTO(string groupName, WorldServerDTO firstWorldserver)
         {
             GroupName = groupName;
-            Servers = new List<WorldserverDTO> { firstWorldserver };
+            Servers = new List<WorldServerDTO> { firstWorldserver };
         }
 
         #endregion
@@ -18,7 +18,7 @@ namespace OpenNos.Data
 
         public string GroupName { get; set; }
 
-        public List<WorldserverDTO> Servers { get; set; }
+        public List<WorldServerDTO> Servers { get; set; }
 
         #endregion
     }
