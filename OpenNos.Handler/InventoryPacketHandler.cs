@@ -1651,7 +1651,7 @@ namespace OpenNos.Handler
         public void Withdraw(WithdrawPacket withdrawPacket)
         {
             ItemInstance previousInventory = Session.Character.Inventory.LoadBySlotAndType(withdrawPacket.Slot, withdrawPacket.PetBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse);
-            if (withdrawPacket.Amount <= 0 || previousInventory == null || withdrawPacket.Amount > previousInventory.Amount)
+            if (withdrawPacket.Amount <= 0 || previousInventory == null || withdrawPacket.Amount > previousInventory.Amount || !Session.Character.Inventory.CanAddItem(previousInventory.ItemVNum))
             {
                 return;
             }
