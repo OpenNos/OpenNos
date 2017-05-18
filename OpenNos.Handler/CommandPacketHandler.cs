@@ -1743,12 +1743,12 @@ namespace OpenNos.Handler
             Logger.Debug("SearchItem Command", Session.Character.GenerateIdentity());
             if (searchItemPacket != null)
             {
-                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(searchItemPacket.Name != null ? string.Empty : searchItemPacket.Name).OrderBy(s => s.VNum).Take(200).ToList();
+                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(string.IsNullOrEmpty(searchItemPacket.Name) ? string.Empty : searchItemPacket.Name).OrderBy(s => s.VNum).Take(200).ToList();
                 if (itemlist.Any())
                 {
                     foreach (ItemDTO item in itemlist)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay($"Item: {(item.Name != null ? "none" : item.Name)} VNum: {item.VNum}", 12));
+                        Session.SendPacket(Session.Character.GenerateSay($"Item: {(string.IsNullOrEmpty(item.Name) ? "none" : item.Name)} VNum: {item.VNum}", 12));
                     }
                 }
                 else
@@ -1771,12 +1771,12 @@ namespace OpenNos.Handler
             Logger.Debug("SearchMonster Command", Session.Character.GenerateIdentity());
             if (searchMonsterPacket != null)
             {
-                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(searchMonsterPacket.Name).OrderBy(s => s.NpcMonsterVNum).Take(200).ToList();
+                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(string.IsNullOrEmpty(searchMonsterPacket.Name) ? string.Empty : searchMonsterPacket.Name).OrderBy(s => s.NpcMonsterVNum).Take(200).ToList();
                 if (monsterlist.Any())
                 {
                     foreach (NpcMonsterDTO npcMonster in monsterlist)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay($"Monster: {npcMonster.Name} VNum: {npcMonster.NpcMonsterVNum}", 12));
+                        Session.SendPacket(Session.Character.GenerateSay($"Monster: {(string.IsNullOrEmpty(npcMonster.Name) ? "none" : npcMonster.Name)} VNum: {npcMonster.NpcMonsterVNum}", 12));
                     }
                 }
                 else
