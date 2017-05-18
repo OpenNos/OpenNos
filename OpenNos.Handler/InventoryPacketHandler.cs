@@ -1683,7 +1683,11 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                     return;
                 }
-                Session.Character.DisableBuffs(true,true);
+                List<BuffType> bufftodisable = new List<BuffType>();
+                bufftodisable.Add(BuffType.Bad);
+                bufftodisable.Add(BuffType.Good);
+                bufftodisable.Add(BuffType.Neutral);
+                Session.Character.DisableBuffs(bufftodisable);
                 Session.Character.LastTransform = DateTime.Now;
                 Session.Character.UseSp = true;
                 Session.Character.Morph = sp.Item.Morph;
@@ -1790,7 +1794,11 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                Session.Character.DisableBuffs(true, true);
+                List<BuffType> bufftodisable = new List<BuffType>();
+                bufftodisable.Add(BuffType.Bad);
+                bufftodisable.Add(BuffType.Good);
+                bufftodisable.Add(BuffType.Neutral);
+                Session.Character.DisableBuffs(bufftodisable);
                 Logger.Debug(Session.Character.GenerateIdentity(), vnum.ToString());
                 Session.Character.UseSp = false;
                 Session.Character.LoadSpeed();

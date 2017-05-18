@@ -12,37 +12,22 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
-using OpenNos.GameObject;
+using OpenNos.Data;
 using System.Collections.Generic;
 
-namespace OpenNos.Data
+namespace OpenNos.DAL.Interface
 {
-    public class CardDTO : MappingBaseDTO
+    public interface IBCardDAO : IMappingBaseDAO
     {
-        #region Properties
+        #region Methods
 
-        public short CardId { get; set; }
+        BCardDTO Insert(ref BCardDTO cardObject);
 
-        public int Duration { get; set; }
+        void Insert(List<BCardDTO> card);
 
-        public int EffectId { get; set; }
+        IEnumerable<BCardDTO> LoadAll();
 
-        public byte Level { get; set; }
-        
-        public string Name { get; set; }
-
-        public short TimeoutBuff { get; set; }
-
-        public BuffType BuffType { get; set; }
-
-        public byte TimeoutBuffChance { get; set; }
-
-        public int Delay { get; set; }
-
-        public byte Propability { get; set; }
-
-        public List<BCardDTO> Buffs { get; set; }
+        BCardDTO LoadById(short cardId);
 
         #endregion
     }

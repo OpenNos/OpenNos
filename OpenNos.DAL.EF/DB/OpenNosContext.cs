@@ -41,6 +41,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Card> Card { get; set; }
 
+        public virtual DbSet<BCard> BCard { get; set; }
+
         public virtual DbSet<CellonOption> CellonOption { get; set; }
 
         public virtual DbSet<Character> Character { get; set; }

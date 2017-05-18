@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -48,7 +49,13 @@ namespace OpenNos.DAL.EF
         [MaxLength(255)]
         public string Name { get; set; }
 
-        public short Period { get; set; }
+        public int Delay { get; set; }
+
+        public short TimeoutBuff { get; set; } 
+
+        public byte TimeoutBuffChance { get; set; }
+
+        public BuffType BuffType { get; set; }
 
         public byte Propability { get; set; }
 

@@ -73,6 +73,7 @@
     <Compile Include="Base\BaseDAO.cs" />
     <Compile Include="Base\SynchronizableBaseDAO.cs" />
     <Compile Include="BazaarItemDAO.cs" />
+    <Compile Include="BCardDAO.cs" />
     <Compile Include="CardDAO.cs" />
     <Compile Include="CellonOptionDAO.cs" />
     <Compile Include="CharacterDAO.cs" />

@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -75,6 +76,8 @@ namespace OpenNos.Import.Console
             List<CardDTO> cards = new List<CardDTO>();
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             CardDTO card = new CardDTO();
+            BCardDTO bcard;
+            List<BCardDTO> bcards = new List<BCardDTO>();
             string line;
             int counter = 0;
             bool itemAreaBegin = false;
@@ -122,25 +125,65 @@ namespace OpenNos.Import.Console
                     {
                         card.EffectId = Convert.ToInt32(currentLine[3]);
                     }
+                    else if (currentLine.Length > 3 && currentLine[1] == "STYLE")
+                    {
+                        card.BuffType = (BuffType)Convert.ToByte(currentLine[3]);
+                    }
                     else if (currentLine.Length > 3 && currentLine[1] == "TIME")
                     {
                         card.Duration = Convert.ToInt32(currentLine[2]);
+                        card.Delay = Convert.ToInt32(currentLine[3]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "1ST")
                     {
-                        card.Type = Convert.ToSByte(currentLine[2]);
-                        card.SubType = Convert.ToByte(currentLine[3]);
-                        card.Propability = Convert.ToByte(currentLine[4]);
-                        card.Period = Convert.ToInt16(currentLine[5]);
-                        card.FirstData = Convert.ToInt32(currentLine[6]);
-                        card.SecondData = Convert.ToInt32(currentLine[7]);
+                        for (int i = 0; i < 3; i++)
+                        {
+                            if (currentLine[2 + i * 6] != "-1" && currentLine[2 + i * 6] != "0")
+                            {
+                                bcard = new BCardDTO();
+                                bcard.CardId = card.CardId;
+                                bcard.Type = Convert.ToByte(currentLine[2 + i*6]);
+                                bcard.SubType = Convert.ToByte(currentLine[3 + i * 6]);
+                                bcard.Probability = Convert.ToByte(currentLine[4 + i * 6]);
+                                if (bcard.Probability == 0)
+                                {
+                                    bcard.Probability = 100;
+                                }
+                                bcard.Periode = Convert.ToByte(currentLine[5 + i * 6]);
+                                bcard.FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4;
+                                bcard.SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4;
+                                bcards.Add(bcard);
+                            }
+                        }
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "2ND")
                     {
-                        // investigate
+                        for (int i = 0; i < 2; i++)
+                        {
+                            if (currentLine[2 + i * 6] != "0")
+                            {
+                                bcard = new BCardDTO();
+                                bcard.Delayed = true;
+                                bcard.CardId = card.CardId;
+                                bcard.Type = Convert.ToByte(currentLine[2 + i * 6]);
+                                bcard.SubType = Convert.ToByte(currentLine[3 + i * 6]);
+                                bcard.Probability = Convert.ToByte(currentLine[4 + i * 6]);
+                                if(bcard.Probability == 0)
+                                {
+                                    bcard.Probability = 100;
+                                }
+                                 bcard.Periode = Convert.ToByte(currentLine[5 + i * 6]);
+                                bcard.FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4;
+                                bcard.SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4;
+                                bcards.Add(bcard);
+                            }
+                        }
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "LAST")
                     {
+                        card.TimeoutBuff = Convert.ToInt16(currentLine[2]);
+                        card.TimeoutBuffChance = Convert.ToByte(currentLine[3]);
+
                         // investigate
                         if (DAOFactory.CardDAO.LoadById(card.CardId) == null)
                         {
@@ -151,6 +194,8 @@ namespace OpenNos.Import.Console
                     }
                 }
                 DAOFactory.CardDAO.Insert(cards);
+                DAOFactory.BCardDAO.Insert(bcards);
+
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_PARSED"), counter));
                 npcIdStream.Close();
             }

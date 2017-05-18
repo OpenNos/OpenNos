@@ -12,32 +12,12 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Linq;
-using System.Reactive.Linq;
-using OpenNos.Data;
-using System.Collections.Generic;
-
-namespace OpenNos.GameObject
+namespace OpenNos.Domain
 {
-    public class Buff
+    public enum BuffType : byte
     {
-        #region Members
-        
-        public int Level;
-        public CardDTO Card { get; set; }
-        public DateTime Start { get; set; }
-        public bool StaticBuff { get; set; }
-
-        public Buff(int id, byte level)
-        {
-            Card = ServerManager.Instance.Cards.FirstOrDefault(s => s.CardId == id);
-            Level = level;
-            Start = DateTime.Now;
-        }
-        
-
-        #endregion
-
+        Good = 0,
+        Neutral = 1,
+        Bad = 2,
     }
 }

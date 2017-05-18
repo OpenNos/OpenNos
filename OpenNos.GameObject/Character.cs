@@ -4898,19 +4898,28 @@ namespace OpenNos.GameObject
         {
             Buff.RemoveAll(s => s.Card.CardId.Equals(indicator.Card.CardId));
             Buff.Add(indicator);
-
+            /*TODO MOVE
             if (indicator.StaticBuff)
             {
                 Session.SendPacket($"vb {indicator.Card.CardId} 1 {indicator.Card.Duration}");
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 12));
-            }
+            }*/
             Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.Card.Duration} {Level}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 20));
+            if (indicator.Card.Buffs.Any(s => s.Type == (byte)BCardType.CardType.Move))
+            {
+                LastSpeedChange = DateTime.Now;
+                Session.SendPacket(GenerateCond());
+            }
             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100))
                 .Subscribe(
                 o =>
                 {
                     RemoveBuff(indicator.Card.CardId);
+                    if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
+                    {
+                        AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
+                    }
                 });
         }
 
@@ -4927,14 +4936,19 @@ namespace OpenNos.GameObject
                 Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
                 Buff.Remove(indicator);
+                if (indicator.Card.Buffs.Any(s => s.Type == (byte)BCardType.CardType.Move))
+                {
+                    LastSpeedChange = DateTime.Now;
+                    Session.SendPacket(GenerateCond());
+                }
             }
         }
 
-        public void DisableBuffs(bool good, bool bad, int level = 100)
+        public void DisableBuffs(List<BuffType> types, int level = 100)
         {
             lock (Buff)
             {
-                Buff.Where(s => good ? !s.BadBuff : true && bad ? s.BadBuff : true && s.Card.Level < level).ToList().ForEach(s => RemoveBuff(s.Card.CardId));
+                Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level < level).ToList().ForEach(s => RemoveBuff(s.Card.CardId));
             }
         }
 
@@ -4946,89 +4960,13 @@ namespace OpenNos.GameObject
             {
                 foreach (Buff buff in Buff)
                 {
-                    foreach (BCardDTO entry in buff.Card.DirectBuffs.Where(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+                    foreach (BCardDTO entry in buff.Card.Buffs.Where(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype) && (!s.Delayed || (s.Delayed && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now) )))
                     {
-                        value1 += entry.Value1;
-                        value2 += entry.Value2;
+                        value1 += entry.FirstData;
+                        value2 += entry.SecondData;
                     }
-                    //TODO implement delayedbuff
                 }
             }
-
-            // Not yet implemented
-
-            #region Equipment
-
-            //switch (type)
-            //{
-            //    #region Damage
-            //    case BCard.Type.Damage:
-            //        switch (subType)
-            //        {
-            //            case BCard.SubType.Increase:
-
-            // break; case BCard.SubType.IncreaseMelee:
-
-            // break; case BCard.SubType.IncreaseDistance:
-
-            // break; case BCard.SubType.IncreaseMagic:
-
-            // break; case BCard.SubType.IncreaseLevel:
-
-            // break; case BCard.SubType.IncreasePercentage:
-
-            // break; case BCard.SubType.IncreaseMeleePercentage:
-
-            // break; case BCard.SubType.IncreaseDistancePercentage:
-
-            // break; case BCard.SubType.IncreaseMagicPercentage:
-
-            // break; case BCard.SubType.IncreasePercentageChance:
-
-            // break; case BCard.SubType.IncreaseMeleePercentageChance:
-
-            // break; case BCard.SubType.IncreaseDistancePercentageChance:
-
-            // break; case BCard.SubType.IncreaseMagicPercentageChance:
-
-            // break; default: Logger.Error(new NotImplementedException("BCard.SubType not
-            // implemented for this BCard.Type!")); break; } break; #endregion
-
-            // #region Defense case BCard.Type.Defense: switch (subType) { case BCard.SubType.Increase:
-
-            // break; case BCard.SubType.IncreaseMelee:
-
-            // break; case BCard.SubType.IncreaseDistance:
-
-            // break; case BCard.SubType.IncreaseMagic:
-
-            // break; case BCard.SubType.IncreaseLevel:
-
-            // break; case BCard.SubType.IncreasePercentage:
-
-            // break; case BCard.SubType.IncreaseMeleePercentage:
-
-            // break; case BCard.SubType.IncreaseDistancePercentage:
-
-            // break; case BCard.SubType.IncreaseMagicPercentage:
-
-            // break; case BCard.SubType.IncreasePercentageChance:
-
-            // break; case BCard.SubType.IncreaseMeleePercentageChance:
-
-            // break; case BCard.SubType.IncreaseDistancePercentageChance:
-
-            // break; case BCard.SubType.IncreaseMagicPercentageChance:
-
-            // break; default: Logger.Error(new NotImplementedException("BCard.SubType not
-            // implemented for this BCard.Type!")); break; } break; #endregion
-
-            //    default:
-            //        Logger.Error(new NotImplementedException("BCard.Type not implemented!"));
-            //        break;
-            //}
-
-            #endregion
 
             return new[] { value1, value2 };
         }

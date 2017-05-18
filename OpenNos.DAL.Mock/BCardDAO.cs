@@ -12,37 +12,31 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
-using OpenNos.GameObject;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 
-namespace OpenNos.Data
+namespace OpenNos.DAL.Mock
 {
-    public class CardDTO : MappingBaseDTO
+    public class BCardDAO : BaseDAO<BCardDTO>, IBCardDAO
     {
-        #region Properties
+        #region Methods
 
-        public short CardId { get; set; }
+        public void Insert(List<BCardDTO> card)
+        {
+            throw new NotImplementedException();
+        }
 
-        public int Duration { get; set; }
+        public BCardDTO Insert(ref BCardDTO cardObject)
+        {
+            throw new NotImplementedException();
+        }
 
-        public int EffectId { get; set; }
-
-        public byte Level { get; set; }
-        
-        public string Name { get; set; }
-
-        public short TimeoutBuff { get; set; }
-
-        public BuffType BuffType { get; set; }
-
-        public byte TimeoutBuffChance { get; set; }
-
-        public int Delay { get; set; }
-
-        public byte Propability { get; set; }
-
-        public List<BCardDTO> Buffs { get; set; }
+        public BCardDTO LoadById(short cardId)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
     }

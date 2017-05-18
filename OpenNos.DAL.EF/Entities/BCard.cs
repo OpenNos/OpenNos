@@ -24,7 +24,7 @@ namespace OpenNos.DAL.EF
 
         public byte SubType { get; set; }
 
-        public CardType Type { get; set; }
+        public byte Type { get; set; }
 
         public int FirstData { get; set; }
 

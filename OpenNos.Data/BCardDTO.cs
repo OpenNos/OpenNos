@@ -1,12 +1,25 @@
 ﻿using static OpenNos.Domain.BCardType;
 
-namespace OpenNos.GameObject
+namespace OpenNos.Data
 {
-    public class BCardDTO
+    public class BCardDTO : MappingBaseDTO
     {
-        public byte Type { get; set; }
+        public short BCardId { get; set; }
+
         public byte SubType { get; set; }
-        public int Value1 { get; set; }
-        public int Value2 { get; set; }
+
+        public byte Type { get; set; }
+
+        public int FirstData { get; set; }
+
+        public int SecondData { get; set; }
+
+        public short CardId { get; set; }
+
+        public short Periode { get; set; }
+
+        public byte Probability { get; set; }
+
+        public bool Delayed { get; set; }
     }
 }

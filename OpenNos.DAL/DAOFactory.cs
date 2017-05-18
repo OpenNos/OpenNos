@@ -28,6 +28,7 @@ namespace OpenNos.DAL
         private static IAccountDAO _accountDAO;
         private static IBazaarItemDAO _bazaarItemDAO;
         private static ICardDAO _cardDAO;
+        private static IBCardDAO _bcardDAO;
         private static ICellonOptionDAO _cellonoptionDAO;
         private static ICharacterDAO _characterDAO;
         private static ICharacterRelationDAO _characterRelationDAO;
@@ -909,6 +910,26 @@ namespace OpenNos.DAL
                 }
 
                 return _scriptedinstanceDAO;
+            }
+        }
+
+        public static IBCardDAO BCardDAO
+        {
+            get
+            {
+                if (_bcardDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _bcardDAO = new BCardDAO();
+                    }
+                    else
+                    {
+                        _bcardDAO = new EF.BCardDAO();
+                    }
+                }
+
+                return _bcardDAO;
             }
         }
 
