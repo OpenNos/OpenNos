@@ -78,6 +78,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<BCardDTO> LoadByCardId(short cardId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (BCard card in context.BCard.Where(s=>s.CardId == cardId))
+                {
+                    yield return _mapper.Map<BCardDTO>(card);
+                }
+            }
+        }
+
         public BCardDTO LoadById(short cardId)
         {
             try

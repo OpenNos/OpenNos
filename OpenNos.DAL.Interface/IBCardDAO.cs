@@ -29,6 +29,8 @@ namespace OpenNos.DAL.Interface
 
         BCardDTO LoadById(short cardId);
 
+        IEnumerable<BCardDTO> LoadByCardId(short cardId);
+
         #endregion
     }
 }

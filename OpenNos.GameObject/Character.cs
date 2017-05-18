@@ -362,7 +362,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                byte bonusSpeed = (byte)GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementSpeedIncreased, false)[0];
+                byte bonusSpeed = (byte)GetBuff(CardType.Move, (byte)AdditionalTypes.Move.SetMovement, false)[0];
                 if (_speed + bonusSpeed > 59)
                 {
                     return 59;
@@ -4906,7 +4906,7 @@ namespace OpenNos.GameObject
             }*/
             Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.Card.Duration} {Level}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 20));
-            if (indicator.Card.Buffs.Any(s => s.Type == (byte)BCardType.CardType.Move))
+            if (indicator.Card.BCards.Any(s => s.Type == (byte)BCardType.CardType.Move))
             {
                 LastSpeedChange = DateTime.Now;
                 Session.SendPacket(GenerateCond());
@@ -4936,7 +4936,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
                 Buff.Remove(indicator);
-                if (indicator.Card.Buffs.Any(s => s.Type == (byte)BCardType.CardType.Move))
+                if (indicator.Card.BCards.Any(s => s.Type == (byte)BCardType.CardType.Move))
                 {
                     LastSpeedChange = DateTime.Now;
                     Session.SendPacket(GenerateCond());
@@ -4960,7 +4960,7 @@ namespace OpenNos.GameObject
             {
                 foreach (Buff buff in Buff)
                 {
-                    foreach (BCardDTO entry in buff.Card.Buffs.Where(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype) && (!s.Delayed || (s.Delayed && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now) )))
+                    foreach (BCardDTO entry in buff.Card.BCards.Where(s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype/10)) && (!s.Delayed || (s.Delayed && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now) )))
                     {
                         value1 += entry.FirstData;
                         value2 += entry.SecondData;

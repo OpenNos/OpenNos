@@ -203,6 +203,7 @@ namespace OpenNos.World
             DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
             DAOFactory.CardDAO.RegisterMapping(typeof(CardDTO)).InitializeMapper();
             DAOFactory.BCardDAO.RegisterMapping(typeof(BCardDTO)).InitializeMapper();
+            DAOFactory.CardDAO.RegisterMapping(typeof(Card)).InitializeMapper();
             DAOFactory.ItemCardDAO.RegisterMapping(typeof(ItemCardDTO)).InitializeMapper();
             DAOFactory.SkillCardDAO.RegisterMapping(typeof(SkillCardDTO)).InitializeMapper();
             DAOFactory.SkillDAO.RegisterMapping(typeof(Skill)).InitializeMapper();

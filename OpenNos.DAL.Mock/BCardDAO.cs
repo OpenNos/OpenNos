@@ -38,6 +38,11 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
+        public IEnumerable<BCardDTO> LoadByCardId(short cardId)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

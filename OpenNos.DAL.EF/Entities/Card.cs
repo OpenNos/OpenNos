@@ -16,6 +16,7 @@ using OpenNos.Domain;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.DAL.EF
 {
@@ -55,7 +56,7 @@ namespace OpenNos.DAL.EF
 
         public byte TimeoutBuffChance { get; set; }
 
-        public BuffType BuffType { get; set; }
+        public CardType BuffType { get; set; }
 
         public byte Propability { get; set; }
 

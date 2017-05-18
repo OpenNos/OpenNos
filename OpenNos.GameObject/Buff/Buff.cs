@@ -25,7 +25,7 @@ namespace OpenNos.GameObject
         #region Members
         
         public int Level;
-        public CardDTO Card { get; set; }
+        public Card Card { get; set; }
         public DateTime Start { get; set; }
         public bool StaticBuff { get; set; }
 
