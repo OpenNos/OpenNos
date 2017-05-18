@@ -11,33 +11,31 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+ 
+using static OpenNos.Domain.BCardType;
 
-using OpenNos.GameObject;
-using System.Collections.Generic;
-
-namespace OpenNos.Data
+namespace OpenNos.DAL.EF
 {
-    public class CardDTO : MappingBaseDTO
+    public class BCard
     {
         #region Properties
 
+        public short BCardId { get; set; }
+
+        public byte SubType { get; set; }
+
+        public CardType Type { get; set; }
+
+        public int FirstData { get; set; }
+
+        public int SecondData { get; set; }
+
+        public virtual Card Card { get; set; }
+
         public short CardId { get; set; }
 
-        public int Duration { get; set; }
+        public bool Delayed { get; set; }
 
-        public int EffectId { get; set; }
-
-        public byte Level { get; set; }
-
-        public string Name { get; set; }
-
-        public short Period { get; set; }
-
-        public byte Propability { get; set; }
-
-        public List<BCardDTO> DirectBuffs { get; set; }
-
-        public List<BCardDTO> DelayedBuffs { get; set; }
 
         #endregion
     }

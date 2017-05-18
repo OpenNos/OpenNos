@@ -25,13 +25,11 @@ namespace OpenNos.GameObject
         #region Members
         
         public int Level;
-        public Card Card { get; set; }
+        public CardDTO Card { get; set; }
         public DateTime Start { get; set; }
         public bool StaticBuff { get; set; }
-        public List<BCardDTO> DirectBuffs { get; set; }
-        public List<BCardDTO> DelayedBuffs { get; set; }
+        public bool BadBuff { get; set; }
 
-    
         public Buff(int id, byte level)
         {
             Card = ServerManager.Instance.Cards.FirstOrDefault(s => s.CardId == id);

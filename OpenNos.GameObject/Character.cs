@@ -4934,7 +4934,7 @@ namespace OpenNos.GameObject
         {
             lock (Buff)
             {
-                Buff.Where(s => good ? !s.Card.BadBuff : true && bad ? s.Card.BadBuff : true && s.Card.Level < level).ToList().ForEach(s => RemoveBuff(s.Card.CardId));
+                Buff.Where(s => good ? !s.BadBuff : true && bad ? s.BadBuff : true && s.Card.Level < level).ToList().ForEach(s => RemoveBuff(s.Card.CardId));
             }
         }
 
@@ -4946,7 +4946,7 @@ namespace OpenNos.GameObject
             {
                 foreach (Buff buff in Buff)
                 {
-                    foreach (BCardDTO entry in buff.DirectBuffs.Where(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+                    foreach (BCardDTO entry in buff.Card.DirectBuffs.Where(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
                     {
                         value1 += entry.Value1;
                         value2 += entry.Value2;

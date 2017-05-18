@@ -382,6 +382,18 @@ namespace OpenNos.DAL.EF.DB
                 .HasForeignKey(e => e.CardId)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<BCard>()
+                .HasOptional(e => e.Card)
+                .WithMany(e => e.Buffs)
+                .HasForeignKey(e => e.CardId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<BCard>()
+              .HasRequired(e => e.Card)
+              .WithMany(e => e.Buffs)
+              .HasForeignKey(e => e.CardId)
+              .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<MapTypeMap>()
                 .HasRequired(e => e.Map)
                 .WithMany(e => e.MapTypeMap)

@@ -166,7 +166,7 @@ namespace OpenNos.GameObject
 
         public int XPRate { get; set; }
 
-        public List<Card> Cards { get; set; }
+        public List<CardDTO> Cards { get; set; }
 
         #endregion
 
@@ -902,11 +902,9 @@ namespace OpenNos.GameObject
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
 
             // initialize buffs
-            Cards = new List<Card>();
-            foreach (CardDTO cardDTO in DAOFactory.CardDAO.LoadAll())
-            {
-                Cards.Add((Card)cardDTO);
-            }
+            Cards = new List<CardDTO>();
+            Cards.AddRange(DAOFactory.CardDAO.LoadAll());
+
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), _skills.Count));
 
             // intialize mapnpcs

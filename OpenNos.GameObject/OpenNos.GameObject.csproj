@@ -104,7 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Buff\BCardDTO.cs" />
-    <Compile Include="Card.cs" />
     <Compile Include="Buff\Buff.cs" />
     <Compile Include="Event\EventContainer.cs" />
     <Compile Include="Event\Schedule.cs" />
