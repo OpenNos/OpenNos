@@ -697,6 +697,7 @@ namespace OpenNos.Handler
                     {
                         propertyInfo.SetValue(Session.Character, Convert.ChangeType(characterEditPacket.Data, propertyInfo.PropertyType));
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                        Session.Character.Save();
                     }
                 }
             }
