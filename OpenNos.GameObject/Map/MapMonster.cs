@@ -449,8 +449,8 @@ namespace OpenNos.GameObject
 
             if (skill != null)
             {
-                baseDamage += skill.Damage / 4;
-                elementalDamage += skill.ElementalDamage / 4;
+                // baseDamage += skill.Damage / 4;  it's a bcard need a skillbcardload
+                // elementalDamage += skill.ElementalDamage / 4;  it's a bcard need a skillbcardload
             }
 
             switch (mainUpgrade)

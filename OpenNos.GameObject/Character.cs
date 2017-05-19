@@ -1178,7 +1178,7 @@ namespace OpenNos.GameObject
             #region Base Damage
 
             int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg, mainMaxDmg + 1);
-            baseDamage += skill.Damage / 4;
+           // baseDamage += skill.Damage / 4; it's a bcard need a skillbcardload
             baseDamage += morale - monsterToAttack.Monster.Level; //Morale
             if (Class == ClassType.Adventurer)
             {
@@ -1186,7 +1186,7 @@ namespace OpenNos.GameObject
                 baseDamage += 20;
             }
             int elementalDamage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0];
-            elementalDamage += skill.ElementalDamage / 4;
+            //   elementalDamage += skill.ElementalDamage / 4; it's a bcard need a skillbcardload
             switch (mainUpgrade)
             {
                 case -10:
@@ -2681,7 +2681,7 @@ namespace OpenNos.GameObject
             #region Base Damage
 
             int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg, mainMaxDmg + 1);
-            baseDamage += skill.Damage / 4;
+            //baseDamage += skill.Damage / 4;  it's a bcard need a skillbcardload
             baseDamage += Level - target.Level; //Morale
             if (Class == ClassType.Adventurer)
             {
@@ -2689,7 +2689,7 @@ namespace OpenNos.GameObject
                 baseDamage += 20;
             }
             int elementalDamage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0];
-            elementalDamage += skill.ElementalDamage / 4;
+            //  elementalDamage += skill.ElementalDamage / 4;  it's a bcard need a skillbcardload
             switch (mainUpgrade)
             {
                 case -10:
