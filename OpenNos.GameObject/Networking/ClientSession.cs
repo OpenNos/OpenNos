@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.Master.Library.Client;
 using System;
@@ -119,7 +120,6 @@ namespace OpenNos.GameObject
                 _handlerMethods = value;
             }
         }
-
         public bool HasCurrentMapInstance => CurrentMapInstance != null;
 
         public bool HasSelectedCharacter { get; set; }

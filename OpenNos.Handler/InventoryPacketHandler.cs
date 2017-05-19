@@ -807,6 +807,7 @@ namespace OpenNos.Handler
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                             return;
                         }
+                        Session.Character.EquipmentBCards.RemoveAll(o => o.ItemVnum == inventory.ItemVNum);
                     }
 
                     ItemInstance inv = Session.Character.Inventory.MoveInInventory(removePacket.InventorySlot, equipment, InventoryType.Equipment);
@@ -832,6 +833,7 @@ namespace OpenNos.Handler
                     {
                         Session.SendPacket(mate.GenerateScPacket());
                     }
+
                 }
             }
         }

@@ -3512,16 +3512,21 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 5; i++)
                         {
-                            BCardDTO itemCard = new BCardDTO
+                            byte type = (byte)(Int32.Parse(currentLine[2 + 5 * i]));
+                            if (type != 0)
                             {
-                                ItemVnum = item.VNum,
-                                Type = (byte)(Int32.Parse(currentLine[2 + 5 * i])),
-                                SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10),
-                                FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
-                                SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                Periode = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
-                            };
-                            itemCards.Add(itemCard);
+                                BCardDTO itemCard = new BCardDTO
+                                {
+                                    ItemVnum = item.VNum,
+                                    Type = type,
+                                    SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10),
+                                    FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
+                                    SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
+                                    Periode = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                                };
+                                itemCards.Add(itemCard);
+                            }
+
                         }
                     }
                 }

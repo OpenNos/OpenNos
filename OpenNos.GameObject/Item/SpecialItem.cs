@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
-            inv.Item.Cards.Where(s=>s.Type == (byte)BCardType.CardType.Buff).ToList().ForEach(c =>
+            inv.Item.BCards.Where(s=>s.Type == (byte)BCardType.CardType.Buff).ToList().ForEach(c =>
             {
                 if (ServerManager.Instance.RandomNumber() < c.FirstData)
                 {

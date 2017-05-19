@@ -52,11 +52,14 @@ namespace OpenNos.GameObject
             StaticBonusList = new List<StaticBonusDTO>();
             MinilandObjects = new List<MinilandObject>();
             Mates = new List<Mate>();
+            EquipmentBCards = new List<BCardDTO>();
         }
 
         #endregion
 
         #region Properties
+
+        public List<BCardDTO> EquipmentBCards { get; set; }
 
         public AuthorityType Authority { get; set; }
 
@@ -528,7 +531,6 @@ namespace OpenNos.GameObject
             }
             else
             {
-                WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
                 if (CurrentMinigame != 0 && LastEffect.AddSeconds(3) <= DateTime.Now)
                 {
                     MapInstance.Broadcast(GenerateEff(CurrentMinigame));
@@ -537,6 +539,7 @@ namespace OpenNos.GameObject
 
                 if (LastEffect.AddSeconds(5) <= DateTime.Now)
                 {
+                    WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
                     if (amulet != null)
                     {
                         if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
@@ -835,22 +838,21 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            foreach (ItemInstance item in Inventory.GetAllItems())
-            {
-                if (item.IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
-                {
-                    Inventory.DeleteById(item.Id);
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
-                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
-                }
-            }
 
             foreach (ItemInstance item in Inventory.GetAllItems())
             {
                 if (item.IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                 {
                     Inventory.DeleteById(item.Id);
-                    Session.SendPacket(GenerateEquipment());
+                    Session.Character.EquipmentBCards.RemoveAll(o => o.ItemVnum == item.ItemVNum);
+                    if (item.Type == InventoryType.Wear)
+                    {
+                        Session.SendPacket(GenerateEquipment());
+                    }
+                    else
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
+                    }
                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                 }
             }
@@ -3189,7 +3191,6 @@ namespace OpenNos.GameObject
             return $"sp {SpAdditionPoint} 1000000 {SpPoint} 10000";
         }
 
-        [Obsolete("GenerateStartupInventory is deprecated, for refreshing inventory please use GenerateInventoryAdd instead.")]
         public void GenerateStartupInventory()
         {
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
@@ -3197,6 +3198,7 @@ namespace OpenNos.GameObject
             {
                 foreach (ItemInstance inv in Inventory.GetAllItems())
                 {
+                    EquipmentBCards.AddRange(inv.Item.BCards);
                     switch (inv.Type)
                     {
                         case InventoryType.Equipment:
@@ -4960,7 +4962,7 @@ namespace OpenNos.GameObject
             {
                 foreach (Buff buff in Buff)
                 {
-                    foreach (BCardDTO entry in buff.Card.BCards.Where(s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype/10)) && (!s.Delayed || (s.Delayed && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now) )))
+                    foreach (BCardDTO entry in buff.Card.BCards.Concat(EquipmentBCards).Where(s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10)) && (!s.Delayed || (s.Delayed && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
                     {
                         value1 += entry.FirstData;
                         value2 += entry.SecondData;
