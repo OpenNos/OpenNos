@@ -142,7 +142,7 @@ namespace OpenNos.Import.Console
                             {
                                 bcard = new BCardDTO();
                                 bcard.CardId = card.CardId;
-                                bcard.Type = Convert.ToByte(currentLine[2 + i*6]);
+                                bcard.Type = Convert.ToByte(currentLine[2 + i * 6]);
                                 bcard.SubType = Convert.ToByte(currentLine[3 + i * 6]);
                                 bcard.Probability = Convert.ToByte(currentLine[4 + i * 6]);
                                 if (bcard.Probability == 0)
@@ -168,11 +168,11 @@ namespace OpenNos.Import.Console
                                 bcard.Type = Convert.ToByte(currentLine[2 + i * 6]);
                                 bcard.SubType = Convert.ToByte(currentLine[3 + i * 6]);
                                 bcard.Probability = Convert.ToByte(currentLine[4 + i * 6]);
-                                if(bcard.Probability == 0)
+                                if (bcard.Probability == 0)
                                 {
                                     bcard.Probability = 100;
                                 }
-                                 bcard.Periode = Convert.ToByte(currentLine[5 + i * 6]);
+                                bcard.Periode = Convert.ToByte(currentLine[5 + i * 6]);
                                 bcard.FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4;
                                 bcard.SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4;
                                 bcards.Add(bcard);
@@ -201,55 +201,6 @@ namespace OpenNos.Import.Console
             }
         }
 
-        public void ImportItemCards()
-        {
-            string fileItemId = $"{_folder}\\Item.dat";
-            List<ItemCardDTO> itemCards = new List<ItemCardDTO>();
-            short itemVNum = 0;
-            using (StreamReader skillIdStream = new StreamReader(fileItemId, Encoding.GetEncoding(1252)))
-            {
-                string line;
-                while ((line = skillIdStream.ReadLine()) != null)
-                {
-                    string[] currentLine = line.Split('\t');
-                    if (currentLine.Length > 3 && currentLine[1] == "VNUM")
-                    {
-                        itemVNum = short.Parse(currentLine[2]);
-                    }
-                    else if (currentLine.Length > 26 && currentLine[1] == "BUFF")
-                    {
-                        for (int i = 2; i < currentLine.Length; i += 5)
-                        {
-                            if (currentLine[i] == currentLine[2])
-                            {
-                                // TODO: check the negative values on cardChance !investigate!
-                                short cardChance = (short)(int.Parse(currentLine[1 + i]) / 4);
-                                short cardId = (short)(int.Parse(currentLine[2 + i]) / 4);
-                                if (cardId != 0 && itemVNum != 0)
-                                {
-                                    ItemCardDTO itemCard = new ItemCardDTO
-                                    {
-                                        CardId = cardId,
-                                        ItemVNum = itemVNum,
-                                        CardChance = cardChance
-                                    };
-                                    if (DAOFactory.CardDAO.LoadById(itemCard.CardId) != null && DAOFactory.SkillCardDAO.LoadByCardIdAndSkillVNum(itemCard.CardId, itemCard.ItemVNum) == null)
-                                    {
-                                        if (!itemCards.Any(s => s.CardId == itemCard.CardId && s.ItemVNum == itemCard.ItemVNum))
-                                        {
-                                            itemCards.Add(itemCard);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                DAOFactory.ItemCardDAO.Insert(itemCards);
-                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMCARDS_PARSED"), itemCards.Count));
-                skillIdStream.Close();
-            }
-        }
 
         public void ImportMapNpcs()
         {
@@ -2475,7 +2426,7 @@ namespace OpenNos.Import.Console
             Dictionary<string, string> dictionaryName = new Dictionary<string, string>();
             string line;
             List<ItemDTO> items = new List<ItemDTO>();
-
+            List<BCardDTO> itemCards = new List<BCardDTO>();
             using (StreamReader mapIdLangStream = new StreamReader(fileLang, Encoding.GetEncoding(1252)))
             {
                 while ((line = mapIdLangStream.ReadLine()) != null)
@@ -3559,11 +3510,24 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "BUFF")
                     {
-                        // TODO: Implement buff parsing
+                        for (int i = 0; i < 5; i++)
+                        {
+                            BCardDTO itemCard = new BCardDTO
+                            {
+                                ItemVnum = item.VNum,
+                                Type = (byte)(Int32.Parse(currentLine[2 + 5 * i])),
+                                SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10),
+                                FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
+                                SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
+                                Periode = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                            };
+                            itemCards.Add(itemCard);
+                        }
                     }
                 }
 
                 DAOFactory.ItemDAO.Insert(items);
+                DAOFactory.BCardDAO.Insert(itemCards);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_PARSED"), itemCounter));
                 npcIdStream.Close();
             }

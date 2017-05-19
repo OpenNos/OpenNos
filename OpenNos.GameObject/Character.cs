@@ -362,7 +362,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                byte bonusSpeed = (byte)GetBuff(CardType.Move, (byte)AdditionalTypes.Move.SetMovement, false)[0];
+                byte bonusSpeed = (byte)GetBuff(CardType.Move, (byte)AdditionalTypes.Move.SetMovementNegated, false)[0];
                 if (_speed + bonusSpeed > 59)
                 {
                     return 59;

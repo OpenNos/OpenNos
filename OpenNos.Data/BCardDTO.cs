@@ -14,7 +14,9 @@ namespace OpenNos.Data
 
         public int SecondData { get; set; }
 
-        public short CardId { get; set; }
+        public short? CardId { get; set; }
+
+        public short? ItemVnum { get; set; }
 
         public short Periode { get; set; }
 

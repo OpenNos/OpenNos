@@ -101,7 +101,6 @@ namespace OpenNos.Import.Console
                     factory.ImportItems();
                     factory.ImportSkills();
                     factory.ImportCards();
-                    factory.ImportItemCards();
                     factory.ImportSkillCards();
                     factory.ImportNpcMonsters();
                     factory.ImportNpcMonsterData();
@@ -194,13 +193,6 @@ namespace OpenNos.Import.Console
                         factory.ImportSkillCards();
                     }
 
-                    System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_ITEMCARDS")} [Y/n]");
-                    key = System.Console.ReadKey(true);
-                    if (key.KeyChar != 'n')
-                    {
-                        factory.ImportItemCards();
-                    }
-
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_MAPNPCS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
@@ -291,7 +283,6 @@ namespace OpenNos.Import.Console
             DAOFactory.ShopItemDAO.RegisterMapping(typeof(ShopItemDTO)).InitializeMapper();
             DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
             DAOFactory.CardDAO.RegisterMapping(typeof(CardDTO)).InitializeMapper();
-            DAOFactory.ItemCardDAO.RegisterMapping(typeof(ItemCardDTO)).InitializeMapper();
             DAOFactory.SkillCardDAO.RegisterMapping(typeof(SkillCardDTO)).InitializeMapper();
             DAOFactory.MateDAO.RegisterMapping(typeof(MateDTO)).InitializeMapper();
             DAOFactory.SkillDAO.RegisterMapping(typeof(SkillDTO)).InitializeMapper();

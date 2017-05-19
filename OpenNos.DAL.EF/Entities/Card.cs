@@ -27,8 +27,7 @@ namespace OpenNos.DAL.EF
         public Card()
         {
             SkillCard = new HashSet<SkillCard>();
-            ItemCard = new HashSet<ItemCard>();
-            Buffs = new HashSet<BCard>();
+            BCards = new HashSet<BCard>();
         }
 
         #endregion
@@ -41,9 +40,7 @@ namespace OpenNos.DAL.EF
 
         public int Duration { get; set; }
 
-        public int EffectId { get; set; }
-
-        public virtual ICollection<ItemCard> ItemCard { get; set; }
+        public int EffectId { get; set; }   
 
         public byte Level { get; set; }
 
@@ -62,7 +59,7 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<SkillCard> SkillCard { get; set; }
 
-        public virtual ICollection<BCard> Buffs { get; set; }
+        public virtual ICollection<BCard> BCards { get; set; }
         #endregion
     }
 }

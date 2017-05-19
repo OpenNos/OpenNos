@@ -65,8 +65,6 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Item> Item { get; set; }
 
-        public virtual DbSet<ItemCard> ItemCard { get; set; }
-
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
 
         public virtual DbSet<Mail> Mail { get; set; }
@@ -372,29 +370,17 @@ namespace OpenNos.DAL.EF.DB
                 .HasForeignKey(e => e.CardId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<ItemCard>()
-                .HasRequired(e => e.Item)
-                .WithMany(e => e.ItemCard)
-                .HasForeignKey(e => e.ItemVNum)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<ItemCard>()
-                .HasRequired(e => e.Card)
-                .WithMany(e => e.ItemCard)
-                .HasForeignKey(e => e.CardId)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<BCard>()
                 .HasOptional(e => e.Card)
-                .WithMany(e => e.Buffs)
+                .WithMany(e => e.BCards)
                 .HasForeignKey(e => e.CardId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<BCard>()
-              .HasRequired(e => e.Card)
-              .WithMany(e => e.Buffs)
-              .HasForeignKey(e => e.CardId)
-              .WillCascadeOnDelete(false);
+                .HasOptional(e => e.Item)
+                 .WithMany(e => e.BCards)
+                 .HasForeignKey(e => e.ItemVnum)
+                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<MapTypeMap>()
                 .HasRequired(e => e.Map)

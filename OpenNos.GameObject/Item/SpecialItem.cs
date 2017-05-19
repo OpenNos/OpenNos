@@ -35,11 +35,11 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
-            inv.Item.Cards.ForEach(c =>
+            inv.Item.Cards.Where(s=>s.Type == (byte)BCardType.CardType.Buff).ToList().ForEach(c =>
             {
-                if (ServerManager.Instance.RandomNumber() < c.CardChance)
+                if (ServerManager.Instance.RandomNumber() < c.FirstData)
                 {
-                    session.Character.AddBuff(new Buff(c.CardId, session.Character.Level));
+                    session.Character.AddBuff(new Buff(c.SecondData, session.Character.Level));
                 }
             });
 

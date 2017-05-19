@@ -32,7 +32,11 @@ namespace OpenNos.DAL.EF
 
         public virtual Card Card { get; set; }
 
-        public short CardId { get; set; }
+        public virtual Item Item { get; set; }
+
+        public short? CardId { get; set; }
+
+        public short? ItemVnum { get; set; }
 
         public bool Delayed { get; set; }
 

@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF
             Mail = new HashSet<Mail>();
             RecipeItem = new HashSet<RecipeItem>();
             ShopItem = new HashSet<ShopItem>();
-            ItemCard = new HashSet<ItemCard>();
+            BCards = new HashSet<BCard>();
         }
 
         #endregion
@@ -112,7 +112,7 @@ namespace OpenNos.DAL.EF
 
         public bool IsTradable { get; set; }
 
-        public virtual ICollection<ItemCard> ItemCard { get; set; }
+        public virtual ICollection<BCard> BCards { get; set; }
 
         public virtual ICollection<ItemInstance> ItemInstances { get; set; }
 

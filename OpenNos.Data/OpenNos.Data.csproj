@@ -90,7 +90,6 @@
     <Compile Include="Interfaces\IItemInstance.cs" />
     <Compile Include="Interfaces\ISpecialistInstance.cs" />
     <Compile Include="Interfaces\IWearableInstance.cs" />
-    <Compile Include="ItemCardDTO.cs" />
     <Compile Include="MailDTO.cs" />
     <Compile Include="MapMonsterDTO.cs" />
     <Compile Include="MapNpcDTO.cs" />

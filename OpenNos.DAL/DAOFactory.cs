@@ -39,7 +39,6 @@ namespace OpenNos.DAL
         private static IFamilyDAO _familyDAO;
         private static IFamilyLogDAO _familylogDAO;
         private static IGeneralLogDAO _generallogDAO;
-        private static IItemCardDAO _itemCardDAO;
         private static IItemDAO _itemDAO;
         private static IItemInstanceDAO _iteminstanceDAO;
         private static IMailDAO _mailDAO;
@@ -353,25 +352,6 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IItemCardDAO ItemCardDAO
-        {
-            get
-            {
-                if (_itemCardDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _itemCardDAO = new ItemCardDAO();
-                    }
-                    else
-                    {
-                        _itemCardDAO = new EF.ItemCardDAO();
-                    }
-                }
-
-                return _itemCardDAO;
-            }
-        }
 
         public static IItemDAO ItemDAO
         {
