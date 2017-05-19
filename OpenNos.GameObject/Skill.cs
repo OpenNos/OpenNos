@@ -25,7 +25,7 @@ namespace OpenNos.GameObject
         public Skill()
         {
             Combos = new List<ComboDTO>();
-            Cards = new List<SkillCardDTO>();
+            BCards = new List<BCardDTO>();
         }
 
         #endregion
@@ -33,7 +33,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<ComboDTO> Combos { get; set; }
-        public List<SkillCardDTO> Cards { get; set; }
+        public List<BCardDTO> BCards { get; set; }
 
         #endregion
 

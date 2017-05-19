@@ -34,9 +34,17 @@ namespace OpenNos.DAL.EF
 
         public virtual Item Item { get; set; }
 
+        public virtual Skill Skill { get; set; }
+
+        public virtual NpcMonster NpcMonster { get; set; }
+
         public short? CardId { get; set; }
 
-        public short? ItemVnum { get; set; }
+        public short? ItemVNum { get; set; }
+
+        public short? SkillVNum { get; set; }
+
+        public short? NpcMonsterVNum { get; set; }
 
         public bool Delayed { get; set; }
 

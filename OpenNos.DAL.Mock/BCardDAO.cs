@@ -48,6 +48,16 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
+        public IEnumerable<BCardDTO> LoadByNpcMonsterVNum(short vNum)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<BCardDTO> LoadBySkillVNum(short vNum)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

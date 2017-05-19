@@ -904,7 +904,7 @@ namespace OpenNos.GameObject
             {
                 Skill skill = (Skill)skillDTO;
                 skill.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList());
-                skill.Cards.AddRange(DAOFactory.SkillCardDAO.LoadBySkillVNum(skill.SkillVNum).ToList());
+                skill.BCards.AddRange(DAOFactory.BCardDAO.LoadBySkillVNum(skill.SkillVNum).ToList());
                 _skills.Add(skill);
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));

@@ -26,7 +26,6 @@ namespace OpenNos.DAL.EF
 
         public Card()
         {
-            SkillCard = new HashSet<SkillCard>();
             BCards = new HashSet<BCard>();
         }
 
@@ -55,9 +54,7 @@ namespace OpenNos.DAL.EF
 
         public CardType BuffType { get; set; }
 
-        public byte Propability { get; set; }
-
-        public virtual ICollection<SkillCard> SkillCard { get; set; }
+        public byte Propability { get; set; }   
 
         public virtual ICollection<BCard> BCards { get; set; }
         #endregion

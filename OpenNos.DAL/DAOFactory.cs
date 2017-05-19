@@ -62,7 +62,6 @@ namespace OpenNos.DAL
         private static IShopDAO _shopDAO;
         private static IShopItemDAO _shopitemDAO;
         private static IShopSkillDAO _shopskillDAO;
-        private static ISkillCardDAO _skillCardDAO;
         private static ISkillDAO _skillDAO;
         private static IStaticBonusDAO _staticBonusDAO;
         private static ITeleporterDAO _teleporterDAO;
@@ -790,26 +789,6 @@ namespace OpenNos.DAL
                 }
 
                 return _shopskillDAO;
-            }
-        }
-
-        public static ISkillCardDAO SkillCardDAO
-        {
-            get
-            {
-                if (_skillCardDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _skillCardDAO = new SkillCardDAO();
-                    }
-                    else
-                    {
-                        _skillCardDAO = new EF.SkillCardDAO();
-                    }
-                }
-
-                return _skillCardDAO;
             }
         }
 

@@ -109,7 +109,6 @@
     <Compile Include="ShopDAO.cs" />
     <Compile Include="ShopItemDAO.cs" />
     <Compile Include="ShopSkillDAO.cs" />
-    <Compile Include="SkillCardDAO.cs" />
     <Compile Include="SkillDAO.cs" />
     <Compile Include="StaticBonusDAO.cs" />
     <Compile Include="TeleporterDAO.cs" />

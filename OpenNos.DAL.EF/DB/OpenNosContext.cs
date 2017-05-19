@@ -111,8 +111,6 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Skill> Skill { get; set; }
 
-        public virtual DbSet<SkillCard> SkillCard { get; set; }
-
         public virtual DbSet<StaticBonus> StaticBonus { get; set; }
 
         public virtual DbSet<Teleporter> Teleporter { get; set; }
@@ -358,17 +356,17 @@ namespace OpenNos.DAL.EF.DB
                 .WithRequired(e => e.Map)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<SkillCard>()
-                .HasRequired(e => e.Skill)
-                .WithMany(e => e.SkillCard)
-                .HasForeignKey(e => e.SkillVNum)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<BCard>()
+             .HasOptional(e => e.Skill)
+              .WithMany(e => e.BCards)
+              .HasForeignKey(e => e.SkillVNum)
+              .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<SkillCard>()
-                .HasRequired(e => e.Card)
-                .WithMany(e => e.SkillCard)
-                .HasForeignKey(e => e.CardId)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<BCard>()
+            .HasOptional(e => e.NpcMonster)
+             .WithMany(e => e.BCards)
+             .HasForeignKey(e => e.NpcMonsterVNum)
+             .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<BCard>()
                 .HasOptional(e => e.Card)
@@ -379,7 +377,7 @@ namespace OpenNos.DAL.EF.DB
             modelBuilder.Entity<BCard>()
                 .HasOptional(e => e.Item)
                  .WithMany(e => e.BCards)
-                 .HasForeignKey(e => e.ItemVnum)
+                 .HasForeignKey(e => e.ItemVNum)
                  .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<MapTypeMap>()

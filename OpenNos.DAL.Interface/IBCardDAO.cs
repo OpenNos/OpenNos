@@ -33,6 +33,10 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<BCardDTO> LoadByItemVNum(short vNum);
 
+        IEnumerable<BCardDTO> LoadByNpcMonsterVNum(short vNum);
+
+        IEnumerable<BCardDTO> LoadBySkillVNum(short vNum);
+
         #endregion
     }
 }

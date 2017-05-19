@@ -18,6 +18,10 @@ namespace OpenNos.Data
 
         public short? ItemVnum { get; set; }
 
+        public short? SkillVNum { get; set; }
+
+        public short? NpcMonsterVNum { get; set; }
+
         public short Periode { get; set; }
 
         public byte Probability { get; set; }

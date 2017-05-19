@@ -139,7 +139,6 @@ namespace OpenNos.Master.Server
             DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
             DAOFactory.CardDAO.RegisterMapping(typeof(CardDTO)).InitializeMapper();
             DAOFactory.BCardDAO.RegisterMapping(typeof(BCardDTO)).InitializeMapper();
-            DAOFactory.SkillCardDAO.RegisterMapping(typeof(SkillCardDTO)).InitializeMapper();
             DAOFactory.SkillDAO.RegisterMapping(typeof(Skill)).InitializeMapper();
             DAOFactory.MateDAO.RegisterMapping(typeof(MateDTO)).InitializeMapper();
             DAOFactory.MateDAO.RegisterMapping(typeof(Mate)).InitializeMapper();
