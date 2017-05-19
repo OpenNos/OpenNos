@@ -12,6 +12,6 @@ Uppermost
 
 #Helpers
 juhgiyo for his JPS+ algorithm  
-Medhy for encryptions algorithm
+Medhy for encryptions algorithm  
 flowx3 for HP algorithm  
 Elektrochemie for encryptions algorithm
