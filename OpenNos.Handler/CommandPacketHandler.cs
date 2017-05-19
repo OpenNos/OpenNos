@@ -103,23 +103,51 @@ namespace OpenNos.Handler
         {
             if (addPetPacket != null)
             {
-                if (Session.CurrentMapInstance == Session.Character.Miniland)
-                {
-                    if (addPetPacket.Level == 0)
-                    {
-                        addPetPacket.Level = 1;
-                    }
-                    Mate mate = new Mate(Session.Character, addPetPacket.MonsterVNum, addPetPacket.Level, MateType.Pet);
-                    Session.Character.AddPet(mate);
-                }
-                else
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_MINILAND"), 0));
-                }
+                AddMate(addPetPacket.MonsterVNum, addPetPacket.Level, MateType.Pet);
             }
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$AddPet MONSTERVNUM LEVEL", 10));
+            }
+        }
+
+        /// <summary>
+        /// private AddMate method
+        /// </summary>
+        /// <param name="vnum"></param>
+        /// <param name="level"></param>
+        /// <param name="mateType"></param>
+        private void AddMate(short vnum, byte level, MateType mateType)
+        {
+            NpcMonster mateNpc = ServerManager.Instance.GetNpc(vnum);
+            if (Session.CurrentMapInstance == Session.Character.Miniland && mateNpc != null)
+            {
+                if (level == 0)
+                {
+                    level = 1;
+                }
+                Mate mate = new Mate(Session.Character, mateNpc, level, mateType);
+                Session.Character.AddPet(mate);
+            }
+            else
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_MINILAND"), 0));
+            }
+        }
+
+        /// <summary>
+        /// $AddPartner Command
+        /// </summary>
+        /// <param name="addPetPacket"></param>
+        public void AddPartner(AddPartnerPacket addPartnerPacket)
+        {
+            if (addPartnerPacket != null)
+            {
+                AddMate(addPartnerPacket.MonsterVNum, addPartnerPacket.Level, MateType.Partner);
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$AddPartner MONSTERVNUM LEVEL", 10));
             }
         }
 
@@ -791,7 +819,8 @@ namespace OpenNos.Handler
             // TODO: Command displaying detailed informations about commands
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
             Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$AddPet VNUM LEVEL", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$AddPet MONSTERVNUM LEVEL", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$AddPartner MONSTERVNUM LEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$AddSkill SKILLID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ArenaWinner", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));

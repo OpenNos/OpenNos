@@ -85,15 +85,19 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                Mate mate = new Mate(session.Character, box.HoldingVNum, 1, MateType.Pet)
+                                NpcMonster heldMonster = ServerManager.Instance.GetNpc(box.HoldingVNum);
+                                if (heldMonster != null)
                                 {
-                                    Attack = box.SpDamage,
-                                    Defence = box.SpDefence
-                                };
-                                if (session.Character.AddPet(mate))
-                                {
-                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
+                                    Mate mate = new Mate(session.Character, heldMonster, 1, MateType.Pet)
+                                    {
+                                        Attack = box.SpDamage,
+                                        Defence = box.SpDefence
+                                    };
+                                    if (session.Character.AddPet(mate))
+                                    {
+                                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
+                                    }
                                 }
                             }
                         }
@@ -107,9 +111,10 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        if (session.CurrentMapInstance == session.Character.Miniland)
+                        NpcMonster heldMonster = ServerManager.Instance.GetNpc((short)EffectValue);
+                        if (session.CurrentMapInstance == session.Character.Miniland && heldMonster != null)
                         {
-                            Mate mate = new Mate(session.Character, (short)EffectValue, LevelMinimum, ItemSubType == 1 ? MateType.Partner : MateType.Pet);
+                            Mate mate = new Mate(session.Character, heldMonster, LevelMinimum, ItemSubType == 1 ? MateType.Partner : MateType.Pet);
                             if (session.Character.AddPet(mate))
                             {
                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
