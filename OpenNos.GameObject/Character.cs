@@ -3191,6 +3191,8 @@ namespace OpenNos.GameObject
             return $"sp {SpAdditionPoint} 1000000 {SpPoint} 10000";
         }
 
+  
+[       Obsolete("GenerateStartupInventory should be used only on startup, for refreshing an inventory slot please use GenerateInventoryAdd instead.")]
         public void GenerateStartupInventory()
         {
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
