@@ -191,7 +191,6 @@ namespace OpenNos.GameObject
             {
                 EventHelper.Instance.RunEvent(e);
             });
-            OnDeathEvents.RemoveAll(s => s != null);
         }
 
         public void StartLife()

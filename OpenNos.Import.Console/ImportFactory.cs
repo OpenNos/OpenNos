@@ -160,7 +160,7 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 2; i++)
                         {
-                            if (currentLine[2 + i * 6] != "0")
+                            if (currentLine[2 + i * 6] != "0" && currentLine[2 + i * 6] != "-1")
                             {
                                 bcard = new BCardDTO();
                                 bcard.Delayed = true;
@@ -1168,7 +1168,7 @@ namespace OpenNos.Import.Console
                             {
                                 BCardDTO itemCard = new BCardDTO
                                 {
-                                    ItemVnum = npc.NpcMonsterVNum,
+                                    NpcMonsterVNum = npc.NpcMonsterVNum,
                                     Type = type,
                                     SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10),
                                     FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
@@ -1210,6 +1210,7 @@ namespace OpenNos.Import.Console
                 }
                 DAOFactory.NpcMonsterDAO.Insert(npcs);
                 DAOFactory.NpcMonsterSkillDAO.Insert(skills);
+                DAOFactory.BCardDAO.Insert(monstercards);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }

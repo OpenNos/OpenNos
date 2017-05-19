@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
 {
     public class Card : CardDTO
     {
-        public List<BCardDTO> BCards { get; set; }
+        public List<BCard> BCards { get; set; }
 
         public override void Initialize()
         {

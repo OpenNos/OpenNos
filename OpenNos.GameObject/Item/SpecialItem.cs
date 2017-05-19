@@ -35,13 +35,7 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
-            inv.Item.BCards.Where(s=>s.Type == (byte)BCardType.CardType.Buff).ToList().ForEach(c =>
-            {
-                if (ServerManager.Instance.RandomNumber() < c.FirstData)
-                {
-                    session.Character.AddBuff(new Buff(c.SecondData, session.Character.Level));
-                }
-            });
+            inv.Item.BCards.ForEach(c => c.ApplyBCards( session.Character));
 
             switch (Effect)
             {
@@ -414,6 +408,9 @@ namespace OpenNos.GameObject
                     break;
             }
         }
+
+      
+
 
         #endregion
     }

@@ -52,14 +52,14 @@ namespace OpenNos.GameObject
             StaticBonusList = new List<StaticBonusDTO>();
             MinilandObjects = new List<MinilandObject>();
             Mates = new List<Mate>();
-            EquipmentBCards = new List<BCardDTO>();
+            EquipmentBCards = new List<BCard>();
         }
 
         #endregion
 
         #region Properties
 
-        public List<BCardDTO> EquipmentBCards { get; set; }
+        public List<BCard> EquipmentBCards { get; set; }
 
         public AuthorityType Authority { get; set; }
 
@@ -4915,6 +4915,7 @@ namespace OpenNos.GameObject
                 LastSpeedChange = DateTime.Now;
                 Session.SendPacket(GenerateCond());
             }
+            indicator.Card.BCards.ForEach(c => c.ApplyBCards( Session.Character));
             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100))
                 .Subscribe(
                 o =>

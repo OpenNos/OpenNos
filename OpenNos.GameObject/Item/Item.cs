@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
-        public List<BCardDTO> BCards { get; set; }
+        public List<BCard> BCards { get; set; }
         #endregion
 
         #region Methods
@@ -113,7 +113,8 @@ namespace OpenNos.GameObject
             WaitDelay = item.WaitDelay;
             WaterElement = item.WaterElement;
             WaterResistance = item.WaterResistance;
-            BCards = DAOFactory.BCardDAO.LoadByItemVNum(item.VNum).ToList();
+            BCards = new List<BCard>();
+            DAOFactory.BCardDAO.LoadByItemVNum(item.VNum).ToList().ForEach(o => BCards.Add((BCard)o));
         }
 
         //TODO: Convert to PacketDefinition

@@ -855,7 +855,10 @@ namespace OpenNos.GameObject
             // initialize npcmonsters
             foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
             {
-                _npcs.Add(npcmonsterDTO as NpcMonster);
+                NpcMonster npc = npcmonsterDTO as NpcMonster;
+                npc.BCards = new List<BCard>();
+                DAOFactory.BCardDAO.LoadByNpcMonsterVNum(npc.NpcMonsterVNum).ToList().ForEach(s => npc.BCards.Add((BCard)s));
+                _npcs.Add(npc);
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count));
 
@@ -904,7 +907,8 @@ namespace OpenNos.GameObject
             {
                 Skill skill = (Skill)skillDTO;
                 skill.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList());
-                skill.BCards.AddRange(DAOFactory.BCardDAO.LoadBySkillVNum(skill.SkillVNum).ToList());
+                skill.BCards = new List<BCard>();
+                DAOFactory.BCardDAO.LoadBySkillVNum(skill.SkillVNum).ToList().ForEach(o => skill.BCards.Add((BCard)o));
                 _skills.Add(skill);
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
@@ -914,7 +918,8 @@ namespace OpenNos.GameObject
             foreach(CardDTO carddto in DAOFactory.CardDAO.LoadAll())
             {
                 Card card = (Card)carddto;
-                card.BCards = DAOFactory.BCardDAO.LoadByCardId(card.CardId).ToList();
+                card.BCards = new List<BCard>();
+                DAOFactory.BCardDAO.LoadByCardId(card.CardId).ToList().ForEach(o => card.BCards.Add((BCard)o));
                 Cards.Add(card);
             }
           
@@ -956,6 +961,7 @@ namespace OpenNos.GameObject
                     foreach (MapMonster mapMonster in newMap.Monsters)
                     {
                         mapMonster.MapInstance = newMap;
+                        mapMonster.Monster.BCards.ForEach(c => c.ApplyBCards(mapMonster));
                         newMap.AddMonster(mapMonster);
                     }
 

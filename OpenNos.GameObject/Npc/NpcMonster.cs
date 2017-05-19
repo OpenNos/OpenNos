@@ -28,6 +28,8 @@ namespace OpenNos.GameObject
 
         public short FirstY { get; set; }
 
+        public List<BCard> BCards { get; set; }
+
         public DateTime LastEffect { get; private set; }
 
         public DateTime LastMove { get; private set; }
