@@ -57,6 +57,9 @@ namespace OpenNos.DAL.EF
         public byte Propability { get; set; }   
 
         public virtual ICollection<BCard> BCards { get; set; }
+
+        public virtual ICollection<StaticBuff> StaticBuff { get; set; }
+
         #endregion
     }
 }

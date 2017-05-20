@@ -22,7 +22,9 @@ namespace OpenNos.DAL.EF
 
         public long CharacterId { get; set; }
 
-        public int EffectId { get; set; }
+        public virtual Card Card { get; set; }
+
+        public short CardId { get; set; }
 
         public int RemainingTime { get; set; }
 
