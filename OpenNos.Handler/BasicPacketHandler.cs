@@ -1720,13 +1720,11 @@ namespace OpenNos.Handler
                     }
                     Session.Character.PositionX = walkPacket.XCoordinate;
                     Session.Character.PositionY = walkPacket.YCoordinate;
-                    Node[,] BrushFire = BestFirstSearch.LoadGrid(Session.CurrentMapInstance.Map.Grid);
-                    BestFirstSearch.LoadBrushFire(new GridPos()
+                    Session.Character.BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
                     {
                         X = Session.Character.PositionX,
                         Y = Session.Character.PositionY
-                    }, ref BrushFire);
-                    Session.Character.BrushFire = BrushFire;
+                    }, Session.CurrentMapInstance.Map.Grid);
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;

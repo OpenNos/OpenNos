@@ -276,7 +276,7 @@ namespace OpenNos.GameObject
                     short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                     try
                     {
-                        List<Node> list = BestFirstSearch.TracePath(new Node() { X = MapX, Y = MapY }, targetSession.Character.BrushFire);
+                        List<Node> list = BestFirstSearch.TracePath(new Node() { X = MapX, Y = MapY }, targetSession.Character.BrushFire, targetSession.Character.MapInstance.Map.Grid);
                         Path = list;
                     }
                     catch (Exception ex)
