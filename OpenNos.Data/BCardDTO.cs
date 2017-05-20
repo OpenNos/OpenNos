@@ -22,10 +22,10 @@ namespace OpenNos.Data
 
         public short? NpcMonsterVNum { get; set; }
 
-        public short Periode { get; set; }
+        public short Delay { get; set; }
 
         public byte Probability { get; set; }
 
-        public bool Delayed { get; set; }
+        public bool IsDelayed { get; set; }
     }
 }

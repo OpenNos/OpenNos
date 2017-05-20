@@ -11,7 +11,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
- 
+
+using System.ComponentModel.DataAnnotations;
 using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.DAL.EF
@@ -20,6 +21,7 @@ namespace OpenNos.DAL.EF
     {
         #region Properties
 
+        [Key]
         public short BCardId { get; set; }
 
         public byte SubType { get; set; }
@@ -46,8 +48,9 @@ namespace OpenNos.DAL.EF
 
         public short? NpcMonsterVNum { get; set; }
 
-        public bool Delayed { get; set; }
+        public bool IsDelayed { get; set; }
 
+        public short Delay { get; set; }
 
         #endregion
     }

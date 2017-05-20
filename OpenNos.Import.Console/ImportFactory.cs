@@ -140,18 +140,21 @@ namespace OpenNos.Import.Console
                         {
                             if (currentLine[2 + i * 6] != "-1" && currentLine[2 + i * 6] != "0")
                             {
-                                bcard = new BCardDTO();
-                                bcard.CardId = card.CardId;
-                                bcard.Type = Convert.ToByte(currentLine[2 + i * 6]);
-                                bcard.SubType = Convert.ToByte(currentLine[3 + i * 6]);
-                                bcard.Probability = Convert.ToByte(currentLine[4 + i * 6]);
+                                bcard = new BCardDTO()
+                                {
+                                    CardId = card.CardId,
+                                    Type = Convert.ToByte(currentLine[2 + i * 6]),
+                                    SubType = Convert.ToByte(currentLine[3 + i * 6]),
+                                    Probability = Convert.ToByte(currentLine[4 + i * 6]),
+                                    Delay = Convert.ToByte(currentLine[5 + i * 6]),
+                                    FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
+                                    SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
+
+                                };
                                 if (bcard.Probability == 0)
                                 {
                                     bcard.Probability = 100;
                                 }
-                                bcard.Periode = Convert.ToByte(currentLine[5 + i * 6]);
-                                bcard.FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4;
-                                bcard.SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4;
                                 bcards.Add(bcard);
                             }
                         }
@@ -162,19 +165,21 @@ namespace OpenNos.Import.Console
                         {
                             if (currentLine[2 + i * 6] != "0" && currentLine[2 + i * 6] != "-1")
                             {
-                                bcard = new BCardDTO();
-                                bcard.Delayed = true;
-                                bcard.CardId = card.CardId;
-                                bcard.Type = Convert.ToByte(currentLine[2 + i * 6]);
-                                bcard.SubType = Convert.ToByte(currentLine[3 + i * 6]);
-                                bcard.Probability = Convert.ToByte(currentLine[4 + i * 6]);
+                                bcard = new BCardDTO()
+                                {
+                                    IsDelayed = true,
+                                    CardId = card.CardId,
+                                    Type = Convert.ToByte(currentLine[2 + i * 6]),
+                                    SubType = Convert.ToByte(currentLine[3 + i * 6]),
+                                    Probability = Convert.ToByte(currentLine[4 + i * 6]),
+                                    Delay = Convert.ToByte(currentLine[5 + i * 6]),
+                                    FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
+                                    SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
+                                };
                                 if (bcard.Probability == 0)
                                 {
                                     bcard.Probability = 100;
                                 }
-                                bcard.Periode = Convert.ToByte(currentLine[5 + i * 6]);
-                                bcard.FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4;
-                                bcard.SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4;
                                 bcards.Add(bcard);
                             }
                         }
@@ -1173,7 +1178,7 @@ namespace OpenNos.Import.Console
                                     SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10),
                                     FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
                                     SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                    Periode = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                                    Delay = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
                                 };
                                 monstercards.Add(itemCard);
                             }
@@ -2200,7 +2205,7 @@ namespace OpenNos.Import.Console
                                 SubType = (byte)((int.Parse(currentLine[6]) + 1) * 10),
                                 FirstData = (short)(int.Parse(currentLine[4]) / 4),
                                 SecondData = (short)(int.Parse(currentLine[5]) / 4),
-                                Periode = (short)(int.Parse(currentLine[7]) / 4),
+                                Delay = (short)(int.Parse(currentLine[7]) / 4),
                             };
                             skillCards.Add(itemCard);
                         }
@@ -3438,7 +3443,7 @@ namespace OpenNos.Import.Console
                                     SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10),
                                     FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
                                     SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                    Periode = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                                    Delay = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
                                 };
                                 itemCards.Add(itemCard);
                             }
