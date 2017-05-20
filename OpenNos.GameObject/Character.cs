@@ -4898,16 +4898,32 @@ namespace OpenNos.GameObject
             return CharacterHelper.XPData[Level - 1];
         }
 
+       /* public void AddStaticBuff(StaticBuff staticBuff)
+        {
+            Buff.RemoveAll(s => s.Card.CardId.Equals(staticBuff.Card.CardId));
+          
+
+            if (staticBuff.RemainingTime > 0)
+            {
+                Buff.Add();
+            }
+            else if (aleready contain)
+            {
+
+            }
+            else
+            {
+
+            }
+            Session.SendPacket($"vb {staticBuff.Card.CardId} 1 {staticBuff.Card.Duration}");
+            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 12));
+
+        }*/
+
         public void AddBuff(Buff indicator)
         {
             Buff.RemoveAll(s => s.Card.CardId.Equals(indicator.Card.CardId));
             Buff.Add(indicator);
-            /*TODO MOVE
-            if (indicator.StaticBuff)
-            {
-                Session.SendPacket($"vb {indicator.Card.CardId} 1 {indicator.Card.Duration}");
-                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 12));
-            }*/
             Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.Card.Duration} {Level}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 20));
             if (indicator.Card.BCards.Any(s => s.Type == (byte)BCardType.CardType.Move))
@@ -4915,7 +4931,7 @@ namespace OpenNos.GameObject
                 LastSpeedChange = DateTime.Now;
                 Session.SendPacket(GenerateCond());
             }
-            indicator.Card.BCards.ForEach(c => c.ApplyBCards( Session.Character));
+            indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100))
                 .Subscribe(
                 o =>

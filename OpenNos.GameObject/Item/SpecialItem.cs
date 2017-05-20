@@ -98,6 +98,10 @@ namespace OpenNos.GameObject
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
 
+                case 208:
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                   // session.Character.AddStaticBuff(new StaticBuff(121,session.Character.Level));
+                    break;
                 // Divorce letter
                 case 6969: // this is imaginary number I = √(-1)
                     break;
