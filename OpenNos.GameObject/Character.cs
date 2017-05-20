@@ -1178,7 +1178,7 @@ namespace OpenNos.GameObject
             #region Base Damage
 
             int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg, mainMaxDmg + 1);
-           // baseDamage += skill.Damage / 4; it's a bcard need a skillbcardload
+            // baseDamage += skill.Damage / 4; it's a bcard need a skillbcardload
             baseDamage += morale - monsterToAttack.Monster.Level; //Morale
             if (Class == ClassType.Adventurer)
             {
@@ -3191,8 +3191,8 @@ namespace OpenNos.GameObject
             return $"sp {SpAdditionPoint} 1000000 {SpPoint} 10000";
         }
 
-  
-[       Obsolete("GenerateStartupInventory should be used only on startup, for refreshing an inventory slot please use GenerateInventoryAdd instead.")]
+
+        [Obsolete("GenerateStartupInventory should be used only on startup, for refreshing an inventory slot please use GenerateInventoryAdd instead.")]
         public void GenerateStartupInventory()
         {
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
@@ -4964,7 +4964,7 @@ namespace OpenNos.GameObject
             {
                 foreach (Buff buff in Buff)
                 {
-                    foreach (BCardDTO entry in buff.Card.BCards.Concat(EquipmentBCards).Where(s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10)) && (!s.Delayed || (s.Delayed && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
+                    foreach (BCardDTO entry in buff.Card.BCards.Concat(EquipmentBCards).Where(s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10)) && (!s.IsDelayed || (s.IsDelayed && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
                     {
                         value1 += entry.FirstData;
                         value2 += entry.SecondData;
