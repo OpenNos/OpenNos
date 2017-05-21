@@ -17,6 +17,7 @@ This Website and Project is in no way affiliated with, authorized, maintained, s
 ## Before opening new issues troubleshooting can be found [here](TROUBLESHOOTING.md) ##
 ### Contribution is only possible with Visual Studio 2017 and Microsoft SQL Server 2016 ###
 We recommend usage of [StyleCop extension](https://stylecop.codeplex.com/) and [ResX Resource Manager](https://resxresourcemanager.codeplex.com/).
+### After latest changes you might want to get ready to use [.NET Framework 4.7](https://www.microsoft.com/en-us/download/details.aspx?id=55168) ###
 
 # Building the code #
 ## 1. Install SSDT For Visual Studio ##
