@@ -24,7 +24,7 @@ namespace OpenNos.GameObject
 
         public override string ToString()
         {
-            return $"CreateItem Command VNum: {VNum}" + Design != null ? $"Design: {Design}" : "" + Upgrade != null ? $"Upgrade: {Upgrade}" : "";
+            return $"CreateItem Command VNum: {VNum}" + Design != null ? $" Design: {Design}" : "" + Upgrade != null ? $" Upgrade: {Upgrade}" : "";
         }
 
         #endregion

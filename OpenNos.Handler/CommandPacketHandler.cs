@@ -2224,7 +2224,6 @@ namespace OpenNos.Handler
                     {
                         // clear any shop or trade on target character
                         session.Character.Dispose();
-
                         if (!session.Character.IsChangingMapInstance && Session.HasCurrentMapInstance)
                         {
                             List<MapCell> possibilities = new List<MapCell>();
@@ -2266,7 +2265,6 @@ namespace OpenNos.Handler
                     {
                         // clear any shop or trade on target character
                         targetSession.Character.Dispose();
-
                         targetSession.Character.IsSitting = false;
                         ServerManager.Instance.ChangeMapInstance(targetSession.Character.CharacterId, Session.Character.MapInstanceId, (short)(Session.Character.PositionX + 1), (short)(Session.Character.PositionY + 1));
                     }
@@ -2388,96 +2386,6 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 10));
-            }
-        }
-
-        /// <summary>
-        /// $Inventory Command
-        /// </summary>
-        /// <param name="inventoryPreviewPacket"></param>
-        public void ViewInventory(InventoryPreviewPacket inventoryPreviewPacket)
-        {
-            //TODO: Fix it! Doesn't work. Copycat of GenerateStartupInventory()
-            Logger.Debug("Inventory Command", Session.Character.GenerateIdentity());
-            if (inventoryPreviewPacket != null)
-            {
-                ClientSession session = Session;
-                if (ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name) != null)
-                {
-                    session = ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name);
-                }
-                string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7";
-                // inv 3 used for miniland objects
-                if (session.Character.Inventory == null) return;
-                var listItems = session.Character.Inventory.GetAllItems();
-                foreach (ItemInstance inv in listItems)
-                {
-                    switch (inv.Type)
-                    {
-                        case InventoryType.Equipment:
-                            if (inv.Item.EquipmentSlot == EquipmentType.Sp)
-                            {
-                                SpecialistInstance specialistInstance = inv as SpecialistInstance;
-                                if (specialistInstance != null)
-                                {
-                                    inv0 += $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
-                                }
-                            }
-                            else
-                            {
-                                WearableInstance wearableInstance = inv as WearableInstance;
-                                if (wearableInstance != null)
-                                {
-                                    inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
-                                }
-                            }
-                            break;
-
-                        case InventoryType.Main:
-                            inv1 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                            break;
-
-                        case InventoryType.Etc:
-                            inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                            break;
-
-                        case InventoryType.Miniland:
-                            inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
-                            break;
-
-                        case InventoryType.Specialist:
-                            SpecialistInstance specialist = inv as SpecialistInstance;
-                            if (specialist != null)
-                            {
-                                inv6 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
-                            }
-                            break;
-
-                        case InventoryType.Costume:
-                            WearableInstance costumeInstance = inv as WearableInstance;
-                            if (costumeInstance != null)
-                            {
-                                inv7 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
-                            }
-                            break;
-
-                        case InventoryType.Wear:
-                            break;
-
-                        case InventoryType.Bazaar:
-                            break;
-
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
-                Session.SendPacket(inv0);
-                Session.SendPacket(inv1);
-                Session.SendPacket(inv2);
-                Session.SendPacket(inv6);
-                Session.SendPacket(inv7);
             }
         }
 

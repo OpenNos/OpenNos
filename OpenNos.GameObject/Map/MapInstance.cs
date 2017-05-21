@@ -289,6 +289,7 @@ namespace OpenNos.GameObject
             return _monsters[mapMonsterId];
         }
 
+        // TODO: Fix, Seems glitchy.
         public int GetNextMonsterId()
         {
             int nextId = _mapMonsterIds.Any() ? _mapMonsterIds.Last() + 1 : 1;
@@ -296,6 +297,7 @@ namespace OpenNos.GameObject
             return nextId;
         }
 
+        // TODO: Fix, Seems glitchy.
         public int GetNextNpcId()
         {
             int nextId = _mapNpcIds.Any() ? _mapNpcIds.Last() + 1 : 1;
