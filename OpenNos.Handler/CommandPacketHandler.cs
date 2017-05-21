@@ -841,7 +841,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$CreateItem SPID WINGS UPGRADE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Demote CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$DropRate VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 12));
@@ -932,7 +932,14 @@ namespace OpenNos.Handler
                     {
                         if (createItemPacket.Upgrade.HasValue)
                         {
-                            upgrade = createItemPacket.Upgrade.Value;
+                            if (iteminfo.EquipmentSlot != EquipmentType.Sp)
+                            {
+                                upgrade = createItemPacket.Upgrade.Value;
+                            }
+                            else
+                            {
+                                design = createItemPacket.Upgrade.Value;
+                            }
                             if (iteminfo.EquipmentSlot != EquipmentType.Sp && upgrade == 0 && iteminfo.BasicUpgrade != 0)
                             {
                                 upgrade = iteminfo.BasicUpgrade;
@@ -942,7 +949,7 @@ namespace OpenNos.Handler
                         {
                             if (iteminfo.EquipmentSlot == EquipmentType.Sp)
                             {
-                                design = createItemPacket.Design.Value;
+                                upgrade = createItemPacket.Design.Value;
                             }
                             else
                             {
