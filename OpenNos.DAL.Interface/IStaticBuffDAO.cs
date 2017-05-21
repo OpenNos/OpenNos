@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IStaticBuffDAO : IMappingBaseDAO
+    public interface IStaticBonusDAO : IMappingBaseDAO
     {
         #region Methods
 
@@ -27,18 +27,18 @@ namespace OpenNos.DAL.Interface
         /// </summary>
         /// <param name="staticBonus"></param>
         /// <returns></returns>
-        SaveResult InsertOrUpdate(ref StaticBuffDTO staticBuff);
+        SaveResult InsertOrUpdate(ref StaticBonusDTO staticBonus);
 
         /// <summary>
         /// Loads staticBonus by characterid
         /// </summary>
         /// <param name="characterId"></param>
         /// <returns></returns>
-        IEnumerable<StaticBuffDTO> LoadByCharacterId(long characterId);
-
-        IEnumerable<short> LoadByTypeCharacterId(long characterId);
+        IEnumerable<StaticBonusDTO> LoadByCharacterId(long characterId);
 
         void Delete(short bonusToDelete, long characterId);
+
+        IEnumerable<short> LoadTypeByCharacterId(long characterId);
 
         #endregion
     }

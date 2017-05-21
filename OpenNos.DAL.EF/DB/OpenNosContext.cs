@@ -115,6 +115,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Teleporter> Teleporter { get; set; }
 
+        public virtual DbSet<StaticBuff> StaticBuff { get; set; }
+
         #endregion
 
         #region Methods

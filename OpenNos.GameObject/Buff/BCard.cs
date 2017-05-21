@@ -54,6 +54,14 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                case BCardType.CardType.Move:
+                    if (session.GetType() == typeof(Character))
+                    {
+                        (session as Character).LastSpeedChange = DateTime.Now;
+                        (session as Character).Session.SendPacket((session as Character).GenerateCond());
+                    }
+                    break;
+
                 case BCardType.CardType.Summons:
                     if (session.GetType() == typeof(Character))
                     {

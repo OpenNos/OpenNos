@@ -345,7 +345,7 @@ namespace OpenNos.Handler
                             Session.Character.CharacterLife();
                         });
                         Session.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Connection", Timestamp = DateTime.Now });
-
+                        
                         Session.SendPacket("OK");
 
                         // Inform everyone about connected character

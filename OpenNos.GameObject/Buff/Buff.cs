@@ -26,14 +26,14 @@ namespace OpenNos.GameObject
         
         public int Level;
         public Card Card { get; set; }
-        public DateTime Start { get; set; }
         public bool StaticBuff { get; set; }
+        public int RemainingTime { get; set; }
+        public DateTime Start { get; set; }
 
         public Buff(int id, byte level)
         {
             Card = ServerManager.Instance.Cards.FirstOrDefault(s => s.CardId == id);
             Level = level;
-            Start = DateTime.Now;
         }
         
 

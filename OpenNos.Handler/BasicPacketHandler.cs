@@ -1697,6 +1697,11 @@ namespace OpenNos.Handler
             Session.Character.RefreshMail();
             Session.Character.LoadSentMail();
             Session.Character.DeleteTimeout();
+
+            foreach (StaticBuffDTO sb in DAOFactory.StaticBuffDAO.LoadByCharacterId(Session.Character.CharacterId))
+            {
+                Session.Character.AddStaticBuff(sb);   
+            }   
         }
 
         /// <summary>

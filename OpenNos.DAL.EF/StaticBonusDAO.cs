@@ -18,6 +18,7 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,30 @@ namespace OpenNos.DAL.EF
 {
     public class StaticBonusDAO : MappingBaseDAO<StaticBonus, StaticBonusDTO>, IStaticBonusDAO
     {
+
         #region Methods
+
+        public void Delete(short bonusToDelete, long characterId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    StaticBonus bon = context.StaticBonus.FirstOrDefault(c => c.StaticBonusType == (StaticBonusType)bonusToDelete && c.CharacterId == characterId);
+
+                    if (bon != null)
+                    {
+                        context.StaticBonus.Remove(bon);
+                        context.SaveChanges();
+                    }
+                    
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_ERROR"), bonusToDelete, e.Message), e);
+            }
+        }
 
         public SaveResult InsertOrUpdate(ref StaticBonusDTO staticBonus)
         {
@@ -34,8 +58,9 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long id = staticBonus.StaticBonusId;
-                    StaticBonus entity = context.StaticBonus.FirstOrDefault(c => c.StaticBonusId.Equals(id));
+                    long id = staticBonus.CharacterId;
+                    StaticBonusType cardid = staticBonus.StaticBonusType;
+                    StaticBonus entity = context.StaticBonus.FirstOrDefault(c => c.StaticBonusType.Equals(cardid) && c.CharacterId == id);
 
                     if (entity == null)
                     {
@@ -81,23 +106,23 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public void RemoveOutDated()
+        public IEnumerable<short> LoadTypeByCharacterId(long characterId)
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    foreach (StaticBonus entity in context.StaticBonus.Where(e => e.DateEnd < DateTime.Now))
-                    {
-                        context.StaticBonus.Remove(entity);
-                    }
+                    return context.StaticBonus.Where(i => i.CharacterId == characterId).Select(qle => (short)qle.StaticBonusType).ToList();
                 }
             }
             catch (Exception e)
             {
-                Logger.Log.Error(e);
+                Logger.Error(e);
+                return null;
             }
+
         }
+
 
         private StaticBonusDTO Insert(StaticBonusDTO sb, OpenNosContext context)
         {

@@ -210,6 +210,7 @@ namespace OpenNos.World
             DAOFactory.MateDAO.RegisterMapping(typeof(Mate)).InitializeMapper();
             DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
             DAOFactory.StaticBonusDAO.RegisterMapping(typeof(StaticBonusDTO)).InitializeMapper();
+            DAOFactory.StaticBuffDAO.RegisterMapping(typeof(StaticBuffDTO)).InitializeMapper();
             DAOFactory.FamilyDAO.RegisterMapping(typeof(Family)).InitializeMapper();
             DAOFactory.FamilyCharacterDAO.RegisterMapping(typeof(FamilyCharacter)).InitializeMapper();
             DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();

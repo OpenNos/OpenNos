@@ -401,6 +401,7 @@
     <Compile Include="ShopSkillDAO.cs" />
     <Compile Include="CharacterSkillDAO.cs" />
     <Compile Include="Entities\Teleporter.cs" />
+    <Compile Include="StaticBuffDAO.cs" />
     <Compile Include="StaticBonusDAO.cs" />
     <Compile Include="TeleporterDAO.cs" />
     <Compile Include="ScriptedInstanceDAO.cs" />

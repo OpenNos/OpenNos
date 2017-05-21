@@ -20,34 +20,26 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
-    public class StaticBonusDAO : BaseDAO<StaticBonusDTO>, IStaticBonusDAO
+    public class StaticBuffDAO : BaseDAO<StaticBuffDTO>, IStaticBuffDAO
     {
         public void Delete(short bonusToDelete, long characterId)
         {
             throw new NotImplementedException();
         }
-        #region Methods
 
-        public SaveResult InsertOrUpdate(ref StaticBonusDTO staticBonus)
+        public SaveResult InsertOrUpdate(ref StaticBuffDTO staticBuff)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<StaticBonusDTO> LoadByCharacterId(long characterId)
+        public IEnumerable<StaticBuffDTO> LoadByCharacterId(long characterId)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<short> LoadTypeByCharacterId(long characterId)
+        public IEnumerable<short> LoadByTypeCharacterId(long characterId)
         {
             throw new NotImplementedException();
         }
-
-        public void RemoveOutDated()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

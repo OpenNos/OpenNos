@@ -100,7 +100,7 @@ namespace OpenNos.GameObject
 
                 case 208:
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                   // session.Character.AddStaticBuff(new StaticBuff(121,session.Character.Level));
+                    session.Character.AddStaticBuff(new StaticBuffDTO() { CardId = 121});
                     break;
                 // Divorce letter
                 case 6969: // this is imaginary number I = √(-1)

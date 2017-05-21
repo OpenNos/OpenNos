@@ -111,6 +111,7 @@
     <Compile Include="ISkillDAO.cs" />
     <Compile Include="IShopSkillDAO.cs" />
     <Compile Include="ICharacterSkillDAO.cs" />
+    <Compile Include="IStaticBuffDAO.cs" />
     <Compile Include="IStaticBonusDAO.cs" />
     <Compile Include="ISynchronizableBaseDAO.cs" />
     <Compile Include="ITeleporterDAO.cs" />

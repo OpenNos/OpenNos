@@ -4251,13 +4251,39 @@ namespace OpenNos.GameObject
                     DAOFactory.MinilandObjectDAO.InsertOrUpdate(ref mobj);
                 }
 
+                IEnumerable<short> currentlySavedBonus = DAOFactory.StaticBonusDAO.LoadTypeByCharacterId(CharacterId);
+                foreach (short bonusToDelete in currentlySavedBonus.Except(Buff.Select(s => s.Card.CardId)))
+                {
+                    DAOFactory.StaticBonusDAO.Delete(bonusToDelete, CharacterId);
+                }
                 foreach (StaticBonusDTO bonus in StaticBonusList.ToArray())
                 {
                     StaticBonusDTO bonus2 = bonus;
                     DAOFactory.StaticBonusDAO.InsertOrUpdate(ref bonus2);
                 }
 
-                //DAOFactory.StaticBonusDAO.RemoveOutDated();
+                IEnumerable<short> currentlySavedBuff = DAOFactory.StaticBuffDAO.LoadByTypeCharacterId(CharacterId);
+                foreach (short bonusToDelete in currentlySavedBuff.Except(Buff.Select(s => s.Card.CardId)))
+                {
+                    DAOFactory.StaticBuffDAO.Delete(bonusToDelete, CharacterId);
+                }
+
+                foreach (Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
+                {
+                    StaticBuffDTO bf = new StaticBuffDTO()
+                    {
+                        CharacterId = CharacterId,
+                        RemainingTime = (int)(buff.RemainingTime - (DateTime.Now - buff.Start).TotalSeconds),
+                        CardId = buff.Card.CardId
+                    };
+                    DAOFactory.StaticBuffDAO.InsertOrUpdate(ref bf);
+                }
+
+                foreach (StaticBonusDTO bonus in StaticBonusList.ToArray())
+                {
+                    StaticBonusDTO bonus2 = bonus;
+                    DAOFactory.StaticBonusDAO.InsertOrUpdate(ref bonus2);
+                }
 
                 foreach (GeneralLogDTO general in GeneralLogs)
                 {
@@ -4898,39 +4924,56 @@ namespace OpenNos.GameObject
             return CharacterHelper.XPData[Level - 1];
         }
 
-       /* public void AddStaticBuff(StaticBuff staticBuff)
+        public void AddStaticBuff(StaticBuffDTO staticBuff)
         {
-            Buff.RemoveAll(s => s.Card.CardId.Equals(staticBuff.Card.CardId));
-          
-
+            Buff bf = new Buff(staticBuff.CardId, Session.Character.Level);
+            bf.Start = DateTime.Now;
+            bf.StaticBuff = true;
+            Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
             if (staticBuff.RemainingTime > 0)
             {
-                Buff.Add();
+                bf.RemainingTime = staticBuff.RemainingTime;
+                Buff.Add(bf);
             }
-            else if (aleready contain)
+            else if (oldbuff != null)
             {
+                Buff.RemoveAll(s => s.Card.CardId.Equals(bf.Card.CardId));
 
+                bf.RemainingTime = bf.Card.Duration * 6 / 10 + oldbuff.RemainingTime;
+                Buff.Add(bf);
             }
             else
             {
-
+                bf.RemainingTime = bf.Card.Duration * 6 / 10;
+                Buff.Add(bf);
             }
-            Session.SendPacket($"vb {staticBuff.Card.CardId} 1 {staticBuff.Card.Duration}");
+            bf.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
+            Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime))
+                .Subscribe(
+                o =>
+                {
+                    RemoveBuff(bf.Card.CardId);
+                    if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < bf.Card.TimeoutBuffChance)
+                    {
+                        AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
+                    }
+                });
+
+            Session.SendPacket($"vb {bf.Card.CardId} 1 {bf.RemainingTime * 10}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 12));
 
-        }*/
+        }
 
         public void AddBuff(Buff indicator)
         {
             Buff.RemoveAll(s => s.Card.CardId.Equals(indicator.Card.CardId));
             Buff.Add(indicator);
-            Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.Card.Duration} {Level}");
+            indicator.RemainingTime = indicator.Card.Duration;
+            indicator.Start = DateTime.Now;
+
+            Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 20));
-            if (indicator.Card.BCards.Any(s => s.Type == (byte)BCardType.CardType.Move))
-            {
-                LastSpeedChange = DateTime.Now;
-                Session.SendPacket(GenerateCond());
-            }
+
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100))
                 .Subscribe(
@@ -4954,8 +4997,11 @@ namespace OpenNos.GameObject
                     Session.SendPacket($"vb {indicator.Card.CardId} 0 {indicator.Card.Duration}");
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 11));
                 }
-                Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
-                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
+                else
+                {
+                    Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
+                }
                 Buff.Remove(indicator);
                 if (indicator.Card.BCards.Any(s => s.Type == (byte)BCardType.CardType.Move))
                 {

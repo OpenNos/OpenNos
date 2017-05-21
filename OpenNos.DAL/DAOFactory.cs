@@ -64,6 +64,7 @@ namespace OpenNos.DAL
         private static IShopSkillDAO _shopskillDAO;
         private static ISkillDAO _skillDAO;
         private static IStaticBonusDAO _staticBonusDAO;
+        private static IStaticBuffDAO _staticBuffDAO;
         private static ITeleporterDAO _teleporterDAO;
 
         #endregion
@@ -829,6 +830,26 @@ namespace OpenNos.DAL
                 }
 
                 return _staticBonusDAO;
+            }
+        }
+
+        public static IStaticBuffDAO StaticBuffDAO
+        {
+            get
+            {
+                if (_staticBuffDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _staticBuffDAO = new StaticBuffDAO();
+                    }
+                    else
+                    {
+                        _staticBuffDAO = new EF.StaticBuffDAO();
+                    }
+                }
+
+                return _staticBuffDAO;
             }
         }
 
