@@ -4407,9 +4407,9 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        resp.X = PositionX;
-                        resp.Y = PositionY;
-                        resp.MapId = MapInstance.Map.MapId;
+                        resp.X = mapX;
+                        resp.Y = mapY;
+                        resp.MapId = mapId;
                     }
                 }
             }

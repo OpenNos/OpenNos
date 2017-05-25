@@ -366,7 +366,7 @@ namespace OpenNos.Handler
             bool createNewGroup = true;
             ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(pjoinPacket.CharacterId);
 
-            if (targetSession == null)
+            if (targetSession == null && !pjoinPacket.RequestType.Equals(GroupRequestType.Sharing))
             {
                 return;
             }
@@ -420,7 +420,11 @@ namespace OpenNos.Handler
                 if (Session.Character.Group != null)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_SHARE_INFO")));
-                    Session.Character.Group.Characters.Where(s => s.Character.CharacterId != Session.Character.CharacterId).ToList().ForEach(s => s.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#pjoin^6^{ Session.Character.CharacterId} #pjoin^7^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU_SHARE"), Session.Character.Name)}")));
+                    Session.Character.Group.Characters.Where(s => s.Character.CharacterId != Session.Character.CharacterId).ToList().ForEach(s =>
+                    {
+                        s.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#pjoin^6^{ Session.Character.CharacterId} #pjoin^7^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU_SHARE"), Session.Character.Name)}"));
+                        Session.Character.GroupSentRequestCharacterIds.Add(s.Character.CharacterId);
+                    });
                 }
             }
             else if (pjoinPacket.RequestType.Equals(GroupRequestType.Accepted))
@@ -507,10 +511,10 @@ namespace OpenNos.Handler
                 }
                 targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
 
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), 0));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), targetSession.Character.Name), 0));
                 if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
                 {
-                    Session.Character.SetReturnPoint(Session.Character.MapInstance.Map.MapId, targetSession.Character.PositionX, targetSession.Character.PositionY);
+                    Session.Character.SetReturnPoint(targetSession.Character.Return.DefaultMapId, targetSession.Character.Return.DefaultX, targetSession.Character.Return.DefaultY);
                     targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
                 }
             }
