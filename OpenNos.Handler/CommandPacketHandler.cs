@@ -879,8 +879,8 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(*)", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME(*)", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchItem PAGE NAME(*)", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchMonster PAGE NAME(*)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shout SENDPACKET", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ShutdownAll WORLDGROUP(*)", 12));
@@ -1794,7 +1794,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$SearchItem PAGE NAME(*)", 10));
             }
         }
 
@@ -1822,7 +1822,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$SearchMonster PAGE NAME(*)", 10));
             }
         }
 
