@@ -3,14 +3,21 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$Event", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class EventPacket : PacketDefinition
     {
+        #region Properties
 
         [PacketIndex(0)]
         public EventType EventType { get; set; }
 
+        public static string ReturnHelp()
+        {
+            return "$Event EVENT";
+        }
+
+        #endregion
     }
 }

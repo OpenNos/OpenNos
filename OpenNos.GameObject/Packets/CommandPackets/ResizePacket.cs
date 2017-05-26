@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$Resize", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ResizePacket : PacketDefinition
@@ -12,6 +12,11 @@ namespace OpenNos.GameObject
 
         [PacketIndex(0)]
         public int Value { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$Resize VALUE";
+        }
 
         #endregion
     }

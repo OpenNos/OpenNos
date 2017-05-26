@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$Packet", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class PacketCallbackPacket : PacketDefinition
@@ -12,6 +12,11 @@ namespace OpenNos.GameObject
 
         [PacketIndex(0, SerializeToEnd = true)]
         public string Packet { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$Packet PACKET";
+        }
 
         #endregion
     }

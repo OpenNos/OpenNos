@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$Rarify", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class RarifyPacket : PacketDefinition
@@ -18,6 +18,11 @@ namespace OpenNos.GameObject
 
         [PacketIndex(0)]
         public short Slot { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$Rarify SLOT MODE PROTECTION";
+        }
 
         #endregion
     }
