@@ -14,9 +14,6 @@ namespace OpenNos.GameObject.Mock
 
         private long _clientId;
         private ClientSession _clientSession;
-        private bool _isConnected;
-        private Queue<string> _receivedPackets;
-        private Queue<string> _sentPackets;
         private long lastKeepAliveIdentitiy;
 
         #endregion
@@ -26,10 +23,10 @@ namespace OpenNos.GameObject.Mock
         public FakeNetworkClient()
         {
             _clientId = 0;
-            _sentPackets = new Queue<string>();
-            _receivedPackets = new Queue<string>();
+            SentPackets = new Queue<string>();
+            ReceivedPackets = new Queue<string>();
             lastKeepAliveIdentitiy = 1;
-            _isConnected = true;
+            IsConnected = true;
         }
 
         #endregion
@@ -68,31 +65,13 @@ namespace OpenNos.GameObject.Mock
             }
         }
 
-        public bool IsConnected
-        {
-            get
-            {
-                return _isConnected;
-            }
-        }
+        public bool IsConnected { get; private set; }
 
         public bool IsDisposing { get; set; }
 
-        public Queue<string> ReceivedPackets
-        {
-            get
-            {
-                return _receivedPackets;
-            }
-        }
+        public Queue<string> ReceivedPackets { get; }
 
-        public Queue<string> SentPackets
-        {
-            get
-            {
-                return _sentPackets;
-            }
-        }
+        public Queue<string> SentPackets { get; }
 
         public ClientSession Session
         {
@@ -108,12 +87,12 @@ namespace OpenNos.GameObject.Mock
 
         public async Task ClearLowPriorityQueue()
         {
-            // nothing to do here
+            await Task.CompletedTask;
         }
 
         public void Disconnect()
         {
-            _isConnected = false;
+            IsConnected = false;
         }
 
         public ClientSession GetClientSession()
@@ -150,12 +129,12 @@ namespace OpenNos.GameObject.Mock
 
         public void SendPacket(string packet, byte priority = 10)
         {
-            _sentPackets.Enqueue(packet);
+            SentPackets.Enqueue(packet);
         }
 
         public void SendPacketFormat(string packet, params object[] param)
         {
-            _sentPackets.Enqueue(string.Format(packet, param));
+            SentPackets.Enqueue(string.Format(packet, param));
         }
 
         public void SendPackets(IEnumerable<string> packets, byte priority = 10)

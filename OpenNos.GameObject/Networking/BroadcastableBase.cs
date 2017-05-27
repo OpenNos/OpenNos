@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public abstract class BroadcastableBase
+    public abstract class BroadcastableBase : IDisposable
     {
         #region Members
 

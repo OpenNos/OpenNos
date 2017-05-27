@@ -66,8 +66,7 @@ namespace OpenNos.GameObject
                             {
                                 if (packetsplit.Length == 1)
                                 {
-                                    int PetId;
-                                    if (int.TryParse(packetsplit[0], out PetId))
+                                    if (int.TryParse(packetsplit[0], out int PetId))
                                     {
                                         Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
                                         box.HoldingVNum = mate.NpcMonsterVNum;

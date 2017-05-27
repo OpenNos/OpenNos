@@ -44,47 +44,47 @@ namespace OpenNos.Handler
         /// RSelPacket packet
         /// </summary>
         /// <param name="packet"></param>
-        public void getGift(RSelPacket packet)
+        public void GetGift(RSelPacket packet)
         {
             if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
             {
                 Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(Session.Character.MapId);
                 MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
-                ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
-                if (si != null)
+                ScriptedInstance scriptedInstance = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
+                if (scriptedInstance != null)
                 {
-                    Session.Character.GetReput(si.Reputation);
+                    Session.Character.GetReput(scriptedInstance.Reputation);
 
-                    Session.Character.Gold = Session.Character.Gold + si.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : Session.Character.Gold + si.Gold;
+                    Session.Character.Gold = Session.Character.Gold + scriptedInstance.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : Session.Character.Gold + scriptedInstance.Gold;
                     Session.SendPacket(Session.Character.GenerateGold());
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GOLD_TS_END"), si.Gold), 10));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GOLD_TS_END"), scriptedInstance.Gold), 10));
 
-                    var rand = new Random().Next(si.DrawItems.Count);
+                    var rand = new Random().Next(scriptedInstance.DrawItems.Count);
                     var repay = "repay ";
-                    Session.Character.GiftAdd(si.DrawItems[rand].VNum, si.DrawItems[rand].Amount);
+                    Session.Character.GiftAdd(scriptedInstance.DrawItems[rand].VNum, scriptedInstance.DrawItems[rand].Amount);
 
                     for (int i = 0; i < 3; i++)
                     {
-                        Gift gift = si.GiftItems.ElementAtOrDefault(i);
-                        repay += $" {(gift == null ? "-1.0.0" : $"{gift.VNum}.0.{gift.Amount}")}";
+                        Gift gift = scriptedInstance.GiftItems.ElementAtOrDefault(i);
+                        repay += gift == null ? "-1.0.0 " : $"{gift.VNum}.0.{gift.Amount} ";
                         if (gift != null)
                         {
                             Session.Character.GiftAdd(gift.VNum, gift.Amount);
                         }
                     }
 
-                    // TODO ADD HASALREADYDONE
+                    // TODO: Add HasAlreadyDone
                     for (int i = 0; i < 2; i++)
                     {
-                        Gift gift = si.SpecialItems.ElementAtOrDefault(i);
-                        repay += $" {(gift == null ? "-1.0.0" : $"{gift.VNum}.0.{gift.Amount}")}";
+                        Gift gift = scriptedInstance.SpecialItems.ElementAtOrDefault(i);
+                        repay += gift == null ? "-1.0.0 " : $"{gift.VNum}.0.{gift.Amount} ";
                         if (gift != null)
                         {
                             Session.Character.GiftAdd(gift.VNum, gift.Amount);
                         }
                     }
 
-                    repay += $" {si.DrawItems[rand].VNum}.0.{si.DrawItems[rand].Amount}";
+                    repay += $"{scriptedInstance.DrawItems[rand].VNum}.0.{scriptedInstance.DrawItems[rand].Amount}";
                     Session.SendPacket(repay);
                 }
             }
@@ -159,8 +159,7 @@ namespace OpenNos.Handler
                             break;
 
                         case 1:
-                            byte record;
-                            byte.TryParse(packet.Param.ToString(), out record);
+                            byte.TryParse(packet.Param.ToString(), out byte record);
                             GetTreq(new TreqPacket()
                             {
                                 X = portal.PositionX,

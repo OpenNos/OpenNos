@@ -48,11 +48,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         /// <param name="client"></param>
         protected virtual void OnCommunicationChannelConnected(ICommunicationChannel client)
         {
-            var handler = CommunicationChannelConnected;
-            if (handler != null)
-            {
-                handler(this, new CommunicationChannelEventArgs(client));
-            }
+            CommunicationChannelConnected?.Invoke(this, new CommunicationChannelEventArgs(client));
         }
 
         #endregion

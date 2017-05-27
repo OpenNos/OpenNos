@@ -140,16 +140,11 @@ namespace OpenNos.GameObject
                 LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum")?.Attributes["Value"].Value);
                 LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum")?.Attributes["Value"].Value);
                 Label = def.SelectSingleNode("Label")?.Attributes["Value"].Value;
-                long gold = 0;
-                long.TryParse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value, out gold);
+                long.TryParse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value, out long gold);
                 Gold = gold;
-
-                int reputation = 0;
-                int.TryParse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value, out reputation);
+                int.TryParse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value, out int reputation);
                 Reputation = reputation;
-
-                byte lives;
-                byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out lives);
+                byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out byte lives);
                 Lives = lives;
                 if (def.SelectSingleNode("RequieredItems")?.ChildNodes != null)
                 {
@@ -242,7 +237,9 @@ namespace OpenNos.GameObject
             foreach (XmlNode mapevent in node.ChildNodes)
             {
                 if (mapevent.Name == "#comment")
+                {
                     continue;
+                }
                 int mapid = -1;
                 short positionX = -1;
                 short positionY = -1;
@@ -250,12 +247,6 @@ namespace OpenNos.GameObject
                 short toX = -1;
                 int toMap = -1;
                 Guid destmapInstanceId = default(Guid);
-                bool isHostile = true;
-                bool isBonus;
-                bool isTarget;
-                bool isMate;
-                bool isProtected;
-                bool move;
                 if (!int.TryParse(mapevent.Attributes["Map"]?.Value, out mapid))
                 {
                     mapid = -1;
@@ -288,15 +279,15 @@ namespace OpenNos.GameObject
                         destmapInstanceId = destmap.MapInstanceId;
                     }
                 }
-                bool.TryParse(mapevent?.Attributes["IsTarget"]?.Value, out isTarget);
-                bool.TryParse(mapevent?.Attributes["IsBonus"]?.Value, out isBonus);
-                bool.TryParse(mapevent?.Attributes["IsProtected"]?.Value, out isProtected);
-                bool.TryParse(mapevent?.Attributes["IsMate"]?.Value, out isMate);
-                if (!bool.TryParse(mapevent?.Attributes["Move"]?.Value, out move))
+                bool.TryParse(mapevent?.Attributes["IsTarget"]?.Value, out bool isTarget);
+                bool.TryParse(mapevent?.Attributes["IsBonus"]?.Value, out bool isBonus);
+                bool.TryParse(mapevent?.Attributes["IsProtected"]?.Value, out bool isProtected);
+                bool.TryParse(mapevent?.Attributes["IsMate"]?.Value, out bool isMate);
+                if (!bool.TryParse(mapevent?.Attributes["Move"]?.Value, out bool move))
                 {
                     move = true;
                 }
-                if (!bool.TryParse(mapevent?.Attributes["IsHostile"]?.Value, out isHostile))
+                if (!bool.TryParse(mapevent?.Attributes["IsHostile"]?.Value, out bool isHostile))
                 {
                     isHostile = true;
                 }
@@ -342,34 +333,35 @@ namespace OpenNos.GameObject
 
                     case "SummonMonster":
                         MonsterAmount++;
-                        List<MonsterToSummon> lst = new List<MonsterToSummon>();
-                        lst.Add(new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile));
+                        List<MonsterToSummon> lst = new List<MonsterToSummon>
+                        {
+                            new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, 
+                            GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile)
+                        };
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, lst.AsEnumerable()));
                         break;
 
                     case "SummonNps":
                         NpcAmount += short.Parse(mapevent?.Attributes["Amount"].Value); ;
-                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, mapinstance.Map.GenerateNpcs(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), new List<EventContainer>(), isMate, isProtected)));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, 
+                            mapinstance.Map.GenerateNpcs(short.Parse(mapevent?.Attributes["VNum"].Value), 
+                            short.Parse(mapevent?.Attributes["Amount"].Value), new List<EventContainer>(), isMate, isProtected)));
                         break;
 
                     case "SummonNpc":
                         NpcAmount++;
-                        List<NpcToSummon> lstn = new List<NpcToSummon>();
-                        lstn.Add(new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, GenerateEvent(mapevent, mapinstance), isMate, isProtected));
+                        List<NpcToSummon> lstn = new List<NpcToSummon>
+                        {
+                            new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, GenerateEvent(mapevent, mapinstance), isMate, isProtected)
+                        };
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, lstn.AsEnumerable()));
                         break;
 
                     case "SpawnButton":
                         MapButton button = new MapButton(
-                            int.Parse(mapevent?.Attributes["Id"].Value),
-                            positionX,
-                           positionY,
-                             short.Parse(mapevent?.Attributes["VNumEnabled"].Value),
-                              short.Parse(mapevent?.Attributes["VNumDisabled"].Value),
-                              new List<EventContainer>(),
-                               new List<EventContainer>(),
-                                new List<EventContainer>()
-                            );
+                            int.Parse(mapevent?.Attributes["Id"].Value), positionX, positionY, 
+                            short.Parse(mapevent?.Attributes["VNumEnabled"].Value), 
+                            short.Parse(mapevent?.Attributes["VNumDisabled"].Value), new List<EventContainer>(), new List<EventContainer>(), new List<EventContainer>());
                         foreach (XmlNode var in mapevent.ChildNodes)
                         {
                             switch (var.Name)
@@ -403,7 +395,8 @@ namespace OpenNos.GameObject
                         break;
 
                     case "ChangePortalType":
-                        evts.Add(new EventContainer(mapinstance, EventActionType.CHANGEPORTALTYPE, new Tuple<int, PortalType>(int.Parse(mapevent?.Attributes["IdOnMap"].Value), (PortalType)sbyte.Parse(mapevent?.Attributes["Type"].Value))));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.CHANGEPORTALTYPE, 
+                            new Tuple<int, PortalType>(int.Parse(mapevent?.Attributes["IdOnMap"].Value), (PortalType)sbyte.Parse(mapevent?.Attributes["Type"].Value))));
                         break;
 
                     case "SendPacket":

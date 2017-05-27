@@ -80,8 +80,7 @@ namespace OpenNos.Handler
                 if (!DAOFactory.MapMonsterDAO.DoesMonsterExist(monst.MapMonsterId))
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
-                    MapMonster monster = DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) as MapMonster;
-                    if (monster != null)
+                    if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) is MapMonster monster)
                     {
                         monster.Initialize(Session.CurrentMapInstance);
                         Session.CurrentMapInstance.AddMonster(monster);
@@ -718,9 +717,8 @@ namespace OpenNos.Handler
             string returnHelp = CharacterStatsPacket.ReturnHelp();
             if (characterStatsPacket != null)
             {
-                int sessionId = 0;
                 string name = characterStatsPacket.CharacterName;
-                if (int.TryParse(characterStatsPacket.CharacterName, out sessionId))
+                if (int.TryParse(characterStatsPacket.CharacterName, out int sessionId))
                 {
                     if (ServerManager.Instance.GetSessionBySessionId(sessionId) != null)
                     {
@@ -2015,8 +2013,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                short mapId;
-                if (short.TryParse(teleportPacket.Data, out mapId))
+                if (short.TryParse(teleportPacket.Data, out short mapId))
                 {
                     ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, teleportPacket.X, teleportPacket.Y);
                 }

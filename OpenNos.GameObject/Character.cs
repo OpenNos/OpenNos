@@ -688,13 +688,11 @@ namespace OpenNos.GameObject
                                     Session.SendPackets(GenerateQuicklist());
                                     Session.SendPacket(GenerateStat());
                                     Session.SendPacket(GenerateStatChar());
-                                    Observable.Timer(TimeSpan.FromMilliseconds(SpCooldown * 1000))
-                                               .Subscribe(
-                                               o =>
-                                               {
-                                                   Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
-                                                   Session.SendPacket("sd 0");
-                                               });
+                                    Observable.Timer(TimeSpan.FromMilliseconds(SpCooldown * 1000)).Subscribe(o =>
+                                    {
+                                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
+                                        Session.SendPacket("sd 0");
+                                    });
                                 }
                             }
                         }
@@ -3199,16 +3197,14 @@ namespace OpenNos.GameObject
                         case InventoryType.Equipment:
                             if (inv.Item.EquipmentSlot == EquipmentType.Sp)
                             {
-                                SpecialistInstance specialistInstance = inv as SpecialistInstance;
-                                if (specialistInstance != null)
+                                if (inv is SpecialistInstance specialistInstance)
                                 {
                                     inv0 += $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
                                 }
                             }
                             else
                             {
-                                WearableInstance wearableInstance = inv as WearableInstance;
-                                if (wearableInstance != null)
+                                if (inv is WearableInstance wearableInstance)
                                 {
                                     inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
                                 }

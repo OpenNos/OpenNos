@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class ServerManager : BroadcastableBase
+    public class ServerManager : BroadcastableBase, IDisposable
     {
         #region Members
 
@@ -498,7 +498,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public override void Dispose()
+        public override sealed void Dispose()
         {
             if (!_disposed)
             {

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OpenNos.DAL.Interface</RootNamespace>
     <AssemblyName>OpenNos.DAL.Interface</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StyleCopTreatErrorsAsWarnings>True</StyleCopTreatErrorsAsWarnings>
     <NuGetPackageImportStamp>
@@ -83,7 +83,7 @@
     <Compile Include="IComboDAO.cs" />
     <Compile Include="IDropDAO.cs" />
     <Compile Include="IItemCardDAO.cs" />
-    <Compile Include="IMate.cs" />
+    <Compile Include="IMateDAO.cs" />
     <Compile Include="IMinilandObjectDAO.cs" />
     <Compile Include="IMappingBaseDAO.cs" />
     <Compile Include="IGeneralLogDAO.cs" />

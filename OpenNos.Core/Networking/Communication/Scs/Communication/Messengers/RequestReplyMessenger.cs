@@ -157,8 +157,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// </summary>
         public IScsWireProtocol WireProtocol
         {
-            get { return Messenger.WireProtocol; }
-            set { Messenger.WireProtocol = value; }
+            get
+            {
+                return Messenger.WireProtocol;
+            }
+            set
+            {
+                Messenger.WireProtocol = value;
+            }
         }
 
         #endregion
@@ -167,7 +173,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         public async Task ClearLowPriorityQueue()
         {
-            // nothing to do here
+            await Task.CompletedTask;
         }
 
         /// <summary>
@@ -325,11 +331,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// <param name="message">Received message</param>
         protected virtual void OnMessageSent(IScsMessage message)
         {
-            var handler = MessageSent;
-            if (handler != null)
-            {
-                handler(this, new MessageEventArgs(message, DateTime.Now));
-            }
+            MessageSent?.Invoke(this, new MessageEventArgs(message, DateTime.Now));
         }
 
         /// <summary>

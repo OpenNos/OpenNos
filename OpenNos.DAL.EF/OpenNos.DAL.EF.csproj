@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OpenNos.DAL.EF</RootNamespace>
     <AssemblyName>OpenNos.DAL.EF</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StyleCopTreatErrorsAsWarnings>True</StyleCopTreatErrorsAsWarnings>
     <NuGetPackageImportStamp>
@@ -245,7 +245,6 @@
     <Compile Include="FamilyCharacterDAO.cs" />
     <Compile Include="FamilyDAO.cs" />
     <Compile Include="FamilyLogDAO.cs" />
-    <Compile Include="Helpers\MigrationHelper.cs" />
     <Compile Include="MailDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="Entities\MapNpc.cs" />
@@ -393,9 +392,6 @@
     <None Include="Properties\SlowCheetah\SlowCheetah.Transforms.targets">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="DB\OpenNos.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">

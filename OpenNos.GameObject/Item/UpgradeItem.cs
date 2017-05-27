@@ -44,10 +44,7 @@ namespace OpenNos.GameObject
                 {
                     if (packetsplit != null && packetsplit.Length > 9)
                     {
-                        byte TypeEquip;
-                        short SlotEquip;
-
-                        if (byte.TryParse(packetsplit[8], out TypeEquip) && short.TryParse(packetsplit[9], out SlotEquip))
+                        if (byte.TryParse(packetsplit[8], out byte TypeEquip) && short.TryParse(packetsplit[9], out short SlotEquip))
                         {
                             if (session.Character.IsSitting)
                             {

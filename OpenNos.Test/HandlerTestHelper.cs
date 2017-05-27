@@ -245,12 +245,13 @@ namespace OpenNos.Test
                 Name = "Testing-Map",
                 ShopAllowed = true
             };
-            List<byte> mapData = new List<byte>();
-
-            mapData.Add(255); // x length
-            mapData.Add(0); // x length
-            mapData.Add(255); // y length
-            mapData.Add(0); // y length
+            List<byte> mapData = new List<byte>
+            {
+                255, // x length
+                0, // x length
+                255, // y length
+                0 // y length
+            };
 
             // create map grid
             for (int i = 0; i < 255; i++)

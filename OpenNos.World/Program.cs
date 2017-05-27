@@ -35,6 +35,7 @@ namespace OpenNos.World
     public class Program
     {
         #region Members
+
         private static EventHandler exitHandler;
         private static ManualResetEvent run = new ManualResetEvent(true);
 
@@ -42,13 +43,13 @@ namespace OpenNos.World
 
         #region Delegates
 
-        private delegate bool EventHandler(CtrlType sig);
+        public delegate bool EventHandler(CtrlType sig);
 
         #endregion
 
         #region Enums
 
-        private enum CtrlType
+        public enum CtrlType
         {
             CTRL_C_EVENT = 0,
             CTRL_BREAK_EVENT = 1,
@@ -104,14 +105,14 @@ namespace OpenNos.World
             try
             {
                 exitHandler += ExitHandler;
-                SetConsoleCtrlHandler(exitHandler, true);
+                NativeMethods.SetConsoleCtrlHandler(exitHandler, true);
             }
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
             }
             NetworkManager<WorldEncryption> networkManager = null;
-        portloop:
+            portloop:
             try
             {
                 networkManager = new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
@@ -214,8 +215,11 @@ namespace OpenNos.World
             DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstance)).InitializeMapper();
         }
 
-        [DllImport("Kernel32")]
-        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+        public class NativeMethods
+        {
+            [DllImport("Kernel32")]
+            internal static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+        }
 
         #endregion
     }

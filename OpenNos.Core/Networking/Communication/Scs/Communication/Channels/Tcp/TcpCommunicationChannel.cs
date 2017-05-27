@@ -30,7 +30,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
     /// <summary>
     /// This class is used to communicate with a remote application over TCP/IP protocol.
     /// </summary>
-    public class TcpCommunicationChannel : CommunicationChannelBase
+    public class TcpCommunicationChannel : CommunicationChannelBase, IDisposable
     {
         #region Members
 
@@ -89,7 +89,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             // initialize lagging mode
             bool isLagMode = ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
 
-            var ipEndPoint = (IPEndPoint)_clientSocket.RemoteEndPoint;
+            IPEndPoint ipEndPoint = (IPEndPoint)_clientSocket.RemoteEndPoint;
             _remoteEndPoint = new ScsTcpEndPoint(ipEndPoint.Address.ToString(), ipEndPoint.Port);
 
             _buffer = new byte[ReceiveBufferSize];
@@ -136,6 +136,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         public override async Task ClearLowPriorityQueue()
         {
             _lowPriorityBuffer.Clear();
+            await Task.CompletedTask;
         }
 
         /// <summary>
@@ -161,6 +162,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             }
             catch
             {
+                // do nothing
             }
             finally
             {
@@ -198,9 +200,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             {
                 // disconnect
             }
-
             if (!_clientSocket.Connected)
             {
+                // do nothing
             }
         }
 
@@ -238,12 +240,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _clientSocket.BeginReceive(_buffer, 0, _buffer.Length, 0, ReceiveCallback, null);
         }
 
-        private static void SendCallback(IAsyncResult ar)
+        private static void SendCallback(IAsyncResult result)
         {
             try
             {
                 // Retrieve the socket from the state object.
-                Socket client = (Socket)ar.AsyncState;
+                Socket client = (Socket)result.AsyncState;
 
                 if (!client.Connected)
                 {
@@ -251,7 +253,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 }
 
                 // Complete sending the data to the remote device.
-                int bytesSent = client.EndSend(ar);
+                int bytesSent = client.EndSend(result);
             }
             catch (Exception)
             {
@@ -263,8 +265,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// This method is used as callback method in _clientSocket's BeginReceive method. It
         /// reveives bytes from socker.
         /// </summary>
-        /// <param name="ar">Asyncronous call result</param>
-        private void ReceiveCallback(IAsyncResult ar)
+        /// <param name="result">Asyncronous call result</param>
+        private void ReceiveCallback(IAsyncResult result)
         {
             if (!_running)
             {
@@ -273,24 +275,24 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
             try
             {
-                var bytesRead = -1;
+                int bytesRead = -1;
 
                 // Get received bytes count
-                bytesRead = _clientSocket.EndReceive(ar);
+                bytesRead = _clientSocket.EndReceive(result);
 
                 if (bytesRead > 0)
                 {
                     LastReceivedMessageTime = DateTime.Now;
 
                     // Copy received bytes to a new byte array
-                    var receivedBytes = new byte[bytesRead];
+                    byte[] receivedBytes = new byte[bytesRead];
                     Array.Copy(_buffer, receivedBytes, bytesRead);
 
                     // Read messages according to current wire protocol
-                    var messages = WireProtocol.CreateMessages(receivedBytes);
+                    IEnumerable<IScsMessage> messages = WireProtocol.CreateMessages(receivedBytes);
 
                     // Raise MessageReceived event for all received messages
-                    foreach (var message in messages)
+                    foreach (IScsMessage message in messages)
                     {
                         OnMessageReceived(message, DateTime.Now);
                     }
@@ -317,11 +319,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         {
             IEnumerable<byte> outgoingPacket = new List<byte>();
 
-            // send maximal 30 packets at once
+            // send max 30 packets at once
             for (int i = 0; i < 30; i++)
             {
-                byte[] message;
-                if (buffer.TryDequeue(out message) && message != null)
+                if (buffer.TryDequeue(out byte[] message) && message != null)
                 {
                     outgoingPacket = outgoingPacket.Concat(message);
                 }

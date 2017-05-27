@@ -83,26 +83,22 @@ namespace OpenNos.GameObject.Buff.Indicators
             }
             if (Delay != -1)
             {
-                Observable.Timer(TimeSpan.FromMilliseconds(Duration * 100))
-                    .Subscribe(
-                    o =>
-                    {
-                        if (DelayedBuffs.Any(s => s.Type == Type.Speed))
-                        {
-                            if (!Disabled && session.HasSelectedCharacter)
-                            {
-                                session.Character.LastSpeedChange = DateTime.Now;
-                                session.SendPacket(session.Character.GenerateCond());
-                            }
-                        }
-                    });
-            }
-            Observable.Timer(TimeSpan.FromMilliseconds(Duration * 100))
-                .Subscribe(
-                o =>
+                Observable.Timer(TimeSpan.FromMilliseconds(Duration * 100)).Subscribe(o =>
                 {
-                    Disable(session);
+                    if (DelayedBuffs.Any(s => s.Type == Type.Speed))
+                    {
+                        if (!Disabled && session.HasSelectedCharacter)
+                        {
+                            session.Character.LastSpeedChange = DateTime.Now;
+                            session.SendPacket(session.Character.GenerateCond());
+                        }
+                    }
                 });
+            }
+            Observable.Timer(TimeSpan.FromMilliseconds(Duration * 100)).Subscribe(o =>
+            {
+                Disable(session);
+            });
         }
 
         #endregion

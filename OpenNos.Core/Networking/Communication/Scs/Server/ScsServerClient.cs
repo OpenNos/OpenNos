@@ -208,11 +208,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// </summary>
         private void OnDisconnected()
         {
-            var handler = Disconnected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            Disconnected?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

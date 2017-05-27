@@ -798,8 +798,7 @@ namespace OpenNos.GameObject
             }
 
             // handle hit queue
-            HitRequest hitRequest;
-            while (HitQueue.TryDequeue(out hitRequest))
+            while (HitQueue.TryDequeue(out HitRequest hitRequest))
             {
                 if (IsAlive && hitRequest.Session.Character.Hp > 0)
                 {

@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class MapInstance : BroadcastableBase
+    public class MapInstance : BroadcastableBase, IDisposable
     {
         #region Members
 
@@ -170,15 +170,10 @@ namespace OpenNos.GameObject
             _npcs[monster.MapNpcId] = monster;
         }
 
-        public override void Dispose()
+        public override sealed void Dispose()
         {
             if (!_disposed)
             {
-                // BENCHMANRK: With usage of both parallelization and foreach
-                foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapInstanceId == MapInstanceId))
-                {
-                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
-                }
                 Dispose(true);
                 GC.SuppressFinalize(this);
                 _disposed = true;
@@ -537,6 +532,10 @@ namespace OpenNos.GameObject
         {
             if (disposing)
             {
+                foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapInstanceId == MapInstanceId))
+                {
+                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                }
                 _monsters.Dispose();
             }
         }

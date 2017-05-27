@@ -298,8 +298,7 @@ namespace OpenNos.GameObject
 
         private void ClearReceiveQueue()
         {
-            byte[] outPacket;
-            while (_receiveQueue.TryDequeue(out outPacket))
+            while (_receiveQueue.TryDequeue(out byte[] outPacket))
             {
                 // do nothing
             }
@@ -348,8 +347,7 @@ namespace OpenNos.GameObject
         /// </summary>
         private void HandlePackets()
         {
-            byte[] packetData;
-            while (_receiveQueue.TryDequeue(out packetData))
+            while (_receiveQueue.TryDequeue(out byte[] packetData))
             {
                 // determine first packet
                 if (_encryptor.HasCustomParameter && SessionId == 0)
@@ -361,8 +359,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    int lastka;
-                    if (!int.TryParse(sessionParts[0], out lastka))
+                    if (!int.TryParse(sessionParts[0], out int lastka))
                     {
                         Disconnect();
                     }
@@ -373,8 +370,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    int sessid;
-                    if (int.TryParse(sessionParts[1].Split('\\').FirstOrDefault(), out sessid))
+                    if (int.TryParse(sessionParts[1].Split('\\').FirstOrDefault(), out int sessid))
                     {
                         SessionId = sessid;
                         Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), SessionId);
@@ -398,9 +394,7 @@ namespace OpenNos.GameObject
                     {
                         // keep alive
                         string nextKeepAliveRaw = packetsplit[0];
-                        int nextKeepaliveIdentity;
-                        if (!int.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) &&
-                            nextKeepaliveIdentity != LastKeepAliveIdentity + 1)
+                        if (!int.TryParse(nextKeepAliveRaw, out int nextKeepaliveIdentity) && nextKeepaliveIdentity != LastKeepAliveIdentity + 1)
                         {
                             Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"), _client.ClientId);
                             _client.Disconnect();

@@ -347,8 +347,10 @@ namespace OpenNos.Handler
             string shopname = string.Empty;
             if (packetsplit.Length > 2)
             {
-                short typePacket;
-                short.TryParse(packetsplit[2], out typePacket);
+                if (!short.TryParse(packetsplit[2], out short typePacket))
+                {
+                    return;
+                }
                 if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMapInstance || Session.Character.IsExchanging || Session.Character.ExchangeInfo != null)
                 {
                     return;
@@ -566,8 +568,7 @@ namespace OpenNos.Handler
                             }
                             if (inv.GetType() == typeof(WearableInstance))
                             {
-                                WearableInstance item = inv.First() as WearableInstance;
-                                if (item != null && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
+                                if (inv.First() is WearableInstance item && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
                                 {
                                     item.SetRarityPoint();
                                 }
