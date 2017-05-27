@@ -90,6 +90,7 @@ namespace OpenNos.GameObject
 
         private ServerManager()
         {
+            // do nothing
         }
 
         #endregion
@@ -705,111 +706,109 @@ namespace OpenNos.GameObject
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
 
-            // load explicite type of ItemDTO
-            foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
+            ThreadSafeSortedList<short, Item> _item = new ThreadSafeSortedList<short, Item>();
+            Parallel.ForEach(DAOFactory.ItemDAO.LoadAll(), itemDTO =>
             {
-                Item item;
-
                 switch (itemDTO.ItemType)
                 {
                     case ItemType.Ammo:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Armor:
-                        item = new WearableItem(itemDTO);
+                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Box:
-                        item = new BoxItem(itemDTO);
+                        _item[itemDTO.VNum] = new BoxItem(itemDTO);
                         break;
 
                     case ItemType.Event:
-                        item = new MagicalItem(itemDTO);
+                        _item[itemDTO.VNum] = new MagicalItem(itemDTO);
                         break;
 
                     case ItemType.Fashion:
-                        item = new WearableItem(itemDTO);
+                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Food:
-                        item = new FoodItem(itemDTO);
+                        _item[itemDTO.VNum] = new FoodItem(itemDTO);
                         break;
 
                     case ItemType.Jewelery:
-                        item = new WearableItem(itemDTO);
+                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Magical:
-                        item = new MagicalItem(itemDTO);
+                        _item[itemDTO.VNum] = new MagicalItem(itemDTO);
                         break;
 
                     case ItemType.Main:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Map:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Part:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Potion:
-                        item = new PotionItem(itemDTO);
+                        _item[itemDTO.VNum] = new PotionItem(itemDTO);
                         break;
 
                     case ItemType.Production:
-                        item = new ProduceItem(itemDTO);
+                        _item[itemDTO.VNum] = new ProduceItem(itemDTO);
                         break;
 
                     case ItemType.Quest1:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Quest2:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Sell:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Shell:
-                        item = new MagicalItem(itemDTO);
+                        _item[itemDTO.VNum] = new MagicalItem(itemDTO);
                         break;
 
                     case ItemType.Snack:
-                        item = new SnackItem(itemDTO);
+                        _item[itemDTO.VNum] = new SnackItem(itemDTO);
                         break;
 
                     case ItemType.Special:
-                        item = new SpecialItem(itemDTO);
+                        _item[itemDTO.VNum] = new SpecialItem(itemDTO);
                         break;
 
                     case ItemType.Specialist:
-                        item = new WearableItem(itemDTO);
+                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Teacher:
-                        item = new TeacherItem(itemDTO);
+                        _item[itemDTO.VNum] = new TeacherItem(itemDTO);
                         break;
 
                     case ItemType.Upgrade:
-                        item = new UpgradeItem(itemDTO);
+                        _item[itemDTO.VNum] = new UpgradeItem(itemDTO);
                         break;
 
                     case ItemType.Weapon:
-                        item = new WearableItem(itemDTO);
+                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
                         break;
 
                     default:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
                 }
-                _items.Add(item);
-            }
+            });
+            _items.AddRange(_item.GetAllItems());
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_LOADED"), _items.Count));
 
             // intialize monsterdrops
@@ -840,10 +839,12 @@ namespace OpenNos.GameObject
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
 
             // initialize npcmonsters
+            ThreadSafeSortedList<short, NpcMonster> _npcMonsters = new ThreadSafeSortedList<short, NpcMonster>();
             Parallel.ForEach(DAOFactory.NpcMonsterDAO.LoadAll(), npcMonster =>
             {
-                _npcs.Add(npcMonster as NpcMonster);
+                _npcMonsters[npcMonster.NpcMonsterVNum] = npcMonster as NpcMonster;
             });
+            _npcs.AddRange(_npcMonsters.GetAllItems());
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count));
 
             // intialize recipes
@@ -887,12 +888,14 @@ namespace OpenNos.GameObject
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_LOADED"), _teleporters.GetAllItems().Sum(i => i.Count)));
 
             // initialize skills
-            foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
+            ThreadSafeSortedList<short, Skill> _skill = new ThreadSafeSortedList<short, Skill>();
+            Parallel.ForEach(DAOFactory.SkillDAO.LoadAll(), skill =>
             {
-                Skill skill = (Skill)skillDTO;
-                skill.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList());
-                _skills.Add(skill);
-            }
+                Skill skillObj = skill as Skill;
+                _skill[skillObj.SkillVNum] = skillObj as Skill;
+                skillObj.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skillObj.SkillVNum).ToList());
+            });
+            _skills.AddRange(_skill.GetAllItems());
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
 
             // intialize mapnpcs
@@ -908,20 +911,17 @@ namespace OpenNos.GameObject
                 int i = 0;
                 int monstercount = 0;
 
-                foreach (MapDTO map in DAOFactory.MapDAO.LoadAll())
+                ThreadSafeSortedList<short, Map> _mapList = new ThreadSafeSortedList<short, Map>(); // HACKY, kinda untrusty(?)
+                Parallel.ForEach(DAOFactory.MapDAO.LoadAll(), map =>
                 {
                     Guid guid = Guid.NewGuid();
                     Map mapinfo = new Map(map.MapId, map.Data)
                     {
                         Music = map.Music
                     };
-                    _maps.Add(mapinfo);
-
+                    _mapList[map.MapId] = mapinfo;
                     MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance, new InstanceBag());
-
-                    // register for broadcast
                     _mapinstances.TryAdd(guid, newMap);
-                    i++;
 
                     newMap.LoadMonsters();
                     newMap.LoadNpcs();
@@ -932,14 +932,16 @@ namespace OpenNos.GameObject
                         mapMonster.MapInstance = newMap;
                         newMap.AddMonster(mapMonster);
                     });
-
                     Parallel.ForEach(newMap.Npcs, mapNpc =>
                     {
                         mapNpc.MapInstance = newMap;
                         newMap.AddNPC(mapNpc);
                     });
+
                     monstercount += newMap.Monsters.Count;
-                }
+                    i++;
+                });
+                _maps.AddRange(_mapList.GetAllItems());
                 if (i != 0)
                 {
                     Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_LOADED"), i));
@@ -1426,27 +1428,28 @@ namespace OpenNos.GameObject
         {
             // TODO: Parallelization of family load
             FamilyList = new List<Family>();
-            foreach (FamilyDTO fam in DAOFactory.FamilyDAO.LoadAll())
+            ThreadSafeSortedList<int, Family> _family = new ThreadSafeSortedList<int, Family>();
+            Parallel.ForEach(DAOFactory.FamilyDAO.LoadAll(), familyDTO =>
             {
-                Family fami = (Family)fam;
-                fami.FamilyCharacters = new List<FamilyCharacter>();
-                foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
+                Family family = (Family)familyDTO;
+                family.FamilyCharacters = new List<FamilyCharacter>();
+                foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(family.FamilyId).ToList())
                 {
-                    fami.FamilyCharacters.Add((FamilyCharacter)famchar);
+                    family.FamilyCharacters.Add((FamilyCharacter)famchar);
                 }
-                FamilyCharacter familyCharacter = fami.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                FamilyCharacter familyCharacter = family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
                 if (familyCharacter != null)
                 {
-                    fami.Warehouse = new Inventory((Character)familyCharacter.Character);
+                    family.Warehouse = new Inventory((Character)familyCharacter.Character);
                     foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
                     {
                         inventory.CharacterId = familyCharacter.CharacterId;
-                        fami.Warehouse[inventory.Id] = (ItemInstance)inventory;
+                        family.Warehouse[inventory.Id] = (ItemInstance)inventory;
                     }
                 }
-                fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
-                FamilyList.Add(fami);
-            }
+                family.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(family.FamilyId).ToList();
+            });
+            FamilyList.AddRange(_family.GetAllItems());
         }
 
         private void LoadTimeSpaces()

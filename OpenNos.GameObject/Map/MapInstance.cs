@@ -302,8 +302,7 @@ namespace OpenNos.GameObject
 
         public void LoadMonsters()
         {
-            // TODO: Parallelize, if possible.
-            Parallel.ForEach(DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId).ToList(), monster =>
+            Parallel.ForEach(DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId), monster =>
             {
                 MapMonster mapMonster = monster as MapMonster;
                 mapMonster.Initialize(this);
@@ -315,8 +314,7 @@ namespace OpenNos.GameObject
 
         public void LoadNpcs()
         {
-            // TODO: Parallelize, if possible.
-            Parallel.ForEach(DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId).ToList(), npc =>
+            Parallel.ForEach(DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId), npc =>
             {
                 MapNpc mapNpc = npc as MapNpc;
                 mapNpc.Initialize(this);
@@ -328,12 +326,14 @@ namespace OpenNos.GameObject
 
         public void LoadPortals()
         {
-            foreach (PortalDTO portal in DAOFactory.PortalDAO.LoadByMap(Map.MapId).ToList())
+            ThreadSafeSortedList<int, Portal> _portalList = new ThreadSafeSortedList<int, Portal>();
+            Parallel.ForEach(DAOFactory.PortalDAO.LoadByMap(Map.MapId), portal =>
             {
-                Portal portal2 = (Portal)portal;
+                Portal portal2 = portal as Portal;
                 portal2.SourceMapInstanceId = MapInstanceId;
-                _portals.Add(portal2);
-            }
+                _portalList[portal2.PortalId] = portal2;
+            });
+            _portals.AddRange(_portalList.GetAllItems());
         }
 
         public void MapClear()
@@ -360,11 +360,10 @@ namespace OpenNos.GameObject
             short mapX = 0;
             short mapY = 0;
             bool niceSpot = false;
-            // TODO: Parallelize, if possible.
-            foreach (GridPos possibilitie in possibilities.OrderBy(s => _random.Next()))
+            foreach (GridPos possibility in possibilities.OrderBy(s => _random.Next()))
             {
-                mapX = (short)(session.Character.PositionX + possibilitie.X);
-                mapY = (short)(session.Character.PositionY + possibilitie.Y);
+                mapX = (short)(session.Character.PositionX + possibility.X);
+                mapY = (short)(session.Character.PositionY + possibility.Y);
                 if (!Map.IsBlockedZone(mapX, mapY))
                 {
                     niceSpot = true;
