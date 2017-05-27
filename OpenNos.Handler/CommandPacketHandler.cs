@@ -769,11 +769,11 @@ namespace OpenNos.Handler
             Logger.Debug("ClearInventory Command", Session.Character.GenerateIdentity());
             if (clearInventoryPacket != null && clearInventoryPacket.InventoryType != InventoryType.Wear)
             {
-                foreach (ItemInstance inv in Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType))
+                Parallel.ForEach(Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType), inv =>
                 {
                     Session.Character.Inventory.DeleteById(inv.Id);
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(inv.Type, inv.Slot));
-                }
+                });
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
             else
@@ -1064,10 +1064,10 @@ namespace OpenNos.Handler
                 {
                     if (Session.HasCurrentMapInstance)
                     {
-                        foreach (ClientSession session in Session.CurrentMapInstance.Sessions)
+                        Parallel.ForEach(Session.CurrentMapInstance.Sessions, session =>
                         {
                             Session.Character.SendGift(session.Character.CharacterId, giftPacket.VNum, giftPacket.Amount, giftPacket.Rare, giftPacket.Upgrade, false);
-                        }
+                        });
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFT_SENT"), 10));
                     }
                 }
@@ -1294,10 +1294,10 @@ namespace OpenNos.Handler
             {
                 if (kickPacket.CharacterName == "*")
                 {
-                    foreach (ClientSession session in ServerManager.Instance.Sessions)
+                    Parallel.ForEach(ServerManager.Instance.Sessions, session =>
                     {
                         session.Disconnect();
-                    }
+                    });
                 }
                 ServerManager.Instance.Kick(kickPacket.CharacterName);
             }
@@ -1320,8 +1320,8 @@ namespace OpenNos.Handler
                     kickSessionPacket.AccountName = string.Empty;
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                AccountDTO acc = DAOFactory.AccountDAO.LoadByName(kickSessionPacket.AccountName);
-                CommunicationServiceClient.Instance.KickSession(acc?.AccountId, kickSessionPacket.SessionId);
+                AccountDTO account = DAOFactory.AccountDAO.LoadByName(kickSessionPacket.AccountName);
+                CommunicationServiceClient.Instance.KickSession(account?.AccountId, kickSessionPacket.SessionId);
             }
             else
             {
@@ -1898,6 +1898,7 @@ namespace OpenNos.Handler
                                 possibilities.Add(new MapCell { X = x, Y = y });
                             }
                         }
+                        // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
                         foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                         {
                             short mapx = (short)(Session.Character.PositionX + possibilitie.X);
@@ -1962,6 +1963,7 @@ namespace OpenNos.Handler
                                 possibilities.Add(new MapCell { X = x, Y = y });
                             }
                         }
+                        // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
                         foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                         {
                             short mapx = (short)(Session.Character.PositionX + possibilitie.X);
@@ -2058,7 +2060,7 @@ namespace OpenNos.Handler
             {
                 if (teleportToMePacket.CharacterName == "*")
                 {
-                    foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId))
+                    Parallel.ForEach(ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId), session =>
                     {
                         // clear any shop or trade on target character
                         session.Character.Dispose();
@@ -2093,7 +2095,7 @@ namespace OpenNos.Handler
                                 ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.MapInstanceId, mapXPossibility, mapYPossibility);
                             }
                         }
-                    }
+                    });
                 }
                 else
                 {

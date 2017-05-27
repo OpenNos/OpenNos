@@ -3132,11 +3132,11 @@ namespace OpenNos.GameObject
             List<string> list = new List<string>();
             byte i = 0;
             Mates.Where(s => s.MateType == MateType.Pet).Skip(Page * 10).Take(10).ToList().ForEach(s =>
-              {
-                  s.PetId = i;
-                  list.Add(s.GenerateScPacket());
-                  i++;
-              });
+            {
+                s.PetId = i;
+                list.Add(s.GenerateScPacket());
+                i++;
+            });
             return list;
         }
 
@@ -3811,20 +3811,9 @@ namespace OpenNos.GameObject
         /// </summary>
         /// <param name="xCoordinate">The x coordinate of the object to check.</param>
         /// <param name="yCoordinate">The y coordinate of the object to check.</param>
-        /// <returns>True if the object is in Range, False if not.</returns>
-        public bool IsInRange(int xCoordinate, int yCoordinate)
-        {
-            return Math.Abs(PositionX - xCoordinate) <= 50 && Math.Abs(PositionY - yCoordinate) <= 50;
-        }
-
-        /// <summary>
-        /// Checks if the current character is in range of the given position
-        /// </summary>
-        /// <param name="xCoordinate">The x coordinate of the object to check.</param>
-        /// <param name="yCoordinate">The y coordinate of the object to check.</param>
         /// <param name="range">The range of the coordinates to be maximal distanced.</param>
         /// <returns>True if the object is in Range, False if not.</returns>
-        public bool IsInRange(int xCoordinate, int yCoordinate, int range)
+        public bool IsInRange(int xCoordinate, int yCoordinate, int range = 50)
         {
             return Math.Abs(PositionX - xCoordinate) <= range && Math.Abs(PositionY - yCoordinate) <= range;
         }

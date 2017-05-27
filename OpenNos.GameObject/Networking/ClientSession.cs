@@ -75,8 +75,7 @@ namespace OpenNos.GameObject
 
             // start observer for receiving packets
             _receiveQueue = new ConcurrentQueue<byte[]>();
-            _receiveQueueObservable = Observable.Interval(new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 10))
-                .Subscribe(x => HandlePackets());
+            _receiveQueueObservable = Observable.Interval(new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 10)).Subscribe(x => HandlePackets());
         }
 
         #endregion
@@ -254,12 +253,10 @@ namespace OpenNos.GameObject
         {
             if (!IsDisposing)
             {
-                Observable.Timer(TimeSpan.FromMilliseconds(Millisecond))
-                .Subscribe(
-                 o =>
-                 {
-                     SendPacket(packet);
-                 });
+                Observable.Timer(TimeSpan.FromMilliseconds(Millisecond)).Subscribe(o =>
+                {
+                    SendPacket(packet);
+                });
             }
         }
 
@@ -482,7 +479,7 @@ namespace OpenNos.GameObject
         /// <param name="e"></param>
         private void OnNetworkClientMessageReceived(object sender, MessageEventArgs e)
         {
-            var message = e.Message as ScsRawDataMessage;
+            ScsRawDataMessage message = e.Message as ScsRawDataMessage;
             if (message == null)
             {
                 return;
@@ -518,14 +515,14 @@ namespace OpenNos.GameObject
         private void OnOtherCharacterDisconnected(object sender, EventArgs e)
         {
             Tuple<long, string> loggedOutCharacter = (Tuple<long, string>)sender;
-
             if (Character.IsFriendOfCharacter(loggedOutCharacter.Item1))
-
+            {
                 if (Character != null && Character.CharacterId != loggedOutCharacter.Item1)
                 {
                     _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item2), 10));
                     _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item1, false));
                 }
+            }
         }
 
         private void TriggerHandler(string packetHeader, string packet, bool force)

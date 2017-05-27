@@ -69,8 +69,7 @@ namespace OpenNos.Handler
             if (Session.Character.IsMuted() && penalty != null)
             {
                 Session.SendPacket("cancel 0 0");
-                Session.CurrentMapInstance?.Broadcast(Session.Character.Gender == GenderType.Female ? Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1) :
-                    Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                Session.CurrentMapInstance?.Broadcast(Session.Character.Gender == GenderType.Female ? Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1) : Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 return;
@@ -102,13 +101,10 @@ namespace OpenNos.Handler
                             mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SpecialZoneHit, Session, ski.Skill));
                         }
 
-                        Observable.Timer(TimeSpan.FromMilliseconds(ski.Skill.Cooldown * 100))
-                            .Subscribe(
-                                o =>
-                                {
-                                    Session.SendPacket($"sr {subpacket.SkillCastId - 1}");
-                                }
-                            );
+                        Observable.Timer(TimeSpan.FromMilliseconds(ski.Skill.Cooldown * 100)).Subscribe(o =>
+                        {
+                            Session.SendPacket($"sr {subpacket.SkillCastId - 1}");
+                        });
                     }
                 }
             }
@@ -297,30 +293,26 @@ namespace OpenNos.Handler
                         target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         target.SendPacket(target.Character.GenerateSay(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 11));
                         target.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 0));
-                        Observable.Timer(TimeSpan.FromMilliseconds(30000))
-                               .Subscribe(
-                               o =>
-                               {
-                                   target.Character.Hp = (int)target.Character.HPLoad();
-                                   target.Character.Mp = (int)target.Character.MPLoad();
-                                   short x = (short)(39 + ServerManager.Instance.RandomNumber(-2, 3));
-                                   short y = (short)(42 + ServerManager.Instance.RandomNumber(-2, 3));
-                                   ServerManager.Instance.ChangeMap(target.Character.CharacterId, 130, x, y);
-                                   target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateTp());
-                                   target.CurrentMapInstance?.Broadcast(target.Character.GenerateRevive());
-                                   target.SendPacket(target.Character.GenerateStat());
-                               });
+                        Observable.Timer(TimeSpan.FromMilliseconds(30000)).Subscribe(o =>
+                        {
+                            target.Character.Hp = (int)target.Character.HPLoad();
+                            target.Character.Mp = (int)target.Character.MPLoad();
+                            short x = (short)(39 + ServerManager.Instance.RandomNumber(-2, 3));
+                            short y = (short)(42 + ServerManager.Instance.RandomNumber(-2, 3));
+                            ServerManager.Instance.ChangeMap(target.Character.CharacterId, 130, x, y);
+                            target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateTp());
+                            target.CurrentMapInstance?.Broadcast(target.Character.GenerateRevive());
+                            target.SendPacket(target.Character.GenerateStat());
+                        });
                     }
                     else
                     {
                         hitRequest.Session.Character.TalentWin += 1;
                         target.Character.TalentLose += 1;
-                        Observable.Timer(TimeSpan.FromMilliseconds(1000))
-                               .Subscribe(
-                               o =>
-                               {
-                                   ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
-                               });
+                        Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o =>
+                        {
+                            ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
+                        });
                     }
                 }
                 switch (hitRequest.TargetHitType)
@@ -488,14 +480,9 @@ namespace OpenNos.Handler
                                         Session.SendPacket($"cancel 2 {targetId}");
                                     }
                                 }
-                                foreach (
-                                    MapMonster mon in
-                                    Session.CurrentMapInstance.GetListMonsterInRange(Session.Character.PositionX,
-                                        Session.Character.PositionY, ski.Skill.TargetRange).Where(s => s.CurrentHp > 0))
+                                foreach (MapMonster mon in Session.CurrentMapInstance.GetListMonsterInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange).Where(s => s.CurrentHp > 0))
                                 {
-                                    mon.HitQueue.Enqueue(new HitRequest(
-                                        TargetHitType.AOETargetHit, Session, ski.Skill,
-                                        skillinfo?.Skill.Effect ?? ski.Skill.Effect));
+                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill, skillinfo?.Skill.Effect ?? ski.Skill.Effect));
                                 }
                             }
                         }
@@ -723,8 +710,7 @@ namespace OpenNos.Handler
                                         Session.SendPackets(Session.Character.GenerateQuicklist());
                                     }
                                     Session.SendPacket(Session.Character.GenerateStat());
-                                    CharacterSkill characterSkillInfo = Session.Character.Skills.GetAllItems().OrderBy(o => o.SkillVNum)
-                                        .FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
+                                    CharacterSkill characterSkillInfo = Session.Character.Skills.GetAllItems().OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
                                     Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
                                     Session.Character.Skills.GetAllItems().Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
@@ -917,12 +903,9 @@ namespace OpenNos.Handler
                                             }
                                             else if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
                                             {
-                                                if (Session.CurrentMapInstance.MapInstanceId !=
-                                                    ServerManager.Instance.FamilyArenaInstance.MapInstanceId)
+                                                if (Session.CurrentMapInstance.MapInstanceId != ServerManager.Instance.FamilyArenaInstance.MapInstanceId)
                                                 {
-                                                    if (Session.Character.Group == null ||
-                                                        !Session.Character.Group.IsMemberOfGroup(
-                                                            playerToAttack.Character.CharacterId))
+                                                    if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
                                                     {
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session,
                                                             ski.Skill), playerToAttack);
@@ -934,14 +917,9 @@ namespace OpenNos.Handler
                                                 }
                                                 else
                                                 {
-                                                    if (Session.Character.Family == null ||
-                                                        Session.Character.Family.FamilyCharacters.Any(
-                                                            s => s.Character.CharacterId != playerToAttack.Character
-                                                                     .CharacterId))
+                                                    if (Session.Character.Family == null || Session.Character.Family.FamilyCharacters.Any(s => s.Character.CharacterId != playerToAttack.Character.CharacterId))
                                                     {
-                                                        PVPHit(
-                                                            new HitRequest(TargetHitType.SingleTargetHit, Session,
-                                                                ski.Skill), playerToAttack);
+                                                        PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
                                                     }
                                                     else
                                                     {
@@ -1222,9 +1200,7 @@ namespace OpenNos.Handler
                         }
                     });
 
-                    Observable.Timer(TimeSpan.FromMilliseconds(characterSkill.Skill.Cooldown * 100))
-                    .Subscribe(
-                    o =>
+                    Observable.Timer(TimeSpan.FromMilliseconds(characterSkill.Skill.Cooldown * 100)).Subscribe(o =>
                     {
                         Session.SendPacket($"sr {Castingid}");
                     });

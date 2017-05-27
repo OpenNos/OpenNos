@@ -27,6 +27,7 @@ namespace OpenNos.GameObject
 
         private TransportFactory()
         {
+            // do nothing
         }
 
         #endregion

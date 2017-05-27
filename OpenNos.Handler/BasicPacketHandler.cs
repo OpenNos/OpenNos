@@ -24,13 +24,13 @@ using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 using OpenNos.PathFinder;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
@@ -297,26 +297,23 @@ namespace OpenNos.Handler
                 case 2:
                     if (Session.HasCurrentMapInstance)
                     {
-                        foreach (MapNpc npc in Session.CurrentMapInstance.Npcs)
+                        Session.CurrentMapInstance.Npcs.Where(n => n.MapNpcId == (int)ncifPacket.TargetId).ToList().ForEach(npc =>
                         {
-                            if (npc.MapNpcId == (int)ncifPacket.TargetId)
+                            NpcMonster npcinfo = ServerManager.Instance.GetNpc(npc.NpcVNum);
+                            if (npcinfo == null)
                             {
-                                NpcMonster npcinfo = ServerManager.Instance.GetNpc(npc.NpcVNum);
-                                if (npcinfo == null)
-                                {
-                                    return;
-                                }
-                                Session.SendPacket($"st 2 {ncifPacket.TargetId} {npcinfo.Level} {npcinfo.HeroLevel} 100 100 50000 50000");
+                                return;
                             }
-                        }
-                        foreach (ClientSession session in Session.CurrentMapInstance.Sessions)
+                            Session.SendPacket($"st 2 {ncifPacket.TargetId} {npcinfo.Level} {npcinfo.HeroLevel} 100 100 50000 50000");
+                        });
+                        Parallel.ForEach(Session.CurrentMapInstance.Sessions, session =>
                         {
                             Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == (int)ncifPacket.TargetId);
                             if (mate != null)
                             {
                                 Session.SendPacket(mate.GenerateStatInfo());
                             }
-                        }
+                        });
                     }
                     break;
 
@@ -324,19 +321,16 @@ namespace OpenNos.Handler
                 case 3:
                     if (Session.HasCurrentMapInstance)
                     {
-                        foreach (MapMonster monster in Session.CurrentMapInstance.Monsters)
+                        Session.CurrentMapInstance.Monsters.Where(m => m.MapMonsterId == (int)ncifPacket.TargetId).ToList().ForEach(monster =>
                         {
-                            if (monster.MapMonsterId == (int)ncifPacket.TargetId)
+                            NpcMonster monsterinfo = ServerManager.Instance.GetNpc(monster.MonsterVNum);
+                            if (monsterinfo == null)
                             {
-                                NpcMonster monsterinfo = ServerManager.Instance.GetNpc(monster.MonsterVNum);
-                                if (monsterinfo == null)
-                                {
-                                    return;
-                                }
-                                Session.Character.LastMonsterId = monster.MapMonsterId;
-                                Session.SendPacket($"st 3 {ncifPacket.TargetId} {monsterinfo.Level} {monsterinfo.HeroLevel} {(int)((float)monster.CurrentHp / (float)monster.Monster.MaxHP * 100)} {(int)((float)monster.CurrentMp / (float)monster.Monster.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}");
+                                return;
                             }
-                        }
+                            Session.Character.LastMonsterId = monster.MapMonsterId;
+                            Session.SendPacket($"st 3 {ncifPacket.TargetId} {monsterinfo.Level} {monsterinfo.HeroLevel} {(int)((float)monster.CurrentHp / (float)monster.Monster.MaxHP * 100)} {(int)((float)monster.CurrentMp / (float)monster.Monster.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}");
+                        });
                     }
                     break;
             }
@@ -1121,7 +1115,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
             }
-            foreach (Portal portal in Session.CurrentMapInstance.Portals.Concat(Session.Character.GetExtraPortal()))
+            Parallel.ForEach(Session.CurrentMapInstance.Portals.Concat(Session.Character.GetExtraPortal()), portal =>
             {
                 if (Session.Character.PositionY >= portal.SourceY - 1 && Session.Character.PositionY <= portal.SourceY + 1
                     && Session.Character.PositionX >= portal.SourceX - 1 && Session.Character.PositionX <= portal.SourceX + 1)
@@ -1175,10 +1169,8 @@ namespace OpenNos.Handler
                     {
                         ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
                     }
-
-                    break;
                 }
-            }
+            });
         }
 
         /// <summary>

@@ -49,6 +49,7 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
+            // do nothing
         }
 
         public void InsertFamilyLog(FamilyLogType logtype, string characterName = "", string characterName2 = "", string rainBowFamily = "", string message = "", byte level = 0, int experience = 0, int itemVNum = 0, byte upgrade = 0, int raidType = 0, FamilyAuthority authority = FamilyAuthority.Head, int righttype = 0, int rightvalue = 0)

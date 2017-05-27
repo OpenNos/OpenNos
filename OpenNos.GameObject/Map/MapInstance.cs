@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -173,6 +174,7 @@ namespace OpenNos.GameObject
         {
             if (!_disposed)
             {
+                // BENCHMANRK: With usage of both parallelization and foreach
                 foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapInstanceId == MapInstanceId))
                 {
                     ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
@@ -185,6 +187,7 @@ namespace OpenNos.GameObject
 
         public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY)
         {
+            // TODO: Parallelize, if possible.
             try
             {
                 short localMapX = mapX;
@@ -210,9 +213,7 @@ namespace OpenNos.GameObject
                 }
 
                 MonsterMapItem droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, owner ?? -1);
-
                 DroppedList[droppedItem.TransportId] = droppedItem;
-
                 Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
             }
             catch (Exception e)
@@ -223,12 +224,11 @@ namespace OpenNos.GameObject
 
         public void DropItems(List<Tuple<short, int, short, short>> list)
         {
+            // TODO: Parallelize, if possible.
             foreach (Tuple<short, int, short, short> drop in list)
             {
                 MonsterMapItem droppedItem = new MonsterMapItem(drop.Item3, drop.Item4, drop.Item1, drop.Item2);
-
                 DroppedList[droppedItem.TransportId] = droppedItem;
-
                 Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
             }
         }
@@ -269,14 +269,14 @@ namespace OpenNos.GameObject
             {
                 s.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => packets.Add(m.GenerateIn()));
             });
-
+            // TODO: Parallelize getting of items of mapinstance
             Portals.ForEach(s => packets.Add(s.GenerateGp()));
             TimeSpaces.ForEach(s => packets.Add(s.GenerateWp()));
 
             Monsters.ForEach(s => packets.Add(s.GenerateIn()));
             Npcs.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateNPCShopOnMap());
-            DroppedList.GetAllItems().ForEach(s => packets.Add(s.GenerateIn()));
+            Parallel.ForEach(DroppedList.GetAllItems(), session => packets.Add(session.GenerateIn()));
 
             Buttons.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateUserShops());
@@ -307,24 +307,28 @@ namespace OpenNos.GameObject
 
         public void LoadMonsters()
         {
-            foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId).ToList())
+            // TODO: Parallelize, if possible.
+            Parallel.ForEach(DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId).ToList(), monster =>
             {
-                MapMonster mo = monster as MapMonster;
-                mo.Initialize(this);
-                _monsters[mo.MapMonsterId] = mo;
-                _mapMonsterIds.Add(mo.MapMonsterId);
-            }
+                MapMonster mapMonster = monster as MapMonster;
+                mapMonster.Initialize(this);
+                int mapMonsterId = mapMonster.MapMonsterId;
+                _monsters[mapMonsterId] = mapMonster;
+                _mapMonsterIds.Add(mapMonsterId);
+            });
         }
 
         public void LoadNpcs()
         {
-            foreach (MapNpcDTO npc in DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId).ToList())
+            // TODO: Parallelize, if possible.
+            Parallel.ForEach(DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId).ToList(), npc =>
             {
-                MapNpc np = npc as MapNpc;
-                np.Initialize(this);
-                _npcs[np.MapNpcId] = np;
-                _mapNpcIds.Add(np.MapNpcId);
-            }
+                MapNpc mapNpc = npc as MapNpc;
+                mapNpc.Initialize(this);
+                int mapNpcId = mapNpc.MapNpcId;
+                _npcs[mapNpcId] = mapNpc;
+                _mapNpcIds.Add(mapNpcId);
+            });
         }
 
         public void LoadPortals()
@@ -361,6 +365,7 @@ namespace OpenNos.GameObject
             short mapX = 0;
             short mapY = 0;
             bool niceSpot = false;
+            // TODO: Parallelize, if possible.
             foreach (GridPos possibilitie in possibilities.OrderBy(s => _random.Next()))
             {
                 mapX = (short)(session.Character.PositionX + possibilitie.X);
@@ -395,11 +400,11 @@ namespace OpenNos.GameObject
             {
                 List<MapItem> dropsToRemove = DroppedList.GetAllItems().Where(dl => dl.CreatedDate.AddMinutes(3) < DateTime.Now).ToList();
 
-                foreach (MapItem drop in dropsToRemove)
+                Parallel.ForEach(dropsToRemove, drop =>
                 {
                     Broadcast(drop.GenerateOut(drop.TransportId));
                     DroppedList.Remove(drop.TransportId);
-                }
+                });
             }
             catch (Exception e)
             {
@@ -418,17 +423,17 @@ namespace OpenNos.GameObject
             Broadcast(parameter.GenerateIn());
         }
 
-        public void UnspawnMonsters(int monsterVnum)
+        public void DespawnMonster(int monsterVnum)
         {
-            _monsters.GetAllItems().Where(s => s.MonsterVNum == monsterVnum).ToList().ForEach(s =>
-             {
-                 s.IsAlive = false;
-                 s.LastMove = DateTime.Now;
-                 s.CurrentHp = 0;
-                 s.CurrentMp = 0;
-                 s.Death = DateTime.Now;
-                 Broadcast(s.GenerateOut());
-             });
+            Parallel.ForEach(_monsters.GetAllItems().Where(s => s.MonsterVNum == monsterVnum), monster =>
+            {
+                monster.IsAlive = false;
+                monster.LastMove = DateTime.Now;
+                monster.CurrentHp = 0;
+                monster.CurrentMp = 0;
+                monster.Death = DateTime.Now;
+                Broadcast(monster.GenerateOut());
+            });
         }
 
         internal void CreatePortal(Portal portal)
@@ -455,10 +460,10 @@ namespace OpenNos.GameObject
 
         internal void RemoveMonstersTarget(long characterId)
         {
-            foreach (MapMonster monster in Monsters.Where(m => m.Target == characterId))
+            Parallel.ForEach(Monsters.Where(m => m.Target == characterId), monster =>
             {
                 monster.RemoveTarget();
-            }
+            });
         }
 
         internal void StartLife()
@@ -489,6 +494,7 @@ namespace OpenNos.GameObject
 
         internal List<int> SummonMonsters(List<MonsterToSummon> summonParameters)
         {
+            // TODO: Parallelize, if possible.
             List<int> ids = new List<int>();
             foreach (MonsterToSummon mon in summonParameters)
             {
@@ -509,6 +515,7 @@ namespace OpenNos.GameObject
 
         internal List<int> SummonNpcs(List<NpcToSummon> summonParameters)
         {
+            // TODO: Parallelize, if possible.
             List<int> ids = new List<int>();
             foreach (NpcToSummon mon in summonParameters)
             {

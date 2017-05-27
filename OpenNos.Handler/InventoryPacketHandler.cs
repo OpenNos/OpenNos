@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
@@ -1697,13 +1698,13 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateStatChar());
                 Session.Character.SkillsSp = new ThreadSafeSortedList<int, CharacterSkill>();
-                foreach (Skill ski in ServerManager.Instance.GetAllSkill())
+                Parallel.ForEach(ServerManager.Instance.GetAllSkill(), skill =>
                 {
-                    if (ski.Class == Session.Character.Morph + 31 && sp.SpLevel >= ski.LevelMinimum)
+                    if (skill.Class == Session.Character.Morph + 31 && sp.SpLevel >= skill.LevelMinimum)
                     {
-                        Session.Character.SkillsSp[ski.SkillVNum] = new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId };
+                        Session.Character.SkillsSp[skill.SkillVNum] = new CharacterSkill { SkillVNum = skill.SkillVNum, CharacterId = Session.Character.CharacterId };
                     }
-                }
+                });
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());
             }
@@ -1763,6 +1764,7 @@ namespace OpenNos.Handler
                 List<ItemInstance> inv = targetSession.Character.Inventory.AddToInventory(item2);
                 if (!inv.Any())
                 {
+                    // do what?
                 }
             }
 
@@ -1815,13 +1817,11 @@ namespace OpenNos.Handler
                 Session.SendPackets(Session.Character.GenerateQuicklist());
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateStatChar());
-                Observable.Timer(TimeSpan.FromMilliseconds(Session.Character.SpCooldown * 1000))
-                           .Subscribe(
-                           o =>
-                           {
-                               Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
-                               Session.SendPacket("sd 0");
-                           });
+                Observable.Timer(TimeSpan.FromMilliseconds(Session.Character.SpCooldown * 1000)).Subscribe(o =>
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
+                    Session.SendPacket("sd 0");
+                });
             }
         }
 

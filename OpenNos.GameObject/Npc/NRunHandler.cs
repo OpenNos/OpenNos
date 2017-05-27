@@ -207,12 +207,11 @@ namespace OpenNos.GameObject
                     string recipelist = "m_list 2";
                     if (npc != null)
                     {
-                        List<Recipe> tp = npc.Recipes;
-                        foreach (Recipe s in tp)
+                        foreach (Recipe recipe in npc.Recipes)
                         {
-                            if (s.Amount > 0)
+                            if (recipe.Amount > 0)
                             {
-                                recipelist = recipelist + $" {s.ItemVNum}";
+                                recipelist = recipelist + $" {recipe.ItemVNum}";
                             }
                         }
                         recipelist += " -100";
