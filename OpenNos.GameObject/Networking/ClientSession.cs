@@ -244,16 +244,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SendPacket(object score)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendPacketAfterWait(string packet, int Millisecond)
+        public void SendPacketAfter(string packet, int milliseconds)
         {
             if (!IsDisposing)
             {
-                Observable.Timer(TimeSpan.FromMilliseconds(Millisecond)).Subscribe(o =>
+                Observable.Timer(TimeSpan.FromMilliseconds(milliseconds)).Subscribe(o =>
                 {
                     SendPacket(packet);
                 });
@@ -306,6 +301,7 @@ namespace OpenNos.GameObject
             byte[] outPacket;
             while (_receiveQueue.TryDequeue(out outPacket))
             {
+                // do nothing
             }
         }
 

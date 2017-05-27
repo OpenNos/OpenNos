@@ -438,7 +438,7 @@ namespace OpenNos.Handler
                             }
 
                             // truncate the string to a max-length of 20
-                            shopname = StringHelper.Truncate(shopname, 20);
+                            shopname = shopname.Truncate(20);
                             myShop.OwnerId = Session.Character.CharacterId;
                             myShop.Name = shopname;
                             Session.CurrentMapInstance.UserShops.Add(Session.CurrentMapInstance.LastUserShopId++, myShop);

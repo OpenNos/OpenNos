@@ -1352,23 +1352,14 @@ namespace OpenNos.Handler
             }
             else
             {
-                string language = new CultureInfo(ConfigurationManager.AppSettings["Language"]).EnglishName;
-                if (message.Split(' ').Length > 3 && ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(message))
+                byte type = 0;
+                if (Session.Character.Authority == AuthorityType.Moderator)
                 {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 2));
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 11));
+                    type = 12;
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), 1), ReceiverType.AllExceptMe);
+                    message = $"[{Language.Instance.GetMessageFromKey("SUPPORT")} {Session.Character.Name}]: " + message;
                 }
-                else
-                {
-                    byte type = 0;
-                    if (Session.Character.Authority == AuthorityType.Moderator)
-                    {
-                        type = 12;
-                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), 1), ReceiverType.AllExceptMe);
-                        message = $"[{Language.Instance.GetMessageFromKey("SUPPORT")} {Session.Character.Name}]: " + message;
-                    }
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), type), ReceiverType.AllExceptMe);
-                }
+                Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), type), ReceiverType.AllExceptMe);
             }
         }
 

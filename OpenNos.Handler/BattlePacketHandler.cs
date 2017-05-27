@@ -1119,7 +1119,7 @@ namespace OpenNos.Handler
                     {
                         Session.SendPacket($"cancel 2 {targetId}");
                     }
-                    Session.SendPacketAfterWait($"sr {castingId}", ski.Skill.Cooldown * 100);
+                    Session.SendPacketAfter($"sr {castingId}", ski.Skill.Cooldown * 100);
                 }
                 else
                 {

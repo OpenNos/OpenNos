@@ -14,13 +14,13 @@
 
 namespace OpenNos.Core
 {
-    public static class StringHelper
+    public static class Extension
     {
         #region Methods
 
-        public static string Truncate(string source, int length)
+        public static string Truncate(this string str, int length)
         {
-            return source.Length > length ? source.Substring(0, length) : source;
+            return str.Length > length ? str.Substring(0, length) : str;
         }
 
         #endregion
