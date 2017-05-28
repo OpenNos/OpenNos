@@ -237,15 +237,15 @@ namespace OpenNos.Handler
                 {
                     if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                     {
-                        List<ItemInstance> newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity);
-                        if (newInv.Any())
+                        ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity).FirstOrDefault();
+                        if (newInv != null)
                         {
-                            if (newInv.First().Rare != 0)
+                            if (newInv.Rare != 0)
                             {
-                                WearableInstance wearable = newInv.First() as WearableInstance;
+                                WearableInstance wearable = newInv as WearableInstance;
                                 wearable?.SetRarityPoint();
                             }
-                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.First().Item.Name} x {mail.AttachmentAmount}", 12));
+                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
 
                             if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                             {
@@ -818,17 +818,17 @@ namespace OpenNos.Handler
                                 if (randomAmount <= (double)dropChance * RateDrop / 5000.000)
                                 {
                                     short vnum = drop.ItemVNum;
-                                    List<ItemInstance> newInv = Session.Character.Inventory.AddNewToInventory(vnum);
+                                    ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(vnum).FirstOrDefault();
                                     Session.Character.LastMapObject = DateTime.Now;
                                     Session.Character.TimesUsed++;
                                     if (Session.Character.TimesUsed >= 4)
                                     {
                                         Session.Character.TimesUsed = 0;
                                     }
-                                    if (newInv.Any())
+                                    if (newInv != null)
                                     {
-                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.First().Item.Name), 0));
-                                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.First().Item.Name), 11));
+                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
+                                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 11));
                                     }
                                     else
                                     {
@@ -1199,7 +1199,7 @@ namespace OpenNos.Handler
             {
                 if (reqInfoPacket.MateVNum.HasValue)
                 {
-                    Mate mate = Session.CurrentMapInstance.Sessions.FirstOrDefault(s => s.Character?.Mates != null && s.Character.Mates.Any(o => o.MateTransportId == reqInfoPacket.MateVNum.Value))?.Character.Mates.First(o => o.MateTransportId == reqInfoPacket.MateVNum.Value);
+                    Mate mate = Session.CurrentMapInstance.Sessions.FirstOrDefault(s => s.Character?.Mates != null && s.Character.Mates.Any(o => o.MateTransportId == reqInfoPacket.MateVNum.Value))?.Character.Mates.Find(o => o.MateTransportId == reqInfoPacket.MateVNum.Value);
                     Session.SendPacket(mate?.GenerateEInfo());
                 }
             }

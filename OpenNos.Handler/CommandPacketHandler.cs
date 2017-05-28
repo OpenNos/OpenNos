@@ -870,10 +870,10 @@ namespace OpenNos.Handler
                     {
                         amount = createItemPacket.Design.Value > 99 ? (byte)99 : createItemPacket.Design.Value;
                     }
-                    List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, Rare: rare, Upgrade: upgrade, Design: design);
-                    if (inv.Any())
+                    ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, Rare: rare, Upgrade: upgrade, Design: design).FirstOrDefault();
+                    if (inv != null)
                     {
-                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.First().Slot, inv.First().Type);
+                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
                         if (wearable != null)
                         {
                             switch (wearable.Item.EquipmentSlot)

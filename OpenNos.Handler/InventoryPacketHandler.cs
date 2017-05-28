@@ -583,19 +583,19 @@ namespace OpenNos.Handler
                                 lock (Session.Character.Inventory)
                                 {
                                     byte amount = mapItem.Amount;
-                                    List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(mapItemInstance);
-                                    if (newInv.Any(s => s != null))
+                                    ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
+                                    if (inv != null)
                                     {
                                         Session.CurrentMapInstance.DroppedList.Remove(getPacket.TransportId);
                                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                                         if (getPacket.PickerType == 2)
                                         {
-                                            Session.SendPacket(Session.Character.GenerateIcon(1, 1, newInv.First().ItemVNum));
+                                            Session.SendPacket(Session.Character.GenerateIcon(1, 1, inv.ItemVNum));
                                         }
-                                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {amount}", 12));
+                                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {inv.Item.Name} x {amount}", 12));
                                         if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
                                         {
-                                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{string.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {newInv.First().Item.Name} x {mapItem.Amount}", 10));
+                                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{string.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {inv.Item.Name} x {mapItem.Amount}", 10));
                                         }
                                     }
                                     else

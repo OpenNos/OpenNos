@@ -143,7 +143,8 @@ namespace OpenNos.GameObject
                                 List<ItemInstance> newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
                                 if (newInv.Any())
                                 {
-                                    SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(newInv.First().Slot, newInv.First().Type);
+                                    ItemInstance itemInstance = newInv.First();
+                                    SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(itemInstance.Slot, itemInstance.Type);
                                     if (specialist != null)
                                     {
                                         specialist.SlDamage = box.SlDamage;
@@ -195,7 +196,8 @@ namespace OpenNos.GameObject
                                 List<ItemInstance> newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
                                 if (newInv.Any())
                                 {
-                                    WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(newInv.First().Slot, newInv.First().Type);
+                                    ItemInstance itemInstance = newInv.First();
+                                    WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(itemInstance.Slot, itemInstance.Type);
                                     if (fairy != null)
                                     {
                                         fairy.ElementRate = box.ElementRate;

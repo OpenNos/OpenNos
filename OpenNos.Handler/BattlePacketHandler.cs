@@ -1047,8 +1047,7 @@ namespace OpenNos.Handler
                                             {
                                                 foreach (MapMonster mon in monstersInAOERange)
                                                 {
-                                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill
-                                                        , skillCombo: skillCombo));
+                                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo));
                                                 }
                                             }
                                             else
@@ -1065,16 +1064,14 @@ namespace OpenNos.Handler
                                             IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMapInstance?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
 
                                             //hit the targetted monster
-                                            monsterToAttack.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                        , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: true));
+                                            monsterToAttack.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill, characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: true));
 
                                             //hit all other monsters
                                             if (monstersInAOERange != null)
                                             {
                                                 foreach (MapMonster mon in monstersInAOERange.Where(m => m.MapMonsterId != monsterToAttack.MapMonsterId)) //exclude targetted monster
                                                 {
-                                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                        , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
+                                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill, characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
                                                 }
                                             }
                                             else
