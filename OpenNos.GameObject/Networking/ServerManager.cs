@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
@@ -706,8 +707,9 @@ namespace OpenNos.GameObject
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
 
+            var itemPartitioner = Partitioner.Create(DAOFactory.ItemDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
             ThreadSafeSortedList<short, Item> _item = new ThreadSafeSortedList<short, Item>();
-            Parallel.ForEach(DAOFactory.ItemDAO.LoadAll(), itemDTO =>
+            Parallel.ForEach(itemPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 4 }, itemDTO =>
             {
                 switch (itemDTO.ItemType)
                 {
@@ -892,8 +894,8 @@ namespace OpenNos.GameObject
             Parallel.ForEach(DAOFactory.SkillDAO.LoadAll(), skill =>
             {
                 Skill skillObj = skill as Skill;
-                _skill[skillObj.SkillVNum] = skillObj as Skill;
                 skillObj.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skillObj.SkillVNum).ToList());
+                _skill[skillObj.SkillVNum] = skillObj as Skill;
             });
             _skills.AddRange(_skill.GetAllItems());
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
@@ -910,9 +912,9 @@ namespace OpenNos.GameObject
             {
                 int i = 0;
                 int monstercount = 0;
-
-                ThreadSafeSortedList<short, Map> _mapList = new ThreadSafeSortedList<short, Map>(); // HACKY, kinda untrusty(?)
-                Parallel.ForEach(DAOFactory.MapDAO.LoadAll(), map =>
+                var mapPartitioner = Partitioner.Create(DAOFactory.MapDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
+                ThreadSafeSortedList<short, Map> _mapList = new ThreadSafeSortedList<short, Map>();
+                Parallel.ForEach(mapPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 8 }, map =>
                 {
                     Guid guid = Guid.NewGuid();
                     Map mapinfo = new Map(map.MapId, map.Data)
@@ -923,21 +925,20 @@ namespace OpenNos.GameObject
                     MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance, new InstanceBag());
                     _mapinstances.TryAdd(guid, newMap);
 
-                    newMap.LoadMonsters();
+                    Task.Run(() => newMap.LoadPortals());
                     newMap.LoadNpcs();
-                    newMap.LoadPortals();
+                    newMap.LoadMonsters();
 
-                    Parallel.ForEach(newMap.Monsters, mapMonster =>
-                    {
-                        mapMonster.MapInstance = newMap;
-                        newMap.AddMonster(mapMonster);
-                    });
                     Parallel.ForEach(newMap.Npcs, mapNpc =>
                     {
                         mapNpc.MapInstance = newMap;
                         newMap.AddNPC(mapNpc);
                     });
-
+                    Parallel.ForEach(newMap.Monsters, mapMonster =>
+                    {
+                        mapMonster.MapInstance = newMap;
+                        newMap.AddMonster(mapMonster);
+                    });
                     monstercount += newMap.Monsters.Count;
                     i++;
                 });

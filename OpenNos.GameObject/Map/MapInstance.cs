@@ -19,6 +19,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using OpenNos.PathFinder;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -302,7 +303,8 @@ namespace OpenNos.GameObject
 
         public void LoadMonsters()
         {
-            Parallel.ForEach(DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId), monster =>
+            var partitioner = Partitioner.Create(DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
+            Parallel.ForEach(partitioner, monster =>
             {
                 MapMonster mapMonster = monster as MapMonster;
                 mapMonster.Initialize(this);
@@ -314,7 +316,8 @@ namespace OpenNos.GameObject
 
         public void LoadNpcs()
         {
-            Parallel.ForEach(DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId), npc =>
+            var partitioner = Partitioner.Create(DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
+            Parallel.ForEach(partitioner, npc =>
             {
                 MapNpc mapNpc = npc as MapNpc;
                 mapNpc.Initialize(this);
@@ -326,8 +329,9 @@ namespace OpenNos.GameObject
 
         public void LoadPortals()
         {
+            var partitioner = Partitioner.Create(DAOFactory.PortalDAO.LoadByMap(Map.MapId), EnumerablePartitionerOptions.None);
             ThreadSafeSortedList<int, Portal> _portalList = new ThreadSafeSortedList<int, Portal>();
-            Parallel.ForEach(DAOFactory.PortalDAO.LoadByMap(Map.MapId), portal =>
+            Parallel.ForEach(partitioner, portal =>
             {
                 Portal portal2 = portal as Portal;
                 portal2.SourceMapInstanceId = MapInstanceId;
