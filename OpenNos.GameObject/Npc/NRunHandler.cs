@@ -276,11 +276,6 @@ namespace OpenNos.GameObject
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                         return;
                     }
-                    if (Session.Character.Raid != null && Session.Character.Raid.Launched)
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay("Vous n'avez pas le droit d'aller à l'arène une fois en raid", 10)); // french in source? nou!
-                        break;
-                    }
                     if (Session.Character.Gold >= 500 * (1 + packet.Type))
                     {
                         Session.Character.LastPortal = currentRunningSeconds;
