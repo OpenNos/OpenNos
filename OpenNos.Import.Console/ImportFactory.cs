@@ -3440,7 +3440,7 @@ namespace OpenNos.Import.Console
                                 {
                                     ItemVnum = item.VNum,
                                     Type = type,
-                                    SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10),
+                                    SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1)),
                                     FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
                                     SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
                                     Delay = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
