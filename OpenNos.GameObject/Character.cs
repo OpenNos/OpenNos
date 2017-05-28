@@ -863,9 +863,15 @@ namespace OpenNos.GameObject
             FriendRequestCharacters.Clear();
         }
 
+        public string GenerateAct()
+        {
+            return $"act 6"; // act6 1 0 14 0 0 0 14 0 0 0
+        }
+
         public string GenerateAt()
         {
             MapInstance mapForMusic = MapInstance;
+
             //at 698495 20001 5 8 2 0 {SecondaryMusic} {SecondaryMusicType} -1
             return $"at {CharacterId} {MapInstance.Map.MapId} {PositionX} {PositionY} 2 0 {mapForMusic?.Map.Music ?? 0} -1";
         }
@@ -2143,6 +2149,11 @@ namespace OpenNos.GameObject
             return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.XP)} {XPLoad()} {(!UseSp || specialist == null ? JobXPLoad() : SPXPLoad())} {Reput} {GetCP()} {HeroXp} {HeroLevel} {HeroXPLoad()}";
         }
 
+        public string GenerateLevelUp()
+        {
+            return $"levelup {CharacterId}";
+        }
+
         public void GenerateMiniland()
         {
             if (Miniland == null)
@@ -2271,11 +2282,6 @@ namespace OpenNos.GameObject
                 return result;
             }
             return $"pidx -1 1.{CharacterId}";
-        }
-
-        public string GenerateAct()
-        {
-            return $"act 6"; // act6 1 0 14 0 0 0 14 0 0 0
         }
 
         public string GeneratePinit()
@@ -4540,8 +4546,7 @@ namespace OpenNos.GameObject
 
                 if (Inventory != null)
                 {
-                    specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,
-                        InventoryType.Wear);
+                    specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 }
 
                 if (Level < ServerManager.Instance.MaxLevel)
@@ -4573,9 +4578,7 @@ namespace OpenNos.GameObject
                 }
                 if (HeroLevel > 0 && HeroLevel < ServerManager.Instance.MaxHeroLevel)
                 {
-                    HeroXp += (int)
-                        (GetHXP(monsterinfo, grp) *
-                         (1 + Buff.Get(Type.HeroExperience, SubType.IncreasePercentage, false)[0] / 100D));
+                    HeroXp += (int)(GetHXP(monsterinfo, grp) * (1 + Buff.Get(Type.HeroExperience, SubType.IncreasePercentage, false)[0] / 100D));
                 }
                 double t = XPLoad();
                 while (LevelXp >= t)
@@ -4621,8 +4624,7 @@ namespace OpenNos.GameObject
                             });
                         }
                     }
-
-                    Session.SendPacket($"levelup {CharacterId}");
+                    Session.SendPacket(GenerateLevelUp());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(6), PositionX, PositionY);
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
@@ -4674,7 +4676,7 @@ namespace OpenNos.GameObject
                     Hp = (int)HPLoad();
                     Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
-                    Session.SendPacket($"levelup {CharacterId}");
+                    Session.SendPacket(GenerateLevelUp());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
                     LearnAdventurerSkill();
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
@@ -4690,7 +4692,7 @@ namespace OpenNos.GameObject
                         specialist.SpLevel++;
                         t = SPXPLoad();
                         Session.SendPacket(GenerateStat());
-                        Session.SendPacket($"levelup {CharacterId}");
+                        Session.SendPacket(GenerateLevelUp());
                         if (specialist.SpLevel >= ServerManager.Instance.MaxSPLevel)
                         {
                             specialist.SpLevel = ServerManager.Instance.MaxSPLevel;
@@ -4717,7 +4719,7 @@ namespace OpenNos.GameObject
                     Hp = (int)HPLoad();
                     Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
-                    Session.SendPacket($"levelup {CharacterId}");
+                    Session.SendPacket(GenerateLevelUp());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_LEVELUP"), 0));
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
