@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using CloneExtensions;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -35,7 +36,7 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
-            inv.Item.BCards.ForEach(c => c.ApplyBCards( session.Character));
+            inv.Item.BCards.ForEach(c => c.ApplyBCards(session.Character));
 
             switch (Effect)
             {
@@ -69,18 +70,20 @@ namespace OpenNos.GameObject
                     break;
 
                 case 301:
-                    if (session.Character.Raid != null) return;
-                    ItemInstance raidSeal = session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
-                    Raid raid = new Raid(raidSeal.Item);
-                    raid.Join(session);
-                    if (session.Character.Raid == null)
+                    if (ServerManager.Instance.IsCharacterMemberOfGroup(session.Character.CharacterId))
                     {
+                        //TODO you are in group
                         return;
                     }
+                    ItemInstance raidSeal = session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
-                    raid.SendCreationPacket(session);
-                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 0));
-                    ServerManager.Instance.AddRaid(raid);
+
+                    ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Contains(new Gift(raidSeal.ItemVNum, 1))).GetClone();
+                    if (raid != null)
+                    {
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 0));
+                        
+                    }
                     break;
 
                 case 305:
@@ -100,7 +103,7 @@ namespace OpenNos.GameObject
 
                 case 208:
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                    session.Character.AddStaticBuff(new StaticBuffDTO() { CardId = 121});
+                    session.Character.AddStaticBuff(new StaticBuffDTO() { CardId = 121 });
                     break;
                 // Divorce letter
                 case 6969: // this is imaginary number I = √(-1)
@@ -413,7 +416,7 @@ namespace OpenNos.GameObject
             }
         }
 
-      
+
 
 
         #endregion

@@ -2309,7 +2309,7 @@ namespace OpenNos.Import.Console
                 if (currentPacket.Length > 5 && currentPacket[0] == "at")
                 {
                     map = short.Parse(currentPacket[2]);
-                    bddlist = DAOFactory.TimeSpaceDAO.LoadByMap(map).ToList();
+                    bddlist = DAOFactory.ScriptedInstanceDAO.LoadByMap(map).ToList();
                     continue;
                 }
                 else if (currentPacket.Length > 6 && currentPacket[0] == "wp")
@@ -2331,7 +2331,7 @@ namespace OpenNos.Import.Console
                     //someinfo
                 }
             }
-            DAOFactory.TimeSpaceDAO.Insert(listtimespace);
+            DAOFactory.ScriptedInstanceDAO.Insert(listtimespace);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TIMESPACES_PARSED"), listtimespace.Count));
         }
 

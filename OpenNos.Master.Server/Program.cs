@@ -146,8 +146,8 @@ namespace OpenNos.Master.Server
             DAOFactory.StaticBonusDAO.RegisterMapping(typeof(StaticBonusDTO)).InitializeMapper();
             DAOFactory.FamilyDAO.RegisterMapping(typeof(Family)).InitializeMapper();
             DAOFactory.FamilyCharacterDAO.RegisterMapping(typeof(FamilyCharacter)).InitializeMapper();
-            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
-            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstance)).InitializeMapper();
+            DAOFactory.ScriptedInstanceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
+            DAOFactory.ScriptedInstanceDAO.RegisterMapping(typeof(ScriptedInstance)).InitializeMapper();
         }
 
         #endregion

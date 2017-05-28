@@ -70,8 +70,6 @@ namespace OpenNos.GameObject
 
         private ThreadSafeSortedList<short, List<NpcMonsterSkill>> _monsterSkills;
 
-        private ThreadSafeSortedList<long, Raid> _raids;
-
         private ThreadSafeSortedList<int, List<Recipe>> _recipes;
 
         private ThreadSafeSortedList<int, List<ShopItemDTO>> _shopItems;
@@ -146,8 +144,6 @@ namespace OpenNos.GameObject
 
         public List<PenaltyLogDTO> PenaltyLogs { get; set; }
 
-        public List<Raid> Raids => _raids.GetAllItems();
-
         public List<Schedule> Schedules { get; set; }
 
         public string ServerGroup { get; set; }
@@ -168,6 +164,8 @@ namespace OpenNos.GameObject
 
         public List<Card> Cards { get; set; }
 
+        public List<ScriptedInstance> Raids { get; set; }
+
         #endregion
 
         #region Methods
@@ -175,11 +173,6 @@ namespace OpenNos.GameObject
         public void AddGroup(Group group)
         {
             _groups[group.GroupId] = group;
-        }
-
-        public void AddRaid(Raid raid)
-        {
-            _raids[raid.RaidId] = raid;
         }
 
         public void AskPVPRevive(long characterId)
@@ -915,14 +908,14 @@ namespace OpenNos.GameObject
 
             // initialize buffs
             Cards = new List<Card>();
-            foreach(CardDTO carddto in DAOFactory.CardDAO.LoadAll())
+            foreach (CardDTO carddto in DAOFactory.CardDAO.LoadAll())
             {
                 Card card = (Card)carddto;
                 card.BCards = new List<BCard>();
                 DAOFactory.BCardDAO.LoadByCardId(card.CardId).ToList().ForEach(o => card.BCards.Add((BCard)o));
                 Cards.Add(card);
             }
-          
+
 
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), _skills.Count));
 
@@ -998,7 +991,7 @@ namespace OpenNos.GameObject
                     FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance, new InstanceBag());
                     FamilyArenaInstance.IsPVP = true;
                 }
-                LoadTimeSpaces();
+                LoadScriptedInstances();
             }
             catch (Exception ex)
             {
@@ -1060,55 +1053,6 @@ namespace OpenNos.GameObject
             session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
         }
 
-        public void RaidDisolve(ClientSession session, Raid raid = null)
-        {
-            if (raid == null)
-                raid = Instance.Raids.FirstOrDefault(s => s.IsMemberOfRaid(session.Character.CharacterId));
-            if (raid == null)
-                return;
-            foreach (ClientSession targetSession in raid.Characters)
-            {
-                targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_CLOSED"), 0));
-                raid.Leave(targetSession);
-            }
-            raid.DestroyRaid();
-        }
-
-        public void RaidLeave(ClientSession session)
-        {
-            if (session == null || Raids == null)
-            {
-                return;
-            }
-            Raid raid = Instance.Raids.FirstOrDefault(s => s.IsMemberOfRaid(session.Character.CharacterId));
-            if (raid != null)
-            {
-                if (raid.Characters.Count > 1)
-                {
-                    if (raid.Leader != session)
-                    {
-                        raid.Leave(session);
-                    }
-                    else
-                    {
-                        raid.Leave(raid.Leader);
-                        raid.Leader.SendPacket(
-                            $"say 1 {raid.Leader.Character.CharacterId} 10 {Language.Instance.GetMessageFromKey("RAID_NEW_LEADER")}");
-                        raid.Leader.SendPacket(
-                            UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_NEW_LEADER"),
-                                0));
-                        raid.Leader.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
-                            string.Format(Language.Instance.GetMessageFromKey("LEAVE_RAID"), session.Character.Name), 0));
-                    }
-                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
-                    raid.UpdateVisual();
-                }
-                else
-                {
-                    RaidDisolve(session, raid);
-                }
-            }
-        }
 
         public int RandomNumber(int min = 0, int max = 100)
         {
@@ -1137,11 +1081,6 @@ namespace OpenNos.GameObject
                 map.Value.Dispose();
                 ((IDictionary)_mapinstances).Remove(map.Key);
             }
-        }
-
-        public void RemoveRaid(Raid raid)
-        {
-            _raids.Remove(raid.RaidId);
         }
 
         // Map
@@ -1339,7 +1278,6 @@ namespace OpenNos.GameObject
             {
                 _monsterDrops.Dispose();
                 _groups.Dispose();
-                _raids.Dispose();
                 _monsterSkills.Dispose();
                 _shopSkills.Dispose();
                 _shopItems.Dispose();
@@ -1390,7 +1328,6 @@ namespace OpenNos.GameObject
         private void LaunchEvents()
         {
             _groups = new ThreadSafeSortedList<long, Group>();
-            _raids = new ThreadSafeSortedList<long, Raid>();
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
             {
@@ -1484,17 +1421,27 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void LoadTimeSpaces()
+        private void LoadScriptedInstances()
         {
+            Raids = new List<ScriptedInstance>();
             foreach (var map in _mapinstances)
             {
-                foreach (ScriptedInstance timespace in DAOFactory.TimeSpaceDAO.LoadByMap(map.Value.Map.MapId).ToList())
+                foreach (ScriptedInstance si in DAOFactory.ScriptedInstanceDAO.LoadByMap(map.Value.Map.MapId).ToList())
                 {
-                    timespace.LoadGlobals();
-                    map.Value.TimeSpaces.Add(timespace);
+                    if (si.Type == ScriptedInstanceType.TimeSpace)
+                    {
+                        si.LoadGlobals();
+                        map.Value.TimeSpaces.Add(si);
+                    }
+                    else if (si.Type == ScriptedInstanceType.Raid)
+                    {
+                        si.LoadGlobals();
+                        Raids.Add(si);
+                    }
                 }
             }
         }
+
 
         private void MailProcess()
         {

@@ -873,7 +873,7 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IScriptedInstanceDAO TimeSpaceDAO
+        public static IScriptedInstanceDAO ScriptedInstanceDAO
         {
             get
             {
