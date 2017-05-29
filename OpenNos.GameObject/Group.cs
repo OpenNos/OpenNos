@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Domain;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -24,6 +25,10 @@ namespace OpenNos.GameObject
         #region Members
 
         private int _order;
+
+        public GroupType GroupType { get; set; }
+
+        public ScriptedInstance Raid { get; set; }
 
         #endregion
 
@@ -108,6 +113,15 @@ namespace OpenNos.GameObject
             return Characters != null && Characters.Any(s => s?.Character?.CharacterId == session.Character.CharacterId);
         }
 
+        public string GenerateRdlst()
+        {
+            string result = string.Empty;
+            result = $"rdlst{((GroupType == GroupType.GiantTeam) ? "f" : "")} {Raid.LevelMinimum} {Raid.LevelMaximum} 0";
+            Characters.ForEach(session => result += $" {session.Character.Level}.{(session.Character.UseSp || session.Character.IsVehicled ? session.Character.Morph : -1)}.{(short)session.Character.Class}.0.{session.Character.Name}.{(short)session.Character.Gender}.{session.Character.CharacterId}.{session.Character.HeroLevel}");
+
+            return result;
+        }
+
         public void JoinGroup(long characterId)
         {
             ClientSession session = ServerManager.Instance.GetSessionByCharacterId(characterId);
@@ -127,6 +141,11 @@ namespace OpenNos.GameObject
         {
             session.Character.Group = null;
             Characters.RemoveAll(s => s?.Character.CharacterId == session.Character.CharacterId);
+        }
+
+        public bool IsLeader(ClientSession session)
+        {
+            return Characters.ElementAt(0) == session;
         }
 
         #endregion

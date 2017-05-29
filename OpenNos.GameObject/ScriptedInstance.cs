@@ -67,8 +67,6 @@ namespace OpenNos.GameObject
 
         public List<Gift> SpecialItems { get; set; }
 
-        public ScriptedInstanceType Type { get; set; }
-
         #endregion
 
         #region Methods

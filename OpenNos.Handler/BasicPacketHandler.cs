@@ -126,7 +126,7 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    if (grp.Characters.ElementAt(0) != Session)
+                    if (grp.IsLeader(Session))
                     {
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_MASTER"), 0));
                         return;
@@ -355,6 +355,45 @@ namespace OpenNos.Handler
                 Session.SendPackets(Session.Character.GenerateScP(npinfoPacket.Page));
             }
         }
+        /// <summary>
+        /// rdPacket packet
+        /// </summary>
+        /// <param name="rdPacket"></param>
+        public void RaidManage(RdPacket rdPacket)
+        {
+            ClientSession sender = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
+            if (sender.Character?.Group == null)
+                return;
+
+            switch (rdPacket.Type)
+            {
+                case 1://Join
+                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        return;
+                    }
+                    GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId });
+                    break;
+
+                case 2://leave
+
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEFT_RAID")), 0));
+                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
+                    }
+                    Group grp = Session.Character.Group;
+                    grp.LeaveGroup(Session);
+                    grp.Characters.ForEach(s =>
+                    {
+                        s.SendPacket(grp.GenerateRdlst());
+                        s.SendPacket(s.Character.GenerateRaid(2, false));
+                    });
+                    Session.SendPacket(Session.Character.GenerateRaid(1, true));
+                    Session.SendPacket(Session.Character.GenerateRaid(2, true));
+                    break;
+            }
+        }
 
         /// <summary>
         /// pjoin packet
@@ -408,9 +447,16 @@ namespace OpenNos.Handler
                         {
                             // save sent group request to current character
                             Session.Character.GroupSentRequestCharacterIds.Add(targetSession.Character.CharacterId);
+                            if (Session.Character.Group == null || Session.Character.Group.GroupType == GroupType.Group)
+                            {
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), targetSession.Character.Name)));
+                                targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"));
+                            }
+                            else
+                            {
+                                targetSession.SendPacket($"qna #rd^1^{Session.Character.CharacterId}^1 {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU_RAID"), Session.Character.Name)}");
+                            }
 
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), targetSession.Character.Name)));
-                            targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"));
                         }
                     }
                 }
@@ -450,6 +496,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
+
                 // get group and add to group
                 if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId))
                 {
@@ -470,10 +517,27 @@ namespace OpenNos.Handler
 
                     if (currentGroup != null)
                     {
-                        currentGroup.JoinGroup(Session);
                         createNewGroup = false;
+                        if (currentGroup.GroupType == GroupType.Group)
+                        {
+                            currentGroup.JoinGroup(Session);
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RAID_JOIN"), Session.Character.Name), 10));
+                            //say 1 626114 10 Étant donné que le niveau recommandé du raid n'est pas respecté, aucune boîte de raid ne pourra être obtenue (même en cas de succès).
+                            //modal 1 Tu as déjà réussi ce raid en tant qu'assistant de raid.
+                            currentGroup.JoinGroup(Session);
+                            Session.SendPacket(Session.Character.GenerateRaid(1, false));
+                            currentGroup.Characters.ForEach(s =>
+                            {
+                                s.SendPacket(currentGroup.GenerateRdlst());
+                                s.SendPacket(s.Character.GenerateRaid(2, false));
+                            });
+                        }
                     }
                 }
+
 
                 if (createNewGroup)
                 {
@@ -488,10 +552,12 @@ namespace OpenNos.Handler
                     Session.Character.Group = group;
                     targetSession.Character.Group = group;
                 }
-
-                // player join group
-                ServerManager.Instance.UpdateGroup(pjoinPacket.CharacterId);
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePidx());
+                if (Session.Character.Group.GroupType == GroupType.Group)
+                {
+                    // player join group
+                    ServerManager.Instance.UpdateGroup(pjoinPacket.CharacterId);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePidx());
+                }
             }
             else if (pjoinPacket.RequestType == GroupRequestType.Declined)
             {
@@ -1704,8 +1770,8 @@ namespace OpenNos.Handler
 
             foreach (StaticBuffDTO sb in DAOFactory.StaticBuffDAO.LoadByCharacterId(Session.Character.CharacterId))
             {
-                Session.Character.AddStaticBuff(sb);   
-            }   
+                Session.Character.AddStaticBuff(sb);
+            }
         }
 
         /// <summary>

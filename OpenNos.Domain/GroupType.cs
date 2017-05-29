@@ -12,26 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
-
-namespace OpenNos.Data
+namespace OpenNos.Domain
 {
-    public class ScriptedInstanceDTO : MappingBaseDTO
+    public enum GroupType : byte
     {
-        #region Properties
-
-        public short MapId { get; set; }
-
-        public short PositionX { get; set; }
-
-        public short PositionY { get; set; }
-
-        public string Script { get; set; }
-
-        public short ScriptedInstanceId { get; set; }
-
-        public ScriptedInstanceType Type { get; set; }
-
-        #endregion
+        Group = 0,
+        Team = 1,
+        BigTeam = 2,
+        GiantTeam = 3
     }
 }

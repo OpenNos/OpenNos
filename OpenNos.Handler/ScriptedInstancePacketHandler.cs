@@ -50,7 +50,7 @@ namespace OpenNos.Handler
             {
                 Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(Session.Character.MapId);
                 MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
-                ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
+                ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
                 if (si != null)
                 {
                     Session.Character.GetReput(si.Reputation);
@@ -96,7 +96,7 @@ namespace OpenNos.Handler
         /// <param name="treqPacket"></param>
         public void GetTreq(TreqPacket treqPacket)
         {
-            ScriptedInstance timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY).GetClone();
+            ScriptedInstance timespace = Session.CurrentMapInstance.ScriptedInstances.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY).GetClone();
 
             if (timespace != null)
             {
@@ -140,7 +140,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void GetWreq(WreqPacket packet)
         {
-            foreach (ScriptedInstance portal in Session.CurrentMapInstance.TimeSpaces)
+            foreach (ScriptedInstance portal in Session.CurrentMapInstance.ScriptedInstances)
             {
                 if (Session.Character.PositionY >= portal.PositionY - 1 && Session.Character.PositionY <= portal.PositionY + 1
                     && Session.Character.PositionX >= portal.PositionX - 1 && Session.Character.PositionX <= portal.PositionX + 1)
@@ -235,6 +235,6 @@ namespace OpenNos.Handler
             }
         }
 
-        #endregion
+         #endregion
     }
 }

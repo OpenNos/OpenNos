@@ -2299,12 +2299,12 @@ namespace OpenNos.Import.Console
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_PARSED"), teleporterCounter));
         }
 
-        public void ImportTimeSpaces()
+        public void ImportScriptedInstances()
         {
             short map = 0;
             List<ScriptedInstanceDTO> listtimespace = new List<ScriptedInstanceDTO>();
             List<ScriptedInstanceDTO> bddlist = new List<ScriptedInstanceDTO>(); ;
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("wp")))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("wp") || o[0].Equals("gp") || o[0].Equals("rbr")))
             {
                 if (currentPacket.Length > 5 && currentPacket[0] == "at")
                 {
@@ -2325,6 +2325,25 @@ namespace OpenNos.Import.Console
                     {
                         listtimespace.Add(ts);
                     }
+                }
+                else if (currentPacket[0] == "gp")
+                {
+                    if (sbyte.Parse(currentPacket[4])==(byte)PortalType.Raid)
+                    {
+                        ScriptedInstanceDTO ts = new ScriptedInstanceDTO()
+                        {
+                            PositionX = short.Parse(currentPacket[1]),
+                            PositionY = short.Parse(currentPacket[2]),
+                            MapId = map,
+                            Type = ScriptedInstanceType.Raid,
+                        };
+
+                        if (!bddlist.Concat(listtimespace).Any(s => s.MapId == ts.MapId && s.PositionX == ts.PositionX && s.PositionY == ts.PositionY))
+                        {
+                            listtimespace.Add(ts);
+                        }
+                    }
+
                 }
                 else if (currentPacket[0] == "rbr")
                 {

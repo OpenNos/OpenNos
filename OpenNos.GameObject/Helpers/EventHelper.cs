@@ -180,7 +180,7 @@ namespace OpenNos.GameObject.Helpers
                                 {
                                     Guid MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(client.Character.MapId);
                                     MapInstance map = ServerManager.Instance.GetMapInstance(MapInstanceId);
-                                    ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
+                                    ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
                                     byte penalty = 0;
                                     if (penalty > (client.Character.Level - si.LevelMinimum) * 2)
                                     {

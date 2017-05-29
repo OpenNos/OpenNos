@@ -97,7 +97,7 @@ namespace OpenNos.Import.Console
                     factory.ImportMapTypeMap();
                     ImportFactory.ImportAccounts();
                     factory.ImportPortals();
-                    factory.ImportTimeSpaces();
+                    factory.ImportScriptedInstances();
                     factory.ImportItems();
                     factory.ImportSkills();
                     factory.ImportCards();
@@ -147,7 +147,7 @@ namespace OpenNos.Import.Console
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
-                        factory.ImportTimeSpaces();
+                        factory.ImportScriptedInstances();
                     }
 
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");

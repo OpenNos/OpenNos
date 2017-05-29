@@ -549,6 +549,10 @@ namespace OpenNos.GameObject
                             Session.CurrentMapInstance?.Broadcast(GenerateEff(amulet.Item.EffectValue), PositionX, PositionY);
                         }
                     }
+                    if (Group != null && (Group.GroupType == GroupType.Team || Group.GroupType == GroupType.BigTeam || Group.GroupType == GroupType.GiantTeam))
+                    {
+                        Session.CurrentMapInstance?.Broadcast(GenerateEff(830 + (Group.IsLeader(Session) ? 1 : 0)));
+                    }
                     Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateEff(3007)));
                     LastEffect = DateTime.Now;
                 }
@@ -4920,6 +4924,25 @@ namespace OpenNos.GameObject
         private double XPLoad()
         {
             return CharacterHelper.XPData[Level - 1];
+        }
+
+        public string GenerateRaid(int Type, bool Exit)
+        {
+            string result = string.Empty;
+            switch (Type)
+            {
+                case 1:
+                    result = $"raid 1 {(Exit ? 0 : 1)}";
+                    break;
+                case 0:
+                case 2:
+                    result = $"raid {Type} {(Exit ? "- 1" : $"{CharacterId}")}";
+                    break;
+                case 3:
+
+                    break;
+            }
+            return result;
         }
 
         public void AddStaticBuff(StaticBuffDTO staticBuff)

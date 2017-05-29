@@ -78,11 +78,18 @@ namespace OpenNos.GameObject
                     ItemInstance raidSeal = session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
 
-                    ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Contains(new Gift(raidSeal.ItemVNum, 1))).GetClone();
+                    ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj=>obj.VNum == raidSeal.ItemVNum)).GetClone();
                     if (raid != null)
                     {
+                        Group group = new Group();
+                        group.GroupType = GroupType.Team;
+                        group.Raid = raid;
+                        group.JoinGroup(session.Character.CharacterId);
+                        ServerManager.Instance.AddGroup(group);
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 0));
-                        
+                        session.SendPacket(session.Character.GenerateRaid(0, false));
+                        session.SendPacket(session.Character.GenerateRaid(1, false));
+                        session.SendPacket(group.GenerateRdlst());
                     }
                     break;
 

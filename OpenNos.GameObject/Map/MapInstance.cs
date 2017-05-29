@@ -65,7 +65,7 @@ namespace OpenNos.GameObject
             _random = new Random();
             Map = map;
             MapInstanceId = guid;
-            TimeSpaces = new List<ScriptedInstance>();
+            ScriptedInstances = new List<ScriptedInstance>();
             OnCharacterDiscoveringMapEvents = new List<Tuple<EventContainer, List<long>>>();
             OnMoveOnMapEvents = new List<EventContainer>();
             OnMapClean = new List<EventContainer>();
@@ -149,7 +149,7 @@ namespace OpenNos.GameObject
 
         public bool ShopAllowed { get; set; }
 
-        public List<ScriptedInstance> TimeSpaces { get; set; }
+        public List<ScriptedInstance> ScriptedInstances { get; set; }
 
         public Dictionary<long, MapShop> UserShops { get; }
 
@@ -271,8 +271,18 @@ namespace OpenNos.GameObject
             });
 
             Portals.ForEach(s => packets.Add(s.GenerateGp()));
-            TimeSpaces.ForEach(s => packets.Add(s.GenerateWp()));
-
+            ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList().ForEach(s => packets.Add(s.GenerateWp()));
+            ServerManager.Instance.Raids.Where(s =>s.MapId == Map.MapId).ToList().ForEach(s =>
+            {
+                Portal port = new Portal()
+                {
+                    Type = (byte)PortalType.Raid,
+                    SourceMapId = s.MapId,
+                    SourceX = s.PositionX,
+                    SourceY = s.PositionY
+                };
+                packets.Add(port.GenerateGp());
+            });
             Monsters.ForEach(s => packets.Add(s.GenerateIn()));
             Npcs.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateNPCShopOnMap());

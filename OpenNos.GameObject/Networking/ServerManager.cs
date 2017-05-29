@@ -1431,7 +1431,7 @@ namespace OpenNos.GameObject
                     if (si.Type == ScriptedInstanceType.TimeSpace)
                     {
                         si.LoadGlobals();
-                        map.Value.TimeSpaces.Add(si);
+                        map.Value.ScriptedInstances.Add(si);
                     }
                     else if (si.Type == ScriptedInstanceType.Raid)
                     {
