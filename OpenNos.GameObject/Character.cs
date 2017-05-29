@@ -4024,7 +4024,7 @@ namespace OpenNos.GameObject
                     mp = specialist.MP + specialist.SpHP * 100;
                 }
             }
-            return (int)((CharacterHelper.HPData[(byte)Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0]) * multiplicator);
+            return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0]) * multiplicator);
         }
 
         public void NotifyRarifyResult(sbyte rare)
