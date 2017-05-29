@@ -35,6 +35,7 @@ namespace OpenNos.GameObject
                 return;
             }
             MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == packet.NpcId);
+            TeleporterDTO tp;
             switch (packet.Runner)
             {
                 case 1:
@@ -207,14 +208,8 @@ namespace OpenNos.GameObject
                     string recipelist = "m_list 2";
                     if (npc != null)
                     {
-                        List<Recipe> tp = npc.Recipes;
-                        foreach (Recipe s in tp)
-                        {
-                            if (s.Amount > 0)
-                            {
-                                recipelist = recipelist + $" {s.ItemVNum}";
-                            }
-                        }
+                        List<Recipe> tps = npc.Recipes;
+                        recipelist = tps.Where(s => s.Amount > 0).Aggregate(recipelist, (current, s) => current + $" {s.ItemVNum}");
                         recipelist += " -100";
                         Session.SendPacket(recipelist);
                     }
@@ -249,21 +244,20 @@ namespace OpenNos.GameObject
                     break;
 
                 case 16:
-                    if (npc != null)
+                    tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                    if (tp != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
-                        if (tp != null)
+                        if (Session.Character.Gold >= 1000 * packet.Type)
                         {
-                            if (Session.Character.Gold >= 1000 * packet.Type)
-                            {
-                                Session.Character.Gold -= 1000 * packet.Type;
-                                Session.SendPacket(Session.Character.GenerateGold());
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
-                            }
-                            else
-                            {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
-                            }
+                            Session.Character.Gold -= 1000 * packet.Type;
+                            Session.SendPacket(Session.Character.GenerateGold());
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                        }
+                        else
+                        {
+                            Session.SendPacket(
+                                Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"),
+                                    10));
                         }
                     }
                     break;
@@ -294,52 +288,45 @@ namespace OpenNos.GameObject
                     break;
 
                 case 26:
-                    if (npc != null)
+                    tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                    if (tp != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
-                        if (tp != null)
+                        if (Session.Character.Gold >= 5000 * packet.Type)
                         {
-                            if (Session.Character.Gold >= 5000 * packet.Type)
-                            {
-                                Session.Character.Gold -= 5000 * packet.Type;
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
-                            }
-                            else
-                            {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
-                            }
+                            Session.Character.Gold -= 5000 * packet.Type;
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                         }
                     }
                     break;
 
                 case 45:
-                    if (npc != null)
+                    tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                    if (tp != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
-                        if (tp != null)
+                        if (Session.Character.Gold >= 500)
                         {
-                            if (Session.Character.Gold >= 500)
-                            {
-                                Session.Character.Gold -= 500;
-                                Session.SendPacket(Session.Character.GenerateGold());
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
-                            }
-                            else
-                            {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
-                            }
+                            Session.Character.Gold -= 500;
+                            Session.SendPacket(Session.Character.GenerateGold());
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                        }
+                        else
+                        {
+                            Session.SendPacket(
+                                Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"),
+                                    10));
                         }
                     }
                     break;
 
                 case 132:
-                    if (npc != null)
+                    tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                    if (tp != null)
                     {
-                       TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
-                        if (tp != null)
-                        {
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
-                        }
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                     }
                     break;
 
@@ -372,13 +359,10 @@ namespace OpenNos.GameObject
                     break;
 
                 case 301:
-                    if (npc != null)
+                        tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                    if (tp != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
-                        if (tp != null)
-                        {
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
-                        }
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                     }
                     break;
 
@@ -541,14 +525,11 @@ namespace OpenNos.GameObject
                     break;
 
                 case 5002:
-                    if (npc != null)
+                    tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                    if (tp != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
-                        if (tp != null)
-                        {
-                            Session.SendPacket("it 3");
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
-                        }
+                        Session.SendPacket("it 3");
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                     }
                     break;
 
@@ -567,13 +548,10 @@ namespace OpenNos.GameObject
                     break;
 
                 case 5012:
-                    if (npc != null)
+                    tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                    if (tp != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
-                        if (tp != null)
-                        {
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
-                        }
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                     }
                     break;
 

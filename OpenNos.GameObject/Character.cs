@@ -2337,11 +2337,7 @@ namespace OpenNos.GameObject
         public string GeneratePStashAll()
         {
             string stash = $"pstash_all {(StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)}";
-            foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.PetWarehouse))
-            {
-                stash += $" {item.GenerateStashPacket()}";
-            }
-            return stash;
+            return Inventory.GetAllItems().Where(s => s.Type == InventoryType.PetWarehouse).Aggregate(stash, (current, item) => current + $" {item.GenerateStashPacket()}");
         }
 
         public int GeneratePVPDamage(Character target, Skill skill, ref int hitmode)
@@ -3033,16 +3029,16 @@ namespace OpenNos.GameObject
             {
                 if (bz.Item != null)
                 {
-                    int SoldedAmount = bz.BazaarItem.Amount - bz.Item.Amount;
-                    int Amount = bz.BazaarItem.Amount;
-                    bool Package = bz.BazaarItem.IsPackage;
-                    bool IsNosbazar = bz.BazaarItem.MedalUsed;
-                    long Price = bz.BazaarItem.Price;
-                    long MinutesLeft = (long)(bz.BazaarItem.DateStart.AddHours(bz.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
-                    byte Status = MinutesLeft >= 0 ? (SoldedAmount < Amount ? (byte)BazaarType.OnSale : (byte)BazaarType.Solded) : (byte)BazaarType.DelayExpired;
+                    int soldedAmount = bz.BazaarItem.Amount - bz.Item.Amount;
+                    int amount = bz.BazaarItem.Amount;
+                    bool package = bz.BazaarItem.IsPackage;
+                    bool isNosbazar = bz.BazaarItem.MedalUsed;
+                    long price = bz.BazaarItem.Price;
+                    long minutesLeft = (long)(bz.BazaarItem.DateStart.AddHours(bz.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
+                    byte Status = minutesLeft >= 0 ? (soldedAmount < amount ? (byte)BazaarType.OnSale : (byte)BazaarType.Solded) : (byte)BazaarType.DelayExpired;
                     if (Status == (byte)BazaarType.DelayExpired)
                     {
-                        MinutesLeft = (long)(bz.BazaarItem.DateStart.AddHours(bz.BazaarItem.Duration).AddDays(IsNosbazar ? 30 : 7) - DateTime.Now).TotalMinutes;
+                        minutesLeft = (long)(bz.BazaarItem.DateStart.AddHours(bz.BazaarItem.Duration).AddDays(isNosbazar ? 30 : 7) - DateTime.Now).TotalMinutes;
                     }
                     string info = string.Empty;
                     if (bz.Item.Item.Type == InventoryType.Equipment)
@@ -3055,7 +3051,7 @@ namespace OpenNos.GameObject
 
                     if (packet.Filter == 0 || packet.Filter == Status)
                     {
-                        list += $"{bz.BazaarItem.BazaarItemId}|{bz.BazaarItem.SellerId}|{bz.Item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1 : 0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar ? 1 : 0)}|0|{bz.Item.Rare}|{bz.Item.Upgrade}|{info} ";
+                        list += $"{bz.BazaarItem.BazaarItemId}|{bz.BazaarItem.SellerId}|{bz.Item.ItemVNum}|{soldedAmount}|{amount}|{(package ? 1 : 0)}|{price}|{Status}|{minutesLeft}|{(isNosbazar ? 1 : 0)}|0|{bz.Item.Rare}|{bz.Item.Upgrade}|{info} ";
                     }
                 }
             }
@@ -3077,27 +3073,27 @@ namespace OpenNos.GameObject
                 weapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
             }
 
-            bool isPVPPrimary = false;
-            bool isPVPSecondary = false;
-            bool isPVPArmor = false;
+            bool isPvpPrimary = false;
+            bool isPvpSecondary = false;
+            bool isPvpArmor = false;
 
             if (weapon?.Item.Name.Contains(": ") == true)
             {
-                isPVPPrimary = true;
+                isPvpPrimary = true;
             }
             if (weapon2?.Item.Name.Contains(": ") == true)
             {
-                isPVPSecondary = true;
+                isPvpSecondary = true;
             }
             if (armor?.Item.Name.Contains(": ") == true)
             {
-                isPVPArmor = true;
+                isPvpArmor = true;
             }
 
             // tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph
             // talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary
             // ispvparmor herolvl desc
-            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} {(Family != null ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPVPPrimary ? 1 : 0)} {(isPVPSecondary ? 1 : 0)} {(isPVPArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
+            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} {(Family != null ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPvpPrimary ? 1 : 0)} {(isPvpSecondary ? 1 : 0)} {(isPvpArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
         }
 
         public string GenerateRest()
@@ -3333,10 +3329,10 @@ namespace OpenNos.GameObject
             DistanceRate = CharacterHelper.DistanceRate(Class, Level);
             DistanceCriticalRate = CharacterHelper.DistCriticalRate(Class, Level);
             DistanceCritical = CharacterHelper.DistCritical(Class, Level);
-            FireResistance = CharacterHelper.FireResistance(Class, Level);
-            LightResistance = CharacterHelper.LightResistance(Class, Level);
-            WaterResistance = CharacterHelper.WaterResistance(Class, Level);
-            DarkResistance = CharacterHelper.DarkResistance(Class, Level);
+            FireResistance = CharacterHelper.FireResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.FireIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
+            LightResistance = CharacterHelper.LightResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.LightIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
+            WaterResistance = CharacterHelper.WaterResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.WaterIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
+            DarkResistance = CharacterHelper.DarkResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.DarkIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
             Defence = CharacterHelper.Defence(Class, Level);
             DefenceRate = CharacterHelper.DefenceRate(Class, Level);
             ElementRate = CharacterHelper.ElementRate(Class, Level);
@@ -3752,7 +3748,8 @@ namespace OpenNos.GameObject
             int hp = 0;
             if (UseSp)
             {
-                SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                SpecialistInstance specialist =
+                    Inventory?.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
                 if (specialist != null)
                 {
                     int point = CharacterHelper.SlPoint(specialist.SlHP, 3);
@@ -3768,7 +3765,7 @@ namespace OpenNos.GameObject
                     hp = specialist.HP + specialist.SpHP * 100;
                 }
             }
-            return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp) * (multiplicator + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0] / 100D));
+            return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
         }
 
         public override void Initialize()
@@ -4028,11 +4025,10 @@ namespace OpenNos.GameObject
                     {
                         multiplicator += 0.5 + (point - 50.00) / 50.00;
                     }
-
                     mp = specialist.MP + specialist.SpHP * 100;
                 }
             }
-            return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp) * (multiplicator + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0] / 100D));
+            return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0]) * multiplicator);
         }
 
         public void NotifyRarifyResult(sbyte rare)
@@ -4947,9 +4943,11 @@ namespace OpenNos.GameObject
 
         public void AddStaticBuff(StaticBuffDTO staticBuff)
         {
-            Buff bf = new Buff(staticBuff.CardId, Session.Character.Level);
-            bf.Start = DateTime.Now;
-            bf.StaticBuff = true;
+            Buff bf = new Buff(staticBuff.CardId, Session.Character.Level)
+            {
+                Start = DateTime.Now,
+                StaticBuff = true
+            };
             Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
             if (staticBuff.RemainingTime > 0)
             {
@@ -4971,18 +4969,20 @@ namespace OpenNos.GameObject
             bf.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
             Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime))
                 .Subscribe(
-                o =>
-                {
-                    RemoveBuff(bf.Card.CardId);
-                    if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < bf.Card.TimeoutBuffChance)
+                    o =>
                     {
-                        AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
-                    }
-                });
+                        RemoveBuff(bf.Card.CardId);
+                        if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
+                            bf.Card.TimeoutBuffChance)
+                        {
+                            AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
+                        }
+                    });
 
             Session.SendPacket($"vb {bf.Card.CardId} 1 {bf.RemainingTime * 10}");
-            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 12));
-
+            Session.SendPacket(
+                Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name),
+                    12));
         }
 
         public void AddBuff(Buff indicator)
@@ -4992,39 +4992,47 @@ namespace OpenNos.GameObject
             indicator.RemainingTime = indicator.Card.Duration;
             indicator.Start = DateTime.Now;
 
-            Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
-            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 20));
+            Session.SendPacket(
+                $"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
+            Session.SendPacket(
+                Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name),
+                    20));
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100))
                 .Subscribe(
-                o =>
-                {
-                    RemoveBuff(indicator.Card.CardId);
-                    if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
+                    o =>
                     {
-                        AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
-                    }
-                });
+                        RemoveBuff(indicator.Card.CardId);
+                        if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
+                            indicator.Card.TimeoutBuffChance)
+                        {
+                            AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
+                        }
+                    });
         }
 
-        private void RemoveBuff(int Id)
+        private void RemoveBuff(int id)
         {
-            Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == Id);
+            Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
             if (indicator != null)
             {
                 if (indicator.StaticBuff)
                 {
                     Session.SendPacket($"vb {indicator.Card.CardId} 0 {indicator.Card.Duration}");
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 11));
+                    Session.SendPacket(
+                        Session.Character.GenerateSay(
+                            string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 11));
                 }
                 else
                 {
                     Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
+                    Session.SendPacket(
+                        Session.Character.GenerateSay(
+                            string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
                 }
                 Buff.Remove(indicator);
-                if (indicator.Card.BCards.Any(s => s.Type == (byte)BCardType.CardType.Move))
+                if (indicator.Card.BCards.Any(s => s.Type == (byte) BCardType.CardType.Move))
                 {
                     LastSpeedChange = DateTime.Now;
                     Session.SendPacket(GenerateCond());
@@ -5036,19 +5044,49 @@ namespace OpenNos.GameObject
         {
             lock (Buff)
             {
-                Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level < level).ToList().ForEach(s => RemoveBuff(s.Card.CardId));
+                Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level < level).ToList()
+                    .ForEach(s => RemoveBuff(s.Card.CardId));
             }
+        }
+
+        /// <summary>
+        /// Get Stuff Buffs
+        /// Useful for Stats for example
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="subtype"></param>
+        /// <param name="pvp"></param>
+        /// <param name="affectingOpposite"></param>
+        /// <returns></returns>
+        public int[] GetStuffBuff(CardType type, byte subtype, bool pvp, bool affectingOpposite = false)
+        {
+            int value1 = 0;
+            int value2 = 0;
+            foreach (BCard entry in EquipmentBCards.Where(
+                s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10))))
+            {
+                value1 += entry.FirstData;
+                value2 += entry.SecondData;
+            }
+
+            return new[] {value1, value2};
         }
 
         public int[] GetBuff(CardType type, byte subtype, bool pvp, bool affectingOpposite = false)
         {
             int value1 = 0;
             int value2 = 0;
+
             lock (Buff)
             {
                 foreach (Buff buff in Buff)
                 {
-                    foreach (BCardDTO entry in buff.Card.BCards.Concat(EquipmentBCards).Where(s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10)) && (!s.IsDelayed || (s.IsDelayed && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
+                    // THIS ONE DOES NOT FOR STUFFS
+                    foreach (BCard entry in buff.Card.BCards.Concat(EquipmentBCards).Where(
+                        s => s.Type.Equals((byte) type)
+                             && s.SubType.Equals((byte)(subtype/10)) &&
+                             (!s.IsDelayed || (s.IsDelayed &&
+                                               buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
                     {
                         value1 += entry.FirstData;
                         value2 += entry.SecondData;
@@ -5056,7 +5094,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            return new[] { value1, value2 };
+            return new[] {value1, value2};
         }
 
         #endregion
