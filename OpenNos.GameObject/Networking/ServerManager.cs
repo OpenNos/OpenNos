@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
 
         private List<DropDTO> _generalDrops;
 
-        private ThreadSafeSortedList<long, Group> _groups;
+        public ThreadSafeSortedList<long, Group> GroupsList;
 
         private long _lastGroupId;
 
@@ -118,7 +118,7 @@ namespace OpenNos.GameObject
 
         public int GoldRate { get; set; }
 
-        public List<Group> Groups => _groups.GetAllItems();
+        public List<Group> Groups => GroupsList.GetAllItems();
 
         public int HeroicStartLevel { get; set; }
 
@@ -172,7 +172,7 @@ namespace OpenNos.GameObject
 
         public void AddGroup(Group group)
         {
-            _groups[group.GroupId] = group;
+            GroupsList[group.GroupId] = group;
         }
 
         public void AskPVPRevive(long characterId)
@@ -478,7 +478,7 @@ namespace OpenNos.GameObject
                         }
                     }
 
-                    if (session.Character.Group != null)
+                    if (session.Character.Group != null && session.Character.Group.GroupType == GroupType.Group)
                     {
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
                     }
@@ -651,23 +651,39 @@ namespace OpenNos.GameObject
                 Group grp = Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId));
                 if (grp != null)
                 {
-                    if (grp.CharacterCount >= 3)
+                    if ((grp.CharacterCount >= 3 && grp.GroupType == GroupType.Group) || (grp.CharacterCount >= 2 && grp.GroupType != GroupType.Group))
                     {
                         if (grp.Characters.ElementAt(0) == session)
                         {
                             Broadcast(session, UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, string.Empty, grp.Characters.ElementAt(1).Character.CharacterId);
                         }
                         grp.LeaveGroup(session);
-                        foreach (ClientSession groupSession in grp.Characters)
+
+                        if (grp.GroupType == GroupType.Group)
                         {
-                            groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                            groupSession.SendPackets(session.Character.GeneratePst());
-                            groupSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
+                            foreach (ClientSession groupSession in grp.Characters)
+                            {
+                                groupSession.SendPacket(groupSession.Character.GeneratePinit());
+                                groupSession.SendPackets(session.Character.GeneratePst());
+                                groupSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
+                            }
+                            session.SendPacket(session.Character.GeneratePinit());
+                            session.SendPackets(session.Character.GeneratePst());
+                            Broadcast(session.Character.GeneratePidx(true));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                         }
-                        session.SendPacket(session.Character.GeneratePinit());
-                        session.SendPackets(session.Character.GeneratePst());
-                        Broadcast(session.Character.GeneratePidx(true));
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
+                        else
+                        {
+                            foreach (ClientSession groupSession in grp.Characters)
+                            {
+                                session.SendPacket(session.Character.GenerateRaid(1, true));
+                                session.SendPacket(session.Character.GenerateRaid(2, true));
+                                groupSession.SendPacket(grp.GenerateRdlst());
+                                groupSession.SendPacket(groupSession.Character.GenerateRaid(2, false));
+                            }
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
+                        }
+                       
                     }
                     else
                     {
@@ -684,7 +700,7 @@ namespace OpenNos.GameObject
                                 targetSession.SendPackets(targetSession.Character.GeneratePst());
                             }
                         }
-                        _groups.Remove(grp.GroupId);
+                        GroupsList.Remove(grp.GroupId);
                     }
                     session.Character.Group = null;
                 }
@@ -1277,7 +1293,7 @@ namespace OpenNos.GameObject
             if (disposing)
             {
                 _monsterDrops.Dispose();
-                _groups.Dispose();
+                GroupsList.Dispose();
                 _monsterSkills.Dispose();
                 _shopSkills.Dispose();
                 _shopItems.Dispose();
@@ -1327,7 +1343,7 @@ namespace OpenNos.GameObject
 
         private void LaunchEvents()
         {
-            _groups = new ThreadSafeSortedList<long, Group>();
+            GroupsList = new ThreadSafeSortedList<long, Group>();
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
             {

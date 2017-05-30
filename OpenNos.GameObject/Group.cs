@@ -17,6 +17,7 @@ using OpenNos.Domain;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.GameObject
 {
@@ -140,6 +141,10 @@ namespace OpenNos.GameObject
         public void LeaveGroup(ClientSession session)
         {
             session.Character.Group = null;
+            if(IsLeader(session) && GroupType != GroupType.Group && Characters.Count > 1)
+            {
+                Characters.ForEach(s=> s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TEAM_LEADER_CHANGE"), Characters.ElementAt(0).Character?.Name), 0)));
+            }
             Characters.RemoveAll(s => s?.Character.CharacterId == session.Character.CharacterId);
         }
 

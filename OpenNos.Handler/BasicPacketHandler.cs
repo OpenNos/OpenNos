@@ -361,10 +361,7 @@ namespace OpenNos.Handler
         /// <param name="rdPacket"></param>
         public void RaidManage(RdPacket rdPacket)
         {
-            ClientSession sender = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
-            if (sender.Character?.Group == null)
-                return;
-
+            Group grp;
             switch (rdPacket.Type)
             {
                 case 1://Join
@@ -372,25 +369,58 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId });
+                    if (rdPacket.Parameter == null && ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId)?.Character?.Group == null)
+                    {
+                        GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId });
+                    }
+                    else
+                    {
+                        GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId });
+                    }
                     break;
 
                 case 2://leave
+                    ClientSession sender = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
+                    if (sender.Character?.Group == null)
+                        return;
 
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEFT_RAID")), 0));
-                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    if (Session?.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
                     {
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
                     }
-                    Group grp = Session.Character.Group;
+                    grp = sender.Character?.Group;
+                    Session.SendPacket(Session.Character.GenerateRaid(1, true));
+                    Session.SendPacket(Session.Character.GenerateRaid(2, true));
                     grp.LeaveGroup(Session);
                     grp.Characters.ForEach(s =>
                     {
                         s.SendPacket(grp.GenerateRdlst());
                         s.SendPacket(s.Character.GenerateRaid(2, false));
                     });
-                    Session.SendPacket(Session.Character.GenerateRaid(1, true));
-                    Session.SendPacket(Session.Character.GenerateRaid(2, true));
+                    break;
+
+                case 4://disolve
+
+                    if (Session.Character.Group != null && Session.Character.Group.IsLeader(Session))
+                    {
+                        grp = Session.Character.Group;
+
+                        ClientSession[] grpmembers = new ClientSession[3];
+                        grp.Characters.CopyTo(grpmembers);
+                        foreach (ClientSession targetSession in grpmembers)
+                        {
+                            if (targetSession != null)
+                            {
+                                targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
+                                targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
+                                targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_DISOLVED"), 0));
+                                grp.LeaveGroup(targetSession);
+                            }
+                        }
+                        ServerManager.Instance.GroupsList.Remove(grp.GroupId);
+                    }
+
                     break;
             }
         }

@@ -495,7 +495,7 @@ namespace OpenNos.GameObject
                         Pos = 1
                     }
                 };
-            if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session)))
+            if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session) && s.GroupType == GroupType.Group))
             {
                 Session.CurrentMapInstance?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
             }
@@ -551,7 +551,8 @@ namespace OpenNos.GameObject
                     }
                     if (Group != null && (Group.GroupType == GroupType.Team || Group.GroupType == GroupType.BigTeam || Group.GroupType == GroupType.GiantTeam))
                     {
-                        Session.CurrentMapInstance?.Broadcast(GenerateEff(830 + (Group.IsLeader(Session) ? 1 : 0)));
+                        Session.CurrentMapInstance?.Broadcast(Session, GenerateEff(828 + (Group.IsLeader(Session) ? 1 : 0)), ReceiverType.AllExceptGroup);
+                        Session.CurrentMapInstance?.Broadcast(Session, GenerateEff(830 + (Group.IsLeader(Session) ? 1 : 0)), ReceiverType.Group);
                     }
                     Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateEff(3007)));
                     LastEffect = DateTime.Now;
@@ -1934,7 +1935,7 @@ namespace OpenNos.GameObject
                 }
                 fairy = Inventory.LoadBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
             }
-            return $"in 1 {(Authority == AuthorityType.Moderator ? "[Support]" + Name : Name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {Group?.GroupId ?? -1} {(fairy != null ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {Family?.FamilyId ?? -1} {Family?.Name ?? "-"} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
+            return $"in 1 {(Authority == AuthorityType.Moderator ? "[Support]" + Name : Name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (Group?.GroupId ?? -1) : -1)} {(fairy != null ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {Family?.FamilyId ?? -1} {Family?.Name ?? "-"} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
         }
 
         public string GenerateInvisible()
@@ -2289,7 +2290,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePinit()
         {
-            Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId));
+            Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId) && s.GroupType == GroupType.Group);
             List<Mate> mates = Mates;
             int i = 0;
             string str = string.Empty;
@@ -3749,7 +3750,7 @@ namespace OpenNos.GameObject
             if (UseSp)
             {
                 SpecialistInstance specialist =
-                    Inventory?.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
+                    Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (specialist != null)
                 {
                     int point = CharacterHelper.SlPoint(specialist.SlHP, 3);
@@ -4932,7 +4933,7 @@ namespace OpenNos.GameObject
                     break;
                 case 0:
                 case 2:
-                    result = $"raid {Type} {(Exit ? "- 1" : $"{CharacterId}")}";
+                    result = $"raid {(Exit || Group.IsLeader(Session) ? 2 : 0)} {(Exit ? "-1" : $"{CharacterId}")}";
                     break;
                 case 3:
 
@@ -5032,7 +5033,7 @@ namespace OpenNos.GameObject
                             string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
                 }
                 Buff.Remove(indicator);
-                if (indicator.Card.BCards.Any(s => s.Type == (byte) BCardType.CardType.Move))
+                if (indicator.Card.BCards.Any(s => s.Type == (byte)BCardType.CardType.Move))
                 {
                     LastSpeedChange = DateTime.Now;
                     Session.SendPacket(GenerateCond());
@@ -5069,7 +5070,7 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            return new[] {value1, value2};
+            return new[] { value1, value2 };
         }
 
         public int[] GetBuff(CardType type, byte subtype, bool pvp, bool affectingOpposite = false)
@@ -5083,8 +5084,8 @@ namespace OpenNos.GameObject
                 {
                     // THIS ONE DOES NOT FOR STUFFS
                     foreach (BCard entry in buff.Card.BCards.Concat(EquipmentBCards).Where(
-                        s => s.Type.Equals((byte) type)
-                             && s.SubType.Equals((byte)(subtype/10)) &&
+                        s => s.Type.Equals((byte)type)
+                             && s.SubType.Equals((byte)(subtype / 10)) &&
                              (!s.IsDelayed || (s.IsDelayed &&
                                                buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
                     {
@@ -5094,7 +5095,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            return new[] {value1, value2};
+            return new[] { value1, value2 };
         }
 
         #endregion

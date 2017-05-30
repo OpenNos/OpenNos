@@ -122,7 +122,7 @@ namespace OpenNos.Handler
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
 
-            if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
+            if (Session.Character.Group != null && Session.Character.Group.GroupType == GroupType.Group && Session.Character.Group.CharacterCount == 3)
             {
                 foreach (ClientSession session in Session.Character.Group.Characters)
                 {
