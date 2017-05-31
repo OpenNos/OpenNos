@@ -45,7 +45,7 @@ namespace OpenNos.DAL.Mock
             return Container.SingleOrDefault(m => m.MapMonsterId == mapMonsterId);
         }
 
-        public IEnumerable<MapMonsterDTO> LoadFromMap(short mapId)
+        public IEnumerable<MapMonsterDTO> LoadFromMap(int mapId)
         {
             return Container.Where(m => m.MapId == mapId);
         }

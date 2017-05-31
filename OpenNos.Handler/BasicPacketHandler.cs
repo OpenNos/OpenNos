@@ -758,7 +758,7 @@ namespace OpenNos.Handler
                                 }
                                 short mapy = session.Character.PositionY;
                                 short mapx = session.Character.PositionX;
-                                short mapId = session.Character.MapInstance.Map.MapId;
+                                int mapId = session.Character.MapInstance.Map.MapId;
 
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
                                 Session.Character.Inventory.RemoveItemAmount(vnumToUse);

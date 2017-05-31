@@ -82,7 +82,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public MapDTO LoadById(short mapId)
+        public MapDTO LoadById(int mapId)
         {
             try
             {

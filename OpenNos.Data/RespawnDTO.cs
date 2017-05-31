@@ -20,7 +20,7 @@ namespace OpenNos.Data
 
         public long CharacterId { get; set; }
 
-        public short MapId { get; set; }
+        public int MapId { get; set; }
 
         public long RespawnId { get; set; }
 

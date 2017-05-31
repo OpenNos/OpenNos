@@ -56,7 +56,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    short mapId = respawnMapType.DefaultMapId;
+                    int mapId = respawnMapType.DefaultMapId;
                     RespawnMapType entity = context.RespawnMapType.FirstOrDefault(c => c.DefaultMapId.Equals(mapId));
 
                     if (entity == null)
@@ -93,7 +93,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public RespawnMapTypeDTO LoadByMapId(short mapId)
+        public RespawnMapTypeDTO LoadByMapId(int mapId)
         {
             try
             {

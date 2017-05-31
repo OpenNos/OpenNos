@@ -116,7 +116,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<MapMonsterDTO> LoadFromMap(short mapId)
+        public IEnumerable<MapMonsterDTO> LoadFromMap(int mapId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {

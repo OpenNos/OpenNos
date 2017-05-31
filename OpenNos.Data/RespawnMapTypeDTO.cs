@@ -18,7 +18,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public short DefaultMapId { get; set; }
+        public int DefaultMapId { get; set; }
 
         public short DefaultX { get; set; }
 

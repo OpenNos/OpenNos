@@ -80,7 +80,7 @@ namespace OpenNos.Data
 
         public long LevelXp { get; set; }
 
-        public short MapId { get; set; }
+        public int MapId { get; set; }
 
         public short MapX { get; set; }
 

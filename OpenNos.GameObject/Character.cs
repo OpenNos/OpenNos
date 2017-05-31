@@ -4331,7 +4331,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SetRespawnPoint(short mapId, short mapX, short mapY)
+        public void SetRespawnPoint(int mapId, short mapX, short mapY)
         {
             if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.Map.MapTypes.Any())
             {
@@ -4354,7 +4354,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SetReturnPoint(short mapId, short mapX, short mapY)
+        public void SetReturnPoint(int mapId, short mapX, short mapY)
         {
             if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.Map.MapTypes.Any())
             {

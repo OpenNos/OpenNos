@@ -27,7 +27,7 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<MapDTO> LoadAll();
 
-        MapDTO LoadById(short mapId);
+        MapDTO LoadById(int mapId);
 
         #endregion
     }

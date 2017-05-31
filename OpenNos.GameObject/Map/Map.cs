@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public Map(short mapId, byte[] data)
+        public Map(int mapId, byte[] data)
         {
             _random = new Random();
             MapId = mapId;
@@ -75,7 +75,7 @@ namespace OpenNos.GameObject
 
         public GridPos[,] Grid { get; set; }
 
-        public short MapId { get; set; }
+        public int MapId { get; set; }
 
         public List<MapTypeDTO> MapTypes { get; }
 

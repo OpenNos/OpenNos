@@ -30,7 +30,7 @@ namespace OpenNos.Data
 
         public bool IsSitting { get; set; }
 
-        public short MapId { get; set; }
+        public int MapId { get; set; }
 
         public int MapNpcId { get; set; }
 

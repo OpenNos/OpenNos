@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static List<Portal> GenerateMinilandEntryPortals(short entryMap, Guid exitMapinstanceId)
+        public static List<Portal> GenerateMinilandEntryPortals(int entryMap, Guid exitMapinstanceId)
         {
             List<Portal> list = new List<Portal>();
 

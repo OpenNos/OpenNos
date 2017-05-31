@@ -24,7 +24,7 @@ namespace OpenNos.DAL.EF
         public virtual Map Map { get; set; }
 
         [Key, Column(Order = 0)]
-        public short MapId { get; set; }
+        public int MapId { get; set; }
 
         public virtual MapType MapType { get; set; }
 

@@ -65,7 +65,7 @@ namespace OpenNos.GameObject
 
         private long _lastRaidId;
 
-        private ThreadSafeSortedList<short, List<MapNpc>> _mapNpcs;
+        private ThreadSafeSortedList<int, List<MapNpc>> _mapNpcs;
 
         private ThreadSafeSortedList<short, List<DropDTO>> _monsterDrops;
 
@@ -334,7 +334,7 @@ namespace OpenNos.GameObject
             SpinWait.SpinUntil(() => !InBazaarRefreshMode);
         }
 
-        public void ChangeMap(long id, short? MapId = null, short? mapX = null, short? mapY = null)
+        public void ChangeMap(long id, int? MapId = null, short? mapX = null, short? mapY = null)
         {
             ClientSession session = GetSessionByCharacterId(id);
             if (session?.Character != null)
@@ -517,9 +517,9 @@ namespace OpenNos.GameObject
             SpinWait.SpinUntil(() => !InFamilyRefreshMode);
         }
 
-        public MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
+        public MapInstance GenerateMapInstance(int mapId, MapInstanceType type, InstanceBag mapclock)
         {
-            Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
+            Map map = _maps.FirstOrDefault(m => m.MapId.Equals(mapId));
             if (map != null)
             {
                 Guid guid = Guid.NewGuid();
@@ -548,9 +548,9 @@ namespace OpenNos.GameObject
             return _skills;
         }
 
-        public Guid GetBaseMapInstanceIdByMapId(short MapId)
+        public Guid GetBaseMapInstanceIdByMapId(int mapId)
         {
-            return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == MapId && s.Value.MapInstanceType == MapInstanceType.BaseMapInstance).Key;
+            return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == mapId && s.Value.MapInstanceType == MapInstanceType.BaseMapInstance).Key;
         }
 
         public List<DropDTO> GetDropsByMonsterVNum(short monsterVNum)
@@ -901,7 +901,7 @@ namespace OpenNos.GameObject
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
 
             // intialize mapnpcs
-            _mapNpcs = new ThreadSafeSortedList<short, List<MapNpc>>();
+            _mapNpcs = new ThreadSafeSortedList<int, List<MapNpc>>();
             Parallel.ForEach(DAOFactory.MapNpcDAO.LoadAll().GroupBy(t => t.MapId), mapNpcGrouping =>
             {
                 _mapNpcs[mapNpcGrouping.Key] = mapNpcGrouping.Select(t => t as MapNpc).ToList();
@@ -913,7 +913,7 @@ namespace OpenNos.GameObject
                 int i = 0;
                 int monstercount = 0;
                 var mapPartitioner = Partitioner.Create(DAOFactory.MapDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
-                ThreadSafeSortedList<short, Map> _mapList = new ThreadSafeSortedList<short, Map>();
+                ThreadSafeSortedList<int, Map> _mapList = new ThreadSafeSortedList<int, Map>();
                 Parallel.ForEach(mapPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 8 }, map =>
                 {
                     Guid guid = Guid.NewGuid();
