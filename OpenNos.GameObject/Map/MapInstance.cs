@@ -272,17 +272,7 @@ namespace OpenNos.GameObject
 
             Portals.ForEach(s => packets.Add(s.GenerateGp()));
             ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList().ForEach(s => packets.Add(s.GenerateWp()));
-            ServerManager.Instance.Raids.Where(s =>s.MapId == Map.MapId).ToList().ForEach(s =>
-            {
-                Portal port = new Portal()
-                {
-                    Type = (byte)PortalType.Raid,
-                    SourceMapId = s.MapId,
-                    SourceX = s.PositionX,
-                    SourceY = s.PositionY
-                };
-                packets.Add(port.GenerateGp());
-            });
+           
             Monsters.ForEach(s => packets.Add(s.GenerateIn()));
             Npcs.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateNPCShopOnMap());

@@ -62,8 +62,6 @@ namespace OpenNos.GameObject
 
         private long _lastGroupId;
 
-        private long _lastRaidId;
-
         private ThreadSafeSortedList<short, List<MapNpc>> _mapNpcs;
 
         private ThreadSafeSortedList<short, List<DropDTO>> _monsterDrops;
@@ -582,12 +580,7 @@ namespace OpenNos.GameObject
             _lastGroupId++;
             return _lastGroupId;
         }
-
-        public long GetNextRaidId()
-        {
-            _lastRaidId++;
-            return _lastRaidId;
-        }
+        
 
         public NpcMonster GetNpc(short npcVNum)
         {
@@ -1392,7 +1385,6 @@ namespace OpenNos.GameObject
             CommunicationServiceClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
             CommunicationServiceClient.Instance.ShutdownEvent += OnShutdown;
             _lastGroupId = 1;
-            _lastRaidId = 1;
         }
 
         private void LoadBazaar()
@@ -1456,6 +1448,14 @@ namespace OpenNos.GameObject
                     {
                         si.LoadGlobals();
                         Raids.Add(si);
+                        Portal port = new Portal()
+                        {
+                            Type = (byte)PortalType.Raid,
+                            SourceMapId = si.MapId,
+                            SourceX = si.PositionX,
+                            SourceY = si.PositionY
+                        };
+                        map.Value.Portals.Add(port);
                     }
                 }
             }

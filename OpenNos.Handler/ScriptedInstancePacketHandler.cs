@@ -102,7 +102,7 @@ namespace OpenNos.Handler
             {
                 if (treqPacket.StartPress == 1 || treqPacket.RecordPress == 1)
                 {
-                    timespace.LoadScript();
+                    timespace.LoadScript(MapInstanceType.TimeSpaceInstance);
                     if (timespace.FirstMap == null) return;
                     foreach (var i in timespace.RequieredItems)
                     {
@@ -131,6 +131,23 @@ namespace OpenNos.Handler
                 {
                     Session.SendPacket(timespace.GenerateRbr());
                 }
+            }
+        }
+        /// <summary>
+        /// mkraid packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void GenerateRaid(MkraidPacket packet)
+        {
+            if (Session.Character.Group?.Raid != null && Session.Character.Group.IsLeader(Session))
+            {
+                Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
+                if (Session.Character.Group.Raid.FirstMap == null) return;
+                Session.Character.Group.Characters.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance).ToList().ForEach(
+                session=>
+                {
+                    ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.Group.Raid.FirstMap.MapInstanceId, Session.Character.Group.Raid.StartX, Session.Character.Group.Raid.StartY);
+                });
             }
         }
 
@@ -235,6 +252,6 @@ namespace OpenNos.Handler
             }
         }
 
-         #endregion
+        #endregion
     }
 }

@@ -374,7 +374,7 @@ namespace OpenNos.Handler
                     {
                         GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId });
                     }
-                    else if(Session.Character.Group == null)
+                    else if (Session.Character.Group == null)
                     {
                         GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId });
                     }
@@ -442,14 +442,14 @@ namespace OpenNos.Handler
                                 grp.LeaveGroup(targetSession);
                             }
                         }
-                        ServerManager.Instance.GroupList.RemoveAll(s=>s.GroupId == grp.GroupId);
+                        ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
                         ServerManager.Instance.GroupsThreadSafe.Remove(grp.GroupId);
                     }
 
                     break;
             }
         }
-       
+
         /// <summary>
         /// rlPacket packet
         /// </summary>
@@ -463,7 +463,7 @@ namespace OpenNos.Handler
                     {
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
                     }
-                    else if(Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && Session.Character.Group.IsLeader(Session))
+                    else if (Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && Session.Character.Group.IsLeader(Session))
                     {
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(2));
                     }
@@ -475,14 +475,14 @@ namespace OpenNos.Handler
                     {
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(0));
                     }
-                break;
+                    break;
                 case 1:
-                    if(Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && !ServerManager.Instance.GroupList.Any(s=>s.GroupId == Session.Character.Group.GroupId))
+                    if (Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && !ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
                     {
                         ServerManager.Instance.GroupList.Add(Session.Character.Group);
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_REGISTERED")));
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
-                        ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {(string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"),Session.Character.Name))}",ReceiverType.AllExceptGroup);
+                        ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {(string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"), Session.Character.Name))}", ReceiverType.AllExceptGroup);
                     }
                     break;
                 case 2:
@@ -495,7 +495,7 @@ namespace OpenNos.Handler
                     break;
                 case 3:
                     ClientSession cl = ServerManager.Instance.GetSessionByCharacterName(rlPacket.CharacterName);
-                    if(cl!=null)
+                    if (cl != null)
                     {
                         cl.Character.GroupSentRequestCharacterIds.Add(Session.Character.CharacterId);
                         GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Accepted, CharacterId = cl.Character.CharacterId });
@@ -641,7 +641,7 @@ namespace OpenNos.Handler
                         else
                         {
                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RAID_JOIN"), Session.Character.Name), 10));
-                            if(Session.Character.Level > currentGroup.Raid?.LevelMaximum || Session.Character.Level < currentGroup.Raid?.LevelMinimum)
+                            if (Session.Character.Level > currentGroup.Raid?.LevelMaximum || Session.Character.Level < currentGroup.Raid?.LevelMinimum)
                             {
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RAID_LEVEL_INCORRECT"), 10));
                                 if (Session.Character.Level >= currentGroup.Raid?.LevelMaximum + 10 /* && AlreadySuccededToday*/)
@@ -649,7 +649,7 @@ namespace OpenNos.Handler
                                     //modal 1 ALREADY_SUCCEDED_AS_ASSISTANT
                                 }
                             }
-                        
+
                             currentGroup.JoinGroup(Session);
                             Session.SendPacket(Session.Character.GenerateRaid(1, false));
                             currentGroup.Characters.ForEach(s =>
@@ -1330,7 +1330,15 @@ namespace OpenNos.Handler
                         case (sbyte)PortalType.Effect:
                         case (sbyte)PortalType.ShopTeleport:
                             break;
-
+                        case (sbyte)PortalType.Raid:
+                            if (Session.Character.Group?.Raid != null)
+                            {
+                                if (Session.Character.Group.IsLeader(Session))
+                                {
+                                    Session.SendPacket($"qna #mkraid^0^275 {Language.Instance.GetMessageFromKey("DO_YOU_WANT_RAID")}");
+                                }
+                            }
+                            return;
                         default:
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;

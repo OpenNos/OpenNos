@@ -61,6 +61,10 @@ namespace OpenNos.GameObject
 
         public int Reputation { get; set; }
 
+        public short StartX { get; set; }
+
+        public short StartY { get; set; }
+
         public List<Gift> RequieredItems { get; set; }
 
         public int RoomAmount { get; internal set; }
@@ -146,6 +150,14 @@ namespace OpenNos.GameObject
                 int.TryParse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value, out reputation);
                 Reputation = reputation;
 
+                short startx = 0;
+                short.TryParse(def.SelectSingleNode("StartX")?.Attributes["Value"].Value, out startx);
+                StartX = startx;
+
+                short starty = 0;
+                short.TryParse(def.SelectSingleNode("StartY")?.Attributes["Value"].Value, out starty);
+                StartY = starty;
+
                 byte lives;
                 byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out lives);
                 Lives = lives;
@@ -180,7 +192,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void LoadScript()
+        public void LoadScript(MapInstanceType mapinstancetype)
         {
             XmlDocument doc = new XmlDocument();
             if (Script != null)
@@ -194,9 +206,15 @@ namespace OpenNos.GameObject
                     if (variable.Name == "CreateMap")
                     {
                         _instancebag.Lives = Lives;
-                        MapInstance newmap = ServerManager.Instance.GenerateMapInstance(short.Parse(variable?.Attributes["VNum"].Value), MapInstanceType.TimeSpaceInstance, _instancebag);
-                        newmap.MapIndexX = byte.Parse(variable?.Attributes["IndexX"].Value);
-                        newmap.MapIndexY = byte.Parse(variable?.Attributes["IndexY"].Value);
+                        MapInstance newmap = ServerManager.Instance.GenerateMapInstance(short.Parse(variable?.Attributes["VNum"].Value), mapinstancetype, _instancebag);
+                        byte indexx;
+                        byte.TryParse(variable?.Attributes["IndexX"]?.Value, out indexx);
+                        newmap.MapIndexX = indexx;
+
+                        byte indexy;
+                        byte.TryParse(variable?.Attributes["IndexY"]?.Value, out indexy);
+                        newmap.MapIndexY = indexy;
+
                         if (!_mapinstancedictionary.ContainsKey(int.Parse(variable?.Attributes["Map"].Value)))
                         {
                             _mapinstancedictionary.Add(int.Parse(variable?.Attributes["Map"].Value), newmap);
@@ -303,12 +321,7 @@ namespace OpenNos.GameObject
                 {
                     mapinstance = parentmapinstance;
                 }
-                MapCell cell = mapinstance?.Map?.GetRandomPosition();
-                if (cell != null && (positionX == -1 || positionY == -1))
-                {
-                    positionX = cell.X;
-                    positionY = cell.Y;
-                }
+                MapCell cell;
                 switch (mapevent.Name)
                 {
                     //master events
@@ -339,6 +352,12 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SummonMonster":
+                        cell = mapinstance?.Map?.GetRandomPosition();
+                        if (cell != null && (positionX == -1 || positionY == -1))
+                        {
+                            positionX = cell.X;
+                            positionY = cell.Y;
+                        }
                         MonsterAmount++;
                         List<MonsterToSummon> lst = new List<MonsterToSummon>();
                         lst.Add(new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile));
@@ -351,6 +370,12 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SummonNpc":
+                        cell = mapinstance?.Map?.GetRandomPosition();
+                        if (cell != null && (positionX == -1 || positionY == -1))
+                        {
+                            positionX = cell.X;
+                            positionY = cell.Y;
+                        }
                         NpcAmount++;
                         List<NpcToSummon> lstn = new List<NpcToSummon>();
                         lstn.Add(new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, GenerateEvent(mapevent, mapinstance), isMate, isProtected));
@@ -358,6 +383,12 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SpawnButton":
+                        cell = mapinstance?.Map?.GetRandomPosition();
+                        if (cell != null && (positionX == -1 || positionY == -1))
+                        {
+                            positionX = cell.X;
+                            positionY = cell.Y;
+                        }
                         MapButton button = new MapButton(
                             int.Parse(mapevent?.Attributes["Id"].Value),
                             positionX,

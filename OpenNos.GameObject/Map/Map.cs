@@ -132,9 +132,9 @@ namespace OpenNos.GameObject
         public MapCell GetRandomPosition()
         {
             List<MapCell> cells = new List<MapCell>();
-            for (short y = 0; y <= XLength; y++)
+            for (short y = 0; y <= YLength; y++)
             {
-                for (short x = 0; x <= YLength; x++)
+                for (short x = 0; x <= XLength; x++)
                 {
                     if (!IsBlockedZone(x, y))
                     {
