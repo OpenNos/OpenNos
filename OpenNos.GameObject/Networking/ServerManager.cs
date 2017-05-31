@@ -679,7 +679,7 @@ namespace OpenNos.GameObject
                                 session.SendPacket(session.Character.GenerateRaid(1, true));
                                 session.SendPacket(session.Character.GenerateRaid(2, true));
                                 groupSession.SendPacket(grp.GenerateRdlst());
-                                groupSession.SendPacket(groupSession.Character.GenerateRaid(2, false));
+                                groupSession.SendPacket(groupSession.Character.GenerateRaid(0, false));
                             }
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
                         }

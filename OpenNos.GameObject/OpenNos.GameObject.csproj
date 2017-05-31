@@ -136,6 +136,7 @@
     <Compile Include="Packets\ClientPackets\NcifPacket.cs" />
     <Compile Include="Packets\ClientPackets\PdtsePacket.cs" />
     <Compile Include="Packets\ClientPackets\QSetPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RlPacket.cs" />
     <Compile Include="Packets\ClientPackets\ReqInfoPacket.cs" />
     <Compile Include="Packets\ClientPackets\RequestNpcPacket.cs" />
     <Compile Include="Packets\ClientPackets\RevivalPacket.cs" />

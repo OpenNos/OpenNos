@@ -87,6 +87,8 @@ namespace OpenNos.GameObject
                         group.JoinGroup(session.Character.CharacterId);
                         ServerManager.Instance.AddGroup(group);
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 0));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 10));
+                        session.SendPacket(session.Character.GenerateRaid(2, false));
                         session.SendPacket(session.Character.GenerateRaid(0, false));
                         session.SendPacket(session.Character.GenerateRaid(1, false));
                         session.SendPacket(group.GenerateRdlst());

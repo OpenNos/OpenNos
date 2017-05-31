@@ -365,11 +365,11 @@ namespace OpenNos.Handler
             switch (rdPacket.Type)
             {
                 case 1://Join
-                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    if (Session.Character.Group == null || Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                     {
                         return;
                     }
-                    if (rdPacket.Parameter == null && ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId)?.Character?.Group == null)
+                    if (rdPacket.Parameter == null && ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId)?.Character?.Group == null && Session.Character.Group.IsLeader(Session))
                     {
                         GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId });
                     }
@@ -396,7 +396,7 @@ namespace OpenNos.Handler
                     grp.Characters.ForEach(s =>
                     {
                         s.SendPacket(grp.GenerateRdlst());
-                        s.SendPacket(s.Character.GenerateRaid(2, false));
+                        s.SendPacket(s.Character.GenerateRaid(0, false));
                     });
                     break;
 
@@ -422,6 +422,25 @@ namespace OpenNos.Handler
                     }
 
                     break;
+            }
+        }
+       
+        /// <summary>
+        /// rlPacket packet
+        /// </summary>
+        /// <param name="rdPacket"></param>
+        public void RaidListRegister(RlPacket rlPacket)
+        {
+            switch (rlPacket.Type)
+            {
+                case 1:
+
+                    break;
+
+                case 2:
+
+                    break;
+
             }
         }
 
@@ -479,8 +498,15 @@ namespace OpenNos.Handler
                             Session.Character.GroupSentRequestCharacterIds.Add(targetSession.Character.CharacterId);
                             if (Session.Character.Group == null || Session.Character.Group.GroupType == GroupType.Group)
                             {
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), targetSession.Character.Name)));
-                                targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"));
+                                if (targetSession?.Character?.Group == null || targetSession?.Character?.Group.GroupType == GroupType.Group)
+                                {
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), targetSession.Character.Name)));
+                                    targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"));
+                                }
+                                else
+                                {
+                                    //can't invite raid member
+                                }
                             }
                             else
                             {
@@ -562,7 +588,8 @@ namespace OpenNos.Handler
                             currentGroup.Characters.ForEach(s =>
                             {
                                 s.SendPacket(currentGroup.GenerateRdlst());
-                                s.SendPacket(s.Character.GenerateRaid(2, false));
+                                s.SendPacket(s.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("JOIN_TEAM"), Session.Character.Name), 10));
+                                s.SendPacket(s.Character.GenerateRaid(0, false));
                             });
                         }
                     }

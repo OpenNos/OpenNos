@@ -4932,8 +4932,11 @@ namespace OpenNos.GameObject
                     result = $"raid 1 {(Exit ? 0 : 1)}";
                     break;
                 case 0:
+                    result = $"raid 0";
+                    Group?.Characters?.ForEach(s=> { result += $" {s.Character?.CharacterId}"; });
+                    break;
                 case 2:
-                    result = $"raid {(Exit || Group.IsLeader(Session) ? 2 : 0)} {(Exit ? "-1" : $"{CharacterId}")}";
+                    result = $"raid 2 {(Exit ? "-1" : $"{CharacterId}")}";
                     break;
                 case 3:
 
