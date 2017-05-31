@@ -23,7 +23,6 @@ namespace OpenNos.Core
 
         public LoginEncryption() : base(false)
         {
-            // do nothing
         }
 
         #endregion
@@ -97,33 +96,23 @@ namespace OpenNos.Core
             }
         }
 
-        public override string DecryptCustomParameter(byte[] data)
-        {
-            throw new NotImplementedException();
-        }
-
         public override byte[] Encrypt(string packet)
         {
             try
             {
                 packet += " ";
-                byte[] tmp = Encoding.UTF8.GetBytes(packet);
+                byte[] encrypted = Encoding.UTF8.GetBytes(packet);
                 for (int i = 0; i < packet.Length; i++)
                 {
-                    tmp[i] = Convert.ToByte(packet[i] + 15);
+                    encrypted[i] = Convert.ToByte(packet[i] + 15);
                 }
-                tmp[tmp.Length - 1] = 25;
-                return tmp;
+                encrypted[encrypted.Length - 1] = 25;
+                return encrypted;
             }
             catch
             {
                 return new byte[0];
             }
-        }
-
-        public override string GameSessionDecrypt(byte[] packet, int sessionId = 0)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

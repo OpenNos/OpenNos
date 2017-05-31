@@ -361,21 +361,14 @@ namespace OpenNos.GameObject
                 }
 
                 string[] packetConcatenated = null;
-                if (_waitForPacketsAmount.HasValue)
+                string decrypted = _encryptor.Decrypt(packetData, SessionId);
+                if (!_encryptor.HasCustomParameter)
                 {
-                    packetConcatenated = _encryptor.GameSessionDecrypt(packetData, SessionId).Split('\n');
+                    packetConcatenated = decrypted.Split(new[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries);
                 }
                 else
                 {
-                    string tmp = _encryptor.Decrypt(packetData, SessionId);
-                    if (tmp.Contains((char)0xFF))
-                    {
-                        packetConcatenated = _encryptor.Decrypt(packetData, SessionId).Split(new[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries);
-                    }
-                    else
-                    {
-                        packetConcatenated = _encryptor.Decrypt(packetData, SessionId).Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    }
+                    packetConcatenated = decrypted.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 }
                 foreach (string packet in packetConcatenated)
                 {

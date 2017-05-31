@@ -26,21 +26,10 @@ namespace OpenNos.Test
             return encoding.GetString(data);
         }
 
-        public override string DecryptCustomParameter(byte[] data)
-        {
-            UTF8Encoding encoding = new UTF8Encoding();
-            return encoding.GetString(data);
-        }
-
         public override byte[] Encrypt(string data)
         {
             UTF8Encoding encoding = new UTF8Encoding();
             return encoding.GetBytes(data);
-        }
-
-        public override string GameSessionDecrypt(byte[] data, int sessionId = 0)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

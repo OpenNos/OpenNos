@@ -22,10 +22,10 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.Import.Console
 {
+    // TODO: REVIEW TO USE PROPER OLD SCHOOL STUFF!!!
     public class ImportFactory
     {
         #region Members
