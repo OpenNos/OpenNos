@@ -1680,7 +1680,7 @@ namespace OpenNos.Handler
             IEnumerable<PenaltyLogDTO> warning = DAOFactory.PenaltyLogDAO.LoadByAccount(Session.Character.AccountId).Where(p => p.Penalty == PenaltyType.Warning);
             if (warning != null)
             {
-                Session.SendPacket(string.Format(Language.Instance.GetMessageFromKey("WARNING_INFO"), warning.Count()));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(string.Format(Language.Instance.GetMessageFromKey("WARNING_INFO"), warning.Count())));
             }
 
             // finfo - friends info

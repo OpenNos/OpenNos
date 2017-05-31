@@ -37,7 +37,7 @@ namespace OpenNos.World
                 string decrypt = string.Empty;
                 for (int i = 0; i < str.Length; i++)
                 {
-                    decrypt += Convert.ToChar(str[i] - (0x40 + sessionId));
+                    decrypt += Convert.ToChar(str[i] - (0x40 + (byte)sessionId));
                 }
                 return decrypt == "0\n" ? string.Empty : decrypt;
             }

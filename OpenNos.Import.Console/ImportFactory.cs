@@ -1229,8 +1229,8 @@ namespace OpenNos.Import.Console
                 SourceY = 8,
                 DestinationMapId = 1,
                 Type = -1,
-                DestinationX = 48,
-                DestinationY = 132,
+                DestinationX = 110,
+                DestinationY = 124,
                 IsDisabled = false
             };
             DAOFactory.PortalDAO.Insert(minilandPortal);
@@ -1377,8 +1377,8 @@ namespace OpenNos.Import.Console
                 {
                     RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                     DefaultMapId = 1,
-                    DefaultX = 80,
-                    DefaultY = 116,
+                    DefaultX = 13,
+                    DefaultY = 121,
                     Name = "Default"
                 },
                 new RespawnMapTypeDTO

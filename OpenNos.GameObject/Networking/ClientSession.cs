@@ -347,7 +347,11 @@ namespace OpenNos.GameObject
             {
                 if (_encryptor.HasCustomParameter && SessionId == 0)
                 {
-                    string packet = Convert.ToChar(packetData[0] - 0x0F).ToString();
+                    string packet = string.Empty;
+                    for (int i = 0; i < packetData.Length; i++)
+                    {
+                        packet += Convert.ToChar(packetData[i] - 0x0F).ToString();
+                    }
                     if (int.TryParse(packet, out int sessionId))
                     {
                         SessionId = sessionId;
