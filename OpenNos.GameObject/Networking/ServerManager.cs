@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
 
         private List<DropDTO> _generalDrops;
 
-        public ThreadSafeSortedList<long, Group> GroupsList;
+        public ThreadSafeSortedList<long, Group> GroupsThreadSafe;
 
         private long _lastGroupId;
 
@@ -118,7 +118,7 @@ namespace OpenNos.GameObject
 
         public int GoldRate { get; set; }
 
-        public List<Group> Groups => GroupsList.GetAllItems();
+        public List<Group> Groups => GroupsThreadSafe.GetAllItems();
 
         public int HeroicStartLevel { get; set; }
 
@@ -166,13 +166,15 @@ namespace OpenNos.GameObject
 
         public List<ScriptedInstance> Raids { get; set; }
 
+        public List<Group> GroupList { get; set; } = new List<Group>();
+
         #endregion
 
         #region Methods
 
         public void AddGroup(Group group)
         {
-            GroupsList[group.GroupId] = group;
+            GroupsThreadSafe[group.GroupId] = group;
         }
 
         public void AskPVPRevive(long characterId)
@@ -687,7 +689,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        ClientSession[] grpmembers = new ClientSession[3];
+                        ClientSession[] grpmembers = new ClientSession[40];
                         grp.Characters.CopyTo(grpmembers);
                         foreach (ClientSession targetSession in grpmembers)
                         {
@@ -700,7 +702,8 @@ namespace OpenNos.GameObject
                                 targetSession.SendPackets(targetSession.Character.GeneratePst());
                             }
                         }
-                        GroupsList.Remove(grp.GroupId);
+                        GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
+                        GroupsThreadSafe.Remove(grp.GroupId);
                     }
                     session.Character.Group = null;
                 }
@@ -1293,7 +1296,7 @@ namespace OpenNos.GameObject
             if (disposing)
             {
                 _monsterDrops.Dispose();
-                GroupsList.Dispose();
+                GroupsThreadSafe.Dispose();
                 _monsterSkills.Dispose();
                 _shopSkills.Dispose();
                 _shopItems.Dispose();
@@ -1343,7 +1346,7 @@ namespace OpenNos.GameObject
 
         private void LaunchEvents()
         {
-            GroupsList = new ThreadSafeSortedList<long, Group>();
+            GroupsThreadSafe = new ThreadSafeSortedList<long, Group>();
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
             {

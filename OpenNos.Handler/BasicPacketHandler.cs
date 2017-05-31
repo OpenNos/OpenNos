@@ -365,15 +365,16 @@ namespace OpenNos.Handler
             switch (rdPacket.Type)
             {
                 case 1://Join
-                    if (Session.Character.Group == null || Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                     {
                         return;
                     }
-                    if (rdPacket.Parameter == null && ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId)?.Character?.Group == null && Session.Character.Group.IsLeader(Session))
+                    ClientSession target = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
+                    if (rdPacket.Parameter == null && target?.Character?.Group == null && Session.Character.Group.IsLeader(Session))
                     {
                         GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId });
                     }
-                    else
+                    else if(Session.Character.Group == null)
                     {
                         GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId });
                     }
@@ -399,14 +400,37 @@ namespace OpenNos.Handler
                         s.SendPacket(s.Character.GenerateRaid(0, false));
                     });
                     break;
+                case 3:
+                    if (Session.Character.Group != null && Session.Character.Group.IsLeader(Session))
+                    {
+                        ClientSession chartokick = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
+                        if (chartokick.Character?.Group == null)
+                            return;
 
+                        chartokick.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("KICK_RAID")), 0));
+                        if (Session?.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+                        {
+                            return;
+                        }
+                        grp = chartokick.Character?.Group;
+                        chartokick.SendPacket(chartokick.Character.GenerateRaid(1, true));
+                        chartokick.SendPacket(chartokick.Character.GenerateRaid(2, true));
+                        grp.LeaveGroup(chartokick);
+                        grp.Characters.ForEach(s =>
+                        {
+                            s.SendPacket(grp.GenerateRdlst());
+                            s.SendPacket(s.Character.GenerateRaid(0, false));
+                        });
+                    }
+
+                    break;
                 case 4://disolve
 
                     if (Session.Character.Group != null && Session.Character.Group.IsLeader(Session))
                     {
                         grp = Session.Character.Group;
 
-                        ClientSession[] grpmembers = new ClientSession[3];
+                        ClientSession[] grpmembers = new ClientSession[40];
                         grp.Characters.CopyTo(grpmembers);
                         foreach (ClientSession targetSession in grpmembers)
                         {
@@ -418,7 +442,8 @@ namespace OpenNos.Handler
                                 grp.LeaveGroup(targetSession);
                             }
                         }
-                        ServerManager.Instance.GroupsList.Remove(grp.GroupId);
+                        ServerManager.Instance.GroupList.RemoveAll(s=>s.GroupId == grp.GroupId);
+                        ServerManager.Instance.GroupsThreadSafe.Remove(grp.GroupId);
                     }
 
                     break;
@@ -433,14 +458,49 @@ namespace OpenNos.Handler
         {
             switch (rlPacket.Type)
             {
+                case 0:
+                    if (Session.Character.Group != null && Session.Character.Group.IsLeader(Session) && Session.Character.Group.GroupType != GroupType.Group && ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
+                    }
+                    else if(Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && Session.Character.Group.IsLeader(Session))
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(2));
+                    }
+                    else if (Session.Character.Group != null)
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(3));
+                    }
+                    else
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(0));
+                    }
+                break;
                 case 1:
-
+                    if(Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && !ServerManager.Instance.GroupList.Any(s=>s.GroupId == Session.Character.Group.GroupId))
+                    {
+                        ServerManager.Instance.GroupList.Add(Session.Character.Group);
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_REGISTERED")));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
+                        ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {(string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"),Session.Character.Name))}",ReceiverType.AllExceptGroup);
+                    }
                     break;
-
                 case 2:
-
+                    if (Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
+                    {
+                        ServerManager.Instance.GroupList.Remove(Session.Character.Group);
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_UNREGISTERED")));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(2));
+                    }
                     break;
-
+                case 3:
+                    ClientSession cl = ServerManager.Instance.GetSessionByCharacterName(rlPacket.CharacterName);
+                    if(cl!=null)
+                    {
+                        cl.Character.GroupSentRequestCharacterIds.Add(Session.Character.CharacterId);
+                        GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Accepted, CharacterId = cl.Character.CharacterId });
+                    }
+                    break;
             }
         }
 
@@ -581,8 +641,15 @@ namespace OpenNos.Handler
                         else
                         {
                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RAID_JOIN"), Session.Character.Name), 10));
-                            //say 1 626114 10 Étant donné que le niveau recommandé du raid n'est pas respecté, aucune boîte de raid ne pourra être obtenue (même en cas de succès).
-                            //modal 1 Tu as déjà réussi ce raid en tant qu'assistant de raid.
+                            if(Session.Character.Level > currentGroup.Raid?.LevelMaximum || Session.Character.Level < currentGroup.Raid?.LevelMinimum)
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RAID_LEVEL_INCORRECT"), 10));
+                                if (Session.Character.Level >= currentGroup.Raid?.LevelMaximum + 10 /* && AlreadySuccededToday*/)
+                                {
+                                    //modal 1 ALREADY_SUCCEDED_AS_ASSISTANT
+                                }
+                            }
+                        
                             currentGroup.JoinGroup(Session);
                             Session.SendPacket(Session.Character.GenerateRaid(1, false));
                             currentGroup.Characters.ForEach(s =>

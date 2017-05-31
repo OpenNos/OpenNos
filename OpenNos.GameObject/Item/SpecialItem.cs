@@ -78,7 +78,7 @@ namespace OpenNos.GameObject
                     ItemInstance raidSeal = session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
 
-                    ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj=>obj.VNum == raidSeal.ItemVNum)).GetClone();
+                    ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj => obj.VNum == raidSeal.ItemVNum)).GetClone();
                     if (raid != null)
                     {
                         Group group = new Group();
@@ -88,6 +88,10 @@ namespace OpenNos.GameObject
                         ServerManager.Instance.AddGroup(group);
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 0));
                         session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 10));
+                        if (session.Character.Level > raid.LevelMaximum || session.Character.Level < raid.LevelMinimum)
+                        {
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RAID_LEVEL_INCORRECT"), 10));
+                        }
                         session.SendPacket(session.Character.GenerateRaid(2, false));
                         session.SendPacket(session.Character.GenerateRaid(0, false));
                         session.SendPacket(session.Character.GenerateRaid(1, false));

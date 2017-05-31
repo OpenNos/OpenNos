@@ -432,6 +432,17 @@ namespace OpenNos.GameObject.Helpers
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
+        public string GenerateRl(byte type)
+        {
+            string str = $"rl {type}";
+            ServerManager.Instance.GroupList.ForEach(s=>
+            {
+                ClientSession leader = s.Characters.ElementAt(0);
+                str += $" {s.Raid.Label}.{s.Raid?.LevelMinimum}.{s.Raid?.LevelMaximum}.{leader.Character.Name}.{leader.Character.Level}.{(leader.Character.UseSp ? leader.Character.Morph : -1)}.{(byte)leader.Character.Class}.{(byte)leader.Character.Gender}.{s.CharacterCount}.{leader.Character.HeroLevel}";
+            });
+            return str;
+        }
+
         public string GenerateRemovePacket(short slot)
         {
             return $"{slot}.-1.0.0.0";

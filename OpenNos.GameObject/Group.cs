@@ -152,7 +152,6 @@ namespace OpenNos.GameObject
         {
             return Characters.ElementAt(0) == session;
         }
-
         #endregion
     }
 }

@@ -13,6 +13,9 @@ namespace OpenNos.GameObject
         [PacketIndex(0)]
         public short Type { get; set; }
 
+        [PacketIndex(1)]
+        public string CharacterName { get; set; }
+
         #endregion
     }
 }
