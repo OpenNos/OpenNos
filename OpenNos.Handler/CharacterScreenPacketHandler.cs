@@ -212,9 +212,9 @@ namespace OpenNos.Handler
             {
                 bool hasRegisteredAccountLogin = true;
                 AccountDTO account = null;
-                if (loginPacketParts.Length > 4)
+                if (loginPacketParts.Length > 1)
                 {
-                    account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+                    account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[1]);
                 }
                 try
                 {
@@ -229,11 +229,11 @@ namespace OpenNos.Handler
                     Session.Disconnect();
                     return;
                 }
-                if (loginPacketParts.Length > 4 && hasRegisteredAccountLogin)
+                if (loginPacketParts.Length > 1 && hasRegisteredAccountLogin)
                 {
                     if (account != null)
                     {
-                        if (account.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])))
+                        if (account.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[2])))
                         {
                             Account accountobject = new Account
                             {

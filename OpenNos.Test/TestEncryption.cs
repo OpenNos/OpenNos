@@ -1,5 +1,6 @@
 ﻿using OpenNos.Core;
 using System.Text;
+using System;
 
 namespace OpenNos.Test
 {
@@ -35,6 +36,11 @@ namespace OpenNos.Test
         {
             UTF8Encoding encoding = new UTF8Encoding();
             return encoding.GetBytes(data);
+        }
+
+        public override string GameSessionDecrypt(byte[] data, int sessionId = 0)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

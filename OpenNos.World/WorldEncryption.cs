@@ -103,70 +103,43 @@ namespace OpenNos.World
             return Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, receiveData.ToArray()));
         }
 
+        // used for old session crypto requires to provide a session id
+        public override string GameSessionDecrypt(byte[] packet, int sessionId = 0)
+        {
+            try
+            {
+                string decrypt = string.Empty;
+                for (int i = 0; i < packet.Length; i++)
+                {
+                    decrypt += Convert.ToChar(packet[i] - (0x40 + sessionId));
+                }
+                return decrypt;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
         public override string Decrypt(byte[] str, int sessionId = 0)
         {
-            string encrypted_string = "";
-            int session_key = sessionId & 0xFF;
-            byte session_number = unchecked((byte)(sessionId >> 6));
-            session_number &= 0xFF;
-            session_number &= unchecked((byte)0x80000003);
-
-            switch (session_number)
+            try
             {
-                case 0:
-                    foreach (byte character in str)
-                    {
-                        byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(character - firstbyte));
-                        encrypted_string += (char)highbyte;
-                    }
-                    break;
-
-                case 1:
-                    foreach (byte character in str)
-                    {
-                        byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(character + firstbyte));
-                        encrypted_string += (char)highbyte;
-                    }
-                    break;
-
-                case 2:
-                    foreach (byte character in str)
-                    {
-                        byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(character - firstbyte ^ 0xC3));
-                        encrypted_string += (char)highbyte;
-                    }
-                    break;
-
-                case 3:
-                    foreach (byte character in str)
-                    {
-                        byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(character + firstbyte ^ 0xC3));
-                        encrypted_string += (char)highbyte;
-                    }
-                    break;
-
-                default:
-                    encrypted_string += (char)0xF;
-                    break;
-            }
-
-            string[] temp = encrypted_string.Split((char)0xFF);
-            string save = "";
-
-            for (int i = 0; i < temp.Length; i++)
-            {
-                save += Decrypt2(temp[i]);
-                if (i < temp.Length - 2)
+                string decrypt = string.Empty;
+                for (int i = 0; i < str.Length; i++)
                 {
-                    save += (char)0xFF;
+                    decrypt += Convert.ToChar(str[i] - (0x40 + sessionId));
                 }
+                if (decrypt == "0\n")
+                {
+                    return string.Empty;
+                }
+                return decrypt;
             }
-
-            return save;
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         public override string DecryptCustomParameter(byte[] str)
@@ -244,13 +217,11 @@ namespace OpenNos.World
             }
         }
 
-        public override byte[] Encrypt(string str)
+        public override byte[] Encrypt(string packet)
         {
-            byte[] StrBytes = Encoding.Default.GetBytes(str);
+            byte[] StrBytes = Encoding.Default.GetBytes(packet);
             int BytesLength = StrBytes.Length;
-
             byte[] encryptedData = new byte[BytesLength + (int)Math.Ceiling((decimal)BytesLength / 0x7E) + 1];
-
             int ii = 0;
             for (int i = 0; i < BytesLength; i++)
             {
@@ -262,7 +233,6 @@ namespace OpenNos.World
                 encryptedData[i + ii] = (byte)~StrBytes[i];
             }
             encryptedData[encryptedData.Length - 1] = 0xFF;
-
             return encryptedData;
         }
 
