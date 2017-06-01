@@ -496,6 +496,7 @@ namespace OpenNos.GameObject
                     MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.Y, MapX = mon.SpawnCell.X, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents, IsTarget = mon.IsTarget, IsBonus = mon.IsBonus };
                     monster.Initialize(this);
                     monster.IsHostile = mon.IsHostile;
+                    monster.Monster.BCards.ForEach(c => c.ApplyBCards(monster));
                     AddMonster(monster);
                     Broadcast(monster.GenerateIn());
                     ids.Add(monster.MapMonsterId);

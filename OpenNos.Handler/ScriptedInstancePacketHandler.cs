@@ -143,11 +143,30 @@ namespace OpenNos.Handler
             {
                 Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
                 if (Session.Character.Group.Raid.FirstMap == null) return;
-                Session.Character.Group.Characters.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance).ToList().ForEach(
-                session=>
+                Session.Character.Group.Raid.FirstMap.InstanceBag.Lock = true;
+                if (Session.Character.Group.CharacterCount > 4)
                 {
-                    ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.Group.Raid.FirstMap.MapInstanceId, Session.Character.Group.Raid.StartX, Session.Character.Group.Raid.StartY);
-                });
+                    Session.Character.Group.Characters.Where(s => s.CurrentMapInstance != Session.CurrentMapInstance).ToList().ForEach(
+                    session =>
+                    {
+                        Session.Character.Group.LeaveGroup(session);
+                    });
+                    Session.Character.Group.Raid.FirstMap.InstanceBag.Lives = (short)Session.Character.Group.CharacterCount;
+                    Session.Character.Group.Characters.ForEach(
+                    session =>
+                    {
+                        ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.Group.Raid.FirstMap.MapInstanceId, Session.Character.Group.Raid.StartX, Session.Character.Group.Raid.StartY);
+                        session.SendPacket("raidbf 0 0 25");
+                        session.SendPacket(session.Character.Group.GeneraterRaidmbf());
+                        session.SendPacket(session.Character.GenerateRaid(5, false));
+                        session.SendPacket(session.Character.GenerateRaid(4, false));
+                        session.SendPacket(session.Character.GenerateRaid(3, false));
+                    });
+                }
+                else
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg("RAID_TEAM_NOT_READY", 0));
+                }
             }
         }
 

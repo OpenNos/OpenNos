@@ -115,6 +115,7 @@
     <Compile Include="Event\MINILANDREFRESH\MinilandRefresh.cs" />
     <Compile Include="Helpers\UserInterfaceHelper.cs" />
     <Compile Include="Clock.cs" />
+    <Compile Include="Locker.cs" />
     <Compile Include="Map\MapButton.cs" />
     <Compile Include="InstanceBag.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />

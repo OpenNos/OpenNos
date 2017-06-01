@@ -534,9 +534,14 @@ namespace OpenNos.GameObject
                     MapInstance.Broadcast(GenerateEff(CurrentMinigame));
                     LastEffect = DateTime.Now;
                 }
-
+              
                 if (LastEffect.AddSeconds(5) <= DateTime.Now)
                 {
+                    if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        Session.SendPacket(Session.Character.GenerateRaid(3, false));
+                    }
+
                     WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
                     if (amulet != null)
                     {
@@ -1996,7 +2001,7 @@ namespace OpenNos.GameObject
                                     }
                                     else
                                     {
-                                        if (group != null)
+                                        if (group != null && group.GroupType == GroupType.Group)
                                         {
                                             if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                                             {
@@ -4928,9 +4933,6 @@ namespace OpenNos.GameObject
             string result = string.Empty;
             switch (Type)
             {
-                case 1:
-                    result = $"raid 1 {(Exit ? 0 : 1)}";
-                    break;
                 case 0:
                     result = $"raid 0";
                     Group?.Characters?.ForEach(s=> { result += $" {s.Character?.CharacterId}"; });
@@ -4938,8 +4940,18 @@ namespace OpenNos.GameObject
                 case 2:
                     result = $"raid 2 {(Exit ? "-1" : $"{CharacterId}")}";
                     break;
+                case 1:
+                    result = $"raid 1 {(Exit ? 0 : 1)}";
+                    break;
                 case 3:
-
+                    result = $"raid 3";
+                    Group?.Characters?.ForEach(s => { result += $" {s.Character?.CharacterId}.{Math.Ceiling(Hp / HPLoad() * 100)}.{Math.Ceiling(Mp / MPLoad() * 100)}"; });
+                    break;
+                case 4:
+                    result = $"raid 4";
+                    break;
+                case 5:
+                    result = $"raid 5 1";
                     break;
             }
             return result;

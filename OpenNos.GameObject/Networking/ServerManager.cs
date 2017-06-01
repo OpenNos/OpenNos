@@ -300,6 +300,42 @@ namespace OpenNos.GameObject
 
                         break;
 
+                    case MapInstanceType.RaidInstance:
+                        if (Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count() < 0)
+                        {
+                            Session.Character.Hp = 1;
+                            Session.Character.Mp = 1;
+                        }
+                        else if (2 - Session.CurrentMapInstance.InstanceBag.DeadList.Where(s => s == Session.Character.CharacterId).Count() > 0)
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateModal(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"), 2 - Session.CurrentMapInstance.InstanceBag.DeadList.Where(s => s == Session.Character.CharacterId).Count()), 0));
+                            Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
+                            Session.Character.Group?.Characters.ForEach(
+                            session =>
+                            {
+                                //refresh life
+                            });
+                            Task.Factory.StartNew(async () =>
+                            {
+                                await Task.Delay(20000);
+                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            });
+                        }
+                        else
+                        {
+                            Group grp = Session.Character.Group;
+                            if (grp != null)
+                            {
+                                grp.Characters.ForEach(s =>
+                                {
+                                    //refresh life
+                                });
+                                grp.LeaveGroup(Session);
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), 0));
+                            }
+                        }
+                        break;
+
                     case MapInstanceType.LodInstance:
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_LOD")}"));
                         Task.Factory.StartNew(async () =>
@@ -532,6 +568,7 @@ namespace OpenNos.GameObject
                 foreach (MapMonster mapMonster in mapInstance.Monsters)
                 {
                     mapMonster.MapInstance = mapInstance;
+                    mapMonster.Monster.BCards.ForEach(c => c.ApplyBCards(mapMonster));
                     mapInstance.AddMonster(mapMonster);
                 }
                 foreach (MapNpc mapNpc in mapInstance.Npcs)
@@ -580,7 +617,7 @@ namespace OpenNos.GameObject
             _lastGroupId++;
             return _lastGroupId;
         }
-        
+
 
         public NpcMonster GetNpc(short npcVNum)
         {
@@ -678,7 +715,7 @@ namespace OpenNos.GameObject
                             }
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
                         }
-                       
+
                     }
                     else
                     {
@@ -1101,7 +1138,7 @@ namespace OpenNos.GameObject
             ClientSession session = GetSessionByCharacterId(characterId);
             if (session != null && session.Character.Hp <= 0)
             {
-                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
+                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance || session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                 {
                     session.Character.Hp = (int)session.Character.HPLoad();
                     session.Character.Mp = (int)session.Character.MPLoad();

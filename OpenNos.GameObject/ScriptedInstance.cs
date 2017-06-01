@@ -338,7 +338,18 @@ namespace OpenNos.GameObject
                     case "OnCharacterDiscoveringMap":
                     case "OnMoveOnMap":
                     case "OnMapClean":
+                    case "OnLockerOpen":
                         evts.Add(new EventContainer(mapinstance, EventActionType.REGISTEREVENT, new Tuple<string, List<EventContainer>>(mapevent.Name, GenerateEvent(mapevent, mapinstance))));
+                        break;
+
+                    case "SetMonsterLockers":
+                        _instancebag.MonsterLocker.Current = byte.Parse(mapevent?.Attributes["Value"]?.Value);
+                        _instancebag.MonsterLocker.Initial = _instancebag.MonsterLocker.Current;
+                        break;
+
+                    case "SetButtonLockers":
+                        _instancebag.ButtonLocker.Current = byte.Parse(mapevent?.Attributes["Value"]?.Value);
+                        _instancebag.ButtonLocker.Initial = _instancebag.ButtonLocker.Current;
                         break;
 
                     //child events
@@ -352,11 +363,14 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SummonMonster":
-                        cell = mapinstance?.Map?.GetRandomPosition();
-                        if (cell != null && (positionX == -1 || positionY == -1))
+                        if (positionX == -1 || positionY == -1)
                         {
-                            positionX = cell.X;
-                            positionY = cell.Y;
+                            cell = mapinstance?.Map?.GetRandomPosition();
+                            if (cell != null)
+                            {
+                                positionX = cell.X;
+                                positionY = cell.Y;
+                            }
                         }
                         MonsterAmount++;
                         List<MonsterToSummon> lst = new List<MonsterToSummon>();
@@ -369,12 +383,19 @@ namespace OpenNos.GameObject
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, mapinstance.Map.GenerateNpcs(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), new List<EventContainer>(), isMate, isProtected)));
                         break;
 
+                    case "RefreshRaidGoals":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.REFRESHRAIDGOAL, null));
+                        break;
+                        
                     case "SummonNpc":
-                        cell = mapinstance?.Map?.GetRandomPosition();
-                        if (cell != null && (positionX == -1 || positionY == -1))
+                        if (positionX == -1 || positionY == -1)
                         {
-                            positionX = cell.X;
-                            positionY = cell.Y;
+                            cell = mapinstance?.Map?.GetRandomPosition();
+                            if (cell != null)
+                            {
+                                positionX = cell.X;
+                                positionY = cell.Y;
+                            }
                         }
                         NpcAmount++;
                         List<NpcToSummon> lstn = new List<NpcToSummon>();
@@ -383,11 +404,14 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SpawnButton":
-                        cell = mapinstance?.Map?.GetRandomPosition();
-                        if (cell != null && (positionX == -1 || positionY == -1))
+                        if (positionX == -1 || positionY == -1)
                         {
-                            positionX = cell.X;
-                            positionY = cell.Y;
+                            cell = mapinstance?.Map?.GetRandomPosition();
+                            if (cell != null)
+                            {
+                                positionX = cell.X;
+                                positionY = cell.Y;
+                            }
                         }
                         MapButton button = new MapButton(
                             int.Parse(mapevent?.Attributes["Id"].Value),
@@ -431,6 +455,14 @@ namespace OpenNos.GameObject
                         evts.Add(new EventContainer(mapinstance, EventActionType.REFRESHMAPITEMS, null));
                         break;
 
+                    case "RemoveMonsterLocker":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.REMOVEMONSTERLOCKER, null));
+                        break;
+
+                    case "RemoveButtonLocker":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.REMOVEBUTTONLOCKER, null));
+                        break;
+
                     case "ChangePortalType":
                         evts.Add(new EventContainer(mapinstance, EventActionType.CHANGEPORTALTYPE, new Tuple<int, PortalType>(int.Parse(mapevent?.Attributes["IdOnMap"].Value), (PortalType)sbyte.Parse(mapevent?.Attributes["Type"].Value))));
                         break;
@@ -453,6 +485,10 @@ namespace OpenNos.GameObject
 
                     case "GenerateMapClock":
                         evts.Add(new EventContainer(mapinstance, EventActionType.MAPCLOCK, int.Parse(mapevent?.Attributes["Value"].Value)));
+                        break;
+
+                    case "Teleport":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.TELEPORT, new Tuple<short, short, short, short>(short.Parse(mapevent?.Attributes["PositionX"].Value), short.Parse(mapevent?.Attributes["PositionY"].Value), short.Parse(mapevent?.Attributes["DestinationX"].Value), short.Parse(mapevent?.Attributes["DestinationY"].Value))));
                         break;
 
                     case "StartClock":

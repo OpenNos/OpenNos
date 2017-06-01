@@ -401,6 +401,10 @@ namespace OpenNos.Handler
                     });
                     break;
                 case 3:
+                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        return;
+                    }
                     if (Session.Character.Group != null && Session.Character.Group.IsLeader(Session))
                     {
                         ClientSession chartokick = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
@@ -425,7 +429,10 @@ namespace OpenNos.Handler
 
                     break;
                 case 4://disolve
-
+                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        return;
+                    }
                     if (Session.Character.Group != null && Session.Character.Group.IsLeader(Session))
                     {
                         grp = Session.Character.Group;
@@ -1337,6 +1344,14 @@ namespace OpenNos.Handler
                                 {
                                     Session.SendPacket($"qna #mkraid^0^275 {Language.Instance.GetMessageFromKey("DO_YOU_WANT_RAID")}");
                                 }
+                                else
+                                {
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_TEAM_LEADER_CAN_START"),10));
+                                }
+                            }
+                            else
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"),10));
                             }
                             return;
                         default:
@@ -1477,7 +1492,7 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GenerateStat());
                             }
                             break;
-
+                        
                         default:
                             const int seed = 1012;
                             if (Session.Character.Inventory.CountItem(seed) < 10 && Session.Character.Level > 20)

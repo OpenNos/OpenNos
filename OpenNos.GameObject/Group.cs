@@ -141,6 +141,10 @@ namespace OpenNos.GameObject
         public void LeaveGroup(ClientSession session)
         {
             session.Character.Group = null;
+            if(session.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+            {
+                ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+            }
             if(IsLeader(session) && GroupType != GroupType.Group && Characters.Count > 1)
             {
                 Characters.ForEach(s=> s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TEAM_LEADER_CHANGE"), Characters.ElementAt(0).Character?.Name), 0)));
@@ -151,6 +155,11 @@ namespace OpenNos.GameObject
         public bool IsLeader(ClientSession session)
         {
             return Characters.ElementAt(0) == session;
+        }
+
+        public string GeneraterRaidmbf()
+        {
+            return $"raidmbf {Raid?.FirstMap?.InstanceBag.MonsterLocker.Initial} {Raid?.FirstMap?.InstanceBag.MonsterLocker.Current} {Raid?.FirstMap?.InstanceBag.ButtonLocker.Initial} {Raid?.FirstMap?.InstanceBag.ButtonLocker.Current} {Raid?.FirstMap?.InstanceBag.Lives} {Raid?.FirstMap?.InstanceBag.Lives - Raid?.FirstMap?.InstanceBag.DeadList.Count()} 25";
         }
         #endregion
     }
