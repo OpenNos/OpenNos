@@ -94,7 +94,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<MapNpcDTO> LoadFromMap(short mapId)
+        public IEnumerable<MapNpcDTO> LoadFromMap(int mapId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {

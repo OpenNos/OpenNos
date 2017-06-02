@@ -183,7 +183,7 @@ namespace OpenNos.Handler
                             Session.Character.Gold -= (int)packet.Point;
                             Session.SendPacket(Session.Character.GenerateGold());
                             mlobj.ItemInstance.DurabilityPoint += (int)(packet.Point / 100);
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey(string.Format("REFILL_MINIGAME", (int)packet.Point / 100))));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("REFILL_MINIGAME"), (int)packet.Point / 100)));
                             Session.SendPacket(Session.Character.GenerateMloMg(mlobj, packet));
                         }
                         break;
@@ -266,7 +266,7 @@ namespace OpenNos.Handler
                             Session.Character.Inventory.RemoveItemAmount(items.ElementAt(0).ItemVNum);
                             int point = items.ElementAt(0).ItemVNum == 1269 ? 300 : 500;
                             mlobj.ItemInstance.DurabilityPoint += point;
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey(string.Format("REFILL_MINIGAME", point))));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("REFILL_MINIGAME"), point)));
                             Session.SendPacket(Session.Character.GenerateMloMg(mlobj, packet));
                         }
                         break;

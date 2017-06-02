@@ -47,8 +47,6 @@ namespace OpenNos.Core
 
         public abstract string Decrypt(byte[] data, int sessionId = 0);
 
-        public abstract string DecryptCustomParameter(byte[] data);
-
         public abstract byte[] Encrypt(string data);
 
         #endregion

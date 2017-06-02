@@ -22,7 +22,7 @@ namespace OpenNos.Data
 
         public bool IsMoving { get; set; }
 
-        public short MapId { get; set; }
+        public int MapId { get; set; }
 
         public int MapMonsterId { get; set; }
 

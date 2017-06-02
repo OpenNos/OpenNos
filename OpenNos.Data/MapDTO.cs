@@ -20,7 +20,7 @@ namespace OpenNos.Data
 
         public byte[] Data { get; set; }
 
-        public short MapId { get; set; }
+        public int MapId { get; set; }
 
         public int Music { get; set; }
 

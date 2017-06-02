@@ -59,7 +59,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public MapTypeMapDTO LoadByMapAndMapType(short mapId, short maptypeId)
+        public MapTypeMapDTO LoadByMapAndMapType(int mapId, short maptypeId)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<MapTypeMapDTO> LoadByMapId(short mapId)
+        public IEnumerable<MapTypeMapDTO> LoadByMapId(int mapId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {

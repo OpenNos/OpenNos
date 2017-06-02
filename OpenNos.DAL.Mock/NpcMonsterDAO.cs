@@ -39,7 +39,12 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public NpcMonsterDTO LoadByVNum(short MapId)
+        public NpcMonsterDTO LoadByVNum(int mapId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public NpcMonsterDTO LoadByVNum(short npcMonsterVNum)
         {
             throw new NotImplementedException();
         }

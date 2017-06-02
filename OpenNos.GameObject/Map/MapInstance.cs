@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class MapInstance : BroadcastableBase, IDisposable
+    public class MapInstance : BroadcastableBase
     {
         #region Members
 
@@ -42,8 +42,6 @@ namespace OpenNos.GameObject
         private readonly List<Portal> _portals;
 
         private readonly Random _random;
-
-        private bool _disposed;
 
         private bool _isSleeping;
 
@@ -89,7 +87,7 @@ namespace OpenNos.GameObject
 
         public Clock Clock { get; set; }
 
-        public ThreadSafeSortedList<long, MapItem> DroppedList { get; }
+        public ThreadSafeSortedList<long, MapItem> DroppedList { get; private set; }
 
         public int DropRate { get; set; }
 
@@ -169,16 +167,6 @@ namespace OpenNos.GameObject
         public void AddNPC(MapNpc monster)
         {
             _npcs[monster.MapNpcId] = monster;
-        }
-
-        public override sealed void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
-            }
         }
 
         public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY)
@@ -540,6 +528,8 @@ namespace OpenNos.GameObject
                 {
                     ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
                 }
+                DroppedList.Dispose();
+                _npcs.Dispose();
                 _monsters.Dispose();
                 _npcs.Dispose();
             }

@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF
     {
         #region Properties
 
-        public short DestinationMapId { get; set; }
+        public int DestinationMapId { get; set; }
 
         public short DestinationX { get; set; }
 
@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF
 
         public int PortalId { get; set; }
 
-        public short SourceMapId { get; set; }
+        public int SourceMapId { get; set; }
 
         public short SourceX { get; set; }
 

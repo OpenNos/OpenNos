@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static List<Portal> GenerateMinilandEntryPortals(short entryMap, Guid exitMapinstanceId)
+        public static List<Portal> GenerateMinilandEntryPortals(int entryMap, Guid exitMapinstanceId)
         {
             List<Portal> list = new List<Portal>();
 
@@ -37,28 +37,16 @@ namespace OpenNos.GameObject
                 case 1:
                     list.Add(new Portal
                     {
-                        SourceX = 48,
-                        SourceY = 132,
+                        SourceX = 110,
+                        SourceY = 124,
                         DestinationX = 5,
                         DestinationY = 8,
-                        Type = (short)PortalType.Miniland,
+                        Type = (short)PortalType.Invisible,
                         SourceMapId = 1,
                         DestinationMapInstanceId = exitMapinstanceId
                     });
                     break;
 
-                case 145:
-                    list.Add(new Portal
-                    {
-                        SourceX = 9,
-                        SourceY = 171,
-                        DestinationX = 5,
-                        DestinationY = 8,
-                        Type = (short)PortalType.Miniland,
-                        SourceMapId = 145,
-                        DestinationMapInstanceId = exitMapinstanceId
-                    });
-                    break;
             }
 
             return list;

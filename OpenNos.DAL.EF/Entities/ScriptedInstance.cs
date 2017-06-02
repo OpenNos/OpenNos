@@ -23,7 +23,7 @@ namespace OpenNos.DAL.EF
 
         public virtual Map Map { get; set; }
 
-        public short MapId { get; set; }
+        public int MapId { get; set; }
 
         public short PositionX { get; set; }
 

@@ -110,7 +110,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
             if (!_disposed)
             {

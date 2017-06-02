@@ -28,7 +28,7 @@ namespace OpenNos.DAL.Interface
 
         RespawnMapTypeDTO LoadById(long respawnMapTypeId);
 
-        RespawnMapTypeDTO LoadByMapId(short mapId);
+        RespawnMapTypeDTO LoadByMapId(int mapId);
 
         #endregion
     }

@@ -22,7 +22,6 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 
 namespace OpenNos.Import.Console
 {
@@ -235,12 +234,12 @@ namespace OpenNos.Import.Console
                     }
                 }
                 System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("DONE")}");
-                Thread.Sleep(5000);
+                System.Console.ReadKey();
             }
             catch (FileNotFoundException)
             {
                 Logger.Log.Error(Language.Instance.GetMessageFromKey("AT_LEAST_ONE_FILE_MISSING"));
-                Thread.Sleep(5000);
+                System.Console.ReadKey();
             }
         }
 

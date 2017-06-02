@@ -1,5 +1,6 @@
 ﻿using OpenNos.Core;
 using System.Text;
+using System;
 
 namespace OpenNos.Test
 {
@@ -20,12 +21,6 @@ namespace OpenNos.Test
         #region Methods
 
         public override string Decrypt(byte[] data, int sessionId = 0)
-        {
-            UTF8Encoding encoding = new UTF8Encoding();
-            return encoding.GetString(data);
-        }
-
-        public override string DecryptCustomParameter(byte[] data)
         {
             UTF8Encoding encoding = new UTF8Encoding();
             return encoding.GetString(data);

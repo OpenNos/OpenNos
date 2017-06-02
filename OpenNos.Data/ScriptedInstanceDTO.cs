@@ -20,7 +20,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public short MapId { get; set; }
+        public int MapId { get; set; }
 
         public short PositionX { get; set; }
 

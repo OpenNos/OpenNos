@@ -67,7 +67,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<ScriptedInstanceDTO> LoadByMap(short mapId)
+        public IEnumerable<ScriptedInstanceDTO> LoadByMap(int mapId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {

@@ -264,8 +264,8 @@ namespace OpenNos.GameObject
             {
                 RespawnMapTypeDTO respawn = new RespawnMapTypeDTO
                 {
-                    DefaultX = 79,
-                    DefaultY = 116,
+                    DefaultX = 13,
+                    DefaultY = 121,
                     DefaultMapId = 1,
                     RespawnMapTypeId = -1
                 };
@@ -4369,7 +4369,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SetRespawnPoint(short mapId, short mapX, short mapY)
+        public void SetRespawnPoint(int mapId, short mapX, short mapY)
         {
             if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.Map.MapTypes.Any())
             {
@@ -4392,7 +4392,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SetReturnPoint(short mapId, short mapX, short mapY)
+        public void SetReturnPoint(int mapId, short mapX, short mapY)
         {
             if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.Map.MapTypes.Any())
             {

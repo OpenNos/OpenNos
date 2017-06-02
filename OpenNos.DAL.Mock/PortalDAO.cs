@@ -29,7 +29,7 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public IEnumerable<PortalDTO> LoadByMap(short mapId)
+        public IEnumerable<PortalDTO> LoadByMap(int mapId)
         {
             return Container.Where(p => p.SourceMapId == mapId);
         }

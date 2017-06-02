@@ -26,7 +26,7 @@ namespace OpenNos.DAL.EF
 
         public virtual Map Map { get; set; }
 
-        public short MapId { get; set; }
+        public int MapId { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int MapMonsterId { get; set; }

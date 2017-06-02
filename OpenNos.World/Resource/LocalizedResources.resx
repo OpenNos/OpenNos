@@ -1426,4 +1426,10 @@
   <data name="WARNING_INFO" xml:space="preserve">
     <value>You've been warned: {0} times.</value>
   </data>
+  <data name="CHARACTER_CHANGED_MAP" xml:space="preserve">
+    <value>Character changed while changing map. Do not abuse Commands.</value>
+  </data>
+  <data name="REFILL_MINIGAME" xml:space="preserve">
+    <value>Minigame points restored {0}</value>
+  </data>
 </root>
