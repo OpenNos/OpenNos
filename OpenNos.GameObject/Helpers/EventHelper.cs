@@ -231,8 +231,12 @@ namespace OpenNos.GameObject.Helpers
                                     {
                                         if (targetSession != null)
                                         {
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
+                                            if(targetSession.Character.Hp <= 0)
+                                            {
+                                                targetSession.Character.Hp = 1;
+                                                targetSession.Character.Mp = 1;
+                                            }
+                                            targetSession.SendPacket(targetSession.Character.GenerateRaidBf());
                                             grp.LeaveGroup(targetSession);
                                         }
                                     }

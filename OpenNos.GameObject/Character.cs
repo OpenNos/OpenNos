@@ -3107,6 +3107,11 @@ namespace OpenNos.GameObject
             return $"rest 1 {CharacterId} {(IsSitting ? 1 : 0)}";
         }
 
+        public string GenerateRaidBf()
+        {
+            return "raidbf 0 4 25 ";
+        }
+
         public string GenerateRevive()
         {
             int lives = MapInstance.InstanceBag.Lives - MapInstance.InstanceBag.DeadList.Count() + 1;
@@ -4945,7 +4950,7 @@ namespace OpenNos.GameObject
                     break;
                 case 3:
                     result = $"raid 3";
-                    Group?.Characters?.ForEach(s => { result += $" {s.Character?.CharacterId}.{Math.Ceiling(Hp / HPLoad() * 100)}.{Math.Ceiling(Mp / MPLoad() * 100)}"; });
+                    Group?.Characters?.ForEach(s => { result += $" {s.Character?.CharacterId}.{Math.Ceiling(s.Character.Hp / s.Character.HPLoad() * 100)}.{Math.Ceiling(s.Character.Mp / s.Character.MPLoad() * 100)}"; });
                     break;
                 case 4:
                     result = $"raid 4";

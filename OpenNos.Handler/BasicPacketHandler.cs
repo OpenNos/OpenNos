@@ -393,10 +393,11 @@ namespace OpenNos.Handler
                     grp = sender.Character?.Group;
                     Session.SendPacket(Session.Character.GenerateRaid(1, true));
                     Session.SendPacket(Session.Character.GenerateRaid(2, true));
-                    grp.LeaveGroup(Session);
+
                     grp.Characters.ForEach(s =>
                     {
                         s.SendPacket(grp.GenerateRdlst());
+                        s.SendPacket(grp.GeneraterRaidmbf());
                         s.SendPacket(s.Character.GenerateRaid(0, false));
                     });
                     break;
@@ -412,10 +413,6 @@ namespace OpenNos.Handler
                             return;
 
                         chartokick.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("KICK_RAID")), 0));
-                        if (Session?.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
-                        {
-                            return;
-                        }
                         grp = chartokick.Character?.Group;
                         chartokick.SendPacket(chartokick.Character.GenerateRaid(1, true));
                         chartokick.SendPacket(chartokick.Character.GenerateRaid(2, true));

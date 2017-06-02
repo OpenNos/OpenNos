@@ -301,19 +301,23 @@ namespace OpenNos.GameObject
                         break;
 
                     case MapInstanceType.RaidInstance:
+                        List<long> save = Session.CurrentMapInstance.InstanceBag.DeadList.ConvertAll(s => s);
                         if (Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count() < 0)
                         {
                             Session.Character.Hp = 1;
                             Session.Character.Mp = 1;
                         }
-                        else if (2 - Session.CurrentMapInstance.InstanceBag.DeadList.Where(s => s == Session.Character.CharacterId).Count() > 0)
+                        else if (2 - save.Count(s => s == Session.Character.CharacterId) > 0)
                         {
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateModal(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"), 2 - Session.CurrentMapInstance.InstanceBag.DeadList.Where(s => s == Session.Character.CharacterId).Count()), 0));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"), 2 - Session.CurrentMapInstance.InstanceBag.DeadList.Where(s => s == Session.Character.CharacterId).Count())));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), Session.Character.Name)));
+
                             Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
                             Session.Character.Group?.Characters.ForEach(
                             session =>
                             {
-                                //refresh life
+                                session.SendPacket(session.Character.Group.GeneraterRaidmbf());
+                                session.SendPacket(session.Character.Group.GenerateRdlst());
                             });
                             Task.Factory.StartNew(async () =>
                             {
@@ -328,9 +332,12 @@ namespace OpenNos.GameObject
                             {
                                 grp.Characters.ForEach(s =>
                                 {
-                                    //refresh life
+                                    s.SendPacket(s.Character.Group.GeneraterRaidmbf());
+                                    s.SendPacket(s.Character.Group.GenerateRdlst());
                                 });
                                 grp.LeaveGroup(Session);
+                                Session.SendPacket(Session.Character.GenerateRaid(1, true));
+                                Session.SendPacket(Session.Character.GenerateRaid(2, true));
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), 0));
                             }
                         }
@@ -712,6 +719,10 @@ namespace OpenNos.GameObject
                                 session.SendPacket(session.Character.GenerateRaid(2, true));
                                 groupSession.SendPacket(grp.GenerateRdlst());
                                 groupSession.SendPacket(groupSession.Character.GenerateRaid(0, false));
+                            }
+                            if (session?.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+                            {
+                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
                             }
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
                         }

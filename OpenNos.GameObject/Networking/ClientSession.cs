@@ -177,6 +177,14 @@ namespace OpenNos.GameObject
                 if (Character.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance || Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                 {
                     Character.MapInstance.InstanceBag.DeadList.Add(Character.CharacterId);
+                    if(Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        Character?.Group?.Characters.ForEach(s =>
+                        {
+                            s.SendPacket(s.Character.Group.GeneraterRaidmbf());
+                            s.SendPacket(s.Character.Group.GenerateRdlst());
+                        });
+                    }
                 }
                 ServerManager.Instance.RemoveMapInstance(Character.Miniland.MapInstanceId);
 
