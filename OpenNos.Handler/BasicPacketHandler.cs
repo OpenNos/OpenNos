@@ -24,10 +24,8 @@ using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 using OpenNos.PathFinder;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -612,8 +610,8 @@ namespace OpenNos.Handler
                                     {
                                         case 1:
                                             Session.Character.AddRelation(characterId, CharacterRelationType.Friend);
-                                            Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
-                                            otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_ADDED")));
+                                            otherSession.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_ADDED")));
                                             break;
 
                                         case 2:
@@ -623,8 +621,8 @@ namespace OpenNos.Handler
                                         default:
                                             if (Session.Character.IsFriendlistFull())
                                             {
-                                                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
-                                                otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_FULL")));
+                                                otherSession.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_FULL")));
                                             }
                                             break;
                                     }
@@ -638,22 +636,22 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            Session.SendPacket($"info {Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKING")}");
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKING")));
                         }
                     }
                     else
                     {
-                        Session.SendPacket($"info {Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")}");
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
                     }
                 }
                 else
                 {
-                    Session.SendPacket($"info {Language.Instance.GetMessageFromKey("ALREADY_FRIEND")}");
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("ALREADY_FRIEND")));
                 }
             }
             else
             {
-                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_FULL")));
             }
         }
 
@@ -1125,7 +1123,7 @@ namespace OpenNos.Handler
                         case (sbyte)PortalType.MapPortal:
                         case (sbyte)PortalType.TSNormal:
                         case (sbyte)PortalType.Open:
-                        case (sbyte)PortalType.Miniland:
+                        case (sbyte)PortalType.Invisible:
                         case (sbyte)PortalType.TSEnd:
                         case (sbyte)PortalType.Exit:
                         case (sbyte)PortalType.Effect:
@@ -1589,7 +1587,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSki());
             Session.SendPacket($"fd {Session.Character.Reput} 0 {(int)Session.Character.Dignity} {Math.Abs(Session.Character.GetDignityIco())}");
             Session.SendPacket(Session.Character.GenerateFd());
-            Session.SendPacket("rage 0 250000");
             Session.SendPacket("rank_cool 0 0 18000");
             SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(8, InventoryType.Wear);
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
@@ -1627,7 +1624,6 @@ namespace OpenNos.Handler
             Session.SendPacket($"twk 2 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
 
             // qstlist target sqst bf
-            Session.SendPacket("act6");
             Session.SendPacket(Session.Character.GenerateFaction());
             Session.SendPackets(Session.Character.GenerateScP());
             Session.SendPackets(Session.Character.GenerateScN());
@@ -1638,29 +1634,17 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateGold());
             Session.SendPackets(Session.Character.GenerateQuicklist());
 
-            string clinit = "clinit";
             string flinit = "flinit";
-            string kdlinit = "kdlinit";
-            foreach (CharacterDTO character in ServerManager.Instance.TopComplimented)
-            {
-                clinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Compliment}|{character.Name}";
-            }
             foreach (CharacterDTO character in ServerManager.Instance.TopReputation)
             {
-                flinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Reput}|{character.Name}";
-            }
-            foreach (CharacterDTO character in ServerManager.Instance.TopPoints)
-            {
-                kdlinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Act4Points}|{character.Name}";
+                flinit += $" {character.CharacterId}|{character.Level}|{character.Reput}|{character.Name}";
             }
 
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
 
             Session.SendPacket(Session.Character.GenerateFinit());
             Session.SendPacket(Session.Character.GenerateBlinit());
-            Session.SendPacket(clinit);
             Session.SendPacket(flinit);
-            Session.SendPacket(kdlinit);
 
             Session.Character.LastPVPRevive = DateTime.Now;
 
@@ -1677,10 +1661,10 @@ namespace OpenNos.Handler
                 }
             }
 
-            IEnumerable<PenaltyLogDTO> warning = DAOFactory.PenaltyLogDAO.LoadByAccount(Session.Character.AccountId).Where(p => p.Penalty == PenaltyType.Warning);
-            if (warning != null)
+            int warning = DAOFactory.PenaltyLogDAO.LoadByAccount(Session.Character.AccountId).Where(p => p.Penalty == PenaltyType.Warning).Count();
+            if (warning != 0)
             {
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(string.Format(Language.Instance.GetMessageFromKey("WARNING_INFO"), warning.Count())));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("WARNING_INFO"), warning)));
             }
 
             // finfo - friends info

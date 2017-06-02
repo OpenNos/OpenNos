@@ -682,6 +682,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Character changed while changing map. Do not abuse Commands..
+        /// </summary>
+        internal static string CHARACTER_CHANGED_MAP {
+            get {
+                return ResourceManager.GetString("CHARACTER_CHANGED_MAP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}({1}) logged in!.
         /// </summary>
         internal static string CHARACTER_FAMILY_LOGGED_IN {
@@ -3117,6 +3126,15 @@ namespace OpenNos.World.Resource {
         internal static string RECIPES_LOADED {
             get {
                 return ResourceManager.GetString("RECIPES_LOADED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minigame points restored {0}.
+        /// </summary>
+        internal static string REFILL_MINIGAME {
+            get {
+                return ResourceManager.GetString("REFILL_MINIGAME", resourceCulture);
             }
         }
         

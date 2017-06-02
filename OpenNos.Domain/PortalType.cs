@@ -20,7 +20,7 @@ namespace OpenNos.Domain
         TSNormal = 0, // same over >127 - sbyte
         Closed = 1,
         Open = 2,
-        Miniland = 3,
+        Invisible = 3,
         TSEnd = 4,
         TSEndClosed = 5,
         Exit = 6,

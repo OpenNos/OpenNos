@@ -345,6 +345,7 @@ namespace OpenNos.GameObject
         {
             while (_receiveQueue.TryDequeue(out byte[] packetData))
             {
+                // sessionid decryption
                 if (_encryptor.HasCustomParameter && SessionId == 0)
                 {
                     string packet = string.Empty;
@@ -364,6 +365,7 @@ namespace OpenNos.GameObject
                     return;
                 }
 
+                // login/game packet decryption
                 string[] packetConcatenated = null;
                 string decrypted = _encryptor.Decrypt(packetData, SessionId);
                 if (!_encryptor.HasCustomParameter)

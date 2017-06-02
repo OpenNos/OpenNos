@@ -90,7 +90,6 @@ namespace OpenNos.Import.Console
                         dictionaryIdLang.Add(linesave[0], linesave[1]);
                     }
                 }
-                npcIdLangStream.Close();
             }
 
             using (StreamReader npcIdStream = new StreamReader(fileCardDat, Encoding.GetEncoding(1252)))
@@ -153,7 +152,6 @@ namespace OpenNos.Import.Console
                 }
                 DAOFactory.CardDAO.Insert(cards);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_PARSED"), counter));
-                npcIdStream.Close();
             }
         }
 
@@ -203,7 +201,6 @@ namespace OpenNos.Import.Console
                 }
                 DAOFactory.ItemCardDAO.Insert(itemCards);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMCARDS_PARSED"), itemCards.Count));
-                skillIdStream.Close();
             }
         }
 
@@ -315,7 +312,6 @@ namespace OpenNos.Import.Console
                         dictionaryId.Add(mapid, linesave[4]);
                     }
                 }
-                mapIdStream.Close();
             }
 
             using (StreamReader mapIdLangStream = new StreamReader(fileMapIdLang, Encoding.GetEncoding(1252)))
@@ -329,7 +325,6 @@ namespace OpenNos.Import.Console
                     }
                     dictionaryIdLang.Add(linesave[0], linesave[1]);
                 }
-                mapIdLangStream.Close();
             }
 
             foreach (string[] linesave in _packetList.Where(o => o[0].Equals("at")))
@@ -747,7 +742,6 @@ namespace OpenNos.Import.Console
                         dictionaryIdLang.Add(linesave[0], linesave[1]);
                     }
                 }
-                npcIdLangStream.Close();
             }
             using (StreamReader npcIdStream = new StreamReader(fileNpcId, Encoding.GetEncoding(1252)))
             {
@@ -998,7 +992,6 @@ namespace OpenNos.Import.Console
                 DAOFactory.NpcMonsterDAO.Insert(npcs);
                 DAOFactory.NpcMonsterSkillDAO.Insert(skills);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
-                npcIdStream.Close();
             }
 
             // Act 1
@@ -1583,7 +1576,6 @@ namespace OpenNos.Import.Console
                 }
                 DAOFactory.SkillCardDAO.Insert(skillCards);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLCARDS_PARSED"), skillCards.Count));
-                skillIdStream.Close();
             }
         }
 
@@ -1608,7 +1600,6 @@ namespace OpenNos.Import.Console
                         dictionaryIdLang.Add(linesave[0], linesave[1]);
                     }
                 }
-                skillIdLangStream.Close();
             }
 
             using (StreamReader skillIdStream = new StreamReader(fileSkillId, Encoding.GetEncoding(1252)))
@@ -1931,7 +1922,6 @@ namespace OpenNos.Import.Console
                 DAOFactory.ComboDAO.Insert(Combo);
 
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_PARSED"), counter));
-                skillIdStream.Close();
             }
         }
 
@@ -2039,7 +2029,6 @@ namespace OpenNos.Import.Console
                     }
                     dictionaryName.Add(linesave[0], linesave[1]);
                 }
-                mapIdLangStream.Close();
             }
 
             using (StreamReader npcIdStream = new StreamReader(fileId, Encoding.GetEncoding(1252)))
@@ -3117,7 +3106,6 @@ namespace OpenNos.Import.Console
 
                 DAOFactory.ItemDAO.Insert(items);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_PARSED"), itemCounter));
-                npcIdStream.Close();
             }
         }
 

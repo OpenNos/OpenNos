@@ -59,7 +59,6 @@ namespace OpenNos.GameObject
                     // TODO: Review has some problems, aka. issue corresponding to weird/multiple/missplaced drops
                     _transportId = TransportFactory.Instance.GenerateTransportId();
                 }
-
                 return _transportId;
             }
 

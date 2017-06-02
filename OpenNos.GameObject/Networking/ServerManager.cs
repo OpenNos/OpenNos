@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class ServerManager : BroadcastableBase, IDisposable
+    public class ServerManager : BroadcastableBase
     {
         #region Members
 
@@ -54,8 +54,6 @@ namespace OpenNos.GameObject
         private static ServerManager _instance;
 
         private static int seed = Environment.TickCount;
-
-        private bool _disposed;
 
         private List<DropDTO> _generalDrops;
 
@@ -405,7 +403,6 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GeneratePairy());
                     session.SendPacket(session.Character.GeneratePinit());
                     session.SendPackets(session.Character.GeneratePst());
-                    session.SendPacket(session.Character.GenerateAct());
                     session.SendPacket(session.Character.GenerateScpStc());
 
                     Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm), visibleSession =>
@@ -431,11 +428,6 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());
                     }
 
-                    // TODO: fix this
-                    if (session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.CleftOfDarkness))
-                    {
-                        session.SendPacket("bc 0 0 0");
-                    }
                     if (!session.Character.InvisibleGm)
                     {
                         Parallel.ForEach(session.Character.Mates.Where(m => m.IsTeamMember), mate =>
@@ -492,21 +484,11 @@ namespace OpenNos.GameObject
                         }
                     });
                 }
-                catch (Exception)
+                catch
                 {
-                    Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
+                    Logger.Log.Warn(Language.Instance.GetMessageFromKey("CHARACTER_CHANGED_MAP"));
                     session.Character.IsChangingMapInstance = false;
                 }
-            }
-        }
-
-        public override sealed void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
             }
         }
 
