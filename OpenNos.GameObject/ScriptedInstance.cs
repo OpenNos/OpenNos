@@ -461,8 +461,8 @@ namespace OpenNos.GameObject
                     case "ThrowItem":
                         short.TryParse(mapevent?.Attributes["VNum"]?.Value, out short vnum);
                         byte.TryParse(mapevent?.Attributes["PackAmount"]?.Value, out byte packAmount);
-                        short.TryParse(mapevent?.Attributes["MinAmount"]?.Value, out short minAmount);
-                        short.TryParse(mapevent?.Attributes["MaxAmount"]?.Value, out short maxAmount);
+                        int.TryParse(mapevent?.Attributes["MinAmount"]?.Value, out int minAmount);
+                        int.TryParse(mapevent?.Attributes["MaxAmount"]?.Value, out int maxAmount);
                         evts.Add(new EventContainer(mapinstance, EventActionType.THROWITEMS, new Tuple<short, byte, int, int, short, short>(vnum, packAmount == 0 ? (byte)1 : packAmount, minAmount == 0 ? 1 : minAmount, maxAmount == 0 ? 1 : maxAmount, PositionX, PositionY)));
                         break;
 

@@ -470,12 +470,12 @@ namespace OpenNos.GameObject
             short originY = parameter.Item6;
             short destX;
             short destY;
-            int amount = ServerManager.Instance.RandomNumber(parameter.Item4, parameter.Item5);
+            int amount = ServerManager.Instance.RandomNumber(parameter.Item3, parameter.Item4);
             for (int i = 0; i < parameter.Item2; i++)
             {
                 destX = (short)(originX + ServerManager.Instance.RandomNumber(-10, 10));
                 destY = (short)(originY + ServerManager.Instance.RandomNumber(-10, 10));
-                MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item6, parameter.Item1,amount);
+                MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item1, amount);
                 DroppedList[droppedItem.TransportId] = droppedItem;
                 Broadcast($"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
             }
