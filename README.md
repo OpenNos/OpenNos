@@ -1,7 +1,7 @@
 [<img src="https://discordapp.com/api/guilds/210791003735457793/widget.png?style=shield">](https://discord.gg/qdPMDv5)
 
 # Information! #
-A master branch is to which we will push only stable changes that got confirmed, we develop now on dev branch, please dont ask for help with using dev branch, its unstable and designed only for advanced users.
+**THIS BRANCH IS OLDSCHOOL PROJECT WORKING ONLY FOR CLIENTS WITH OLD CRYPTO. THIS BRANCH GETS NO HELP FROM US AND ITS UNDER SLOW DEVELOPMENT!**
 
 # Achtung! #
 We are not responsible of any damages caused by bad usage of our source: thermonuclear war, lit ssd's or getting fired because you spent whole night installing the required files. Please before asking questions or installing this source read this readme and also do a research, google is your friend. If you mess up when installing our source because you didnt follow it, we will laugh at you. A lot.
