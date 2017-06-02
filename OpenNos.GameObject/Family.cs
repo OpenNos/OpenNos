@@ -15,7 +15,8 @@
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
 
@@ -48,9 +49,10 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
+            // do nothing
         }
 
-        public void InsertFamilyLog(FamilyLogType logtype, string characterName = "", string characterName2 = "", string rainBowFamily = "", string message = "", byte level = 0, int experience = 0, int itemVNum = 0, byte upgrade = 0, int raidType = 0, int right = 0, int righttype = 0, int rightvalue = 0)
+        public void InsertFamilyLog(FamilyLogType logtype, string characterName = "", string characterName2 = "", string rainBowFamily = "", string message = "", byte level = 0, int experience = 0, int itemVNum = 0, byte upgrade = 0, int raidType = 0, FamilyAuthority authority = FamilyAuthority.Head, int righttype = 0, int rightvalue = 0)
         {
             string value = string.Empty;
             switch (logtype)
@@ -84,7 +86,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case FamilyLogType.AuthorityChanged:
-                    value = $"{characterName}|{right}|{characterName2}";
+                    value = $"{characterName}|{(byte)authority}|{characterName2}";
                     break;
 
                 case FamilyLogType.FamilyManaged:
@@ -96,7 +98,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case FamilyLogType.RightChanged:
-                    value = $"{characterName}|{right}|{righttype}|{rightvalue}";
+                    value = $"{characterName}|{(byte)authority}|{righttype}|{rightvalue}";
                     break;
 
                 case FamilyLogType.WareHouseAdded:
@@ -113,7 +115,14 @@ namespace OpenNos.GameObject
             };
             DAOFactory.FamilyLogDAO.InsertOrUpdate(ref log);
             ServerManager.Instance.FamilyRefresh(FamilyId);
-            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+            {
+                DestinationCharacterId = FamilyId,
+                SourceCharacterId = 0,
+                SourceWorldId = ServerManager.Instance.WorldId,
+                Message = "fhis_stc",
+                Type = MessageType.Family
+            });
         }
 
         internal Family DeepCopy()

@@ -28,6 +28,8 @@ namespace OpenNos.GameObject
 
         public short FirstY { get; set; }
 
+        public List<BCard> BCards { get; set; }
+
         public DateTime LastEffect { get; private set; }
 
         public DateTime LastMove { get; private set; }
@@ -42,7 +44,7 @@ namespace OpenNos.GameObject
 
         public string GenerateEInfo()
         {
-            return $"e_info 10 {NpcMonsterVNum} {Level} {Element} {AttackClass} {ElementRate} {AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {CriticalChance} {CriticalRate} {DefenceUpgrade} {CloseDefence} {DefenceDodge} {DistanceDefence} {DistanceDefenceDodge} {MagicDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance} {MaxHP} {MaxMP} -1 {Name.Replace(' ', '^')}"; // {Hp} {Mp} in 0 0
+            return $"e_info 10 {NpcMonsterVNum} {Level} {Element} {AttackClass} {ElementRate} {AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {CriticalChance} {CriticalRate} {DefenceUpgrade} {CloseDefence} {DefenceDodge} {DistanceDefence} {DistanceDefenceDodge} {MagicDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance} {MaxHP} {MaxMP} -1 {Name.Replace(' ', '^')}";
         }
 
         public float GetRes(int skillelement)

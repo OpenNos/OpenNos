@@ -34,16 +34,12 @@ namespace OpenNos.Data
 
         public byte CPCost { get; set; }
 
-        public short Damage { get; set; }
-
         public short Duration { get; set; }
 
         public short Effect { get; set; }
 
         public byte Element { get; set; }
-
-        public short ElementalDamage { get; set; }
-
+        
         public byte HitType { get; set; }
 
         public short ItemVNum { get; set; }
@@ -67,10 +63,6 @@ namespace OpenNos.Data
         public int Price { get; set; }
 
         public byte Range { get; set; }
-
-        public short SecondarySkillVNum { get; set; }
-
-        public short SkillChance { get; set; }
 
         public byte SkillType { get; set; }
 

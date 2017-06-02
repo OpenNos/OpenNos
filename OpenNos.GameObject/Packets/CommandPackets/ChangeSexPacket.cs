@@ -3,10 +3,14 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$ChangeSex", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ChangeSexPacket : PacketDefinition
     {
+        public static string ReturnHelp()
+        {
+            return "$ChangeSex";
+        }
     }
 }

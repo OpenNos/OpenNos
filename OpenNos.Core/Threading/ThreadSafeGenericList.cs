@@ -57,9 +57,27 @@ namespace OpenNos.Core
             }
         }
 
+        public int CountLinq(Func<T, bool> predicate)
+        {
+            lock (_sync)
+            {
+                return _list.Count(predicate);
+            }
+        }
+
+
+
         public void CopyTo(T[] grpmembers)
         {
             _list.CopyTo(grpmembers);
+        }
+
+        public void Clear()
+        {
+            lock (_sync)
+            {
+                _list.Clear();
+            }
         }
 
         public T ElementAt(int v)
@@ -75,6 +93,14 @@ namespace OpenNos.Core
             lock (_sync)
             {
                 return _list.FirstOrDefault();
+            }
+        }
+
+        public T FirstOrDefault(Func<T, bool> predicate)
+        {
+            lock (_sync)
+            {
+                return _list.FirstOrDefault(predicate);
             }
         }
 

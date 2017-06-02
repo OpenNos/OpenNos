@@ -9,18 +9,19 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OpenNos.DAL.EF</RootNamespace>
     <AssemblyName>OpenNos.DAL.EF</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StyleCopTreatErrorsAsWarnings>True</StyleCopTreatErrorsAsWarnings>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -38,17 +39,37 @@
     <SlowCheetah_NuGetImportPath Condition=" '$(SlowCheetah_NuGetImportPath)'=='' ">$([System.IO.Path]::GetFullPath( $(MSBuildProjectDirectory)\Properties\SlowCheetah\SlowCheetah.Transforms.targets ))</SlowCheetah_NuGetImportPath>
     <SlowCheetahTargets Condition=" '$(SlowCheetah_EnableImportFromNuGet)'=='true' and Exists('$(SlowCheetah_NuGetImportPath)') ">$(SlowCheetah_NuGetImportPath)</SlowCheetahTargets>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=6.0.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.6.0.2\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\EntityFramework.6.2.0-beta1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\EntityFramework.6.2.0-beta1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -60,7 +81,6 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -76,12 +96,12 @@
     <Compile Include="Base\MappingBaseDAO.cs" />
     <Compile Include="Base\SynchronizableBaseDAO.cs" />
     <Compile Include="BazaarItemDAO.cs" />
+    <Compile Include="BCardDAO.cs" />
     <Compile Include="CardDAO.cs" />
-    <Compile Include="Entities\ItemCard.cs" />
     <Compile Include="Entities\Mate.cs" />
     <Compile Include="Entities\ScriptedInstance.cs" />
+    <Compile Include="Entities\BCard.cs" />
     <Compile Include="MateDAO.cs" />
-    <Compile Include="ItemCardDAO.cs" />
     <Compile Include="Migrations\201702072152008_Aphrodite22.cs" />
     <Compile Include="Migrations\201702072152008_Aphrodite22.Designer.cs">
       <DependentUpon>201702072152008_Aphrodite22.cs</DependentUpon>
@@ -186,6 +206,30 @@
     <Compile Include="Migrations\201703191106529_Aphrodite47.Designer.cs">
       <DependentUpon>201703191106529_Aphrodite47.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705181120240_Aphrodite48.cs" />
+    <Compile Include="Migrations\201705181120240_Aphrodite48.Designer.cs">
+      <DependentUpon>201705181120240_Aphrodite48.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705181941280_Aphrodite49.cs" />
+    <Compile Include="Migrations\201705181941280_Aphrodite49.Designer.cs">
+      <DependentUpon>201705181941280_Aphrodite49.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705191625539_Aphrodite50.cs" />
+    <Compile Include="Migrations\201705191625539_Aphrodite50.Designer.cs">
+      <DependentUpon>201705191625539_Aphrodite50.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705192032039_Aphrodite51.cs" />
+    <Compile Include="Migrations\201705192032039_Aphrodite51.Designer.cs">
+      <DependentUpon>201705192032039_Aphrodite51.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705200802404_Aphrodite52.cs" />
+    <Compile Include="Migrations\201705200802404_Aphrodite52.Designer.cs">
+      <DependentUpon>201705200802404_Aphrodite52.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705201157111_Aphrodite53.cs" />
+    <Compile Include="Migrations\201705201157111_Aphrodite53.Designer.cs">
+      <DependentUpon>201705201157111_Aphrodite53.cs</DependentUpon>
+    </Compile>
     <Compile Include="MinilandObjectDAO.cs" />
     <Compile Include="CharacterRelationDAO.cs" />
     <Compile Include="Entities\Account.cs" />
@@ -216,7 +260,6 @@
     <Compile Include="Entities\MinilandObject.cs" />
     <Compile Include="Entities\PenaltyLog.cs" />
     <Compile Include="Entities\RespawnMapType.cs" />
-    <Compile Include="Entities\SkillCard.cs" />
     <Compile Include="Entities\SpecialistInstance.cs" />
     <Compile Include="Entities\StaticBonus.cs" />
     <Compile Include="Entities\StaticBuff.cs" />
@@ -225,7 +268,6 @@
     <Compile Include="FamilyCharacterDAO.cs" />
     <Compile Include="FamilyDAO.cs" />
     <Compile Include="FamilyLogDAO.cs" />
-    <Compile Include="Helpers\MigrationHelper.cs" />
     <Compile Include="MailDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="Entities\MapNpc.cs" />
@@ -352,11 +394,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\Shopskill.cs" />
     <Compile Include="Entities\Skill.cs" />
-    <Compile Include="SkillCardDAO.cs" />
     <Compile Include="SkillDAO.cs" />
     <Compile Include="ShopSkillDAO.cs" />
     <Compile Include="CharacterSkillDAO.cs" />
     <Compile Include="Entities\Teleporter.cs" />
+    <Compile Include="StaticBuffDAO.cs" />
     <Compile Include="StaticBonusDAO.cs" />
     <Compile Include="TeleporterDAO.cs" />
     <Compile Include="ScriptedInstanceDAO.cs" />
@@ -373,9 +415,6 @@
     <None Include="Properties\SlowCheetah\SlowCheetah.Transforms.targets">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="DB\OpenNos.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
@@ -539,6 +578,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703191106529_Aphrodite47.resx">
       <DependentUpon>201703191106529_Aphrodite47.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705181120240_Aphrodite48.resx">
+      <DependentUpon>201705181120240_Aphrodite48.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705181941280_Aphrodite49.resx">
+      <DependentUpon>201705181941280_Aphrodite49.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705191625539_Aphrodite50.resx">
+      <DependentUpon>201705191625539_Aphrodite50.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705192032039_Aphrodite51.resx">
+      <DependentUpon>201705192032039_Aphrodite51.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705200802404_Aphrodite52.resx">
+      <DependentUpon>201705200802404_Aphrodite52.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705201157111_Aphrodite53.resx">
+      <DependentUpon>201705201157111_Aphrodite53.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

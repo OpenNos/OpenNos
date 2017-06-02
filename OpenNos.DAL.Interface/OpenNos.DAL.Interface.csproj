@@ -9,18 +9,19 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OpenNos.DAL.Interface</RootNamespace>
     <AssemblyName>OpenNos.DAL.Interface</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StyleCopTreatErrorsAsWarnings>True</StyleCopTreatErrorsAsWarnings>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -31,6 +32,28 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=6.0.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
@@ -51,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IBazaarItemDAO.cs" />
+    <Compile Include="IBCardDAO.cs" />
     <Compile Include="ICardDAO.cs" />
     <Compile Include="IFamilyCharacterDAO.cs" />
     <Compile Include="IFamilyDAO.cs" />
@@ -59,8 +83,7 @@
     <Compile Include="ICharacterRelationDAO.cs" />
     <Compile Include="IComboDAO.cs" />
     <Compile Include="IDropDAO.cs" />
-    <Compile Include="IItemCardDAO.cs" />
-    <Compile Include="IMate.cs" />
+    <Compile Include="IMateDAO.cs" />
     <Compile Include="IMinilandObjectDAO.cs" />
     <Compile Include="IMappingBaseDAO.cs" />
     <Compile Include="IGeneralLogDAO.cs" />
@@ -85,10 +108,10 @@
     <Compile Include="IMapDAO.cs" />
     <Compile Include="INpcMonsterDAO.cs" />
     <Compile Include="IPortalDAO.cs" />
-    <Compile Include="ISkillCardDAO.cs" />
     <Compile Include="ISkillDAO.cs" />
     <Compile Include="IShopSkillDAO.cs" />
     <Compile Include="ICharacterSkillDAO.cs" />
+    <Compile Include="IStaticBuffDAO.cs" />
     <Compile Include="IStaticBonusDAO.cs" />
     <Compile Include="ISynchronizableBaseDAO.cs" />
     <Compile Include="ITeleporterDAO.cs" />

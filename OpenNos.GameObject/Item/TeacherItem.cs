@@ -35,7 +35,9 @@ namespace OpenNos.GameObject
         public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
             if (packetsplit == null)
+            {
                 return;
+            }
             int x1 = 0;
             switch (Effect)
             {

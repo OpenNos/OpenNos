@@ -16,13 +16,13 @@ namespace OpenNos.GameObject
         public int Argument { get; set; }
 
         [PacketIndex(2)]
-        public long CharacterId { get; set; }
+        public long User { get; set; }
 
         [PacketIndex(3)]
-        public byte Value { get; set; }
+        public int Data { get; set; }
 
-        [PacketIndex(4)]
-        public byte Value1 { get; set; }
+        [PacketIndex(4, serializeToEnd: true)]
+        public string Value { get; set; }
 
         #endregion
     }

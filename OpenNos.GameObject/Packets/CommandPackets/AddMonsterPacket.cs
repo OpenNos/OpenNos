@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$AddMonster", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class AddMonsterPacket : PacketDefinition
@@ -15,6 +15,11 @@ namespace OpenNos.GameObject
 
         [PacketIndex(1)]
         public bool IsMoving { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$AddMonster VNUM MOVE";
+        }
 
         #endregion
     }

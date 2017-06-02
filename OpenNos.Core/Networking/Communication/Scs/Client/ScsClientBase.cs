@@ -244,11 +244,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </summary>
         protected virtual void OnConnected()
         {
-            var handler = Connected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            Connected?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -256,11 +252,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </summary>
         protected virtual void OnDisconnected()
         {
-            var handler = Disconnected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            Disconnected?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -278,11 +270,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// <param name="message">Received message</param>
         protected virtual void OnMessageSent(IScsMessage message)
         {
-            var handler = MessageSent;
-            if (handler != null)
-            {
-                handler(this, new MessageEventArgs(message, DateTime.Now));
-            }
+            MessageSent?.Invoke(this, new MessageEventArgs(message, DateTime.Now));
         }
 
         /// <summary>

@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
+
 namespace OpenNos.GameObject
 {
     public class BroadcastPacket

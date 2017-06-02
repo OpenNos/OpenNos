@@ -44,10 +44,7 @@ namespace OpenNos.GameObject
                 {
                     if (packetsplit != null && packetsplit.Length > 9)
                     {
-                        byte TypeEquip;
-                        short SlotEquip;
-
-                        if (byte.TryParse(packetsplit[8], out TypeEquip) && short.TryParse(packetsplit[9], out SlotEquip))
+                        if (byte.TryParse(packetsplit[8], out byte TypeEquip) && short.TryParse(packetsplit[9], out short SlotEquip))
                         {
                             if (session.Character.IsSitting)
                             {
@@ -78,7 +75,7 @@ namespace OpenNos.GameObject
                                         {
                                             specialist.Rare = 0;
                                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
-                                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(13, 1, session.Character.CharacterId, 1), session.Character.MapX, session.Character.MapY);
+                                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(13, 1, session.Character.CharacterId, 1));
                                             session.Character.SpPoint = 10000;
                                             if (session.Character.SpPoint > 10000)
                                             {

@@ -139,11 +139,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// </summary>
         private void OnDisconnected()
         {
-            var handler = Disconnected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            Disconnected?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion

@@ -35,7 +35,7 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public List<DropDTO> LoadAll()
+        public new List<DropDTO> LoadAll()
         {
             return _mockContainer.ToList().Select(e => MapEntity(e)).ToList();
         }

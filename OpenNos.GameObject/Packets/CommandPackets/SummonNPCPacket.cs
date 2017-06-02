@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$SummonNPC", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class SummonNPCPacket : PacketDefinition
@@ -18,6 +18,11 @@ namespace OpenNos.GameObject
 
         [PacketIndex(2)]
         public bool IsMoving { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$SummonNPC MONSTERVNUM AMOUNT MOVE";
+        }
 
         #endregion
     }

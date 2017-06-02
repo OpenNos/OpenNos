@@ -240,19 +240,7 @@
   <data name="PARSE_CARDS" xml:space="preserve">
     <value>Czy chcesz wprowadzić Cards?</value>
   </data>
-  <data name="PARSE_SKILLCARDS" xml:space="preserve">
-    <value>Czy chcesz wprowadzić SkillCards?</value>
-  </data>
   <data name="CARDS_PARSED" xml:space="preserve">
     <value>{0} cards wprowadzonych</value>
-  </data>
-  <data name="SKILLCARDS_PARSED" xml:space="preserve">
-    <value>{0} skillcards wprowadzonych</value>
-  </data>
-  <data name="ITEMCARDS_PARSED" xml:space="preserve">
-    <value>{0} itemcards wprowadzonych</value>
-  </data>
-  <data name="PARSE_ITEMCARDS" xml:space="preserve">
-    <value>Czy chcesz wprowadzić ItemCards?</value>
   </data>
 </root>

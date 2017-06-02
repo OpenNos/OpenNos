@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$FLvl", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ChangeFairyLevelPacket : PacketDefinition
@@ -12,6 +12,11 @@ namespace OpenNos.GameObject
 
         [PacketIndex(0)]
         public short FairyLevel { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$FLvl FAIRYLEVEL";
+        }
 
         #endregion
     }

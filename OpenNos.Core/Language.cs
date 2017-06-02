@@ -12,12 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core.LanguageDetection;
-using RestSharp;
-using RestSharp.Deserializers;
 using System.Configuration;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Resources;
 
@@ -59,34 +55,6 @@ namespace OpenNos.Core
         #endregion
 
         #region Methods
-
-        public bool CheckMessageIsCorrectLanguage(string completeTextString)
-        {
-            RestClient client = new RestClient("http://ws.detectlanguage.com");
-            RestRequest request = new RestRequest("/0.2/detect", Method.POST);
-
-            request.AddParameter("key", ConfigurationManager.AppSettings["DetectLanguageApiKey"]);
-            request.AddParameter("q", completeTextString);
-
-            IRestResponse response = client.Execute(request);
-            JsonDeserializer deserializer = new JsonDeserializer();
-
-            try
-            {
-                Result result = deserializer.Deserialize<Result>(response);
-                Detection detection = result?.data?.detections.FirstOrDefault();
-
-                if (detection == null)
-                {
-                    return true;
-                }
-                return detection.confidence < 10 || detection.language == _resourceCulture.TwoLetterISOLanguageName;
-            }
-            catch
-            {
-                return true;
-            }
-        }
 
         public string GetMessageFromKey(string message)
         {

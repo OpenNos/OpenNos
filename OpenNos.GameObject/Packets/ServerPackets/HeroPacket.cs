@@ -2,7 +2,7 @@
 
 using OpenNos.Core;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.ServerPackets
 {
     [PacketHeader("hero")]
     public class HeroPacket : PacketDefinition

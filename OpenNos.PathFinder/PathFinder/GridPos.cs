@@ -1,10 +1,8 @@
-﻿namespace OpenNos.Pathfinding
+﻿namespace OpenNos.PathFinder
 {
     public class GridPos
     {
-        #region Properties
-
-        public bool Closed { get; internal set; }
+        #region Properties    
 
         public byte Value { get; set; }
 

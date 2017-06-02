@@ -23,7 +23,7 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
-        public TeleporterDTO Insert(TeleporterDTO teleporter)
+        public new TeleporterDTO Insert(TeleporterDTO teleporter)
         {
             throw new NotImplementedException();
         }

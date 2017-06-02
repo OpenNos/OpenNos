@@ -15,6 +15,7 @@
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using OpenNos.Domain;
 using System;
 using System.Linq;
 
@@ -61,9 +62,9 @@ namespace OpenNos.DAL.Mock
             AccountDTO account = Container.SingleOrDefault(a => a.Name == name);
         }
 
-        public void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData)
+        public void WriteGeneralLog(long accountId, string ipAddress, long? characterId, GeneralLogType logType, string logData)
         {
-            // we dont care about general log in test now
+            throw new NotImplementedException();
         }
 
         #endregion

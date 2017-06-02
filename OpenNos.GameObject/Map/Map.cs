@@ -15,7 +15,6 @@
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.PathFinder;
-using OpenNos.Pathfinding;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -133,9 +132,9 @@ namespace OpenNos.GameObject
         public MapCell GetRandomPosition()
         {
             List<MapCell> cells = new List<MapCell>();
-            for (short y = 0; y <= XLength; y++)
+            for (short y = 0; y <= YLength; y++)
             {
-                for (short x = 0; x <= YLength; x++)
+                for (short x = 0; x <= XLength; x++)
                 {
                     if (!IsBlockedZone(x, y))
                     {
@@ -163,11 +162,6 @@ namespace OpenNos.GameObject
             {
                 return true;
             }
-        }
-
-        public List<GridPos> PathSearch(GridPos cell1, GridPos cell2)
-        {
-            return BestFirstSearch.findPath(cell1, cell2, Grid);
         }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
@@ -223,6 +217,7 @@ namespace OpenNos.GameObject
 
         private void LoadZone()
         {
+            // TODO: Optimize
             using (Stream stream = new MemoryStream(Data))
             {
                 const int numBytesToRead = 1;

@@ -38,6 +38,10 @@ namespace OpenNos.Domain
         MAPCLOCK,
         REGISTEREVENT,
         SPAWNNPCS,
-        SCRIPTEND
+        SCRIPTEND,
+        REMOVEBUTTONLOCKER,
+        REMOVEMONSTERLOCKER,
+        REFRESHRAIDGOAL,
+        TELEPORT
     }
 }

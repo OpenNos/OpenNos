@@ -16,6 +16,7 @@ namespace OpenNos.Domain
 {
     public enum ScriptedInstanceType : byte
     {
-        Normal = 0
+        TimeSpace = 0,
+        Raid = 1
     }
 }

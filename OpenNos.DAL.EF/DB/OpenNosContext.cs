@@ -41,6 +41,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Card> Card { get; set; }
 
+        public virtual DbSet<BCard> BCard { get; set; }
+
         public virtual DbSet<CellonOption> CellonOption { get; set; }
 
         public virtual DbSet<Character> Character { get; set; }
@@ -62,8 +64,6 @@ namespace OpenNos.DAL.EF.DB
         public virtual DbSet<GeneralLog> GeneralLog { get; set; }
 
         public virtual DbSet<Item> Item { get; set; }
-
-        public virtual DbSet<ItemCard> ItemCard { get; set; }
 
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
 
@@ -111,11 +111,11 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Skill> Skill { get; set; }
 
-        public virtual DbSet<SkillCard> SkillCard { get; set; }
-
         public virtual DbSet<StaticBonus> StaticBonus { get; set; }
 
         public virtual DbSet<Teleporter> Teleporter { get; set; }
+
+        public virtual DbSet<StaticBuff> StaticBuff { get; set; }
 
         #endregion
 
@@ -191,6 +191,12 @@ namespace OpenNos.DAL.EF.DB
                 .HasMany(e => e.StaticBuff)
                 .WithRequired(e => e.Character)
                 .HasForeignKey(e => e.CharacterId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Card>()
+                .HasMany(e => e.StaticBuff)
+                .WithRequired(e => e.Card)
+                .HasForeignKey(e => e.CardId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
@@ -358,29 +364,29 @@ namespace OpenNos.DAL.EF.DB
                 .WithRequired(e => e.Map)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<SkillCard>()
-                .HasRequired(e => e.Skill)
-                .WithMany(e => e.SkillCard)
-                .HasForeignKey(e => e.SkillVNum)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<BCard>()
+             .HasOptional(e => e.Skill)
+              .WithMany(e => e.BCards)
+              .HasForeignKey(e => e.SkillVNum)
+              .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<SkillCard>()
-                .HasRequired(e => e.Card)
-                .WithMany(e => e.SkillCard)
+            modelBuilder.Entity<BCard>()
+            .HasOptional(e => e.NpcMonster)
+             .WithMany(e => e.BCards)
+             .HasForeignKey(e => e.NpcMonsterVNum)
+             .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<BCard>()
+                .HasOptional(e => e.Card)
+                .WithMany(e => e.BCards)
                 .HasForeignKey(e => e.CardId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<ItemCard>()
-                .HasRequired(e => e.Item)
-                .WithMany(e => e.ItemCard)
-                .HasForeignKey(e => e.ItemVNum)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<ItemCard>()
-                .HasRequired(e => e.Card)
-                .WithMany(e => e.ItemCard)
-                .HasForeignKey(e => e.CardId)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<BCard>()
+                .HasOptional(e => e.Item)
+                 .WithMany(e => e.BCards)
+                 .HasForeignKey(e => e.ItemVNum)
+                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<MapTypeMap>()
                 .HasRequired(e => e.Map)

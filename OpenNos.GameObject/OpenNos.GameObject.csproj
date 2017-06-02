@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OpenNos.GameObject</RootNamespace>
     <AssemblyName>OpenNos.GameObject</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StyleCopTreatErrorsAsWarnings>True</StyleCopTreatErrorsAsWarnings>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,20 +33,40 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=6.0.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.6.0.2\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="CloneExtensions, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CloneExtensions.1.3.0\lib\net45\CloneExtensions.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\CloneExtensions.1.3.0\lib\net461\CloneExtensions.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.2.1\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -54,25 +75,20 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Reactive.Core, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Core.3.1.1\lib\net45\System.Reactive.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Reactive.Core, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Core.3.1.1\lib\net46\System.Reactive.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reactive.Interfaces.3.1.1\lib\net45\System.Reactive.Interfaces.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Reactive.Linq, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Linq.3.1.1\lib\net45\System.Reactive.Linq.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Reactive.Linq, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Linq.3.1.1\lib\net46\System.Reactive.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="System.Reactive.PlatformServices, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.PlatformServices.3.1.1\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Reactive.PlatformServices, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.PlatformServices.3.1.1\lib\net46\System.Reactive.PlatformServices.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Windows.Threading, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reactive.Windows.Threading.3.1.1\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -86,8 +102,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Buff\Indicators\NoSP\Archer\RitualOfHawk.cs" />
+    <Compile Include="Buff\Buff.cs" />
+    <Compile Include="Buff\BCard.cs" />
+    <Compile Include="Buff\Card.cs" />
     <Compile Include="Event\EventContainer.cs" />
+    <Compile Include="Event\Schedule.cs" />
     <Compile Include="Helpers\EventHelper.cs" />
     <Compile Include="Event\EventSchedule.cs" />
     <Compile Include="Event\INSTANTBATTLE\InstantBattle.cs" />
@@ -95,15 +114,47 @@
     <Compile Include="Event\MINILANDREFRESH\MinilandRefresh.cs" />
     <Compile Include="Helpers\UserInterfaceHelper.cs" />
     <Compile Include="Clock.cs" />
+    <Compile Include="Locker.cs" />
     <Compile Include="Map\MapButton.cs" />
     <Compile Include="InstanceBag.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="NpcToSummon.cs" />
     <Compile Include="MonsterToSummon.cs" />
+    <Compile Include="Packets\ClientPackets\BlDelPacket.cs" />
+    <Compile Include="Packets\ClientPackets\BlInsPacket.cs" />
+    <Compile Include="Packets\ClientPackets\BtkPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CreateFamilyPacket.cs" />
     <Compile Include="Packets\ClientPackets\EscapePacket.cs" />
-    <Compile Include="Packets\ClientPackets\RselPacket.cs" />
-    <Compile Include="Packets\ClientPackets\RstartPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FamilyChatPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FamilyDismissPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FamilyManagementPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FInsPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GameStartPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GListPacket.cs" />
+    <Compile Include="Packets\ClientPackets\HeroPacket.cs" />
+    <Compile Include="Packets\ClientPackets\JoinFamilyPacket.cs" />
+    <Compile Include="Packets\ClientPackets\NcifPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PdtsePacket.cs" />
+    <Compile Include="Packets\ClientPackets\QSetPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MkraidPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RlPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ReqInfoPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RequestNpcPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RevivalPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RdPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RSelPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RStartPacket.cs" />
     <Compile Include="Packets\ClientPackets\RxitPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SellPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ShoppingPacket.cs" />
+    <Compile Include="Packets\ClientPackets\UseItemPacket.cs" />
+    <Compile Include="Packets\CommandPackets\AddPartnerPacket.cs" />
+    <Compile Include="Packets\CommandPackets\CreateItemPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ShutdownAllPacket.cs" />
+    <Compile Include="Packets\CommandPackets\CharacterEditPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FDelPacket.cs" />
+    <Compile Include="Packets\CommandPackets\WarningPacket.cs" />
+    <Compile Include="Packets\ServerPackets\TalkPacket.cs" />
     <Compile Include="ScriptedInstance.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />
@@ -139,7 +190,6 @@
     <Compile Include="Packets\CommandPackets\BlockFExpPacket.cs" />
     <Compile Include="Packets\CommandPackets\BlockRepPacket.cs" />
     <Compile Include="Packets\CommandPackets\HeroXpRatePacket.cs" />
-    <Compile Include="Packets\CommandPackets\InventoryPreviewPacket.cs" />
     <Compile Include="Packets\CommandPackets\MutePacket.cs" />
     <Compile Include="Packets\CommandPackets\ArenaWinnerPacket.cs" />
     <Compile Include="Packets\CommandPackets\BackpackPacket.cs" />
@@ -176,51 +226,6 @@
     <Compile Include="Portal.cs" />
     <Compile Include="BazaarItemLink.cs" />
     <Compile Include="Account.cs" />
-    <Compile Include="Buff\BCardEntry.cs" />
-    <Compile Include="Buff\BCard\SubType.cs" />
-    <Compile Include="Buff\BCard\Type.cs" />
-    <Compile Include="Buff\BuffContainer.cs" />
-    <Compile Include="Buff\Indicators\IndicatorBase.cs" />
-    <Compile Include="Buff\Indicators\Item\AttackPotion.cs" />
-    <Compile Include="Buff\Indicators\Item\DefensePotion.cs" />
-    <Compile Include="Buff\Indicators\Item\EnergyPotion.cs" />
-    <Compile Include="Buff\Indicators\Item\ExperiencePotion.cs" />
-    <Compile Include="Buff\Indicators\SP1\Archer\HawkEye.cs" />
-    <Compile Include="Buff\Indicators\SP1\Archer\WindWalker.cs" />
-    <Compile Include="Buff\Indicators\SP1\Magician\FireBlessing.cs" />
-    <Compile Include="Buff\Indicators\SP1\Magician\ManaTransfusion.cs" />
-    <Compile Include="Buff\Indicators\SP1\Swordsman\IronSkin.cs" />
-    <Compile Include="Buff\Indicators\SP1\Swordsman\MoraleIncrease.cs" />
-    <Compile Include="Buff\Indicators\SP1\Swordsman\Sprint.cs" />
-    <Compile Include="Buff\Indicators\SP2\Archer\CriticalHit.cs" />
-    <Compile Include="Buff\Indicators\SP2\Archer\PactofDarkness.cs" />
-    <Compile Include="Buff\Indicators\SP2\Archer\SinisterShadow.cs" />
-    <Compile Include="Buff\Indicators\SP2\Magician\Blessing.cs" />
-    <Compile Include="Buff\Indicators\SP2\Magician\GroupHealing.cs" />
-    <Compile Include="Buff\Indicators\SP2\Magician\Healing.cs" />
-    <Compile Include="Buff\Indicators\SP2\Magician\HolyWeapon.cs" />
-    <Compile Include="Buff\Indicators\SP2\Magician\ManaShield.cs" />
-    <Compile Include="Buff\Indicators\SP2\Swordsman\BreathofRecovery.cs" />
-    <Compile Include="Buff\Indicators\SP2\Swordsman\SharpEdge.cs" />
-    <Compile Include="Buff\Indicators\SP3\Archer\BoosterOn.cs" />
-    <Compile Include="Buff\Indicators\SP3\Archer\Haste.cs" />
-    <Compile Include="Buff\Indicators\SP3\Archer\MiraclousHealing.cs" />
-    <Compile Include="Buff\Indicators\SP3\Magician\BlessingofWater.cs" />
-    <Compile Include="Buff\Indicators\SP3\Magician\FrozenShield.cs" />
-    <Compile Include="Buff\Indicators\SP3\Swordsman\FirstBlessing.cs" />
-    <Compile Include="Buff\Indicators\SP3\Swordsman\HolyShield.cs" />
-    <Compile Include="Buff\Indicators\SP3\Swordsman\PrayerofDefence.cs" />
-    <Compile Include="Buff\Indicators\SP3\Swordsman\PrayerofOffence.cs" />
-    <Compile Include="Buff\Indicators\SP3\Swordsman\SecondBlessing.cs" />
-    <Compile Include="Buff\Indicators\SP3\Swordsman\ShiningEffect.cs" />
-    <Compile Include="Buff\Indicators\SP3\Swordsman\ThirdBlessing.cs" />
-    <Compile Include="Buff\Indicators\SP4\Archer\BearSpirit.cs" />
-    <Compile Include="Buff\Indicators\SP4\Archer\EagleSpirit.cs" />
-    <Compile Include="Buff\Indicators\SP4\Archer\ElementalShine.cs" />
-    <Compile Include="Buff\Indicators\SP4\Archer\WolfGhost.cs" />
-    <Compile Include="Buff\Indicators\SP4\Magician\DarkForce.cs" />
-    <Compile Include="Buff\Indicators\SP4\Magician\GhostGuard.cs" />
-    <Compile Include="Buff\Indicators\SP4\Swordsman\Berserker.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="ExchangeInfo.cs" />
     <Compile Include="FamilyCharacter.cs" />
@@ -260,7 +265,6 @@
     <Compile Include="Packets\ClientPackets\ExchangeRequestPacket.cs" />
     <Compile Include="Packets\ClientPackets\CClosePacket.cs" />
     <Compile Include="Packets\ClientPackets\FhisctsPacket.cs" />
-    <Compile Include="Packets\ClientPackets\GameStart.cs" />
     <Compile Include="Packets\ClientPackets\FrankCtsPacket.cs" />
     <Compile Include="Packets\ClientPackets\GetPacket.cs" />
     <Compile Include="Packets\ClientPackets\FStashEndPacket.cs" />
@@ -271,7 +275,7 @@
     <Compile Include="Packets\ClientPackets\NpinfoPacket.cs" />
     <Compile Include="Packets\ClientPackets\PclPacket.cs" />
     <Compile Include="Packets\ClientPackets\CSkillPacket.cs" />
-    <Compile Include="Packets\ClientPackets\FauthPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FAuthPacket.cs" />
     <Compile Include="Packets\ClientPackets\TodayPacket.cs" />
     <Compile Include="Packets\ClientPackets\WhisperPacket.cs" />
     <Compile Include="Packets\ClientPackets\PLeavePacket.cs" />
@@ -372,12 +376,10 @@
     <Compile Include="Networking\ServerManager.cs" />
     <Compile Include="Networking\BroadcastPacket.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
-    <Compile Include="Networking\ReceiverType.cs" />
     <Compile Include="Npc\NpcMonster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\CharacterHelper.cs" />
     <Compile Include="Family.cs" />
-    <Compile Include="Raid.cs" />
     <Compile Include="Skill.cs" />
     <Compile Include="CharacterSkill.cs" />
     <Compile Include="Item\Instance\SpecialistInstance.cs" />
@@ -408,40 +410,19 @@
       <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>
       <Name>OpenNos.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.Master.Library\OpenNos.Master.Library.csproj">
+      <Project>{8FABDA5B-C873-4E32-A78F-08A9A4768595}</Project>
+      <Name>OpenNos.Master.Library</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenNos.PathFinder\OpenNos.PathFinder.csproj">
       <Project>{4BC2B4B0-2A38-4274-98A2-37CEF5F03B42}</Project>
       <Name>OpenNos.PathFinder</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.WebApi.Reference\OpenNos.WebApi.Reference.csproj">
-      <Project>{F36E27AB-7274-48D5-8693-1CCF7919D32C}</Project>
-      <Name>OpenNos.WebApi.Reference</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.WebApi.SelfHost\OpenNos.WebApi.SelfHost.csproj">
-      <Project>{5D69B6BE-062B-408D-913E-5CD2F21D5D17}</Project>
-      <Name>OpenNos.WebApi.SelfHost</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Buff\Indicators\FunSP\Jajamaru\" />
-    <Folder Include="Buff\Indicators\FunSP\Pirate\" />
-    <Folder Include="Buff\Indicators\NoSP\Magician\" />
-    <Folder Include="Buff\Indicators\NoSP\Swordsman\" />
-    <Folder Include="Buff\Indicators\SP5\Archer\" />
-    <Folder Include="Buff\Indicators\SP5\Magician\" />
-    <Folder Include="Buff\Indicators\SP5\Swordsman\" />
-    <Folder Include="Buff\Indicators\SP6\Archer\" />
-    <Folder Include="Buff\Indicators\SP6\Magician\" />
-    <Folder Include="Buff\Indicators\SP6\Swordsman\" />
-    <Folder Include="Buff\Indicators\SP7\Archer\" />
-    <Folder Include="Buff\Indicators\SP7\Magician\" />
-    <Folder Include="Buff\Indicators\SP7\Swordsman\" />
-    <Folder Include="Buff\Indicators\SP8\Archer\" />
-    <Folder Include="Buff\Indicators\SP8\Magician\" />
-    <Folder Include="Buff\Indicators\SP8\Swordsman\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

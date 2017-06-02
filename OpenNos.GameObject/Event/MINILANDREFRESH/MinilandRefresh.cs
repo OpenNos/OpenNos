@@ -15,7 +15,7 @@
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
 using System;
 using System.Linq;
 
@@ -39,7 +39,7 @@ namespace OpenNos.GameObject.Event
                     Session.Character.GetReput(2 * count);
                     Session.Character.MinilandPoint = 2000;
                 }
-                else if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.Instance.ServerGroup, chara.CharacterId).Result)
+                else if (CommunicationServiceClient.Instance.IsCharacterConnected(ServerManager.Instance.ServerGroup, chara.CharacterId))
                 {
                     if (gen == null)
                     {

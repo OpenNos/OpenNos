@@ -6,7 +6,7 @@ using OpenNos.Domain;
 namespace OpenNos.GameObject
 {
     [PacketHeader("fauth")]
-    public class FauthPacket : PacketDefinition
+    public class FAuthPacket : PacketDefinition
     {
         #region Properties
         [PacketIndex(0)]

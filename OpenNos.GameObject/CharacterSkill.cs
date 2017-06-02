@@ -27,11 +27,11 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public CharacterSkill(CharacterSkillDTO dto)
+        public CharacterSkill(CharacterSkillDTO characterSkill)
         {
-            CharacterId = dto.CharacterId;
-            Id = dto.Id;
-            SkillVNum = dto.SkillVNum;
+            CharacterId = characterSkill.CharacterId;
+            Id = characterSkill.Id;
+            SkillVNum = characterSkill.SkillVNum;
             LastUse = DateTime.Now.AddHours(-1);
             Hit = 0;
         }

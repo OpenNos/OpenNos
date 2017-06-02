@@ -7,7 +7,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Mock;
 using OpenNos.Handler;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -42,7 +42,7 @@ namespace OpenNos.Test
             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
 
             // register for account login
-            ServerCommunicationClient.Instance.HubProxy.Invoke("RegisterAccountLogin", account.Name, 12345);
+            CommunicationServiceClient.Instance.RegisterAccountLogin(account.AccountId, 12345);
 
             // OpenNosEntryPoint -> LoadCharacterList
             client.ReceivePacket("12345");
@@ -245,12 +245,13 @@ namespace OpenNos.Test
                 Name = "Testing-Map",
                 ShopAllowed = true
             };
-            List<byte> mapData = new List<byte>();
-
-            mapData.Add(255); // x length
-            mapData.Add(0); // x length
-            mapData.Add(255); // y length
-            mapData.Add(0); // y length
+            List<byte> mapData = new List<byte>
+            {
+                255, // x length
+                0, // x length
+                255, // y length
+                0 // y length
+            };
 
             // create map grid
             for (int i = 0; i < 255; i++)

@@ -18,8 +18,8 @@ namespace OpenNos.Domain
     {
         MapPortal = -1,
         TSNormal = 0, // same over >127 - sbyte
-        Closed = 1,
-        Open = 2,
+        Open = 1,
+        Closed = 2,
         Miniland = 3,
         TSEnd = 4,
         TSEndClosed = 5,

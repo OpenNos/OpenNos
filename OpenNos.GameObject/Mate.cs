@@ -36,13 +36,13 @@ namespace OpenNos.GameObject
         {
         }
 
-        public Mate(Character owner, short VNum, byte level, MateType matetype)
+        public Mate(Character owner, NpcMonster npcMonster, byte level, MateType matetype)
         {
-            NpcMonsterVNum = VNum;
-            Monster = ServerManager.Instance.GetNpc(VNum);
-            Hp = Monster.MaxHP;
-            Mp = Monster.MaxMP;
-            Name = Monster.Name;
+            NpcMonsterVNum = npcMonster.NpcMonsterVNum;
+            Monster = npcMonster;
+            Hp = npcMonster.MaxHP;
+            Mp = npcMonster.MaxMP;
+            Name = npcMonster.Name;
             MateType = matetype;
             Level = level;
             Loyalty = 1000;
@@ -78,7 +78,10 @@ namespace OpenNos.GameObject
                 }
                 return monster;
             }
-            set { monster = value; }
+            set
+            {
+                monster = value;
+            }
         }
 
         public Character Owner
@@ -165,7 +168,6 @@ namespace OpenNos.GameObject
                     ItemInstance Armor = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Armor);
                     ItemInstance Gloves = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Gloves);
                     ItemInstance Boots = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Boots);
-
                     return $"sc_n {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(Weapon != null ? $"{Weapon.ItemVNum}.{Weapon.Rare}.{Weapon.Upgrade}" : "-1")} {(Armor != null ? $"{Armor.ItemVNum}.{Armor.Rare}.{Armor.Upgrade}" : "-1")} {(Gloves != null ? $"{Gloves.ItemVNum}.0.0" : "-1")} {(Boots != null ? $"{Boots.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} {(Skin != 0 ? Skin : -1)} {(IsSummonable ? 1 : 0)} -1 -1 -1 -1";
 
                 case MateType.Pet:

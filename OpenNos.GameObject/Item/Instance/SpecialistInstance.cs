@@ -133,7 +133,11 @@ namespace OpenNos.GameObject
             List<CharacterSkill> skillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.Instance.GetAllSkill().Where(ski => ski.Class == Item.Morph + 31 && ski.LevelMinimum <= SpLevel))
             {
-                skillsSp.Add(new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
+                skillsSp.Add(new CharacterSkill
+                {
+                    SkillVNum = ski.SkillVNum,
+                    CharacterId = CharacterId
+                });
             }
             byte spdestroyed = 0;
             if (Rare == -2)
@@ -391,7 +395,9 @@ namespace OpenNos.GameObject
         public void UpgradeSp(ClientSession Session, UpgradeProtection protect)
         {
             if (Upgrade >= 15)
+            {
                 return;
+            }
 
             short[] upfail = { 20, 25, 30, 40, 50, 60, 65, 70, 75, 80, 90, 93, 95, 97, 99 };
             short[] destroy = { 0, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70 };
@@ -621,7 +627,10 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
                 wearable.Upgrade++;
-                Session.Character.Family?.InsertFamilyLog(FamilyLogType.ItemUpgraded, Session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
+                if (wearable.Upgrade > 8)
+                {
+                    Session.Character.Family?.InsertFamilyLog(FamilyLogType.ItemUpgraded, Session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
+                }
                 Session.SendPacket(wearable.GenerateInventoryAdd());
             }
             Session.SendPacket(Session.Character.GenerateGold());

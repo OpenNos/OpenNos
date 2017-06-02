@@ -635,7 +635,7 @@
     <value>Wrong value!</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
-    <value>You ask for an exchange with: {0}</value>
+    <value>You ask for an exchange with: {0}.</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
     <value>{0} has logged in.</value>
@@ -1412,6 +1412,18 @@
     <value>No family warehouse found.</value>
   </data>
   <data name="YOU_GET_PET" xml:space="preserve">
-    <value>You get a pet.</value>
+    <value>You get a pet called: {0}.</value>
+  </data>
+  <data name="API_INITIALIZED" xml:space="preserve">
+    <value>Master Server communication has been initialized.</value>
+  </data>
+  <data name="RETRY_CONNECTION" xml:space="preserve">
+    <value>Cannot connect to Master Server! Trying again in 5 seconds...</value>
+  </data>
+  <data name="WARNING" xml:space="preserve">
+    <value>You've been warned for: {0}</value>
+  </data>
+  <data name="WARNING_INFO" xml:space="preserve">
+    <value>You've been warned: {0} times.</value>
   </data>
 </root>

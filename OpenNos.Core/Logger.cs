@@ -51,7 +51,7 @@ namespace OpenNos.Core
         /// <param name="Caller"></param>
         /// <param name="message"></param>
         /// <param name="memberName"></param>
-        public static void Debug(string Caller, string message, [CallerMemberName] string memberName = "")
+        public static void Debug(string Caller, string message, [CallerMemberName]string memberName = "")
         {
             Log?.Debug($"{Caller} Method: {memberName} Packet: {message}");
         }
@@ -66,6 +66,20 @@ namespace OpenNos.Core
             if (innerException != null)
             {
                 Log?.Error($"{memberName}: {innerException.Message}", innerException);
+            }
+        }
+
+        /// <summary>
+        /// Wraps up the info message with the CallerMemberName
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
+        /// <param name="memberName"></param>
+        public static void Info(string message, Exception innerException = null, [CallerMemberName]string memberName = "")
+        {
+            if (innerException != null)
+            {
+                Log?.Info($"Method: {memberName} Message: {message}", innerException);
             }
         }
 

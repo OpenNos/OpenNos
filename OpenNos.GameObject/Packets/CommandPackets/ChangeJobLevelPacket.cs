@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$JLvl", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ChangeJobLevelPacket : PacketDefinition
@@ -13,9 +13,10 @@ namespace OpenNos.GameObject
         [PacketIndex(0)]
         public byte JobLevel { get; set; }
 
-        [PacketIndex(1)]
-
-        public string Name { get; set; }
+        public static string ReturnHelp()
+        {
+            return "$JLvl JOBLEVEL";
+        }
 
         #endregion
     }

@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$ChangeRep", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ChangeReputationPacket : PacketDefinition
@@ -13,8 +13,10 @@ namespace OpenNos.GameObject
         [PacketIndex(0)]
         public long Reputation { get; set; }
 
-        [PacketIndex(1)]
-        public string Name { get; set; }
+        public static string ReturnHelp()
+        {
+            return "$ChangeRep AMOUNT";
+        }
 
         #endregion
     }

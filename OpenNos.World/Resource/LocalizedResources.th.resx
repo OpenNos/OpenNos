@@ -1,0 +1,1080 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ACCOUNT_ARRIVED" xml:space="preserve">
+    <value>Account with SessionId {0} has arrived.</value>
+  </data>
+  <data name="ADMINISTRATOR" xml:space="preserve">
+    <value>ทีมงาน</value>
+  </data>
+  <data name="ADVENTURER" xml:space="preserve">
+    <value>Adventurer</value>
+  </data>
+  <data name="ADVENTURERS_CANT_USE" xml:space="preserve">
+    <value>ไม่สามารถสวมใส่ได้เนื่องจากอาชีพไม่ถูกต้อง</value>
+  </data>
+  <data name="ALREADY_EXCHANGE" xml:space="preserve">
+    <value>แลกเปลี่ยนเรียบร้อยแล้ว</value>
+  </data>
+  <data name="ALREADY_IN_GROUP" xml:space="preserve">
+    <value>เข้าร่วม Party</value>
+  </data>
+  <data name="ALREADY_TAKEN" xml:space="preserve">
+    <value>ชื่อตัวละครนี้ถูกใช้ไปแล้ว</value>
+  </data>
+  <data name="AMMO_LOADED_ADVENTURER" xml:space="preserve">
+    <value>บรรจุลูกกระสุน</value>
+  </data>
+  <data name="AMMO_LOADED_ARCHER" xml:space="preserve">
+    <value>บรรจุลูกธนู</value>
+  </data>
+  <data name="AMMO_LOADED_SWORDSMAN" xml:space="preserve">
+    <value>บรรจุกระสุน</value>
+  </data>
+  <data name="ARCHER" xml:space="preserve">
+    <value>Archer</value>
+  </data>
+  <data name="ASK_BIND" xml:space="preserve">
+    <value>หากคุณสวมใส่ Item นี้แล้ว คุณจะไม่สามารถทำการแลกเปลี่ยน Item นี้ได้อีก
+    คุณต้องการที่จะสวมใส่มันใช่ไหม?</value>
+  </data>
+  <data name="ASK_REVIVE" xml:space="preserve">
+    <value>คุณต้องการจะเริ่มต้นที่นี้ใช่ไหม?
+    คุณจำเป็นต้องใช้ Seeds of Chaos จำนวน 10 ชิ้น</value>
+  </data>
+  <data name="ASK_REVIVE_FREE" xml:space="preserve">
+    <value>คุณต้องการจะเริ่มต้นที่นี้ใช่ไหม?
+    ฟรีสำหรับผู้เล่นที่ Level ต่ำกว่า 20</value>
+  </data>
+  <data name="ASK_TO_DELETE" xml:space="preserve">
+    <value>ต้องการจะลบ Item นี้ใช่ไหม?</value>
+  </data>
+  <data name="ASK_USE" xml:space="preserve">
+    <value>ต้องการใช้ Item ชิ้นนี้?</value>
+  </data>
+  <data name="ASK_WINGS_CHANGE" xml:space="preserve">
+    <value>Do you want to change your wings?</value>
+    <comment>[WAIT]</comment>
+  </data>
+  <data name="BAD_DIGNITY" xml:space="preserve">
+    <value>ค่าเกียรติยศไม่ถูกต้อง</value>
+  </data>
+  <data name="BAD_DROP_AMOUNT" xml:space="preserve">
+    <value>คุณไม่สามารถทิ้ง Item นี้ได้</value>
+  </data>
+  <data name="BAD_EQUIPMENT" xml:space="preserve">
+    <value>ยังไม่สามารถสวมใส่ได้</value>
+  </data>
+  <data name="BAD_FAIRY" xml:space="preserve">
+    <value>ธาตุของ Fairy แตกต่างกับธาตุของ Specialist</value>
+  </data>
+  <data name="BAD_PASSWORD" xml:space="preserve">
+    <value>ไม่สามารถเชื่อมต่อกับ Server กรุณาตรวจสอบความถูกต้องของ ID และ Password</value>
+  </data>
+  <data name="BN0" xml:space="preserve">
+    <value>โปรดเก็บรักษาไอดีและพาสเวิร์ดของท่านเป็นความลับ</value>
+  </data>
+  <data name="BN1" xml:space="preserve">
+    <value>ทีมงานตัวจริงจะไม่ขอไอดีและพาสเวิร์ดของผู้เล่น</value>
+  </data>
+  <data name="BN2" xml:space="preserve">
+    <value>การใช้โปรแกรมหรืออุปกรณ์ช่วยเล่นมีโทษระงับไอดีถาวร</value>
+  </data>
+  <data name="BN3" xml:space="preserve">
+    <value>การขายไอดี,เงินในเกม,ไอเทมเป็นเงินจริงระงับไอดีถาวร</value>
+  </data>
+  <data name="BN4" xml:space="preserve">
+    <value>พัฒนาโดย^Opennos^Team</value>
+  </data>
+  <data name="BN5" xml:space="preserve">
+    <value>อยู่ในช่วงทดสอบระบบ</value>
+  </data>
+  <data name="BN6" xml:space="preserve">
+    <value>ยินดีต้อนรับสู่ครอบครัวนอสเทล</value>
+  </data>
+  <data name="BN7" xml:space="preserve">
+    <value>Opennos^Team^:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^Martazza,^KrisYiu,^Uppermost</value>
+  </data>
+  <data name="BN8" xml:space="preserve">
+    <value>เร็ว^ๆ^นี้เตรียมพบกับอัพเดทครั้งยิ่งใหญ่!!^เจอกัน</value>
+  </data>
+  <data name="BN9" xml:space="preserve">
+    <value>อ่านเพิ่มเติมได้ที่หน้าเวปไซต์จ้า</value>
+  </data>
+  <data name="BOT_MESSAGE_0" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BOT_MESSAGE_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BOT_MESSAGE_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BOT_MESSAGE_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BUFF_BLOCKED" xml:space="preserve">
+    <value>จากนี้ไปคุณจะไม่เห็นรายงาน เมื่อค่าสถานะต่างๆ หมดลง</value>
+  </data>
+  <data name="BUFF_UNLOCKED" xml:space="preserve">
+    <value>จากนี้ไปคุณจะเห็นรายงาน เมื่อค่าสถานะต่างๆ หมดลง</value>
+  </data>
+  <data name="BUY_ITEM" xml:space="preserve">
+    <value>Player: {0} ซื้อ &lt;{1} {2}: ชิ้น &gt;</value>
+  </data>
+  <data name="CANT_ATTACK" xml:space="preserve">
+    <value>ไม่อยู่ในโหมดที่จะใช้ Skill นี้</value>
+  </data>
+  <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
+    <value>มันไม่สามารถใช้งานได้อีก เนื่องจากจิตวิญญาณถูกทำลาย</value>
+  </data>
+  <data name="CANT_MOVE" xml:space="preserve">
+    <value>กรุณารอสักครู่แล้วลองเข้าใหม่อีกครั้ง</value>
+  </data>
+  <data name="CANT_UPGRADE_DESTROYED_SP" xml:space="preserve">
+    <value>มันคือ Card ที่ถูกทำลายวิญญาณไปแล้ว</value>
+  </data>
+  <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
+    <value>{0} เข้าสู่เกม</value>
+  </data>
+  <data name="CHARACTER_LOGGED_OUT" xml:space="preserve">
+    <value>{0} ออกจากเกม</value>
+  </data>
+  <data name="CLASS_CHANGED" xml:space="preserve">
+    <value>อาชีพคุณได้ถูกเปลี่ยนเรียบร้อยแล้ว</value>
+  </data>
+  <data name="CLIENTSESSION_DISPOSING" xml:space="preserve">
+    <value>Clientsession is currently disposing, the packet wont be handled.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="CLIENT_ARRIVED" xml:space="preserve">
+    <value>Client arrived, SessionId: {0}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="CLIENT_CLOSED" xml:space="preserve">
+    <value>Connection closed by Client.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="CLIENT_DISCONNECTED" xml:space="preserve">
+    <value>Connection closed.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="COMPLIMENT_COOLDOWN" xml:space="preserve">
+    <value>คุณสามารถชื่นชมได้วันละครั้งต่อไอดี</value>
+  </data>
+  <data name="COMPLIMENT_GIVEN" xml:space="preserve">
+    <value>ค่าชื่นชมของคุณ {0}.</value>
+  </data>
+  <data name="COMPLIMENT_LOGIN_COOLDOWN" xml:space="preserve">
+    <value>คุณให้คำชื่นชมหลังจาก {0} นาที</value>
+  </data>
+  <data name="COMPLIMENT_NOT_MINLVL" xml:space="preserve">
+    <value>เลเวลมากกว่า30เท่านั้น จึงสามารถให้คำชื่นชมได้</value>
+  </data>
+  <data name="COMPLIMENT_RECEIVED" xml:space="preserve">
+    <value>คุณจะได้ค่าคำชื่นชมจาก {0}.</value>
+  </data>
+  <data name="CONNECTION_LOST" xml:space="preserve">
+    <value>Connection to the server has been lost.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="CORRUPTED_KEEPALIVE" xml:space="preserve">
+    <value>Corrupted Keepalive on client {0}.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="CRAFTED_OBJECT" xml:space="preserve">
+    <value>คุณได้ผลิต {0} x {1}</value>
+  </data>
+  <data name="DATABASE_INITIALIZED" xml:space="preserve">
+    <value>Database initialized.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
+    <value>Database may not be up to date. Please consider updating your database.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="DELETE_ACCOUNT_ERROR" xml:space="preserve">
+    <value>Error deleting Account with Id {0} , {1}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="DELETE_CHARACTER_ERROR" xml:space="preserve">
+    <value>Error deleting Character with Slot {0} , {1}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="DELETE_PENALTYLOG_ERROR" xml:space="preserve">
+    <value>Error deleting PenaltyLog with Id {0} , {1}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="DIGNITY_CHANGED" xml:space="preserve">
+    <value>เกียรติยศได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="DISCONNECT" xml:space="preserve">
+    <value>Client disconnected! ClientId = </value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="DONE" xml:space="preserve">
+    <value>สำเร็จ!</value>
+  </data>
+  <data name="DROPPED_ITEM" xml:space="preserve">
+    <value>dropped {0} x {1}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="DROP_RATE_CHANGED" xml:space="preserve">
+    <value>อัตราการดรอปไอเทมได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="DROP_RATE_NOW" xml:space="preserve">
+    <value>อัตราการดรอป</value>
+  </data>
+  <data name="EMO_BLOCKED" xml:space="preserve">
+    <value>จากนี้ไปคุณจะไม่เห็นการแสดงอารมณ์ต่างๆ</value>
+  </data>
+  <data name="EMO_UNLOCKED" xml:space="preserve">
+    <value>จากนี้ไปคุณจะเห็นการแสดงอารมณ์ต่างๆ</value>
+  </data>
+  <data name="EQ_NOT_EMPTY" xml:space="preserve">
+    <value>ช่องเก็บของคุณเต็มแล้ว</value>
+  </data>
+  <data name="EXCHANGE_BLOCKED" xml:space="preserve">
+    <value>คุณจะถูกปิดการแลกเปลี่ยนตั้งแต่นี้เป็นต้นไป</value>
+  </data>
+  <data name="EXCHANGE_REFUSED" xml:space="preserve">
+    <value>{0} ยกเลิกการแลกเปลี่ยน</value>
+  </data>
+  <data name="EXCHANGE_UNLOCKED" xml:space="preserve">
+    <value>คุณจะยอมรับการแลกเปลี่ยนตั้งแต่นี้เป็นต้นไป</value>
+  </data>
+  <data name="FAIRYMAX" xml:space="preserve">
+    <value>Your fairy reached max level!</value>
+    <comment>[WAIT]</comment>
+  </data>
+  <data name="FAIRYSTATS" xml:space="preserve">
+    <value>XP ของแฟรี่ : {0}/{1}</value>
+  </data>
+  <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
+    <value>อัตราการเพิ่มเลเวลของแฟรี่ได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
+    <value>อัตรการเพิ่มเลเวลของแฟรี่</value>
+  </data>
+  <data name="FAIRY_LEVELUP" xml:space="preserve">
+    <value>{0} พลังเพิ่มขึ้น</value>
+  </data>
+  <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
+    <value>พลังของ {0} ได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="FAMILY_REQ_LOCKED" xml:space="preserve">
+    <value>คุณจะถูกปิดการชวนเข้า Family ตั้งแต่นี้เป็นต้นไป</value>
+  </data>
+  <data name="FAMILY_REQ_UNLOCKED" xml:space="preserve">
+    <value>คุณจะยอมรับการชวนเข้า Family ตั้งแต่นี้เป็นต้นไป</value>
+  </data>
+  <data name="FORCED_DISCONNECT" xml:space="preserve">
+    <value>Forced Disconnecting of client {0}, too much connections.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="FRIEND_REQ_BLOCKED" xml:space="preserve">
+    <value>คุณจะถูกปิดการชวนเป็นเพื่อนตั้งแต่นี้เป็นต้นไป</value>
+  </data>
+  <data name="FRIEND_REQ_UNLOCKED" xml:space="preserve">
+    <value>คุณจะยอมรับการชวนเป็นเพื่อนตั้งแต่นี้เป็นต้นไป</value>
+  </data>
+  <data name="GET_PROTECTION_POWER_1" xml:space="preserve">
+    <value>คุณได้รับพลัง Angel จาก Lateor's Egg</value>
+  </data>
+  <data name="GET_PROTECTION_POWER_2" xml:space="preserve">
+    <value>คุณได้รับพลัง Demon จาก Lateor's Egg</value>
+  </data>
+  <data name="GIFTED" xml:space="preserve">
+    <value>คุณได้รับพัสดุจำนวน {0} ชิ้น</value>
+  </data>
+  <data name="GIFT_SENDED" xml:space="preserve">
+    <value>พัสดุใหม่มาถึงแล้ว</value>
+  </data>
+  <data name="GOLD_RATE_CHANGED" xml:space="preserve">
+    <value>อัตรการดรอปของเงินได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="GOLD_RATE_NOW" xml:space="preserve">
+    <value>อัตรการดรอปของเงิน</value>
+  </data>
+  <data name="GOLD_SET" xml:space="preserve">
+    <value>เงินในกระเป๋าคุณได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="GROUP_ADMIN" xml:space="preserve">
+    <value>คุณคือหัวหน้า Party</value>
+  </data>
+  <data name="GROUP_BLOCKED" xml:space="preserve">
+    <value>เป้าหมายปิดการรับชวน Party</value>
+  </data>
+  <data name="GROUP_CLOSED" xml:space="preserve">
+    <value>สลาย Party</value>
+  </data>
+  <data name="GROUP_DENIED" xml:space="preserve">
+    <value>Group request rejected.</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="GROUP_FULL" xml:space="preserve">
+    <value>Party นี้เต็มแล้ว</value>
+  </data>
+  <data name="GROUP_JOIN" xml:space="preserve">
+    <value>You joined {0}'s group!</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="GROUP_LEFT" xml:space="preserve">
+    <value>ต้องการออกจากปาร์ตี้ใช่ไหม?</value>
+  </data>
+  <data name="GROUP_REQUEST" xml:space="preserve">
+    <value>คุณส่งคำชวนไปถึง {0}</value>
+  </data>
+  <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
+    <value>คุณจะถูกปิดการชวนเข้า Party ตั้งแต่นี้เป็นต้นไป</value>
+  </data>
+  <data name="GROUP_REQ_UNLOCKED" xml:space="preserve">
+    <value>คุณจะยอมรับการชวนเข้า Party ตั้งแต่นี้เป็นต้นไป</value>
+  </data>
+  <data name="HANDLER_NOT_FOUND" xml:space="preserve">
+    <value>Could not found Handler implementation for Packet with Header {0}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="HAS_SHOP_OPENED" xml:space="preserve">
+    <value>คุณไม่สามารถตั้งร้านค้าที่นี่ได้</value>
+  </data>
+  <data name="HEROLEVEL_CHANGED" xml:space="preserve">
+    <value>เลเวลฮีโร่ได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="HERO_CHAT_BLOCKED" xml:space="preserve">
+    <value>จากนี้ไป คุณจะไม่ได้ยินเสียงจากลำโพง</value>
+  </data>
+  <data name="HERO_CHAT_UNLOCKED" xml:space="preserve">
+    <value>จากนี้ไป คุณสามารถได้ยินเสียงจากลำโพง</value>
+  </data>
+  <data name="HP_BLOCKED" xml:space="preserve">
+    <value>จากนี้ไปคุณจะไม่เห็นรายงานต่างๆ เกี่ยวกับค่า HP</value>
+  </data>
+  <data name="HP_UNLOCKED" xml:space="preserve">
+    <value>จากนี้ไปคุณจะเห็นรายงานต่างๆ เกี่ยวกับค่า HP</value>
+  </data>
+  <data name="IMPOSSIBLE_TO_USE" xml:space="preserve">
+    <value>ไม่สามารถใช้ได้</value>
+  </data>
+  <data name="INCOMING_EXCHANGE" xml:space="preserve">
+    <value>ตกลงที่จะทำการแลกเปลี่ยนกับ {0}</value>
+  </data>
+  <data name="INSERT_ERROR" xml:space="preserve">
+    <value>Error inserting or updating character: {0} , {1}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="INTRODUCTION_SET" xml:space="preserve">
+    <value />
+  </data>
+  <data name="INVALID_CHARNAME" xml:space="preserve">
+    <value>กรุณาพิมพ์ชื่อด้วยค่ะ</value>
+  </data>
+  <data name="INVITED_YOU" xml:space="preserve">
+    <value>{0} ชวนคุณ เข้าร่วม Party</value>
+  </data>
+  <data name="IN_BATTLE" xml:space="preserve">
+    <value>You can't invite players when battling.</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="IN_WAITING_FOR" xml:space="preserve">
+    <value>กำลังรอการยืนยัน {0}</value>
+  </data>
+  <data name="ITEM_ACQUIRED" xml:space="preserve">
+    <value>คุณได้รับ </value>
+  </data>
+  <data name="ITEM_ACQUIRED_BY_THE_GIANT_MONSTER" xml:space="preserve">
+    <value>You get the item from the giant monster !</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="ITEM_BOUND_TO" xml:space="preserve">
+    <value>{1} dropped {0} x {2}</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="ITEM_GIFTED" xml:space="preserve">
+    <value>ได้รับพัสดุ &gt;&gt;</value>
+  </data>
+  <data name="ITEM_IS_FIXED" xml:space="preserve">
+    <value>Item นี้ถูกจำกัดระดับ จะไม่สามารถนำมาอัพเกรดได้อีก</value>
+  </data>
+  <data name="ITEMS_LOADED" xml:space="preserve">
+    <value>{0} Items Loaded!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
+    <value>คุณไม่สามารถทิ้ง Item นี้ได้</value>
+  </data>
+  <data name="ITEM_NOT_FOUND" xml:space="preserve">
+    <value>ไม่สามารถหาไอเทมนี้ได้</value>
+  </data>
+  <data name="ITEM_NOT_SOLDABLE" xml:space="preserve">
+    <value>==&gt; คุณไม่สามารถขาย Item นี้ได้</value>
+  </data>
+  <data name="ITEM_NOT_TRADABLE" xml:space="preserve">
+    <value>มี Item ที่ไม่สามารถทำการแลกเปลี่ยนได้ ในรายการของคุณ
+    โปรดทำการแลกเปลี่ยนใหม่อีกครั้ง</value>
+  </data>
+  <data name="ITEM_TIMEOUT" xml:space="preserve">
+    <value>Item is no longer valid.</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="ITEM_UNFIXED" xml:space="preserve">
+    <value>Item ถูกจำกัดระดับ ได้ถูกแก้ไขแล้ว</value>
+  </data>
+  <data name="JOBLEVEL_CHANGED" xml:space="preserve">
+    <value>เลเวลของอาชีพได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="JOB_LEVELUP" xml:space="preserve">
+    <value>Job level เพิ่มขึ้น</value>
+  </data>
+  <data name="JOINED_GROUP" xml:space="preserve">
+    <value>เข้าร่วม Party</value>
+  </data>
+  <data name="LEAVE_GROUP" xml:space="preserve">
+    <value>{0} left the party</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="LEVELUP" xml:space="preserve">
+    <value>ระดับการต่อสู้ของคุณเพิ่มขึ้น</value>
+  </data>
+  <data name="LEVEL_CHANGED" xml:space="preserve">
+    <value>เลเวลได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="LOSE_DIGNITY" xml:space="preserve">
+    <value>ค่าเกียรติยศ ลดลง : {0}</value>
+  </data>
+  <data name="LOW_JOB_LVL" xml:space="preserve">
+    <value>ไม่สามารถสวมใส่ได้ เนื่องจาก Level ไม่ถูกต้อง</value>
+  </data>
+  <data name="LOW_LVL" xml:space="preserve">
+    <value>ยังไม่สามารถสวมใส่ได้</value>
+  </data>
+  <data name="LOW_REP" xml:space="preserve">
+    <value>ไม่สามารถสวมใส่ได้ เนื่องจากระดับค่าชื่อเสียงไม่เพียงพอ</value>
+  </data>
+  <data name="LVL_REQUIRED" xml:space="preserve">
+    <value>Level ของ Card ต่ำเกินไป จะสามารถเริ่มอัพเกรดได้ตั้งแต่Level{0}</value>
+  </data>
+  <data name="MAGICIAN" xml:space="preserve">
+    <value>Magician</value>
+  </data>
+  <data name="MAILED" xml:space="preserve">
+    <value>บันทึกถูกส่งไปแล้ว</value>
+  </data>
+  <data name="MAIL_DELETED" xml:space="preserve">
+    <value>ลบทิ้ง</value>
+  </data>
+  <data name="MAPS_LOADED" xml:space="preserve">
+    <value>{0} Maps Loaded!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="MAX_GOLD" xml:space="preserve">
+    <value>Maximum amount of gold reached!</value>
+    <comment>[WAIT]</comment>
+  </data>
+  <data name="MEMORY" xml:space="preserve">
+    <value>ใช้แรมไปทั้งหมด</value>
+  </data>
+  <data name="MESSAGE_RECEIVED" xml:space="preserve">
+    <value>Message received {0} on client {1}</value>
+  </data>
+  <data name="MINILAND_WELCOME_MESSAGE" xml:space="preserve">
+    <value>Welcome!</value>
+  </data>
+  <data name="MINI_INV_BLOCKED" xml:space="preserve">
+    <value>บ้าน ถูกล็อค</value>
+  </data>
+  <data name="MINI_INV_UNLOCKED" xml:space="preserve">
+    <value>บ้านนี้ถูกเปิดเป็นแบบสาธารณะแล้ว</value>
+  </data>
+  <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
+    <value>If you want to remove a mob, this must be alive!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="MONSTER_REMOVED" xml:space="preserve">
+    <value>มอนสเตอร์ได้ถูกลบ(IDของมอนสเตอร์ในแผนที่: {0}, ชื่อ: {1}, แผนที่: {2}, แกนX: {3}, แกนY: {4})</value>
+  </data>
+  <data name="MAPMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} MapMonsters Loaded!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="MONSTER_NOT_FOUND" xml:space="preserve">
+    <value>ไม่สามารถหามอนสเตอร์นี้ได้</value>
+  </data>
+  <data name="MOUSE_LOCKED" xml:space="preserve">
+    <value>ปิดโชว์เมาส์</value>
+  </data>
+  <data name="MOUSE_UNLOCKED" xml:space="preserve">
+    <value>เปิดโชว์เมาส์</value>
+  </data>
+  <data name="MSG_SENT" xml:space="preserve">
+    <value>Message sent {0} to client {1}</value>
+  </data>
+  <data name="MUTED_FEMALE" xml:space="preserve">
+    <value>I was a very bad girl, and i got punished!</value>
+    <comment>[WAIT][ONONLY]</comment>
+  </data>
+  <data name="MUTED_MALE" xml:space="preserve">
+    <value>I was a bad boy, soo i got punished!</value>
+    <comment>[WAIT][ONONLY]</comment>
+  </data>
+  <data name="MUTED_PLURAL" xml:space="preserve">
+    <value>You have been muted! Reason: {0} For: {1} hours</value>
+    <comment>[WAIT][ONONLY]</comment>
+  </data>
+  <data name="MUTED_SINGULAR" xml:space="preserve">
+    <value>You have been muted! Reason: {0} For: 1 hour</value>
+    <comment>[WAIT][ONONLY]</comment>
+  </data>
+  <data name="MUTE_END" xml:space="preserve">
+    <value>Your punishment has ended!</value>
+    <comment>[WAIT][ONONLY]</comment>
+  </data>
+  <data name="MUTE_TIME" xml:space="preserve">
+    <value>Punishment duration: {0}</value>
+    <comment>[WAIT][ONONLY]</comment>
+  </data>
+  <data name="NEAREST_PORTAL" xml:space="preserve">
+    <value>เทเลพอร์ตที่ใกล้คุณที่สุดได้ถูกลบ(แผนที่: {0}, แกนX: {1}, แกนY: {2})</value>
+  </data>
+  <data name="NEW_CONNECT" xml:space="preserve">
+    <value>Client connected. ClientId = </value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="NEW_LEADER" xml:space="preserve">
+    <value>คุณได้รับตำแหน่งหัวหน้า Party ตั้งแต่บัดนี้เป็นต้นไป</value>
+  </data>
+  <data name="NEW_MAIL" xml:space="preserve">
+    <value>บันทึกใหม่มาถึงแล้ว</value>
+  </data>
+  <data name="NOT_ADVENTURER" xml:space="preserve">
+    <value>คุณสามารถเปลี่ยนอาชีพได้แค่ครั้งเดียวเท่านั้น</value>
+  </data>
+  <data name="NOT_ENOUGH_CP" xml:space="preserve">
+    <value>ค่า CP ไม่เพียงพอ</value>
+  </data>
+  <data name="NOT_ENOUGH_ITEM" xml:space="preserve">
+    <value>You don't have required item to harvest.</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
+    <value>คุณมี Gold ไม่เพียงพอ</value>
+  </data>
+  <data name="NOT_ENOUGH_MP" xml:space="preserve">
+    <value>ค่า MP ไม่เพียงพอ</value>
+  </data>
+  <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
+    <value>ช่องเก็บของคุณเต็มแล้ว</value>
+  </data>
+  <data name="NOT_ENOUGH_POINTS" xml:space="preserve">
+    <value>ค่า SP ไม่เพียงพอ</value>
+  </data>
+  <data name="NOT_ENOUGH_POWER_SEED" xml:space="preserve">
+    <value>คุณมี Seed of Chaos ไม่เพียงพอ</value>
+  </data>
+  <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
+    <value>==&gt; ชื่อเสียงไม่พอ</value>
+  </data>
+  <data name="NOT_ENOUGH_SEED_SAY" xml:space="preserve">
+    <value>T.T ฉันมี Seed of Chaos ไม่พอ</value>
+  </data>
+  <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
+    <value>อิ่มแล้ว~</value>
+  </data>
+  <data name="NOT_HUNGRY_MALE" xml:space="preserve">
+    <value>อิ่มแล้ว~</value>
+  </data>
+  <data name="NOT_MASTER" xml:space="preserve">
+    <value>ไม่สามารถเปลี่ยนโหมดใน Party ได้ เนื่องจากคุณไม่ใช่หัวหน้า Party</value>
+  </data>
+  <data name="NOT_YOUR_ITEM" xml:space="preserve">
+    <value>คุณไม่สามารถครอบครองไอเทมนี้ได้</value>
+  </data>
+  <data name="NO_AMMO_ADVENTURER" xml:space="preserve">
+    <value>ลูกกระสุนไม่เพียงพอ สามารถซื้อเพิ่มได้จากร้านขายอุปกรณ์</value>
+  </data>
+  <data name="NO_AMMO_ARCHER" xml:space="preserve">
+    <value>ลูกธนู หมด!! คุณต้องกลับไปซื้อมันมาจากร้านอุปกรณ์</value>
+  </data>
+  <data name="NO_AMMO_SWORDSMAN" xml:space="preserve">
+    <value>กระสุน หมด!! คุณต้องกลับไปซื้อมันมาจากร้านอุปกรณ์</value>
+  </data>
+  <data name="NO_ENTRY" xml:space="preserve">
+    <value>ไม่มีสัญญาณจากจุดตรงนี้ เนื่องจากเป้าหมายอยู่ไกลมาก</value>
+  </data>
+  <data name="NO_HANDLER_ITEM" xml:space="preserve">
+    <value>No handler found for this item in class {0}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="NO_ITEM" xml:space="preserve">
+    <value>Item doesn't exist!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="NO_MAP" xml:space="preserve">
+    <value>Server need at least nosville MAP to work!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="NO_NRUN_HANDLER" xml:space="preserve">
+    <value>No n_run Handler implementation for {0}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="NO_PORTAL_FOUND" xml:space="preserve">
+    <value>No portal has been found</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="NO_PREZ_MESSAGE" xml:space="preserve">
+    <value>ไม่มีจดหมายแนะนำส่วนตัว</value>
+  </data>
+  <data name="NO_SP" xml:space="preserve">
+    <value>ไม่มี Special Card</value>
+  </data>
+  <data name="NO_WEAPON" xml:space="preserve">
+    <value>ไม่มีอาวุธใช้งาน</value>
+  </data>
+  <data name="NO_WIG" xml:space="preserve">
+    <value>You're not wearing that cool afro ;)</value>
+    <comment>[WAIT]</comment>
+  </data>
+  <data name="NPCMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} Npc-Monsters Loaded!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="MAPNPCS_LOADED" xml:space="preserve">
+    <value>{0} Npcs Loaded!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="PACKET_ARRIVED" xml:space="preserve">
+    <value>Packet arrived, packet: {0}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="PACKET_FAILURE" xml:space="preserve">
+    <value>Failed to send packet {0} to client {1}, {2}.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="PERFECTSP_ATTACK" xml:space="preserve">
+    <value>พลังโจมตี</value>
+  </data>
+  <data name="PERFECTSP_DEFENSE" xml:space="preserve">
+    <value>พลังป้องกัน</value>
+  </data>
+  <data name="PERFECTSP_ELEMENT" xml:space="preserve">
+    <value>ธาตุ</value>
+  </data>
+  <data name="PERFECTSP_FAILURE" xml:space="preserve">
+    <value>การ Plus Upgrade ล้มเหลว</value>
+  </data>
+  <data name="PERFECTSP_FIRE" xml:space="preserve">
+    <value>ความต้านทานธาตุไฟ</value>
+  </data>
+  <data name="PERFECTSP_HPMP" xml:space="preserve">
+    <value>ค่า HP/MP</value>
+  </data>
+  <data name="PERFECTSP_LIGHT" xml:space="preserve">
+    <value>ความต้านทานธาตุแสง</value>
+  </data>
+  <data name="PERFECTSP_SHADOW" xml:space="preserve">
+    <value>ความต้านทานธาตุความมืด</value>
+  </data>
+  <data name="PERFECTSP_SUCCESS" xml:space="preserve">
+    <value>การ Plus Upgrade สำเร็จ +{1} ({0})</value>
+  </data>
+  <data name="PERFECTSP_WATER" xml:space="preserve">
+    <value>ความต้านทานธาตุน้ำ</value>
+  </data>
+  <data name="PLAYER_IN_BATTLE" xml:space="preserve">
+    <value>ไม่สามารถทำการแลกเปลี่ยนกับผู้ที่กำลังต่อสู้ได้</value>
+  </data>
+  <data name="POINTS_SET" xml:space="preserve">
+    <value>ค่าสถานะได้เพิ่มขึ้น</value>
+  </data>
+  <data name="PORTAL_BLOCKED" xml:space="preserve">
+    <value>ประตูถูกปิดอยู่</value>
+  </data>
+  <data name="QNA_ITEM" xml:space="preserve">
+    <value>ต้องการใช้ Item ชิ้นนี้?</value>
+  </data>
+  <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
+    <value>คุณปิดการใช้ระบบยืนอัตโนมัติ</value>
+  </data>
+  <data name="QUICK_GET_UP_ENABLED" xml:space="preserve">
+    <value>คุณจะยืนขึ้น เมื่อเคลื่อนที่หรือใช้เม้าส์กระทำการใดๆ ในขณะที่กำลังพัก</value>
+  </data>
+  <data name="RARIFY_FAILED" xml:space="preserve">
+    <value>Item สูญหายไปเนื่องจากการเดิมพันล้มเหลว!</value>
+  </data>
+  <data name="RARIFY_FAILED_ITEM_SAVED" xml:space="preserve">
+    <value>Gambling failed, but the Item was saved from destruction.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="RARIFY_SUCCESS" xml:space="preserve">
+    <value>การเดิมพันสำเร็จ! ได้รับ Rare Level : {0}</value>
+  </data>
+  <data name="RATEGOLD_NOW" xml:space="preserve">
+    <value>อัตราจำนวนเงินที่ดรอปได้</value>
+  </data>
+  <data name="RECEIVED_ITEM" xml:space="preserve">
+    <value>You received: {0}</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="RECIPES_LOADED" xml:space="preserve">
+    <value>{0} Recipes Loaded!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
+    <value>{0} ปฏิเสธการชวน</value>
+  </data>
+  <data name="REMOVE_SP" xml:space="preserve">
+    <value>ไม่สามารถเรียนได้หากแปลงร่างอยู่</value>
+  </data>
+  <data name="REMOVE_VEHICLE" xml:space="preserve">
+    <value>คุณสามารถใช้ ฟื้นฟูนี้เท่านั้น เมื่อคุณแปลงร่างเป็น Rider แล้ว</value>
+  </data>
+  <data name="REPUT_DECREASED" xml:space="preserve">
+    <value>ค่าชื่อเสียงลดลง</value>
+  </data>
+  <data name="REP_CHANGED" xml:space="preserve">
+    <value>ค่าชื่อเสียงได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="RESTORE_DIGNITY" xml:space="preserve">
+    <value>ค่าเกียรติยศสูงสุด</value>
+  </data>
+  <data name="SAVING_ALL" xml:space="preserve">
+    <value>Saving all data!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="SCROLL_PROTECT_USED" xml:space="preserve">
+    <value>Protect scroll ถูกใช้งาน</value>
+  </data>
+  <data name="SEED_USED" xml:space="preserve">
+    <value>คุณใช้ Seed of Chaos 10 ชิ้น</value>
+  </data>
+  <data name="SELL_ITEM_VALIDE" xml:space="preserve">
+    <value>Sold: {0} &lt;{1} : piece &gt;</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="SERVER_WORKING_TIME" xml:space="preserve">
+    <value>เวลาการทำงานของเซิร์ฟเวอร์ในขณะนี้</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="SEX_CHANGED" xml:space="preserve">
+    <value>Sex has been changed!</value>
+    <comment>[WAIT]</comment>
+  </data>
+  <data name="SHARING" xml:space="preserve">
+    <value>เปลี่ยนการตั้งค่าการได้รับ Item จาก Party เป็น 'แบ่งกัน'</value>
+  </data>
+  <data name="SHARING_BY_ORDER" xml:space="preserve">
+    <value>เปลี่ยนการตั้งค่าการได้รับ Item จาก Party เป็น 'แยกกัน'</value>
+  </data>
+  <data name="SHOPS_LOADED" xml:space="preserve">
+    <value>{0} Shops Loaded!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="SHOP_EMPTY" xml:space="preserve">
+    <value>ไม่มี Item ที่คุณสามารถขายได้</value>
+  </data>
+  <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
+    <value>กรุณาเปิดร้านให้ห่างจากจุดวาป</value>
+  </data>
+  <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
+    <value>โปรดใช้บริเวณที่จัดไว้ให้สำหรับการตั้งร้านค้าส่วนตัว</value>
+  </data>
+  <data name="SHOP_ONLY_TRADABLE_ITEMS" xml:space="preserve">
+    <value>You can only sell tradable items in a private shop.</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="SHOP_OPEN" xml:space="preserve">
+    <value>คุณได้เปิดร้านค้าแล้ว</value>
+  </data>
+  <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
+    <value>เปิดร้านขายของส่วนตัว</value>
+  </data>
+  <data name="SHUTDOWN_MIN" xml:space="preserve">
+    <value>ระบบจะถูกปิดภายใน{0}นาทีโปรดออกจากเกมเพื่อป้องกันการสูญหายของข้อมูล</value>
+  </data>
+  <data name="SHUTDOWN_SEC" xml:space="preserve">
+    <value>ระบบจะถูกปิดภายใน{0}วินาทีโปรดออกจากเกมเพื่อป้องกันการสูญหายของข้อมูล</value>
+  </data>
+  <data name="SKILLS_IN_LOADING" xml:space="preserve">
+    <value>จะสามารถเปลี่ยนร่างได้อีกครั้งหลังจากหน่วงเวลาของ Skill ทั้งหมดสิ้นสุดลง</value>
+  </data>
+  <data name="SKILLS_LOADED" xml:space="preserve">
+    <value>{0} Skills Loaded!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
+    <value>ความสามารถนี้ถูกลบไปแล้ว</value>
+  </data>
+  <data name="SKILL_CANT_LEARN" xml:space="preserve">
+    <value>คุณไม่สามารถเรียนสกิวนั้นได้</value>
+  </data>
+  <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
+    <value>ไม่สามารถลบได้ หากมันถูกเชื่อมต่อกับ plus skill</value>
+  </data>
+  <data name="SKILL_LEARNED" xml:space="preserve">
+    <value>คุณได้เรียน Skill ใหม่เรียบร้อยแล้ว</value>
+  </data>
+  <data name="SPEAKER" xml:space="preserve">
+    <value>ถึงทุกคน</value>
+  </data>
+  <data name="SPLEVEL_CHANGED" xml:space="preserve">
+    <value>เลเวลของการ์ดได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="SPUSE_NEEDED" xml:space="preserve">
+    <value>You need to transform into specialist to accept point change!</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="SP_BLOCKED" xml:space="preserve">
+    <value>ไม่สามารถกลับสู่ร่างเดิมได้ เนื่องจากติดผลลงโทษจากการตาย</value>
+  </data>
+  <data name="SP_INLOADING" xml:space="preserve">
+    <value>ไม่สามารถเปลี่ยนร่างได้เนื่องจากผลข้างเคียงของการเปลี่ยนร่าง : {0} วินาที</value>
+  </data>
+  <data name="SP_LEVELUP" xml:space="preserve">
+    <value>Level Specialist เพิ่มขึ้น</value>
+  </data>
+  <data name="SP_REFILL" xml:space="preserve">
+    <value>Specialist point set!</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="SP_RESURRECTED" xml:space="preserve">
+    <value>Your specialist's soul has been resurrected!</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="STARTED" xml:space="preserve">
+    <value>WorldServer started successfully.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="STAY_TIME" xml:space="preserve">
+    <value>ผลข้างเคียงจากการเปลี่ยนร่าง : {0} วินาที</value>
+  </data>
+  <data name="SUM_FAILED" xml:space="preserve">
+    <value>การหลอมรวม ล้มเหลว</value>
+  </data>
+  <data name="SUM_SUCCESS" xml:space="preserve">
+    <value>การหลอมรวมสำเร็จแล้ว </value>
+  </data>
+  <data name="SURE_TO_DELETE" xml:space="preserve">
+    <value>คณต้องการลบ Item นี้ใช่ไหม?</value>
+  </data>
+  <data name="SWORDMAN" xml:space="preserve">
+    <value>Swordsman</value>
+  </data>
+  <data name="TOO_BIG" xml:space="preserve">
+    <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="TOTAL_SESSION" xml:space="preserve">
+    <value>จำนวนผู้เล่นที่ออนไลน์</value>
+  </data>
+  <data name="TRADE_BLOCKED" xml:space="preserve">
+    <value>ผู้เล่นตั้งค่าระงับการแลกเปลี่ยนไว้</value>
+  </data>
+  <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
+    <value>You need to be transformed to reset your sp points.</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="TRANSFORM_DISAPPEAR" xml:space="preserve">
+    <value>ผลข้างเคียงจากการเปลี่ยนร่างสิ้นสุดแล้ว</value>
+  </data>
+  <data name="TRY_FAILED" xml:space="preserve">
+    <value>ไม่ได้รับอะไรเลย</value>
+  </data>
+  <data name="TRY_FAILED_WAIT" xml:space="preserve">
+    <value>ไม่พบโปรดลองใหม่อีกครั้งหลังจาก {0} วินาที</value>
+  </data>
+  <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
+    <value>Error inserting or updating Account {0} , {1}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="UPDATE_ERROR" xml:space="preserve">
+    <value>{0}</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="UPGRADESP_DESTROYED" xml:space="preserve">
+    <value>วิญญาณของ Special list card ถูกทำลาย</value>
+  </data>
+  <data name="UPGRADESP_FAILED" xml:space="preserve">
+    <value>การอัพเกรด Item ล้มเหลว</value>
+  </data>
+  <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
+    <value>การอัพเกรดล้มเหลว อย่างไรก็ตาม Card ถูกปกป้องไว้ด้วยพลังแห่ง Scroll protect</value>
+  </data>
+  <data name="UPGRADESP_SUCCESS" xml:space="preserve">
+    <value>การอัพเกรด Item สำเร็จ</value>
+  </data>
+  <data name="UPGRADE_FAILED" xml:space="preserve">
+    <value>การอัพเกรด Item ล้มเหลว</value>
+  </data>
+  <data name="UPGRADE_FAILED_ITEM_SAVED" xml:space="preserve">
+    <value>การอัพเกรดล้มเหลว แต่ด้วย protection scroll จึงปกป้อง Item นี้ไว้</value>
+  </data>
+  <data name="UPGRADE_FIXED" xml:space="preserve">
+    <value>จำกัดระดับของ Item</value>
+  </data>
+  <data name="UPGRADE_SUCCESS" xml:space="preserve">
+    <value>การอัพเกรด Item สำเร็จ</value>
+  </data>
+  <data name="USER_NOT_BANNED" xml:space="preserve">
+    <value>ผู้ใช้ไม่ถูกแบน</value>
+  </data>
+  <data name="USER_NOT_CONNECTED" xml:space="preserve">
+    <value>ไม่สามารถพูดคุยกับเพื่อนที่ Offline อยู่ได้</value>
+  </data>
+  <data name="USER_NOT_FOUND" xml:space="preserve">
+    <value>ไม่สามารถค้นหาผู้เล่นได้</value>
+  </data>
+  <data name="USER_NOT_HERO" xml:space="preserve">
+    <value>เพียง3 อันดับเท่านั้นที่จะใช้ได้</value>
+  </data>
+  <data name="USER_NOT_MUTED" xml:space="preserve">
+    <value>ผู้ใช้ไม่ถูกลงโทษ</value>
+  </data>
+  <data name="USER_WHISPER_BLOCKED" xml:space="preserve">
+    <value>เป้าหมายไม่ต้องการที่จะรับการกระซิบ</value>
+  </data>
+  <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
+    <value>Spring^Melody</value>
+    <comment>[UNKNOW]</comment>
+  </data>
+  <data name="WHISPER_BLOCKED" xml:space="preserve">
+    <value>คุณจะไม่ได้รับการกระซิบ ตั้งแต่นี้เป็นต้นไป</value>
+  </data>
+  <data name="WHISPER_UNLOCKED" xml:space="preserve">
+    <value>คุณจะเปิดรับการกระซิบ ตั้งแต่นี้เป็นต้นไป</value>
+  </data>
+  <data name="WRONG_VALUE" xml:space="preserve">
+    <value>ค่าที่คุณกรอกผิดพลาด</value>
+    <comment>[ONONLY]</comment>
+  </data>
+  <data name="XP_RATE_CHANGED" xml:space="preserve">
+    <value>อัตราการเพิ่มของเลเวลได้ถูกเปลี่ยน</value>
+  </data>
+  <data name="XP_RATE_NOW" xml:space="preserve">
+    <value>อัตรการเพิ่มของเลเวล</value>
+  </data>
+  <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
+    <value>คุณได้ขอทำการแลกเปลี่ยนกับ {0}</value>
+  </data>
+  <data name="YOU_REFUSED" xml:space="preserve">
+    <value>แลกเปลี่ยนเรียบร้อยแล้ว</value>
+  </data>
+</root>

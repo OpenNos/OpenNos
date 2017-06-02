@@ -15,9 +15,9 @@
 using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.GameObject.Buff;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -75,8 +75,7 @@ namespace OpenNos.GameObject
 
             // start observer for receiving packets
             _receiveQueue = new ConcurrentQueue<byte[]>();
-            _receiveQueueObservable = Observable.Interval(new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 10))
-                .Subscribe(x => HandlePackets());
+            _receiveQueueObservable = Observable.Interval(new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 10)).Subscribe(x => HandlePackets());
         }
 
         #endregion
@@ -120,7 +119,6 @@ namespace OpenNos.GameObject
                 _handlerMethods = value;
             }
         }
-
         public bool HasCurrentMapInstance => CurrentMapInstance != null;
 
         public bool HasSelectedCharacter { get; set; }
@@ -168,8 +166,8 @@ namespace OpenNos.GameObject
         public void Destroy()
         {
             // unregister from WCF events
-            ServerCommunicationClient.Instance.CharacterConnectedEvent -= OnOtherCharacterConnected;
-            ServerCommunicationClient.Instance.CharacterDisconnectedEvent -= OnOtherCharacterDisconnected;
+            CommunicationServiceClient.Instance.CharacterConnectedEvent -= OnOtherCharacterConnected;
+            CommunicationServiceClient.Instance.CharacterDisconnectedEvent -= OnOtherCharacterDisconnected;
 
             // do everything necessary before removing client, DB save, Whatever
             if (HasSelectedCharacter)
@@ -178,12 +176,20 @@ namespace OpenNos.GameObject
                 if (Character.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance || Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                 {
                     Character.MapInstance.InstanceBag.DeadList.Add(Character.CharacterId);
+                    if(Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        Character?.Group?.Characters.ForEach(s =>
+                        {
+                            s.SendPacket(s.Character.Group.GeneraterRaidmbf());
+                            s.SendPacket(s.Character.Group.GenerateRdlst());
+                        });
+                    }
                 }
                 ServerManager.Instance.RemoveMapInstance(Character.Miniland.MapInstanceId);
 
                 // TODO Check why ExchangeInfo.TargetCharacterId is null Character.CloseTrade();
                 // disconnect client
-                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectCharacter", ServerManager.Instance.ServerGroup, Character.Name, Character.CharacterId).Wait();
+                CommunicationServiceClient.Instance.DisconnectCharacter(ServerManager.Instance.WorldId, Character.CharacterId);
 
                 // unregister from map if registered
                 if (CurrentMapInstance != null)
@@ -196,7 +202,7 @@ namespace OpenNos.GameObject
 
             if (Account != null)
             {
-                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectAccount", Account.Name).Wait();
+                CommunicationServiceClient.Instance.DisconnectAccount(Account.AccountId);
             }
 
             ClearReceiveQueue();
@@ -224,12 +230,11 @@ namespace OpenNos.GameObject
         public void InitializeAccount(Account account)
         {
             Account = account;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectAccount", ServerManager.Instance.WorldId, account.Name, SessionId);
+            CommunicationServiceClient.Instance.ConnectAccount(ServerManager.Instance.WorldId, account.AccountId, SessionId);
             IsAuthenticated = true;
         }
 
-        // [Obsolete("Primitive string operations will be removed in future, use PacketDefinition
-        // SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
+        //[Obsolete("Primitive string operations will be removed in future, use PacketDefinition SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
         public void SendPacket(string packet, byte priority = 10)
         {
             if (!IsDisposing)
@@ -246,21 +251,14 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SendPacket(object score)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendPacketAfterWait(string packet, int Millisecond)
+        public void SendPacketAfter(string packet, int milliseconds)
         {
             if (!IsDisposing)
             {
-                Observable.Timer(TimeSpan.FromMilliseconds(Millisecond))
-                .Subscribe(
-                 o =>
-                 {
-                     SendPacket(packet);
-                 });
+                Observable.Timer(TimeSpan.FromMilliseconds(milliseconds)).Subscribe(o =>
+                {
+                    SendPacket(packet);
+                });
             }
         }
 
@@ -272,6 +270,7 @@ namespace OpenNos.GameObject
             }
         }
 
+        //[Obsolete("Primitive string operations will be removed in future, use PacketDefinition SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
         public void SendPackets(IEnumerable<string> packets, byte priority = 10)
         {
             if (!IsDisposing)
@@ -293,28 +292,28 @@ namespace OpenNos.GameObject
             Character = character;
 
             // register WCF events
-            ServerCommunicationClient.Instance.CharacterConnectedEvent += OnOtherCharacterConnected;
-            ServerCommunicationClient.Instance.CharacterDisconnectedEvent += OnOtherCharacterDisconnected;
+            CommunicationServiceClient.Instance.CharacterConnectedEvent += OnOtherCharacterConnected;
+            CommunicationServiceClient.Instance.CharacterDisconnectedEvent += OnOtherCharacterDisconnected;
 
             HasSelectedCharacter = true;
 
             // register for servermanager
             ServerManager.Instance.RegisterSession(this);
             Character.SetSession(this);
-            Character.Buff = new BuffContainer(this);
+            Character.Buff = new List<Buff>();
         }
 
         private void ClearReceiveQueue()
         {
-            byte[] outPacket;
-            while (_receiveQueue.TryDequeue(out outPacket))
+            while (_receiveQueue.TryDequeue(out byte[] outPacket))
             {
+                // do nothing
             }
         }
 
         private void GenerateHandlerReferences(Type type, bool isWorldServer)
         {
-            IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) // shitty but it works
+            IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) // shitty but it works, reflection?
                                                             : type.Assembly.GetTypes().Where(p =>
                                                             {
                                                                 Type interfaceType = type.GetInterfaces().FirstOrDefault();
@@ -355,8 +354,7 @@ namespace OpenNos.GameObject
         /// </summary>
         private void HandlePackets()
         {
-            byte[] packetData;
-            while (_receiveQueue.TryDequeue(out packetData))
+            while (_receiveQueue.TryDequeue(out byte[] packetData))
             {
                 // determine first packet
                 if (_encryptor.HasCustomParameter && SessionId == 0)
@@ -368,8 +366,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    int lastka;
-                    if (!int.TryParse(sessionParts[0], out lastka))
+                    if (!int.TryParse(sessionParts[0], out int lastka))
                     {
                         Disconnect();
                     }
@@ -380,8 +377,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    int sessid;
-                    if (int.TryParse(sessionParts[1].Split('\\').FirstOrDefault(), out sessid))
+                    if (int.TryParse(sessionParts[1].Split('\\').FirstOrDefault(), out int sessid))
                     {
                         SessionId = sessid;
                         Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), SessionId);
@@ -405,12 +401,9 @@ namespace OpenNos.GameObject
                     {
                         // keep alive
                         string nextKeepAliveRaw = packetsplit[0];
-                        int nextKeepaliveIdentity;
-                        if (!int.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) &&
-                            nextKeepaliveIdentity != LastKeepAliveIdentity + 1)
+                        if (!int.TryParse(nextKeepAliveRaw, out int nextKeepaliveIdentity) && nextKeepaliveIdentity != LastKeepAliveIdentity + 1)
                         {
-                            Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"),
-                                _client.ClientId);
+                            Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"), _client.ClientId);
                             _client.Disconnect();
                             return;
                         }
@@ -483,7 +476,7 @@ namespace OpenNos.GameObject
         /// <param name="e"></param>
         private void OnNetworkClientMessageReceived(object sender, MessageEventArgs e)
         {
-            var message = e.Message as ScsRawDataMessage;
+            ScsRawDataMessage message = e.Message as ScsRawDataMessage;
             if (message == null)
             {
                 return;
@@ -499,21 +492,18 @@ namespace OpenNos.GameObject
 
         private void OnOtherCharacterConnected(object sender, EventArgs e)
         {
-            Tuple<string, string, long> loggedInCharacter = (Tuple<string, string, long>)sender;
-            if (ServerManager.Instance.ServerGroup != loggedInCharacter.Item1)
+            Tuple<long, string> loggedInCharacter = (Tuple<long, string>)sender;
+
+            if (Character.IsFriendOfCharacter(loggedInCharacter.Item1))
             {
-                return;
-            }
-            if (Character.IsFriendOfCharacter(loggedInCharacter.Item3))
-            {
-                if (Character != null && Character.Name != loggedInCharacter.Item2)
+                if (Character != null && Character.CharacterId != loggedInCharacter.Item1)
                 {
                     _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), loggedInCharacter.Item2), 10));
-                    _client.SendPacket(Character.GenerateFinfo(loggedInCharacter.Item3, true));
+                    _client.SendPacket(Character.GenerateFinfo(loggedInCharacter.Item1, true));
                 }
             }
-            FamilyCharacter chara = Character.Family?.FamilyCharacters.FirstOrDefault(s => s.CharacterId == loggedInCharacter.Item3);
-            if (chara != null && loggedInCharacter.Item3 != Character?.CharacterId)
+            FamilyCharacter chara = Character.Family?.FamilyCharacters.FirstOrDefault(s => s.CharacterId == loggedInCharacter.Item1);
+            if (chara != null && loggedInCharacter.Item1 != Character?.CharacterId)
             {
                 _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_FAMILY_LOGGED_IN"), loggedInCharacter.Item2, Language.Instance.GetMessageFromKey(chara.Authority.ToString().ToUpper())), 10));
             }
@@ -521,18 +511,15 @@ namespace OpenNos.GameObject
 
         private void OnOtherCharacterDisconnected(object sender, EventArgs e)
         {
-            Tuple<string, string, long> loggedOutCharacter = (Tuple<string, string, long>)sender;
-            if (ServerManager.Instance.ServerGroup != loggedOutCharacter.Item1)
+            Tuple<long, string> loggedOutCharacter = (Tuple<long, string>)sender;
+            if (Character.IsFriendOfCharacter(loggedOutCharacter.Item1))
             {
-                return;
-            }
-            if (Character.IsFriendOfCharacter(loggedOutCharacter.Item3))
-
-                if (Character != null && Character.Name != loggedOutCharacter.Item2)
+                if (Character != null && Character.CharacterId != loggedOutCharacter.Item1)
                 {
                     _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item2), 10));
-                    _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item3, false));
+                    _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item1, false));
                 }
+            }
         }
 
         private void TriggerHandler(string packetHeader, string packet, bool force)

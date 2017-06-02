@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$BlockRep", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class BlockRepPacket : PacketDefinition
@@ -18,6 +18,11 @@ namespace OpenNos.GameObject
 
         [PacketIndex(2, SerializeToEnd = true)]
         public string Reason { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$BlockRep CHARACTERNAME DURATION REASON";
+        }
 
         public override string ToString()
         {

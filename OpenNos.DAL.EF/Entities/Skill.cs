@@ -28,7 +28,7 @@ namespace OpenNos.DAL.EF
             Combo = new HashSet<Combo>();
             NpcMonsterSkill = new HashSet<NpcMonsterSkill>();
             ShopSkill = new HashSet<ShopSkill>();
-            SkillCard = new HashSet<SkillCard>();
+            BCards = new HashSet<BCard>();
         }
 
         #endregion
@@ -55,15 +55,11 @@ namespace OpenNos.DAL.EF
 
         public byte CPCost { get; set; }
 
-        public short Damage { get; set; }
-
         public short Duration { get; set; }
 
         public short Effect { get; set; }
 
         public byte Element { get; set; }
-
-        public short ElementalDamage { get; set; }
 
         public byte HitType { get; set; }
 
@@ -91,14 +87,8 @@ namespace OpenNos.DAL.EF
         public int Price { get; set; }
 
         public byte Range { get; set; }
-
-        public short SecondarySkillVNum { get; set; }
-
+        
         public virtual ICollection<ShopSkill> ShopSkill { get; set; }
-
-        public virtual ICollection<SkillCard> SkillCard { get; set; }
-
-        public short SkillChance { get; set; }
 
         public byte SkillType { get; set; }
 
@@ -115,6 +105,8 @@ namespace OpenNos.DAL.EF
         public short UpgradeSkill { get; set; }
 
         public short UpgradeType { get; set; }
+
+        public virtual ICollection<BCard> BCards { get; set; }
 
         #endregion
     }

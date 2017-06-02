@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
 
             if (fallbackEncryptor != null)
             {
-                _fallbackEncryptor = (EncryptionBase)Activator.CreateInstance(fallbackEncryptor);
+                _fallbackEncryptor = (EncryptionBase)Activator.CreateInstance(fallbackEncryptor); // reflection, TODO: optimize.
             }
 
             _server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
@@ -103,13 +103,13 @@ namespace OpenNos.GameObject
             {
                 if (ConnectionLog.Any())
                 {
-                    foreach (var item in ConnectionLog.Where(cl => cl.Key.Equals(client.IpAddress) && (DateTime.Now - cl.Value).Seconds > 3).ToList())
+                    foreach (var item in ConnectionLog.Where(cl => cl.Key.Contains(client.IpAddress.Split(':')[1]) && (DateTime.Now - cl.Value).TotalSeconds > 3).ToList())
                     {
                         ConnectionLog.Remove(item.Key);
                     }
                 }
 
-                if (ConnectionLog.Any(c=>c.Key.Contains(client.IpAddress.Split(':')[1])))
+                if (ConnectionLog.Any(c => c.Key.Contains(client.IpAddress.Split(':')[1])))
                 {
                     return false;
                 }

@@ -24,21 +24,21 @@ namespace OpenNos.Domain
             SpecialAttack = 1,
 
             SpecialDefence = 2,
-            AttackPowerChange = 3,
-            ChangeTarget = 4,
-            ChangeCritical = 5,
+            AttackPower = 3,
+            Target = 4,
+            Critical = 5,
             SpecialCritical = 6,
-            ChangeElement = 7,
+            Element = 7,
             IncreaseDamage = 8,
-            ChangeDefence = 9,
-            ChangeDodgeAndDefencePercent = 10,
-            ChangeBlock = 11,
-            ChangeAbsorption = 12,
-            ChangeElementResistance = 13,
+            Defence = 9,
+            DodgeAndDefencePercent = 10,
+            Block = 11,
+            Absorption = 12,
+            ElementResistance = 13,
             EnemyElementResistance = 14,
-            ChangeDamage = 15,
+            Damage = 15,
             GuarantedDodgeRangedAttack = 16,
-            ChangeMorale = 17,
+            Morale = 17,
             Casting = 18,
             Move = 19,
             Reflection = 20,
@@ -47,7 +47,7 @@ namespace OpenNos.Domain
             DrainAndSteal = 21,
 
             HealingBurningAndCasting = 22,
-            ChangeHPMP = 23,
+            HPMP = 23,
             SpecialisationBuffResistance = 24,
             Buff = 25,
             Summons = 26,
@@ -67,7 +67,7 @@ namespace OpenNos.Domain
             SpecialActions = 40,
 
             // 41-60
-            ChangeMode = 41,
+            Mode = 41,
 
             NoCharacteristicValue = 42,
             LightAndShadow = 43,
@@ -123,7 +123,7 @@ namespace OpenNos.Domain
     public class AdditionalTypes : BCardType
     {
         // 1-20
-        private enum SpecialAttack : byte
+        public enum SpecialAttack : byte
         {
             NoAttack = 11,
             NoAttackNegated = 12,
@@ -137,7 +137,7 @@ namespace OpenNos.Domain
             FailIfMissNegated = 52
         }
 
-        private enum SpecialDefence : byte
+        public enum SpecialDefence : byte
         {
             AllDefenceNullified = 11,
             AllDefenceNullifiedNegated = 12,
@@ -151,7 +151,7 @@ namespace OpenNos.Domain
             NoDefenceNegated = 52
         }
 
-        private enum AttackPowerChange : byte
+        public enum AttackPower : byte
         {
             AllAttacksIncreased = 11,
             AllAttacksDecreased = 12,
@@ -165,7 +165,7 @@ namespace OpenNos.Domain
             AttackLevelDecreased = 52
         }
 
-        private enum ChangeTarget : byte
+        public enum Target : byte
         {
             AllHitRateIncreased = 11,
             AllHitRateDecreased = 12,
@@ -177,7 +177,7 @@ namespace OpenNos.Domain
             MagicalConcentrationDecreased = 42
         }
 
-        private enum ChangeCritical : byte
+        public enum Critical : byte
         {
             InflictingIncreased = 11,
             InflictingReduced = 12,
@@ -191,7 +191,7 @@ namespace OpenNos.Domain
             DamageFromCriticalDecreased = 52
         }
 
-        private enum SpecialCritical : byte
+        public enum SpecialCritical : byte
         {
             AlwaysInflict = 11,
             AlwaysInflictNegated = 12,
@@ -205,7 +205,7 @@ namespace OpenNos.Domain
             ReceivingChancePercent = 52
         }
 
-        private enum ChangeElement : byte
+        public enum Element : byte
         {
             FireIncreased = 11,
             FireDecreased = 12,
@@ -219,7 +219,7 @@ namespace OpenNos.Domain
             AllDecreased = 52
         }
 
-        private enum IncreaseDamage : byte
+        public enum IncreaseDamage : byte
         {
             IncreasingPropability = 11,
             DecreasingPropability = 12,
@@ -233,7 +233,7 @@ namespace OpenNos.Domain
             DarkDecreased = 52
         }
 
-        private enum ChangeDefence : byte
+        public enum Defence : byte
         {
             AllIncreased = 11,
             AllDecreased = 12,
@@ -247,7 +247,7 @@ namespace OpenNos.Domain
             DefenceLevelDecreased = 52
         }
 
-        private enum ChangeDodgeAndDefencePercent : byte
+        public enum DodgeAndDefencePercent : byte
         {
             DodgeIncreased = 11,
             DodgeDecreased = 12,
@@ -259,7 +259,7 @@ namespace OpenNos.Domain
             DefenceReduced = 42
         }
 
-        private enum ChangeBlock : byte
+        public enum Block : byte
         {
             ChanceAllIncreased = 11,
             ChanceAllDecreased = 12,
@@ -271,7 +271,7 @@ namespace OpenNos.Domain
             ChanceMagicalDecreased = 42
         }
 
-        private enum ChangeAbsorption : byte
+        public enum Absorption : byte
         {
             AllAttackIncreased = 11,
             AllAttackDecreased = 12,
@@ -283,7 +283,7 @@ namespace OpenNos.Domain
             MagicalAttacksDecreased = 42
         }
 
-        private enum ChangeElementResistance : byte
+        public enum ElementResistance : byte
         {
             AllIncreased = 11,
             AllDecreased = 12,
@@ -297,7 +297,7 @@ namespace OpenNos.Domain
             DarkDecreased = 52
         }
 
-        private enum EnemyElementResistance : byte
+        public enum EnemyElementResistance : byte
         {
             AllIncreased = 11,
             AllDecreased = 12,
@@ -311,7 +311,7 @@ namespace OpenNos.Domain
             DarkDecreased = 52
         }
 
-        private enum ChangeDamage : byte
+        public enum Damage : byte
         {
             DamageIncreased = 11,
             DamageDecreased = 12,
@@ -323,7 +323,7 @@ namespace OpenNos.Domain
             MagicalDecreased = 42
         }
 
-        private enum GuarantedDodgeRangedAttack : byte
+        public enum GuarantedDodgeRangedAttack : byte
         {
             AttackHitChance = 11,
             AttackHitChanceNegated = 12,
@@ -335,7 +335,7 @@ namespace OpenNos.Domain
             DistanceDamageIncreasingNegated = 42
         }
 
-        private enum ChangeMorale : byte
+        public enum Morale : byte
         {
             MoraleIncreased = 11,
             MoraleDecreased = 12,
@@ -349,7 +349,7 @@ namespace OpenNos.Domain
             IgnoreEnemyMoraleNegated = 52
         }
 
-        private enum Casting : byte
+        public enum Casting : byte
         {
             EffectDurationIncreased = 11,
             EffectDurationDecreased = 12,
@@ -363,7 +363,7 @@ namespace OpenNos.Domain
             InterruptCastingNegated = 52
         }
 
-        private enum Move : byte
+        public enum Move : byte
         {
             MovementImpossible = 11,
             MovementImpossibleNegated = 12,
@@ -377,7 +377,7 @@ namespace OpenNos.Domain
             TempMaximizedNegated = 52
         }
 
-        private enum Reflection : byte
+        public enum Reflection : byte
         {
             HPIncreased = 11,
             HPDecreased = 12,
@@ -390,7 +390,7 @@ namespace OpenNos.Domain
         }
 
         // 21-40
-        private enum DrainAndSteal : byte
+        public enum DrainAndSteal : byte
         {
             ReceiveHpFromMP = 11,
             ReceiveHpFromMPNegated = 12,
@@ -404,7 +404,7 @@ namespace OpenNos.Domain
             ConvertEnemyHPToMP = 52
         }
 
-        private enum HealingBurningAndCasting : byte
+        public enum HealingBurningAndCasting : byte
         {
             RestoreHP = 11,
             DecreaseHP = 12,
@@ -418,7 +418,7 @@ namespace OpenNos.Domain
             HPDecreasedByConsumingMP = 52
         }
 
-        private enum ChangeHPMP : byte
+        public enum HPMP : byte
         {
             RestoreDecreasedHP = 11,
             DecreaseRemainingHP = 12,
@@ -432,7 +432,7 @@ namespace OpenNos.Domain
             ReceiveAdditionalMP = 52
         }
 
-        private enum SpecialisationBuffResistance : byte
+        public enum SpecialisationBuffResistance : byte
         {
             IncreaseDamageAgainst = 11,
             ReduceDamageAgainst = 12,
@@ -445,7 +445,7 @@ namespace OpenNos.Domain
             RemoveBadEffects = 52
         }
 
-        private enum Buff : byte
+        public enum Buff : byte
         {
             ChanceCausing = 11,
             ChanceRemoving = 12,
@@ -459,7 +459,7 @@ namespace OpenNos.Domain
             CounteractPoison = 52
         }
 
-        private enum Summons : byte
+        public enum Summons : byte
         {
             SummonUponDeath = 11,
             SummonUponDeathChance = 12,
@@ -473,12 +473,12 @@ namespace OpenNos.Domain
             SummonGhostMPChance = 52
         }
 
-        private enum SpecialEffects : byte
+        public enum SpecialEffects : byte
         {
             DecreaseKillerHP = 11,
             IncreaseKillerHP = 12,
-            ChangeToPrefferedAttack = 21,
-            ChangeToNonPrefferedAttack = 22,
+            ToPrefferedAttack = 21,
+            ToNonPrefferedAttack = 22,
             Gibberish = 31,
             GibberishNegated = 32,
             AbleToFightPVP = 41,
@@ -487,13 +487,13 @@ namespace OpenNos.Domain
             ShadowAppearsNegated = 52
         }
 
-        private enum Capture : byte
+        public enum Capture : byte
         {
             CaptureAnimal = 11,
             CaptureAnimalNegated = 12
         }
 
-        private enum SpecialDamageAndExplosions : byte
+        public enum SpecialDamageAndExplosions : byte
         {
             ChanceExplosion = 11,
             ChanceExplosionNegated = 12,
@@ -503,7 +503,7 @@ namespace OpenNos.Domain
             SurroundingDamageNegated = 32
         }
 
-        private enum SpecialEffects2 : byte
+        public enum SpecialEffects2 : byte
         {
             FocusEnemy = 11,
             RemoveEnemyAttention = 12,
@@ -517,7 +517,7 @@ namespace OpenNos.Domain
             BefriendMonstersNegated = 52
         }
 
-        private enum CalculatingLevel : byte
+        public enum CalculatingLevel : byte
         {
             CalculatedAttackLevel = 11,
             CalculatedAttackLevelNegated = 12,
@@ -525,7 +525,7 @@ namespace OpenNos.Domain
             CalculatedDefenceLevelNegated = 22
         }
 
-        private enum Recovery : byte
+        public enum Recovery : byte
         {
             HPRecoveryIncreased = 11,
             HPRecoveryDecreased = 12,
@@ -533,7 +533,7 @@ namespace OpenNos.Domain
             MPRecoveryDecreased = 22
         }
 
-        private enum MaxHPMP : byte
+        public enum MaxHPMP : byte
         {
             MaximumHPIncreased = 11,
             MaximumHPDecreased = 12,
@@ -547,7 +547,7 @@ namespace OpenNos.Domain
             MaximumHPMPDecreased = 52
         }
 
-        private enum MultAttack : byte
+        public enum MultAttack : byte
         {
             AllAttackIncreased = 11,
             AllAttackDecreased = 12,
@@ -559,7 +559,7 @@ namespace OpenNos.Domain
             MagicalAttackDecreased = 42
         }
 
-        private enum MultDefence : byte
+        public enum MultDefence : byte
         {
             AllDefenceIncreased = 11,
             AllDefenceDecreased = 12,
@@ -571,7 +571,7 @@ namespace OpenNos.Domain
             MagicalDefenceDecreased = 42
         }
 
-        private enum TimeCircleSkills : byte
+        public enum TimeCircleSkills : byte
         {
             GatherEnergy = 11,
             GatherEnergyNegated = 12,
@@ -585,7 +585,7 @@ namespace OpenNos.Domain
             ItemCannotBeUsedNegated = 52
         }
 
-        private enum RecoveryAndDamagePercent : byte
+        public enum RecoveryAndDamagePercent : byte
         {
             HPRecovered = 11,
             HPReduced = 12,
@@ -595,13 +595,13 @@ namespace OpenNos.Domain
             DecreaseSelfHP = 32
         }
 
-        private enum Count : byte
+        public enum Count : byte
         {
             Summon = 11,
             SummonChance = 12
         }
 
-        private enum NoDefeatAndNoDamage : byte
+        public enum NoDefeatAndNoDamage : byte
         {
             DecreaseHPNoDeath = 11,
             DecreaseHPNoKill = 12,
@@ -611,7 +611,7 @@ namespace OpenNos.Domain
             TransferAttackPowerNegated = 32
         }
 
-        private enum SpecialActions : byte
+        public enum SpecialActions : byte
         {
             PushBack = 11,
             PushBackNegated = 12,
@@ -626,21 +626,21 @@ namespace OpenNos.Domain
         }
 
         // 41-60
-        private enum ChangeMode : byte
+        public enum Mode : byte
         {
-            ChangeRange = 11,
+            Range = 11,
             ReturnRange = 12,
             EffectNoDamage = 21,
             DirectDamage = 22,
             AttackTimeIncreased = 31,
             AttackTimeDecreased = 32,
-            ChangeModeChance = 41,
-            ChangeModeChanceNegated = 42,
+            ModeChance = 41,
+            ModeChanceNegated = 42,
             OccuringChance = 51,
             OccuringChanceNegated = 52
         }
 
-        private enum NoCharacteristicValue : byte
+        public enum NoCharacteristicValue : byte
         {
             AllPowersNullified = 11,
             AllResistancesNullified = 12,
@@ -654,7 +654,7 @@ namespace OpenNos.Domain
             DarkResistanceNullified = 52
         }
 
-        private enum LightAndShadow : byte
+        public enum LightAndShadow : byte
         {
             InflictDamageToMP = 11,
             IncreaseMPByAbsorbedDamage = 12,
@@ -666,7 +666,7 @@ namespace OpenNos.Domain
             AdditionalDamageOnHiddenEnemy = 42
         }
 
-        private enum Item : byte
+        public enum Item : byte
         {
             EXPIncreased = 11,
             EXPIncreasedNegated = 12,
@@ -680,7 +680,7 @@ namespace OpenNos.Domain
             IncreaseEarnedGoldNegated = 52
         }
 
-        private enum DebuffResistance : byte
+        public enum DebuffResistance : byte
         {
             IncreaseBadEffectChance = 11,
             NeverBadEffectChance = 12,
@@ -694,7 +694,7 @@ namespace OpenNos.Domain
             NeverBadDiseaseEffectChance = 52
         }
 
-        private enum SpecialBehaviour : byte
+        public enum SpecialBehaviour : byte
         {
             TeleportRandom = 11,
             TeleportRandomNegated = 12,
@@ -706,13 +706,13 @@ namespace OpenNos.Domain
             TransformIntoNegated = 42
         }
 
-        private enum Quest : byte
+        public enum Quest : byte
         {
             SummonMonsterBased = 11,
             SummonMonsterBasedNegated = 12
         }
 
-        private enum SecondSPCard : byte
+        public enum SecondSPCard : byte
         {
             PlantBomb = 11,
             SetBombWhenAttack = 12, // Same as 22!
@@ -724,7 +724,7 @@ namespace OpenNos.Domain
             HitAttackerNegated = 42
         }
 
-        private enum SPCardUpgrade : byte
+        public enum SPCardUpgrade : byte
         {
             LowerSPScroll = 11,
             LowerSPScrollNegated = 12,
@@ -732,7 +732,7 @@ namespace OpenNos.Domain
             HigherSPScrollNegated = 22
         }
 
-        private enum HugeSnowman : byte
+        public enum HugeSnowman : byte
         {
             SnowStorm = 11,
             SnowStormNegated = 12,
@@ -740,7 +740,7 @@ namespace OpenNos.Domain
             EarthQuakeNegated = 22
         }
 
-        private enum Drain : byte
+        public enum Drain : byte
         {
             CastDrain = 11,
             CastDrainNegated = 12,
@@ -748,25 +748,25 @@ namespace OpenNos.Domain
             TransferEnemyHPNegated = 22
         }
 
-        private enum BossMonstersSkill : byte
+        public enum BossMonstersSkill : byte
         {
             InflictDamageAfter = 11,
             InflictDamageAfterNegated = 12
         }
 
-        private enum LordHatus : byte
+        public enum LordHatus : byte
         {
             InflictDamageAtLocation = 11,
             InflictDamageAtLocationNegated = 12
         }
 
-        private enum LordCalvinas : byte
+        public enum LordCalvinas : byte
         {
             InflictDamageAtLocation = 11,
             InflictDamageAtLocationNegated = 12
         }
 
-        private enum SESpecialist : byte
+        public enum SESpecialist : byte
         {
             EnterNumberOfBuffsAndDamage = 12,
             EnterNumberOfBuffs = 22,
@@ -776,19 +776,19 @@ namespace OpenNos.Domain
             DoNotNeedToEnter = 42 // Same as 32
         }
 
-        private enum FourthGlacernonFamilyRaid : byte
+        public enum FourthGlacernonFamilyRaid : byte
         {
             AllInFieldReceiveDamage = 11, // Look nearly the same as 12
             AllInFieldsReceiveDamage = 12 // Look nearly the same as 11
         }
 
-        private enum SummonedMonsterAttack : byte
+        public enum SummonedMonsterAttack : byte
         {
             CauseDamage = 11,
             CauseDamageNegated = 12
         }
 
-        private enum BearSpirit : byte
+        public enum BearSpirit : byte
         {
             IncreaseMaximumMP = 11,
             DecreaseMaximumMP = 12,
@@ -799,7 +799,7 @@ namespace OpenNos.Domain
             DecreaseMaximumHP = 32
         }
 
-        private enum SummonSkill : byte
+        public enum SummonSkill : byte
         {
             // Unknown = 11, Unknown2 = 12, Unknown3 = 21, Unknown4 = 22,
             Summon = 31,
@@ -807,33 +807,33 @@ namespace OpenNos.Domain
             SummonTimed = 32
         }
 
-        private enum InflictSkill : byte
+        public enum InflictSkill : byte
         {
             InflictDamageAtLocation = 11,
             InflictDamageAtLocationNegated = 12
         }
 
         // 61-80
-        /*private enum Missingno : byte
+        /*public enum Missingno : byte
         {
             Unknown = 11,
             Unknown2 = 12
         }*/
 
-        private enum HideBarrelSkill : byte
+        public enum HideBarrelSkill : byte
         {
             NoHPConsumption = 11,
             NoHPRecovery = 12
         }
 
-        private enum FocusEnemyAttentionSkill : byte
+        public enum FocusEnemyAttentionSkill : byte
         {
             FocusEnemyAttention = 11
 
             // Unknown = 12, Unknown2 = 21, Unknown3 = 22,
         }
 
-        private enum TauntSkill : byte
+        public enum TauntSkill : byte
         {
             ReflectsMaximumDamageFrom = 11,
             ReflectsMaximumDamageFromNegated = 12,
@@ -847,7 +847,7 @@ namespace OpenNos.Domain
             ReflectBadEffectNegated = 52
         }
 
-        private enum FireCannoneerRangeBuff : byte
+        public enum FireCannoneerRangeBuff : byte
         {
             AOEIncreased = 11,
             AOEDecreased = 12,
@@ -855,7 +855,7 @@ namespace OpenNos.Domain
             FlinchNegated = 22
         }
 
-        private enum VulcanoElementBuff : byte
+        public enum VulcanoElementBuff : byte
         {
             SkillsIncreased = 11,
             SkillsDecreased = 12,
@@ -867,7 +867,7 @@ namespace OpenNos.Domain
             CriticalDefenceNegated = 42
         }
 
-        private enum DamageConvertingSkill : byte
+        public enum DamageConvertingSkill : byte
         {
             TransferInflictedDamage = 11,
             TransferInflictedDamageNegated = 12,
@@ -881,7 +881,7 @@ namespace OpenNos.Domain
             ReflectMaximumReceivedDamageNegated = 52
         }
 
-        private enum MeditationSkill : byte
+        public enum MeditationSkill : byte
         {
             CausingChance = 11,
             RemovingChance = 12,
@@ -895,7 +895,7 @@ namespace OpenNos.Domain
             Sacrificenegated = 52
         }
 
-        private enum FalconSkill : byte
+        public enum FalconSkill : byte
         {
             CausingChanceLocation = 11,
             RemovingChanceLocation = 12,
@@ -909,7 +909,7 @@ namespace OpenNos.Domain
             FalconFocusLowestHPNegated = 52
         }
 
-        private enum AbsorptionAndPowerSkill : byte
+        public enum AbsorptionAndPowerSkill : byte
         {
             AddDamageToHP = 11,
             RemoveDamnageFromHP = 12,
@@ -922,7 +922,7 @@ namespace OpenNos.Domain
             CriticalDecreasedSkill = 52
         }
 
-        private enum LeonaPassiveSkill : byte
+        public enum LeonaPassiveSkill : byte
         {
             IncreaseDamageAgainst = 11,
             DecreaseDamageAgainst = 12,
@@ -936,7 +936,7 @@ namespace OpenNos.Domain
             AttackDecreasedInPVP = 52
         }
 
-        private enum FearSkill : byte
+        public enum FearSkill : byte
         {
             RestoreRemainingEnemyHP = 11,
             DecreaseRemainingEnemyHP = 12,
@@ -950,7 +950,7 @@ namespace OpenNos.Domain
             ProduceWhenAmbushNegated = 52
         }
 
-        private enum SniperAttack : byte
+        public enum SniperAttack : byte
         {
             ChanceCausing = 11,
             ChanceRemoving = 12,
@@ -964,7 +964,7 @@ namespace OpenNos.Domain
             ReceiveCriticalFromSniperNegated = 52
         }
 
-        private enum FrozenDebuff : byte
+        public enum FrozenDebuff : byte
         {
             MovementLocked = 11,
             MovementLockedNegated = 12
@@ -972,7 +972,7 @@ namespace OpenNos.Domain
             // Unknown = 21, Unknown2 = 22
         }
 
-        private enum JumpBackPush : byte
+        public enum JumpBackPush : byte
         {
             JumpBackChance = 11,
 
@@ -988,7 +988,7 @@ namespace OpenNos.Domain
             MagicalDurationDecreased = 52
         }
 
-        private enum FairyXPIncrease : byte
+        public enum FairyXPIncrease : byte
         {
             TeleportToLocation = 11,
             TeleportToLocationNegated = 12,
@@ -996,7 +996,7 @@ namespace OpenNos.Domain
             IncreaseFairyXPPointsNegated = 22
         }
 
-        private enum SummonAndRecoverHP : byte
+        public enum SummonAndRecoverHP : byte
         {
             ChanceSummon = 11,
             ChanceSummonNegated = 12,
@@ -1004,7 +1004,7 @@ namespace OpenNos.Domain
             ReduceHP = 22
         }
 
-        private enum TeamArenaBuff : byte
+        public enum TeamArenaBuff : byte
         {
             DamageTakenIncreased = 11,
             DamageTakenDecreased = 12,
@@ -1012,7 +1012,7 @@ namespace OpenNos.Domain
             AttackPowerDecreased = 22
         }
 
-        private enum ArenaCamera : byte
+        public enum ArenaCamera : byte
         {
             CallParticipant1 = 11,
             CallParticipant2 = 12, // propably we will need to fix "Their" Mistake soo CallParticipant1 = 11 and 12, CallParticipant2 = 21 and 22 :D
@@ -1026,7 +1026,7 @@ namespace OpenNos.Domain
             SeeHiddenAlliesNegated = 52
         }
 
-        private enum DarkCloneSummon : byte
+        public enum DarkCloneSummon : byte
         {
             SummonDarkCloneChance = 11,
             SummonDarkCloneChanceNegated = 12,
@@ -1041,7 +1041,7 @@ namespace OpenNos.Domain
         }
 
         // 81-??
-        private enum AbsorbedSpirit : byte
+        public enum AbsorbedSpirit : byte
         {
             ApplyEffectIfPresent = 11,
             ApplyEffectIfNotPresent = 12,
@@ -1051,7 +1051,7 @@ namespace OpenNos.Domain
             MagicCooldownDecreased = 32
         }
 
-        private enum AngerSkill : byte
+        public enum AngerSkill : byte
         {
             AttackInRangeNotLocation = 11,
             AttackInRangeNotLocationNegated = 12,
@@ -1063,7 +1063,7 @@ namespace OpenNos.Domain
             OnlyNormalAttacksNegated = 42
         }
 
-        private enum MeteoriteTeleport : byte
+        public enum MeteoriteTeleport : byte
         {
             SummonInVisualRange = 11,
             SummonInVisualRangeNegated = 12,
@@ -1077,7 +1077,7 @@ namespace OpenNos.Domain
             TeleportYouAndGroupToSavedLocationNegated = 52
         }
 
-        private enum StealBuff : byte
+        public enum StealBuff : byte
         {
             IgnoreDefenceChance = 11,
             IgnoreDefenceChanceNegated = 12,
