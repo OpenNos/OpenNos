@@ -49,6 +49,8 @@ namespace OpenNos.GameObject
 
         public string Label { get; set; }
 
+        public byte Id { get; set; }
+
         public byte LevelMaximum { get; set; }
 
         public byte LevelMinimum { get; set; }
@@ -142,6 +144,8 @@ namespace OpenNos.GameObject
                 LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum")?.Attributes["Value"].Value);
                 LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum")?.Attributes["Value"].Value);
                 Label = def.SelectSingleNode("Label")?.Attributes["Value"].Value;
+                byte.TryParse(def.SelectSingleNode("Id")?.Attributes["Value"].Value, out byte id);
+                Id = id;
                 long.TryParse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value, out long gold);
                 Gold = gold;
                 int.TryParse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value, out int reputation);
@@ -299,6 +303,7 @@ namespace OpenNos.GameObject
                 }
                 bool.TryParse(mapevent?.Attributes["IsTarget"]?.Value, out bool isTarget);
                 bool.TryParse(mapevent?.Attributes["IsBonus"]?.Value, out bool isBonus);
+                bool.TryParse(mapevent?.Attributes["IsBoss"]?.Value, out bool isBoss);
                 bool.TryParse(mapevent?.Attributes["IsProtected"]?.Value, out bool isProtected);
                 bool.TryParse(mapevent?.Attributes["IsMate"]?.Value, out bool isMate);
                 if (!bool.TryParse(mapevent?.Attributes["Move"]?.Value, out bool move))
@@ -352,7 +357,7 @@ namespace OpenNos.GameObject
 
                     case "SummonMonsters":
                         MonsterAmount += short.Parse(mapevent?.Attributes["Amount"].Value);
-                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), move, new List<EventContainer>(), isBonus, isHostile)));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), move, new List<EventContainer>(), isBonus, isHostile, isBoss)));
                         break;
 
                     case "SummonMonster":
@@ -368,23 +373,23 @@ namespace OpenNos.GameObject
                         MonsterAmount++;
                         List<MonsterToSummon> lst = new List<MonsterToSummon>
                         {
-                            new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, 
-                            GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile)
+                            new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move,
+                            GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile, isBoss)
                         };
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, lst.AsEnumerable()));
                         break;
 
                     case "SummonNps":
                         NpcAmount += short.Parse(mapevent?.Attributes["Amount"].Value); ;
-                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, 
-                            mapinstance.Map.GenerateNpcs(short.Parse(mapevent?.Attributes["VNum"].Value), 
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS,
+                            mapinstance.Map.GenerateNpcs(short.Parse(mapevent?.Attributes["VNum"].Value),
                             short.Parse(mapevent?.Attributes["Amount"].Value), new List<EventContainer>(), isMate, isProtected)));
                         break;
 
                     case "RefreshRaidGoals":
                         evts.Add(new EventContainer(mapinstance, EventActionType.REFRESHRAIDGOAL, null));
                         break;
-                        
+
                     case "SummonNpc":
                         if (positionX == -1 || positionY == -1)
                         {
@@ -414,8 +419,8 @@ namespace OpenNos.GameObject
                             }
                         }
                         MapButton button = new MapButton(
-                            int.Parse(mapevent?.Attributes["Id"].Value), positionX, positionY, 
-                            short.Parse(mapevent?.Attributes["VNumEnabled"].Value), 
+                            int.Parse(mapevent?.Attributes["Id"].Value), positionX, positionY,
+                            short.Parse(mapevent?.Attributes["VNumEnabled"].Value),
                             short.Parse(mapevent?.Attributes["VNumDisabled"].Value), new List<EventContainer>(), new List<EventContainer>(), new List<EventContainer>());
                         foreach (XmlNode var in mapevent.ChildNodes)
                         {
@@ -453,12 +458,20 @@ namespace OpenNos.GameObject
                         evts.Add(new EventContainer(mapinstance, EventActionType.REMOVEMONSTERLOCKER, null));
                         break;
 
+                    case "ThrowItem":
+                        short.TryParse(mapevent?.Attributes["VNum"]?.Value, out short vnum);
+                        byte.TryParse(mapevent?.Attributes["PackAmount"]?.Value, out byte packAmount);
+                        short.TryParse(mapevent?.Attributes["MinAmount"]?.Value, out short minAmount);
+                        short.TryParse(mapevent?.Attributes["MaxAmount"]?.Value, out short maxAmount);
+                        evts.Add(new EventContainer(mapinstance, EventActionType.THROWITEMS, new Tuple<short, byte, int, int, short, short>(vnum, packAmount == 0 ? (byte)1 : packAmount, minAmount == 0 ? 1 : minAmount, maxAmount == 0 ? 1 : maxAmount, PositionX, PositionY)));
+                        break;
+
                     case "RemoveButtonLocker":
                         evts.Add(new EventContainer(mapinstance, EventActionType.REMOVEBUTTONLOCKER, null));
                         break;
 
                     case "ChangePortalType":
-                        evts.Add(new EventContainer(mapinstance, EventActionType.CHANGEPORTALTYPE, 
+                        evts.Add(new EventContainer(mapinstance, EventActionType.CHANGEPORTALTYPE,
                             new Tuple<int, PortalType>(int.Parse(mapevent?.Attributes["IdOnMap"].Value), (PortalType)sbyte.Parse(mapevent?.Attributes["Type"].Value))));
                         break;
 

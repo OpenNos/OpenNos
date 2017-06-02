@@ -3111,9 +3111,9 @@ namespace OpenNos.GameObject
             return $"rest 1 {CharacterId} {(IsSitting ? 1 : 0)}";
         }
 
-        public string GenerateRaidBf()
+        public string GenerateRaidBf(byte type)
         {
-            return "raidbf 0 4 25 ";
+            return $"raidbf 0 {type} 25 ";
         }
 
         public string GenerateRevive()

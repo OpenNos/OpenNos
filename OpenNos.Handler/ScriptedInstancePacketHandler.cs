@@ -153,7 +153,10 @@ namespace OpenNos.Handler
         {
             if (Session.Character.Group?.Raid != null && Session.Character.Group.IsLeader(Session))
             {
-                Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
+                if (Session.Character.Group.Raid.FirstMap == null)
+                {
+                    Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
+                }
                 if (Session.Character.Group.Raid.FirstMap == null) return;
                 Session.Character.Group.Raid.FirstMap.InstanceBag.Lock = true;
                 if (Session.Character.Group.CharacterCount > 4)
@@ -170,7 +173,7 @@ namespace OpenNos.Handler
                     Session.Character.Group.Characters.ForEach(
                     session =>
                     {
-                        ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.Group.Raid.FirstMap.MapInstanceId, Session.Character.Group.Raid.StartX, Session.Character.Group.Raid.StartY);
+                        ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Group.Raid.FirstMap.MapInstanceId, session.Character.Group.Raid.StartX, session.Character.Group.Raid.StartY);
                         session.SendPacket("raidbf 0 0 25");
                         session.SendPacket(session.Character.Group.GeneraterRaidmbf());
                         session.SendPacket(session.Character.GenerateRaid(5, false));

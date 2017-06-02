@@ -16,9 +16,9 @@ namespace OpenNos.Domain
 {
     public enum GroupType : byte
     {
-        Group = 0,
-        Team = 1,
-        BigTeam = 2,
-        GiantTeam = 3
+        Group = 3,
+        Team = 15,
+        BigTeam = 20,
+        GiantTeam = 40
     }
 }

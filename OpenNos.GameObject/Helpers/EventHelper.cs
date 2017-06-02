@@ -224,24 +224,35 @@ namespace OpenNos.GameObject.Helpers
                                 if (client != null)
                                 {
                                     Group grp = client?.Character?.Group;
-
-                                    ClientSession[] grpmembers = new ClientSession[40];
-                                    grp.Characters.CopyTo(grpmembers);
-                                    foreach (ClientSession targetSession in grpmembers)
+                                    if (evt.MapInstance.InstanceBag.EndState == 1)
                                     {
-                                        if (targetSession != null)
-                                        {
-                                            if(targetSession.Character.Hp <= 0)
-                                            {
-                                                targetSession.Character.Hp = 1;
-                                                targetSession.Character.Mp = 1;
-                                            }
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaidBf());
-                                            grp.LeaveGroup(targetSession);
-                                        }
+                                        ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp?.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
                                     }
-                                    ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                                    ServerManager.Instance.GroupsThreadSafe.Remove(grp.GroupId);
+
+                                    Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(o =>
+                                        {
+
+                                            ClientSession[] grpmembers = new ClientSession[40];
+                                            grp.Characters.CopyTo(grpmembers);
+                                            foreach (ClientSession targetSession in grpmembers)
+                                            {
+                                                if (targetSession != null)
+                                                {
+                                                    if (targetSession.Character.Hp <= 0)
+                                                    {
+                                                        targetSession.Character.Hp = 1;
+                                                        targetSession.Character.Mp = 1;
+                                                    }
+                                                    targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
+                                                    targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
+                                                    targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
+                                                    grp.LeaveGroup(targetSession);
+                                                }
+                                            }
+                                            ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
+                                            ServerManager.Instance.GroupsThreadSafe.Remove(grp.GroupId);
+                                            evt.MapInstance.Dispose();
+                                        });
                                 }
                                 break;
                         }
@@ -347,6 +358,10 @@ namespace OpenNos.GameObject.Helpers
 
                     case EventActionType.DROPITEMS:
                         evt.MapInstance.DropItems((List<Tuple<short, int, short, short>>)evt.Parameter);
+                        break;
+
+                    case EventActionType.THROWITEMS:
+                        evt.MapInstance.ThrowItems((Tuple<short, byte, int, int, short, short>)evt.Parameter);
                         break;
 
                     case EventActionType.SPAWNONLASTENTRY:

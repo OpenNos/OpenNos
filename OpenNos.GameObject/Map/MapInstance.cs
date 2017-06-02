@@ -268,7 +268,7 @@ namespace OpenNos.GameObject
             // TODO: Parallelize getting of items of mapinstance
             Portals.ForEach(s => packets.Add(s.GenerateGp()));
             ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList().ForEach(s => packets.Add(s.GenerateWp()));
-           
+
             Monsters.ForEach(s => packets.Add(s.GenerateIn()));
             Npcs.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateNPCShopOnMap());
@@ -464,6 +464,23 @@ namespace OpenNos.GameObject
             });
         }
 
+        public void ThrowItems(Tuple<short, byte, int, int, short, short> parameter)
+        {
+            short originX = parameter.Item5;
+            short originY = parameter.Item6;
+            short destX;
+            short destY;
+            int amount = ServerManager.Instance.RandomNumber(parameter.Item4, parameter.Item5);
+            for (int i = 0; i < parameter.Item2; i++)
+            {
+                destX = (short)(originX + ServerManager.Instance.RandomNumber(-10, 10));
+                destY = (short)(originY + ServerManager.Instance.RandomNumber(-10, 10));
+                MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item6, parameter.Item1,amount);
+                DroppedList[droppedItem.TransportId] = droppedItem;
+                Broadcast($"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
+            }
+        }
+
         internal void StartLife()
         {
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
@@ -499,7 +516,7 @@ namespace OpenNos.GameObject
                 NpcMonster npcmonster = ServerManager.Instance.GetNpc(mon.VNum);
                 if (npcmonster != null)
                 {
-                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.Y, MapX = mon.SpawnCell.X, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents, IsTarget = mon.IsTarget, IsBonus = mon.IsBonus };
+                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.Y, MapX = mon.SpawnCell.X, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents, IsTarget = mon.IsTarget, IsBonus = mon.IsBonus, IsBoss = mon.IsBoss };
                     monster.Initialize(this);
                     monster.IsHostile = mon.IsHostile;
                     monster.Monster.BCards.ForEach(c => c.ApplyBCards(monster));
