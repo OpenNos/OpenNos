@@ -53,19 +53,19 @@ namespace OpenNos.Handler
                 ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
                 if (si != null)
                 {
-                    Session.Character.GetReput(scriptedInstance.Reputation);
+                    Session.Character.GetReput(si.Reputation);
 
-                    Session.Character.Gold = Session.Character.Gold + scriptedInstance.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : Session.Character.Gold + scriptedInstance.Gold;
+                    Session.Character.Gold = Session.Character.Gold + si.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : Session.Character.Gold + si.Gold;
                     Session.SendPacket(Session.Character.GenerateGold());
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GOLD_TS_END"), scriptedInstance.Gold), 10));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GOLD_TS_END"), si.Gold), 10));
 
-                    var rand = new Random().Next(scriptedInstance.DrawItems.Count);
+                    var rand = new Random().Next(si.DrawItems.Count);
                     var repay = "repay ";
-                    Session.Character.GiftAdd(scriptedInstance.DrawItems[rand].VNum, scriptedInstance.DrawItems[rand].Amount);
+                    Session.Character.GiftAdd(si.DrawItems[rand].VNum, si.DrawItems[rand].Amount);
 
                     for (int i = 0; i < 3; i++)
                     {
-                        Gift gift = scriptedInstance.GiftItems.ElementAtOrDefault(i);
+                        Gift gift = si.GiftItems.ElementAtOrDefault(i);
                         repay += gift == null ? "-1.0.0 " : $"{gift.VNum}.0.{gift.Amount} ";
                         if (gift != null)
                         {
@@ -76,7 +76,7 @@ namespace OpenNos.Handler
                     // TODO: Add HasAlreadyDone
                     for (int i = 0; i < 2; i++)
                     {
-                        Gift gift = scriptedInstance.SpecialItems.ElementAtOrDefault(i);
+                        Gift gift = si.SpecialItems.ElementAtOrDefault(i);
                         repay += gift == null ? "-1.0.0 " : $"{gift.VNum}.0.{gift.Amount} ";
                         if (gift != null)
                         {
@@ -84,7 +84,7 @@ namespace OpenNos.Handler
                         }
                     }
 
-                    repay += $"{scriptedInstance.DrawItems[rand].VNum}.0.{scriptedInstance.DrawItems[rand].Amount}";
+                    repay += $"{si.DrawItems[rand].VNum}.0.{si.DrawItems[rand].Amount}";
                     Session.SendPacket(repay);
                 }
             }

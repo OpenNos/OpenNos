@@ -898,7 +898,7 @@ namespace OpenNos.GameObject
             {
                 _npcMonsters[npcMonster.NpcMonsterVNum] = npcMonster as NpcMonster;
                 _npcMonsters[npcMonster.NpcMonsterVNum].BCards = new List<BCard>();
-                DAOFactory.BCardDAO.LoadByNpcMonsterVNum(npc.NpcMonsterVNum).ToList().ForEach(s => _npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard)s));
+                DAOFactory.BCardDAO.LoadByNpcMonsterVNum(npcMonster.NpcMonsterVNum).ToList().ForEach(s => _npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard)s));
             });
             _npcs.AddRange(_npcMonsters.GetAllItems());
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count));
@@ -949,7 +949,7 @@ namespace OpenNos.GameObject
             {
                 Skill skillObj = skill as Skill;
                 skillObj.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skillObj.SkillVNum).ToList());
-                skillObj.BCards = new List<BCard>
+                skillObj.BCards = new List<BCard>();
                 DAOFactory.BCardDAO.LoadBySkillVNum(skillObj.SkillVNum).ToList().ForEach(o => skillObj.BCards.Add((BCard)o));
                 _skill[skillObj.SkillVNum] = skillObj as Skill;
             });

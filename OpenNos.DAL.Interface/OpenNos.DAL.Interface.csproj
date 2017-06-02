@@ -83,7 +83,6 @@
     <Compile Include="ICharacterRelationDAO.cs" />
     <Compile Include="IComboDAO.cs" />
     <Compile Include="IDropDAO.cs" />
-    <Compile Include="IItemCardDAO.cs" />
     <Compile Include="IMateDAO.cs" />
     <Compile Include="IMinilandObjectDAO.cs" />
     <Compile Include="IMappingBaseDAO.cs" />
