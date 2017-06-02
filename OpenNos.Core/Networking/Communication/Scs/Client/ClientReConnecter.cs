@@ -55,12 +55,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </exception>
         public ClientReConnecter(IConnectableClient client)
         {
-            if (client == null)
-            {
-                throw new ArgumentNullException("client");
-            }
-
-            _client = client;
+            _client = client ?? throw new ArgumentNullException("client");
             _client.Disconnected += Client_Disconnected;
             _reconnectTimer = new Timer(20000);
             _reconnectTimer.Elapsed += ReconnectTimer_Elapsed;

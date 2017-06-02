@@ -56,49 +56,46 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
                         return;
                     }
-                    int x1;
-                    int x2;
-                    int x3;
-                    int x4;
-                    if (packetsplit != null && int.TryParse(packetsplit[2], out x1) && int.TryParse(packetsplit[3], out x2) && int.TryParse(packetsplit[4], out x3) && int.TryParse(packetsplit[5], out x4))
+                    int type, secondaryType, inventoryType, slot;
+                    if (packetsplit != null && int.TryParse(packetsplit[2], out type) && int.TryParse(packetsplit[3], out secondaryType) && int.TryParse(packetsplit[4], out inventoryType) && int.TryParse(packetsplit[5], out slot))
                     {
-                        int x5;
+                        int packetType;
                         switch (EffectValue)
                         {
                             case 0:
                                 if (Option == 0)
                                 {
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#u_i^{x1}^{x2}^{x3}^{x4}^1 #u_i^{x1}^{x2}^{x3}^{x4}^2 {Language.Instance.GetMessageFromKey("WANT_TO_SAVE_POSITION")}"));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1 #u_i^{type}^{secondaryType}^{inventoryType}^{slot}^2 {Language.Instance.GetMessageFromKey("WANT_TO_SAVE_POSITION")}"));
                                 }
                                 else
                                 {
-                                    if (int.TryParse(packetsplit[6], out x5))
+                                    if (int.TryParse(packetsplit[6], out packetType))
                                     {
-                                        switch (x5)
+                                        switch (packetType)
                                         {
                                             case 1:
-                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^3"));
+                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^3"));
                                                 break;
 
                                             case 2:
-                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^4"));
+                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^4"));
                                                 break;
 
                                             case 3:
                                                 session.Character.SetReturnPoint(session.Character.MapId, session.Character.MapX, session.Character.MapY);
-                                                RespawnMapTypeDTO resp = session.Character.Respawn;
-                                                if (resp.DefaultX != 0 && resp.DefaultY != 0 && resp.DefaultMapId != 0)
+                                                RespawnMapTypeDTO respawn = session.Character.Respawn;
+                                                if (respawn.DefaultX != 0 && respawn.DefaultY != 0 && respawn.DefaultMapId != 0)
                                                 {
-                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, (short)(resp.DefaultX + ServerManager.Instance.RandomNumber(-5, 5)), (short)(resp.DefaultY + ServerManager.Instance.RandomNumber(-5, 5)));
+                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, respawn.DefaultMapId, (short)(respawn.DefaultX + ServerManager.Instance.RandomNumber(-5, 5)), (short)(respawn.DefaultY + ServerManager.Instance.RandomNumber(-5, 5)));
                                                 }
                                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                                 break;
 
                                             case 4:
-                                                RespawnMapTypeDTO respa = session.Character.Respawn;
-                                                if (respa.DefaultX != 0 && respa.DefaultY != 0 && respa.DefaultMapId != 0)
+                                                RespawnMapTypeDTO respawnObj = session.Character.Respawn;
+                                                if (respawnObj.DefaultX != 0 && respawnObj.DefaultY != 0 && respawnObj.DefaultMapId != 0)
                                                 {
-                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, respa.DefaultMapId, (short)(respa.DefaultX + ServerManager.Instance.RandomNumber(-5, 5)), (short)(respa.DefaultY + ServerManager.Instance.RandomNumber(-5, 5)));
+                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, respawnObj.DefaultMapId, (short)(respawnObj.DefaultX + ServerManager.Instance.RandomNumber(-5, 5)), (short)(respawnObj.DefaultY + ServerManager.Instance.RandomNumber(-5, 5)));
                                                 }
                                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                                 break;
@@ -108,26 +105,26 @@ namespace OpenNos.GameObject
                                 break;
 
                             case 1:
-                                if (int.TryParse(packetsplit[6], out x5))
+                                if (int.TryParse(packetsplit[6], out packetType))
                                 {
-                                    RespawnMapTypeDTO resp = session.Character.Return;
-                                    switch (x5)
+                                    RespawnMapTypeDTO respawn = session.Character.Return;
+                                    switch (packetType)
                                     {
                                         case 0:
-                                            if (resp.DefaultX != 0 && resp.DefaultY != 0 && resp.DefaultMapId != 0)
+                                            if (respawn.DefaultX != 0 && respawn.DefaultY != 0 && respawn.DefaultMapId != 0)
                                             {
-                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateRp(resp.DefaultMapId, resp.DefaultX, resp.DefaultY, $"#u_i^{x1}^{x2}^{x3}^{x4}^1"));
+                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateRp(respawn.DefaultMapId, respawn.DefaultX, respawn.DefaultY, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1"));
                                             }
                                             break;
 
                                         case 1:
-                                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^2"));
+                                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^2"));
                                             break;
 
                                         case 2:
-                                            if (resp.DefaultX != 0 && resp.DefaultY != 0 && resp.DefaultMapId != 0)
+                                            if (respawn.DefaultX != 0 && respawn.DefaultY != 0 && respawn.DefaultMapId != 0)
                                             {
-                                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, resp.DefaultX, resp.DefaultY);
+                                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, respawn.DefaultMapId, respawn.DefaultX, respawn.DefaultY);
                                             }
                                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                             break;
@@ -138,7 +135,7 @@ namespace OpenNos.GameObject
                             case 2:
                                 if (Option == 0)
                                 {
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^1"));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1"));
                                 }
                                 else
                                 {

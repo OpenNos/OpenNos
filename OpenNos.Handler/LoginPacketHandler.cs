@@ -18,7 +18,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Packets.ClientPackets;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
 using System;
 using System.Configuration;
 using System.Linq;
@@ -44,23 +44,23 @@ namespace OpenNos.Handler
 
         #region Methods
 
-        public string BuildServersPacket(string accountName, int sessionId)
+        public string BuildServersPacket(long accountId, int sessionId)
         {
-            string channelpacket = ServerCommunicationClient.Instance.HubProxy.Invoke<string>("RetrieveRegisteredWorldservers", sessionId).Result;
+            string channelpacket = CommunicationServiceClient.Instance.RetrieveRegisteredWorldServers(sessionId);
 
             if (channelpacket == null)
             {
                 Logger.Log.Error("Could not retrieve Worldserver groups. Please make sure they've already been registered.");
                 _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"), DateTime.Now)}");
-
-                // release account's login permission
-                bool hasRegisteredAccountLogin = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("HasRegisteredAccountLogin", accountName, sessionId).Result;
             }
 
             return channelpacket;
         }
 
-        // updated
+        /// <summary>
+        /// login packet
+        /// </summary>
+        /// <param name="loginPacket"></param>
         public void VerifyLogin(LoginPacket loginPacket)
         {
             if (loginPacket == null)
@@ -76,10 +76,10 @@ namespace OpenNos.Handler
             AccountDTO loadedAccount = DAOFactory.AccountDAO.LoadByName(user.Name);
             if (loadedAccount != null && loadedAccount.Password.ToUpper().Equals(user.Password))
             {
-                DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.IpAddress, null, "Connection", "LoginServer");
+                DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.IpAddress, null, GeneralLogType.Connection, "LoginServer");
 
                 //check if the account is connected
-                if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("AccountIsConnected", loadedAccount.Name).Result)
+                if (!CommunicationServiceClient.Instance.IsAccountConnected(loadedAccount.AccountId))
                 {
                     AuthorityType type = loadedAccount.Authority;
                     PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
@@ -117,13 +117,13 @@ namespace OpenNos.Handler
                                     // inform communication service about new player from login server
                                     try
                                     {
-                                        ServerCommunicationClient.Instance.HubProxy.Invoke("RegisterAccountLogin", user.Name, newSessionId);
+                                        CommunicationServiceClient.Instance.RegisterAccountLogin(loadedAccount.AccountId, newSessionId);
                                     }
                                     catch (Exception ex)
                                     {
                                         Logger.Log.Error("General Error SessionId: " + newSessionId, ex);
                                     }
-                                    _session.SendPacket(BuildServersPacket(user.Name, newSessionId));
+                                    _session.SendPacket(BuildServersPacket(loadedAccount.AccountId, newSessionId));
                                 }
                                 break;
                         }

@@ -636,11 +636,11 @@ namespace OpenNos.GameObject.Helpers
                 case 15:
                     point += 173;
                     break;
+            }
 
-                    // lil easter egg ;)
-                    //default:
-                    //    point += 173 + (25 + (5 * (upgrade - 15)));
-                    //    break;
+            if (upgrade > 15)
+            {
+                point += 173 + (25 + (5 * (upgrade - 15)));
             }
 
             return point;
@@ -719,45 +719,6 @@ namespace OpenNos.GameObject.Helpers
         internal static int LightResistance(ClassType @class, byte level)
         {
             return 0;
-        }
-
-        internal static double UpgradeBonus(byte upgrade)
-        {
-            switch (upgrade)
-            {
-                case 1:
-                    return 1.10;
-
-                case 2:
-                    return 1.15;
-
-                case 3:
-                    return 1.22;
-
-                case 4:
-                    return 1.32;
-
-                case 5:
-                    return 1.43;
-
-                case 6:
-                    return 1.54;
-
-                case 7:
-                    return 1.65;
-
-                case 8:
-                    return 1.90;
-
-                case 9:
-                    return 2.20;
-
-                case 10:
-                    return 3;
-
-                default:
-                    return 1;
-            }
         }
 
         internal static int WaterResistance(ClassType @class, byte level)

@@ -114,11 +114,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// <param name="client">Connected client</param>
         protected virtual void OnClientConnected(IScsServerClient client)
         {
-            var handler = ClientConnected;
-            if (handler != null)
-            {
-                handler(this, new ServerClientEventArgs(client));
-            }
+            ClientConnected?.Invoke(this, new ServerClientEventArgs(client));
         }
 
         /// <summary>
@@ -127,11 +123,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// <param name="client">Disconnected client</param>
         protected virtual void OnClientDisconnected(IScsServerClient client)
         {
-            var handler = ClientDisconnected;
-            if (handler != null)
-            {
-                handler(this, new ServerClientEventArgs(client));
-            }
+            ClientDisconnected?.Invoke(this, new ServerClientEventArgs(client));
         }
 
         /// <summary>

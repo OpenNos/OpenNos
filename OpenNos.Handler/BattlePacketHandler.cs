@@ -16,20 +16,6 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
-using OpenNos.GameObject.Buff.Indicators;
-using OpenNos.GameObject.Buff.Indicators.NoSP.Archer;
-using OpenNos.GameObject.Buff.Indicators.SP1.Archer;
-using OpenNos.GameObject.Buff.Indicators.SP1.Magician;
-using OpenNos.GameObject.Buff.Indicators.SP1.Swordsman;
-using OpenNos.GameObject.Buff.Indicators.SP2.Archer;
-using OpenNos.GameObject.Buff.Indicators.SP2.Magician;
-using OpenNos.GameObject.Buff.Indicators.SP2.Swordsman;
-using OpenNos.GameObject.Buff.Indicators.SP3.Archer;
-using OpenNos.GameObject.Buff.Indicators.SP3.Magician;
-using OpenNos.GameObject.Buff.Indicators.SP3.Swordsman;
-using OpenNos.GameObject.Buff.Indicators.SP4.Archer;
-using OpenNos.GameObject.Buff.Indicators.SP4.Magician;
-using OpenNos.GameObject.Buff.Indicators.SP4.Swordsman;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
 using System;
@@ -60,7 +46,7 @@ namespace OpenNos.Handler
         #region Methods
 
         /// <summary>
-        /// mtlist
+        /// mtlist packet
         /// </summary>
         /// <param name="mutliTargetListPacket"></param>
         public void MultiTargetListHit(MultiTargetListPacket mutliTargetListPacket)
@@ -69,8 +55,7 @@ namespace OpenNos.Handler
             if (Session.Character.IsMuted() && penalty != null)
             {
                 Session.SendPacket("cancel 0 0");
-                Session.CurrentMapInstance?.Broadcast(Session.Character.Gender == GenderType.Female ? Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1) :
-                    Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                Session.CurrentMapInstance?.Broadcast(Session.Character.Gender == GenderType.Female ? Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1) : Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 return;
@@ -102,20 +87,17 @@ namespace OpenNos.Handler
                             mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SpecialZoneHit, Session, ski.Skill));
                         }
 
-                        Observable.Timer(TimeSpan.FromMilliseconds(ski.Skill.Cooldown * 100))
-                            .Subscribe(
-                                o =>
-                                {
-                                    Session.SendPacket($"sr {subpacket.SkillCastId - 1}");
-                                }
-                            );
+                        Observable.Timer(TimeSpan.FromMilliseconds(ski.Skill.Cooldown * 100)).Subscribe(o =>
+                        {
+                            Session.SendPacket($"sr {subpacket.SkillCastId - 1}");
+                        });
                     }
                 }
             }
         }
 
         /// <summary>
-        /// u_s
+        /// u_s packet
         /// </summary>
         /// <param name="useSkillPacket"></param>
         public void UseSkill(UseSkillPacket useSkillPacket)
@@ -188,10 +170,14 @@ namespace OpenNos.Handler
                         return;
                 }
             }
+            else
+            {
+                Session.SendPacket("cancel 2 0");
+            }
         }
 
         /// <summary>
-        /// u_as
+        /// u_as packet
         /// </summary>
         /// <param name="useAOESkillPacket"></param>
         public void UseZonesSkill(UseAOESkillPacket useAOESkillPacket)
@@ -288,35 +274,35 @@ namespace OpenNos.Handler
                             target.SendPacket(target.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), (short)(target.Character.Level * 50)), 11));
                         }
                         target.SendPacket(target.Character.GenerateFd());
-                        Session.Character.Buff.Clear();
+                        List<BuffType> bufftodisable = new List<BuffType>();
+                        bufftodisable.Add(BuffType.Bad);
+                        bufftodisable.Add(BuffType.Good);
+                        bufftodisable.Add(BuffType.Neutral);
+                        Session.Character.DisableBuffs(bufftodisable);
                         target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         target.SendPacket(target.Character.GenerateSay(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 11));
                         target.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 0));
-                        Observable.Timer(TimeSpan.FromMilliseconds(30000))
-                               .Subscribe(
-                               o =>
-                               {
-                                   target.Character.Hp = (int)target.Character.HPLoad();
-                                   target.Character.Mp = (int)target.Character.MPLoad();
-                                   short x = (short)(39 + ServerManager.Instance.RandomNumber(-2, 3));
-                                   short y = (short)(42 + ServerManager.Instance.RandomNumber(-2, 3));
-                                   ServerManager.Instance.ChangeMap(target.Character.CharacterId, 130, x, y);
-                                   target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateTp());
-                                   target.CurrentMapInstance?.Broadcast(target.Character.GenerateRevive());
-                                   target.SendPacket(target.Character.GenerateStat());
-                               });
+                        Observable.Timer(TimeSpan.FromMilliseconds(30000)).Subscribe(o =>
+                        {
+                            target.Character.Hp = (int)target.Character.HPLoad();
+                            target.Character.Mp = (int)target.Character.MPLoad();
+                            short x = (short)(39 + ServerManager.Instance.RandomNumber(-2, 3));
+                            short y = (short)(42 + ServerManager.Instance.RandomNumber(-2, 3));
+                            ServerManager.Instance.ChangeMap(target.Character.CharacterId, 130, x, y);
+                            target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateTp());
+                            target.CurrentMapInstance?.Broadcast(target.Character.GenerateRevive());
+                            target.SendPacket(target.Character.GenerateStat());
+                        });
                     }
                     else
                     {
                         hitRequest.Session.Character.TalentWin += 1;
                         target.Character.TalentLose += 1;
-                        Observable.Timer(TimeSpan.FromMilliseconds(1000))
-                               .Subscribe(
-                               o =>
-                               {
-                                   ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
-                               });
+                        Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o =>
+                        {
+                            ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
+                        });
                     }
                 }
                 switch (hitRequest.TargetHitType)
@@ -352,7 +338,7 @@ namespace OpenNos.Handler
                             }
                             if (hitRequest.ShowTargetHitAnimation)
                             {
-                                hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} 0 0 {(IsAlive ? 1 : 0)} {(int)((double)target.Character.Hp / target.Character.HPLoad()) * 100} 0 0 {hitRequest.Skill.SkillType - 1}");
+                                hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} 0 0 {(IsAlive ? 1 : 0)} {(int)((double)target.Character.Hp / target.Character.HPLoad() * 100)} 0 0 {hitRequest.Skill.SkillType - 1}");
                             }
                             hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
                             break;
@@ -484,14 +470,9 @@ namespace OpenNos.Handler
                                         Session.SendPacket($"cancel 2 {targetId}");
                                     }
                                 }
-                                foreach (
-                                    MapMonster mon in
-                                    Session.CurrentMapInstance.GetListMonsterInRange(Session.Character.PositionX,
-                                        Session.Character.PositionY, ski.Skill.TargetRange).Where(s => s.CurrentHp > 0))
+                                foreach (MapMonster mon in Session.CurrentMapInstance.GetListMonsterInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange).Where(s => s.CurrentHp > 0))
                                 {
-                                    mon.HitQueue.Enqueue(new HitRequest(
-                                        TargetHitType.AOETargetHit, Session, ski.Skill,
-                                        skillinfo?.Skill.Effect ?? ski.Skill.Effect));
+                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill, skillinfo?.Skill.Effect ?? ski.Skill.Effect));
                                 }
                             }
                         }
@@ -501,33 +482,13 @@ namespace OpenNos.Handler
                         Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
                         Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100} 0 -1 {ski.Skill.SkillType - 1}");
                         ClientSession target = ServerManager.Instance.GetSessionByCharacterId(targetId) ?? Session;
-                        switch (ski.Skill.Effect)
+                        ski.Skill.BCards.ForEach(c =>
                         {
-                            case 3409:
-                                IndicatorBase triplecharging = new FirstBlessing(Session.Character.Level);
-                                target.Character.Buff.Add(triplecharging);
-                                break;
-
-                            case 3411:
-                                IndicatorBase shiningeffect = new ShiningEffect(Session.Character.Level);
-                                target.Character.Buff.Add(shiningeffect);
-                                break;
-
-                            case 4203:
-                                IndicatorBase hawkeye = new HawkEye(Session.Character.Level);
-                                target.Character.Buff.Add(hawkeye);
-                                break;
-
-                            case 4207:
-                                IndicatorBase windwalker = new WindWalker(Session.Character.Level);
-                                target.Character.Buff.Add(windwalker);
-                                break;
-
-                            case 4403:
-                                IndicatorBase healing = new Healing(Session.Character.Level);
-                                target.Character.Buff.Add(healing);
-                                break;
-                        }
+                            if (ServerManager.Instance.RandomNumber() < c.FirstData)
+                            {
+                                target.Character.AddBuff(new Buff(c.SecondData, Session.Character.Level));
+                            }
+                        });
                     }
                     else if (ski.Skill.TargetType == 1 && ski.Skill.HitType != 1)
                     {
@@ -541,162 +502,31 @@ namespace OpenNos.Handler
                                 {
                                     foreach (ClientSession target in clientSessions)
                                     {
-                                        switch (ski.Skill.Effect)
+
+                                        ski.Skill.BCards.ForEach(c =>
                                         {
-                                            case 4117:
-                                                IndicatorBase moraleincrease = new MoraleIncrease(Session.Character.Level);
-                                                IndicatorBase sprint = new Sprint(Session.Character.Level);
-                                                target.Character.Buff.Add(moraleincrease);
-                                                target.Character.Buff.Add(sprint);
-                                                break;
-
-                                            case 3417:
-                                                IndicatorBase prayerofdefence = new PrayerofDefence(Session.Character.Level);
-                                                target.Character.Buff.Add(prayerofdefence);
-                                                break;
-
-                                            case 3419:
-                                                IndicatorBase prayerofoffence = new PrayerofOffence(Session.Character.Level);
-                                                target.Character.Buff.Add(prayerofoffence);
-                                                break;
-
-                                            case 4013:
-                                                IndicatorBase fireblessing = new FireBlessing(Session.Character.Level);
-                                                target.Character.Buff.Add(fireblessing);
-                                                break;
-
-                                            case 4415:
-                                                IndicatorBase grouhealing = new GroupHealing(Session.Character.Level);
-                                                target.Character.Buff.Add(grouhealing);
-                                                break;
-
-                                            case 4417:
-                                                IndicatorBase holyweapon = new HolyWeapon(Session.Character.Level);
-                                                target.Character.Buff.Add(holyweapon);
-                                                break;
-
-                                            case 4419:
-                                                IndicatorBase blessing = new Blessing(Session.Character.Level);
-                                                target.Character.Buff.Add(blessing);
-                                                break;
-
-                                            case 3815:
-                                                IndicatorBase bow = new BlessingofWater(Session.Character.Level);
-                                                target.Character.Buff.Add(bow);
-                                                break;
-
-                                            case 3910:
-                                                IndicatorBase darkforce = new DarkForce(Session.Character.Level);
-                                                target.Character.Buff.Add(darkforce);
-                                                break;
-
-                                            case 3708:
-                                                IndicatorBase elementalshine = new ElementalShine(Session.Character.Level);
-                                                target.Character.Buff.Add(elementalshine);
-                                                break;
-
-                                            case 3706:
-                                                switch (ski.Skill.SkillVNum)
-                                                {
-                                                    case 931:
-                                                        IndicatorBase bearspirit = new BearSpirit(Session.Character.Level);
-                                                        target.Character.Buff.Add(bearspirit);
-                                                        break;
-
-                                                    case 928:
-                                                        IndicatorBase wolfghost = new WolfGhost(Session.Character.Level);
-                                                        target.Character.Buff.Add(wolfghost);
-                                                        break;
-                                                }
-                                                break;
-                                        }
+                                            if (ServerManager.Instance.RandomNumber() < c.FirstData)
+                                            {
+                                                target.Character.AddBuff(new Buff(c.SecondData, Session.Character.Level));
+                                            }
+                                        });
                                     }
-                                }
-                                break;
 
-                            case 0:
-                                switch (ski.Skill.Effect)
-                                {
-                                    case 4106:
-                                        IndicatorBase ironskin = new IronSkin(Session.Character.Level);
-                                        Session.Character.Buff.Add(ironskin);
-                                        break;
-
-                                    case 4318:
-                                        IndicatorBase sharpedge = new SharpEdge(Session.Character.Level);
-                                        Session.Character.Buff.Add(sharpedge);
-                                        break;
-
-                                    case 4314:
-                                        IndicatorBase breathofrecovery = new BreathofRecovery(Session.Character.Level);
-                                        Session.Character.Buff.Add(breathofrecovery);
-                                        break;
-
-                                    case 3415:
-                                        IndicatorBase holyshield = new HolyShield(Session.Character.Level);
-                                        Session.Character.Buff.Add(holyshield);
-                                        break;
-
-                                    case 3506:
-                                        IndicatorBase berserker = new Berserker(Session.Character.Level);
-                                        Session.Character.Buff.Add(berserker);
-                                        break;
-
-                                    case 4504:
-                                        IndicatorBase crithit = new CriticalHit(Session.Character.Level);
-                                        Session.Character.Buff.Add(crithit);
-                                        IndicatorBase pod = new PactofDarkness(Session.Character.Level);
-                                        Session.Character.Buff.Add(pod);
-                                        IndicatorBase sinistershadow = new SinisterShadow(Session.Character.Level);
-                                        Session.Character.Buff.Add(sinistershadow);
-                                        break;
-
-                                    case 3615:
-                                        IndicatorBase mh = new MiraclousHealing(Session.Character.Level);
-                                        Session.Character.Buff.Add(mh);
-                                        break;
-
-                                    case 3607:
-                                        IndicatorBase boost = new BoosterOn(Session.Character.Level);
-                                        Session.Character.Buff.Add(boost);
-                                        break;
-
-                                    case 3706:
-                                        IndicatorBase eaglespirit = new EagleSpirit(Session.Character.Level);
-                                        Session.Character.Buff.Add(eaglespirit);
-                                        break;
-
-                                    case 4007:
-                                        IndicatorBase manatransfusion = new ManaTransfusion(Session.Character.Level);
-                                        Session.Character.Buff.Add(manatransfusion);
-                                        break;
-
-                                    case 4407:
-                                        IndicatorBase manashield = new ManaShield(Session.Character.Level);
-                                        Session.Character.Buff.Add(manashield);
-                                        break;
-
-                                    case 3811:
-                                        IndicatorBase frozenshield = new FrozenShield(Session.Character.Level);
-                                        Session.Character.Buff.Add(frozenshield);
-                                        break;
-
-                                    case 3906:
-                                        IndicatorBase ghostguard = new GhostGuard(Session.Character.Level);
-                                        Session.Character.Buff.Add(ghostguard);
-                                        break;
                                 }
                                 break;
 
                             case 4:
-                                switch (ski.Skill.Effect)
+                            case 0:
+                                ski.Skill.BCards.ForEach(c =>
                                 {
-                                    case 281:
-                                        IndicatorBase ritualofhawk = new RitualOfHawk(Session.Character.Level);
-                                        Session.Character.Buff.Add(ritualofhawk);
-                                        break;
-                                }
+                                    if (ServerManager.Instance.RandomNumber() < c.FirstData)
+                                    {
+                                        Session.Character.AddBuff(new Buff(c.SecondData, Session.Character.Level));
+                                    }
+                                });
                                 break;
+                                
+                                
                         }
                     }
                     else if (ski.Skill.TargetType == 0 && Session.HasCurrentMapInstance) // monster target
@@ -719,8 +549,7 @@ namespace OpenNos.Handler
                                         Session.SendPackets(Session.Character.GenerateQuicklist());
                                     }
                                     Session.SendPacket(Session.Character.GenerateStat());
-                                    CharacterSkill characterSkillInfo = Session.Character.Skills.GetAllItems().OrderBy(o => o.SkillVNum)
-                                        .FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
+                                    CharacterSkill characterSkillInfo = Session.Character.Skills.GetAllItems().OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
                                     Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
                                     Session.Character.Skills.GetAllItems().Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
@@ -752,6 +581,7 @@ namespace OpenNos.Handler
                                                 ski.Hit = 0;
                                             }
                                             IEnumerable<ClientSession> playersInAOERange = ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
+                                            int count = 0;
                                             foreach (ClientSession character in playersInAOERange)
                                             {
                                                 if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
@@ -760,6 +590,7 @@ namespace OpenNos.Handler
                                                     {
                                                         if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Citadel))
                                                         {
+                                                            count++;
                                                             PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
                                                         }
                                                     }
@@ -768,6 +599,7 @@ namespace OpenNos.Handler
                                                 {
                                                     if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
                                                     {
+                                                        count++;
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
                                                     }
                                                 }
@@ -775,11 +607,12 @@ namespace OpenNos.Handler
                                                 {
                                                     if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
                                                     {
+                                                        count++;
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
                                                     }
                                                 }
                                             }
-                                            if (playerToAttack.Character.Hp <= 0)
+                                            if (playerToAttack.Character.Hp <= 0 || count == 0)
                                             {
                                                 Session.SendPacket($"cancel 2 {targetId}");
                                             }
@@ -909,12 +742,9 @@ namespace OpenNos.Handler
                                             }
                                             else if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
                                             {
-                                                if (Session.CurrentMapInstance.MapInstanceId !=
-                                                    ServerManager.Instance.FamilyArenaInstance.MapInstanceId)
+                                                if (Session.CurrentMapInstance.MapInstanceId != ServerManager.Instance.FamilyArenaInstance.MapInstanceId)
                                                 {
-                                                    if (Session.Character.Group == null ||
-                                                        !Session.Character.Group.IsMemberOfGroup(
-                                                            playerToAttack.Character.CharacterId))
+                                                    if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
                                                     {
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session,
                                                             ski.Skill), playerToAttack);
@@ -926,14 +756,9 @@ namespace OpenNos.Handler
                                                 }
                                                 else
                                                 {
-                                                    if (Session.Character.Family == null ||
-                                                        Session.Character.Family.FamilyCharacters.Any(
-                                                            s => s.Character.CharacterId != playerToAttack.Character
-                                                                     .CharacterId))
+                                                    if (Session.Character.Family == null || Session.Character.Family.FamilyCharacters.Any(s => s.Character.CharacterId != playerToAttack.Character.CharacterId))
                                                     {
-                                                        PVPHit(
-                                                            new HitRequest(TargetHitType.SingleTargetHit, Session,
-                                                                ski.Skill), playerToAttack);
+                                                        PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
                                                     }
                                                     else
                                                     {
@@ -1061,8 +886,7 @@ namespace OpenNos.Handler
                                             {
                                                 foreach (MapMonster mon in monstersInAOERange)
                                                 {
-                                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill
-                                                        , skillCombo: skillCombo));
+                                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo));
                                                 }
                                             }
                                             else
@@ -1079,16 +903,14 @@ namespace OpenNos.Handler
                                             IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMapInstance?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
 
                                             //hit the targetted monster
-                                            monsterToAttack.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                        , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: true));
+                                            monsterToAttack.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill, characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: true));
 
                                             //hit all other monsters
                                             if (monstersInAOERange != null)
                                             {
                                                 foreach (MapMonster mon in monstersInAOERange.Where(m => m.MapMonsterId != monsterToAttack.MapMonsterId)) //exclude targetted monster
                                                 {
-                                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                        , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
+                                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill, characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
                                                 }
                                             }
                                             else
@@ -1133,7 +955,7 @@ namespace OpenNos.Handler
                     {
                         Session.SendPacket($"cancel 2 {targetId}");
                     }
-                    Session.SendPacketAfterWait($"sr {castingId}", ski.Skill.Cooldown * 100);
+                    Session.SendPacketAfter($"sr {castingId}", ski.Skill.Cooldown * 100);
                 }
                 else
                 {
@@ -1214,9 +1036,7 @@ namespace OpenNos.Handler
                         }
                     });
 
-                    Observable.Timer(TimeSpan.FromMilliseconds(characterSkill.Skill.Cooldown * 100))
-                    .Subscribe(
-                    o =>
+                    Observable.Timer(TimeSpan.FromMilliseconds(characterSkill.Skill.Cooldown * 100)).Subscribe(o =>
                     {
                         Session.SendPacket($"sr {Castingid}");
                     });

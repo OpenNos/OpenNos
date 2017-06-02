@@ -63,12 +63,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// </exception>
         public ScsServiceApplication(IScsServer scsServer)
         {
-            if (scsServer == null)
-            {
-                throw new ArgumentNullException(nameof(scsServer));
-            }
-
-            _scsServer = scsServer;
+            _scsServer = scsServer ?? throw new ArgumentNullException(nameof(scsServer));
             _scsServer.ClientConnected += ScsServer_ClientConnected;
             _scsServer.ClientDisconnected += ScsServer_ClientDisconnected;
             _serviceObjects = new ThreadSafeSortedList<string, ServiceObject>();

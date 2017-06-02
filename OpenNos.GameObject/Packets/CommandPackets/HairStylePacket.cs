@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$HairStyle", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class HairStylePacket : PacketDefinition
@@ -12,6 +12,11 @@ namespace OpenNos.GameObject
 
         [PacketIndex(0)]
         public HairStyleType HairStyle { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$HairStyle STYLEID";
+        }
 
         #endregion
     }

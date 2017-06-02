@@ -38,19 +38,31 @@ namespace OpenNos.Handler
             {
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
             }
+            else if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+            {
+                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
+                Session.Character.Group?.Characters.ForEach(
+                session =>
+                {
+                    session.SendPacket(session.Character.Group.GenerateRdlst());
+                });
+                Session.SendPacket(Session.Character.GenerateRaid(1, true));
+                Session.SendPacket(Session.Character.GenerateRaid(2, true));
+                Session.Character.Group?.LeaveGroup(Session);
+            }
         }
 
         /// <summary>
         /// RSelPacket packet
         /// </summary>
         /// <param name="packet"></param>
-        public void getGift(RSelPacket packet)
+        public void GetGift(RSelPacket packet)
         {
             if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
             {
                 Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(Session.Character.MapId);
                 MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
-                ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
+                ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
                 if (si != null)
                 {
                     Session.Character.GetReput(si.Reputation);
@@ -66,25 +78,25 @@ namespace OpenNos.Handler
                     for (int i = 0; i < 3; i++)
                     {
                         Gift gift = si.GiftItems.ElementAtOrDefault(i);
-                        repay += $" {(gift == null ? "-1.0.0" : $"{gift.VNum}.0.{gift.Amount}")}";
+                        repay += gift == null ? "-1.0.0 " : $"{gift.VNum}.0.{gift.Amount} ";
                         if (gift != null)
                         {
                             Session.Character.GiftAdd(gift.VNum, gift.Amount);
                         }
                     }
 
-                    // TODO ADD HASALREADYDONE
+                    // TODO: Add HasAlreadyDone
                     for (int i = 0; i < 2; i++)
                     {
                         Gift gift = si.SpecialItems.ElementAtOrDefault(i);
-                        repay += $" {(gift == null ? "-1.0.0" : $"{gift.VNum}.0.{gift.Amount}")}";
+                        repay += gift == null ? "-1.0.0 " : $"{gift.VNum}.0.{gift.Amount} ";
                         if (gift != null)
                         {
                             Session.Character.GiftAdd(gift.VNum, gift.Amount);
                         }
                     }
 
-                    repay += $" {si.DrawItems[rand].VNum}.0.{si.DrawItems[rand].Amount}";
+                    repay += $"{si.DrawItems[rand].VNum}.0.{si.DrawItems[rand].Amount}";
                     Session.SendPacket(repay);
                 }
             }
@@ -96,13 +108,13 @@ namespace OpenNos.Handler
         /// <param name="treqPacket"></param>
         public void GetTreq(TreqPacket treqPacket)
         {
-            ScriptedInstance timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY).GetClone();
+            ScriptedInstance timespace = Session.CurrentMapInstance.ScriptedInstances.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY).GetClone();
 
             if (timespace != null)
             {
                 if (treqPacket.StartPress == 1 || treqPacket.RecordPress == 1)
                 {
-                    timespace.LoadScript();
+                    timespace.LoadScript(MapInstanceType.TimeSpaceInstance);
                     if (timespace.FirstMap == null) return;
                     foreach (var i in timespace.RequieredItems)
                     {
@@ -133,6 +145,45 @@ namespace OpenNos.Handler
                 }
             }
         }
+        /// <summary>
+        /// mkraid packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void GenerateRaid(MkraidPacket packet)
+        {
+            if (Session.Character.Group?.Raid != null && Session.Character.Group.IsLeader(Session))
+            {
+                Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
+                if (Session.Character.Group.Raid.FirstMap == null) return;
+                Session.Character.Group.Raid.FirstMap.InstanceBag.Lock = true;
+                if (Session.Character.Group.CharacterCount > 4)
+                {
+                    Session.Character.Group.Characters.Where(s => s.CurrentMapInstance != Session.CurrentMapInstance).ToList().ForEach(
+                    session =>
+                    {
+                        Session.Character.Group.LeaveGroup(session);
+                        session.SendPacket(session.Character.GenerateRaid(1, true));
+                        session.SendPacket(session.Character.GenerateRaid(2, true));
+                    });
+
+                    Session.Character.Group.Raid.FirstMap.InstanceBag.Lives = (short)Session.Character.Group.CharacterCount;
+                    Session.Character.Group.Characters.ForEach(
+                    session =>
+                    {
+                        ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.Group.Raid.FirstMap.MapInstanceId, Session.Character.Group.Raid.StartX, Session.Character.Group.Raid.StartY);
+                        session.SendPacket("raidbf 0 0 25");
+                        session.SendPacket(session.Character.Group.GeneraterRaidmbf());
+                        session.SendPacket(session.Character.GenerateRaid(5, false));
+                        session.SendPacket(session.Character.GenerateRaid(4, false));
+                        session.SendPacket(session.Character.GenerateRaid(3, false));
+                    });
+                }
+                else
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg("RAID_TEAM_NOT_READY", 0));
+                }
+            }
+        }
 
         /// <summary>
         /// wreq packet
@@ -140,7 +191,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void GetWreq(WreqPacket packet)
         {
-            foreach (ScriptedInstance portal in Session.CurrentMapInstance.TimeSpaces)
+            foreach (ScriptedInstance portal in Session.CurrentMapInstance.ScriptedInstances)
             {
                 if (Session.Character.PositionY >= portal.PositionY - 1 && Session.Character.PositionY <= portal.PositionY + 1
                     && Session.Character.PositionX >= portal.PositionX - 1 && Session.Character.PositionX <= portal.PositionX + 1)
@@ -159,8 +210,7 @@ namespace OpenNos.Handler
                             break;
 
                         case 1:
-                            byte record;
-                            byte.TryParse(packet.Param.ToString(), out record);
+                            byte.TryParse(packet.Param.ToString(), out byte record);
                             GetTreq(new TreqPacket()
                             {
                                 X = portal.PositionX,
@@ -230,8 +280,7 @@ namespace OpenNos.Handler
                     {
                         //1seed
                     }
-                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId,
-                           Session.Character.MapX, Session.Character.MapY);
+                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
                 }
             }
         }

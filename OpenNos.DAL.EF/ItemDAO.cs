@@ -30,9 +30,19 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Item item in context.Item.Where(s => s.Name.Contains(name)))
+                if (string.IsNullOrEmpty(name))
                 {
-                    yield return _mapper.Map<ItemDTO>(item);
+                    foreach (Item item in context.Item.Where(s => s.Name.Equals(string.Empty)))
+                    {
+                        yield return _mapper.Map<ItemDTO>(item);
+                    }
+                }
+                else
+                {
+                    foreach (Item item in context.Item.Where(s => s.Name.Contains(name)))
+                    {
+                        yield return _mapper.Map<ItemDTO>(item);
+                    }
                 }
             }
         }

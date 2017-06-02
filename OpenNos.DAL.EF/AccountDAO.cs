@@ -18,6 +18,7 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using OpenNos.Domain;
 using System;
 using System.Data.Entity;
 using System.Linq;
@@ -117,7 +118,7 @@ namespace OpenNos.DAL.EF
             return null;
         }
 
-        public void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData)
+        public void WriteGeneralLog(long accountId, string ipAddress, long? characterId, GeneralLogType logType, string logData)
         {
             try
             {
@@ -128,7 +129,7 @@ namespace OpenNos.DAL.EF
                         AccountId = accountId,
                         IpAddress = ipAddress,
                         Timestamp = DateTime.Now,
-                        LogType = logType,
+                        LogType = logType.ToString(),
                         LogData = logData,
                         CharacterId = characterId
                     };

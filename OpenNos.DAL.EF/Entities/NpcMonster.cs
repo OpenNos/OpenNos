@@ -31,6 +31,7 @@ namespace OpenNos.DAL.EF
             MapNpc = new HashSet<MapNpc>();
             NpcMonsterSkill = new HashSet<NpcMonsterSkill>();
             Mate = new HashSet<Mate>();
+            BCards = new HashSet<BCard>();
             MonsterType = MonsterType.Unknown;
         }
 
@@ -134,6 +135,8 @@ namespace OpenNos.DAL.EF
         public short WaterResistance { get; set; }
 
         public int XP { get; set; }
+
+        public virtual ICollection<BCard> BCards { get; set; }
 
         #endregion
     }

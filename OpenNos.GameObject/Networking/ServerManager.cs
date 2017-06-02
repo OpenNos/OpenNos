@@ -17,12 +17,14 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
@@ -31,13 +33,14 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class ServerManager : BroadcastableBase
+    public class ServerManager : BroadcastableBase, IDisposable
     {
         #region Members
 
         public bool ShutdownStop;
 
         private static readonly List<Item> _items = new List<Item>();
+
         private static readonly ConcurrentDictionary<Guid, MapInstance> _mapinstances = new ConcurrentDictionary<Guid, MapInstance>();
 
         private static readonly List<Map> _maps = new List<Map>();
@@ -56,19 +59,15 @@ namespace OpenNos.GameObject
 
         private List<DropDTO> _generalDrops;
 
-        private ThreadSafeSortedList<long, Group> _groups;
+        public ThreadSafeSortedList<long, Group> GroupsThreadSafe;
 
         private long _lastGroupId;
-
-        private long _lastRaidId;
 
         private ThreadSafeSortedList<short, List<MapNpc>> _mapNpcs;
 
         private ThreadSafeSortedList<short, List<DropDTO>> _monsterDrops;
 
         private ThreadSafeSortedList<short, List<NpcMonsterSkill>> _monsterSkills;
-
-        private ThreadSafeSortedList<long, Raid> _raids;
 
         private ThreadSafeSortedList<int, List<Recipe>> _recipes;
 
@@ -119,15 +118,15 @@ namespace OpenNos.GameObject
 
         public int GoldRate { get; set; }
 
-        public List<Group> Groups => _groups.GetAllItems();
+        public List<Group> Groups => GroupsThreadSafe.GetAllItems();
 
         public int HeroicStartLevel { get; set; }
 
         public int HeroXpRate { get; set; }
 
-        public bool inBazaarRefreshMode { get; set; }
+        public bool InBazaarRefreshMode { get; set; }
 
-        public bool inFamilyRefreshMode { get; set; }
+        public bool InFamilyRefreshMode { get; set; }
 
         public List<MailDTO> Mails { get; private set; }
 
@@ -144,8 +143,6 @@ namespace OpenNos.GameObject
         public byte MaxSPLevel { get; set; }
 
         public List<PenaltyLogDTO> PenaltyLogs { get; set; }
-
-        public List<Raid> Raids => _raids.GetAllItems();
 
         public List<Schedule> Schedules { get; set; }
 
@@ -165,18 +162,19 @@ namespace OpenNos.GameObject
 
         public int XPRate { get; set; }
 
+        public List<Card> Cards { get; set; }
+
+        public List<ScriptedInstance> Raids { get; set; }
+
+        public List<Group> GroupList { get; set; } = new List<Group>();
+
         #endregion
 
         #region Methods
 
         public void AddGroup(Group group)
         {
-            _groups[group.GroupId] = group;
-        }
-
-        public void AddRaid(Raid raid)
-        {
-            _raids[raid.RaidId] = raid;
+            GroupsThreadSafe[group.GroupId] = group;
         }
 
         public void AskPVPRevive(long characterId)
@@ -188,7 +186,11 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.RemoveVehicle();
                 }
-                Session.Character.Buff.Clear();
+                List<BuffType> bufftodisable = new List<BuffType>();
+                bufftodisable.Add(BuffType.Bad);
+                bufftodisable.Add(BuffType.Good);
+                bufftodisable.Add(BuffType.Neutral);
+                Session.Character.DisableBuffs(bufftodisable);
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
@@ -225,7 +227,11 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.RemoveVehicle();
                 }
-                Session.Character.Buff.Clear();
+                List<BuffType> bufftodisable = new List<BuffType>();
+                bufftodisable.Add(BuffType.Bad);
+                bufftodisable.Add(BuffType.Good);
+                bufftodisable.Add(BuffType.Neutral);
+                Session.Character.DisableBuffs(bufftodisable);
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
@@ -296,6 +302,49 @@ namespace OpenNos.GameObject
 
                         break;
 
+                    case MapInstanceType.RaidInstance:
+                        List<long> save = Session.CurrentMapInstance.InstanceBag.DeadList.ConvertAll(s => s);
+                        if (Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count() < 0)
+                        {
+                            Session.Character.Hp = 1;
+                            Session.Character.Mp = 1;
+                        }
+                        else if (2 - save.Count(s => s == Session.Character.CharacterId) > 0)
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"), 2 - Session.CurrentMapInstance.InstanceBag.DeadList.Where(s => s == Session.Character.CharacterId).Count())));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), Session.Character.Name)));
+
+                            Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
+                            Session.Character.Group?.Characters.ForEach(
+                            session =>
+                            {
+                                session.SendPacket(session.Character.Group.GeneraterRaidmbf());
+                                session.SendPacket(session.Character.Group.GenerateRdlst());
+                            });
+                            Task.Factory.StartNew(async () =>
+                            {
+                                await Task.Delay(20000);
+                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            });
+                        }
+                        else
+                        {
+                            Group grp = Session.Character.Group;
+                            if (grp != null)
+                            {
+                                grp.Characters.ForEach(s =>
+                                {
+                                    s.SendPacket(s.Character.Group.GeneraterRaidmbf());
+                                    s.SendPacket(s.Character.Group.GenerateRdlst());
+                                });
+                                grp.LeaveGroup(Session);
+                                Session.SendPacket(Session.Character.GenerateRaid(1, true));
+                                Session.SendPacket(Session.Character.GenerateRaid(2, true));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), 0));
+                            }
+                        }
+                        break;
+
                     case MapInstanceType.LodInstance:
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_LOD")}"));
                         Task.Factory.StartNew(async () =>
@@ -326,9 +375,9 @@ namespace OpenNos.GameObject
 
         public void BazaarRefresh(long BazaarItemId)
         {
-            inBazaarRefreshMode = true;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh", ServerGroup, BazaarItemId);
-            SpinWait.SpinUntil(() => !inBazaarRefreshMode);
+            InBazaarRefreshMode = true;
+            CommunicationServiceClient.Instance.UpdateBazaar(ServerGroup, BazaarItemId);
+            SpinWait.SpinUntil(() => !InBazaarRefreshMode);
         }
 
         public void ChangeMap(long id, short? MapId = null, short? mapX = null, short? mapY = null)
@@ -344,11 +393,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void ChangeMapInstance(long characterId, Guid mapInstanceId, object startX, object startY)
-        {
-            throw new NotImplementedException();
-        }
-
         // Both partly
         public void ChangeMapInstance(long id, Guid MapInstanceId, int? mapX = null, int? mapY = null)
         {
@@ -357,6 +401,14 @@ namespace OpenNos.GameObject
             {
                 try
                 {
+                    if (session.Character.IsExchanging)
+                    {
+                        session.Character.CloseExchangeOrTrade();
+                    }
+                    if (session.Character.HasShopOpened)
+                    {
+                        session.Character.CloseShop();
+                    }
                     LeaveMap(session.Character.CharacterId);
 
                     session.Character.IsChangingMapInstance = true;
@@ -396,27 +448,24 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateCond());
                     session.SendPacket(session.Character.GenerateCMap());
                     session.SendPacket(session.Character.GenerateStatChar());
-
                     session.SendPacket(session.Character.GeneratePairy());
-                    session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
-                    {
-                        s.PositionX = (short)(session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
-                        s.PositionY = (short)(session.Character.PositionY + 1);
-                    });
-
-                    session.SendPacket(session.Character.GeneratePinit()); // clear party list
-                    session.Character.SendPst();
-                    session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
+                    session.SendPacket(session.Character.GeneratePinit());
+                    session.SendPackets(session.Character.GeneratePst());
+                    session.SendPacket(session.Character.GenerateAct());
                     session.SendPacket(session.Character.GenerateScpStc());
 
-                    session.CurrentMapInstance.Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm).ToList().ForEach(s =>
+                    Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm), visibleSession =>
                     {
-                        session.SendPacket(s.Character.GenerateIn());
-                        session.SendPacket(s.Character.GenerateGidx());
+                        session.SendPacket(visibleSession.Character.GenerateIn());
+                        session.SendPacket(visibleSession.Character.GenerateGidx());
+                        visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(mate =>
+                        {
+                            session.SendPacket(mate.GenerateIn());
+                        });
                     });
 
-                    session.SendPackets(session.CurrentMapInstance.GetMapItems());
 
+                    session.SendPackets(session.CurrentMapInstance.GetMapItems());
                     MapInstancePortalHandler.GenerateMinilandEntryPortals(session.CurrentMapInstance.Map.MapId, session.Character.Miniland.MapInstanceId).ForEach(p => session.SendPacket(p.GenerateGp()));
 
                     if (session.CurrentMapInstance.InstanceBag.Clock.Enabled)
@@ -435,6 +484,12 @@ namespace OpenNos.GameObject
                     }
                     if (!session.Character.InvisibleGm)
                     {
+                        Parallel.ForEach(session.Character.Mates.Where(m => m.IsTeamMember), mate =>
+                        {
+                            mate.PositionX = (short)(session.Character.PositionX + (mate.MateType == MateType.Partner ? -1 : 1));
+                            mate.PositionY = (short)(session.Character.PositionY + 1);
+                            session.CurrentMapInstance.Broadcast(mate.GenerateIn());
+                        });
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                     }
@@ -453,34 +508,35 @@ namespace OpenNos.GameObject
                     }
                     if (Groups != null)
                     {
-                        foreach (Group g in Groups)
+                        Parallel.ForEach(Groups, group =>
                         {
-                            foreach (ClientSession groupSession in g.Characters)
+                            foreach (ClientSession groupSession in group.Characters)
                             {
                                 ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMapInstance == groupSession.CurrentMapInstance);
-                                if (chara == null) continue;
+                                if (chara == null)
+                                {
+                                    continue;
+                                }
                                 groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                                groupSession.Character.SendPst();
+                                groupSession.SendPackets(groupSession.Character.GeneratePst());
                             }
-                        }
+                        });
                     }
 
-                    if (session.Character.Group != null)
+                    if (session.Character.Group != null && session.Character.Group.GroupType == GroupType.Group)
                     {
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
                     }
                     session.Character.IsChangingMapInstance = false;
                     session.SendPacket(session.Character.GenerateMinimapPosition());
-                    session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(
-                         e =>
-                         {
-                             if (!e.Item2.Contains(session.Character.CharacterId))
-                             {
-                                 e.Item2.Add(session.Character.CharacterId);
-                                 EventHelper.Instance.RunEvent(e.Item1, session);
-                             }
-                         }
-                     );
+                    session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>
+                    {
+                        if (!e.Item2.Contains(session.Character.CharacterId))
+                        {
+                            e.Item2.Add(session.Character.CharacterId);
+                            EventHelper.Instance.RunEvent(e.Item1, session);
+                        }
+                    });
                 }
                 catch (Exception)
                 {
@@ -490,7 +546,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public override void Dispose()
+        public override sealed void Dispose()
         {
             if (!_disposed)
             {
@@ -502,9 +558,9 @@ namespace OpenNos.GameObject
 
         public void FamilyRefresh(long FamilyId)
         {
-            inFamilyRefreshMode = true;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", ServerGroup, FamilyId);
-            SpinWait.SpinUntil(() => !inFamilyRefreshMode);
+            InFamilyRefreshMode = true;
+            CommunicationServiceClient.Instance.UpdateFamily(ServerGroup, FamilyId);
+            SpinWait.SpinUntil(() => !InFamilyRefreshMode);
         }
 
         public MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
@@ -517,16 +573,17 @@ namespace OpenNos.GameObject
                 mapInstance.LoadMonsters();
                 mapInstance.LoadNpcs();
                 mapInstance.LoadPortals();
-                foreach (MapMonster mapMonster in mapInstance.Monsters)
+                Parallel.ForEach(mapInstance.Monsters, mapMonster =>
                 {
                     mapMonster.MapInstance = mapInstance;
+                    mapMonster.Monster.BCards.ForEach(c => c.ApplyBCards(mapMonster));
                     mapInstance.AddMonster(mapMonster);
-                }
-                foreach (MapNpc mapNpc in mapInstance.Npcs)
+                });
+                Parallel.ForEach(mapInstance.Npcs, mapNpc =>
                 {
                     mapNpc.MapInstance = mapInstance;
                     mapInstance.AddNPC(mapNpc);
-                }
+                });
                 _mapinstances.TryAdd(guid, mapInstance);
                 return mapInstance;
             }
@@ -569,11 +626,6 @@ namespace OpenNos.GameObject
             return _lastGroupId;
         }
 
-        public long GetNextRaidId()
-        {
-            _lastRaidId++;
-            return _lastRaidId;
-        }
 
         public NpcMonster GetNpc(short npcVNum)
         {
@@ -610,6 +662,11 @@ namespace OpenNos.GameObject
             return Sessions.SingleOrDefault(s => s.Character.Name == name);
         }
 
+        public ClientSession GetSessionBySessionId(int sessionId)
+        {
+            return Sessions.SingleOrDefault(s => s.SessionId == sessionId);
+        }
+
         public Skill GetSkill(short skillVNum)
         {
             return _skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
@@ -634,27 +691,47 @@ namespace OpenNos.GameObject
                 Group grp = Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId));
                 if (grp != null)
                 {
-                    if (grp.CharacterCount >= 3)
+                    if ((grp.CharacterCount >= 3 && grp.GroupType == GroupType.Group) || (grp.CharacterCount >= 2 && grp.GroupType != GroupType.Group))
                     {
                         if (grp.Characters.ElementAt(0) == session)
                         {
                             Broadcast(session, UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, string.Empty, grp.Characters.ElementAt(1).Character.CharacterId);
                         }
                         grp.LeaveGroup(session);
-                        foreach (ClientSession groupSession in grp.Characters)
+
+                        if (grp.GroupType == GroupType.Group)
                         {
-                            groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                            groupSession.Character.SendPst();
-                            groupSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
+                            foreach (ClientSession groupSession in grp.Characters)
+                            {
+                                groupSession.SendPacket(groupSession.Character.GeneratePinit());
+                                groupSession.SendPackets(session.Character.GeneratePst());
+                                groupSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
+                            }
+                            session.SendPacket(session.Character.GeneratePinit());
+                            session.SendPackets(session.Character.GeneratePst());
+                            Broadcast(session.Character.GeneratePidx(true));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                         }
-                        session.SendPacket(session.Character.GeneratePinit());
-                        session.Character.SendPst();
-                        Broadcast(session.Character.GeneratePidx(true));
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
+                        else
+                        {
+                            foreach (ClientSession groupSession in grp.Characters)
+                            {
+                                session.SendPacket(session.Character.GenerateRaid(1, true));
+                                session.SendPacket(session.Character.GenerateRaid(2, true));
+                                groupSession.SendPacket(grp.GenerateRdlst());
+                                groupSession.SendPacket(groupSession.Character.GenerateRaid(0, false));
+                            }
+                            if (session?.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+                            {
+                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                            }
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
+                        }
+
                     }
                     else
                     {
-                        ClientSession[] grpmembers = new ClientSession[3];
+                        ClientSession[] grpmembers = new ClientSession[40];
                         grp.Characters.CopyTo(grpmembers);
                         foreach (ClientSession targetSession in grpmembers)
                         {
@@ -664,10 +741,11 @@ namespace OpenNos.GameObject
                                 Broadcast(targetSession.Character.GeneratePidx(true));
                                 grp.LeaveGroup(targetSession);
                                 targetSession.SendPacket(targetSession.Character.GeneratePinit());
-                                targetSession.Character.SendPst();
+                                targetSession.SendPackets(targetSession.Character.GeneratePst());
                             }
                         }
-                        RemoveGroup(grp);
+                        GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
+                        GroupsThreadSafe.Remove(grp.GroupId);
                     }
                     session.Character.Group = null;
                 }
@@ -692,116 +770,115 @@ namespace OpenNos.GameObject
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
 
-            // load explicite type of ItemDTO
-            foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
+            var itemPartitioner = Partitioner.Create(DAOFactory.ItemDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
+            ThreadSafeSortedList<short, Item> _item = new ThreadSafeSortedList<short, Item>();
+            Parallel.ForEach(itemPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 4 }, itemDTO =>
             {
-                Item item;
-
                 switch (itemDTO.ItemType)
                 {
                     case ItemType.Ammo:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Armor:
-                        item = new WearableItem(itemDTO);
+                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Box:
-                        item = new BoxItem(itemDTO);
+                        _item[itemDTO.VNum] = new BoxItem(itemDTO);
                         break;
 
                     case ItemType.Event:
-                        item = new MagicalItem(itemDTO);
+                        _item[itemDTO.VNum] = new MagicalItem(itemDTO);
                         break;
 
                     case ItemType.Fashion:
-                        item = new WearableItem(itemDTO);
+                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Food:
-                        item = new FoodItem(itemDTO);
+                        _item[itemDTO.VNum] = new FoodItem(itemDTO);
                         break;
 
                     case ItemType.Jewelery:
-                        item = new WearableItem(itemDTO);
+                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Magical:
-                        item = new MagicalItem(itemDTO);
+                        _item[itemDTO.VNum] = new MagicalItem(itemDTO);
                         break;
 
                     case ItemType.Main:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Map:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Part:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Potion:
-                        item = new PotionItem(itemDTO);
+                        _item[itemDTO.VNum] = new PotionItem(itemDTO);
                         break;
 
                     case ItemType.Production:
-                        item = new ProduceItem(itemDTO);
+                        _item[itemDTO.VNum] = new ProduceItem(itemDTO);
                         break;
 
                     case ItemType.Quest1:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Quest2:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Sell:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Shell:
-                        item = new MagicalItem(itemDTO);
+                        _item[itemDTO.VNum] = new MagicalItem(itemDTO);
                         break;
 
                     case ItemType.Snack:
-                        item = new SnackItem(itemDTO);
+                        _item[itemDTO.VNum] = new SnackItem(itemDTO);
                         break;
 
                     case ItemType.Special:
-                        item = new SpecialItem(itemDTO);
+                        _item[itemDTO.VNum] = new SpecialItem(itemDTO);
                         break;
 
                     case ItemType.Specialist:
-                        item = new WearableItem(itemDTO);
+                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Teacher:
-                        item = new TeacherItem(itemDTO);
+                        _item[itemDTO.VNum] = new TeacherItem(itemDTO);
                         break;
 
                     case ItemType.Upgrade:
-                        item = new UpgradeItem(itemDTO);
+                        _item[itemDTO.VNum] = new UpgradeItem(itemDTO);
                         break;
 
                     case ItemType.Weapon:
-                        item = new WearableItem(itemDTO);
+                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
                         break;
 
                     default:
-                        item = new NoFunctionItem(itemDTO);
+                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
                         break;
                 }
-                _items.Add(item);
-            }
+            });
+            _items.AddRange(_item.GetAllItems());
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_LOADED"), _items.Count));
 
             // intialize monsterdrops
             _monsterDrops = new ThreadSafeSortedList<short, List<DropDTO>>();
-            foreach (var monsterDropGrouping in DAOFactory.DropDAO.LoadAll().GroupBy(d => d.MonsterVNum))
+            Parallel.ForEach(DAOFactory.DropDAO.LoadAll().GroupBy(d => d.MonsterVNum), monsterDropGrouping =>
             {
                 if (monsterDropGrouping.Key.HasValue)
                 {
@@ -811,124 +888,142 @@ namespace OpenNos.GameObject
                 {
                     _generalDrops = monsterDropGrouping.ToList();
                 }
-            }
+            });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("DROPS_LOADED"), _monsterDrops.GetAllItems().Sum(i => i.Count)));
 
-            // initialiize monsterskills
+            // initialize monsterskills
             _monsterSkills = new ThreadSafeSortedList<short, List<NpcMonsterSkill>>();
-            foreach (var monsterSkillGrouping in DAOFactory.NpcMonsterSkillDAO.LoadAll().GroupBy(n => n.NpcMonsterVNum))
+            Parallel.ForEach(DAOFactory.NpcMonsterSkillDAO.LoadAll().GroupBy(n => n.NpcMonsterVNum), monsterSkillGrouping =>
             {
                 _monsterSkills[monsterSkillGrouping.Key] = monsterSkillGrouping.Select(n => n as NpcMonsterSkill).ToList();
-            }
+            });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
-
-            // initialize Families
 
             // initialize Families
             LoadBazaar();
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
 
             // initialize npcmonsters
-            foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
+            ThreadSafeSortedList<short, NpcMonster> _npcMonsters = new ThreadSafeSortedList<short, NpcMonster>();
+            Parallel.ForEach(DAOFactory.NpcMonsterDAO.LoadAll(), npcMonster =>
             {
-                _npcs.Add(npcmonsterDTO as NpcMonster);
-            }
+                _npcMonsters[npcMonster.NpcMonsterVNum] = npcMonster as NpcMonster;
+                _npcMonsters[npcMonster.NpcMonsterVNum].BCards = new List<BCard>();
+                DAOFactory.BCardDAO.LoadByNpcMonsterVNum(npcMonster.NpcMonsterVNum).ToList().ForEach(s => _npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard)s));
+            });
+            _npcs.AddRange(_npcMonsters.GetAllItems());
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count));
 
-            // intialize receipes
+            // intialize recipes
             _recipes = new ThreadSafeSortedList<int, List<Recipe>>();
-            foreach (var recipeGrouping in DAOFactory.RecipeDAO.LoadAll().GroupBy(r => r.MapNpcId))
+            Parallel.ForEach(DAOFactory.RecipeDAO.LoadAll().GroupBy(r => r.MapNpcId), recipeGrouping =>
             {
                 _recipes[recipeGrouping.Key] = recipeGrouping.Select(r => r as Recipe).ToList();
-            }
+            });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), _recipes.GetAllItems().Sum(i => i.Count)));
 
             // initialize shopitems
             _shopItems = new ThreadSafeSortedList<int, List<ShopItemDTO>>();
-            foreach (var shopItemGrouping in DAOFactory.ShopItemDAO.LoadAll().GroupBy(s => s.ShopId))
+            Parallel.ForEach(DAOFactory.ShopItemDAO.LoadAll().GroupBy(s => s.ShopId), shopItemGrouping =>
             {
                 _shopItems[shopItemGrouping.Key] = shopItemGrouping.ToList();
-            }
+            });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_LOADED"), _shopItems.GetAllItems().Sum(i => i.Count)));
 
             // initialize shopskills
             _shopSkills = new ThreadSafeSortedList<int, List<ShopSkillDTO>>();
-            foreach (var shopSkillGrouping in DAOFactory.ShopSkillDAO.LoadAll().GroupBy(s => s.ShopId))
+            Parallel.ForEach(DAOFactory.ShopSkillDAO.LoadAll().GroupBy(s => s.ShopId), shopSkillGrouping =>
             {
                 _shopSkills[shopSkillGrouping.Key] = shopSkillGrouping.ToList();
-            }
+            });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_LOADED"), _shopSkills.GetAllItems().Sum(i => i.Count)));
 
             // initialize shops
             _shops = new ThreadSafeSortedList<int, Shop>();
-            foreach (var shopGrouping in DAOFactory.ShopDAO.LoadAll())
+            Parallel.ForEach(DAOFactory.ShopDAO.LoadAll(), shopGrouping =>
             {
                 _shops[shopGrouping.MapNpcId] = (Shop)shopGrouping;
-            }
+            });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_LOADED"), _shops.GetAllItems().Count));
 
             // initialize teleporters
             _teleporters = new ThreadSafeSortedList<int, List<TeleporterDTO>>();
-            foreach (var teleporterGrouping in DAOFactory.TeleporterDAO.LoadAll().GroupBy(t => t.MapNpcId))
+            Parallel.ForEach(DAOFactory.TeleporterDAO.LoadAll().GroupBy(t => t.MapNpcId), teleporterGrouping =>
             {
                 _teleporters[teleporterGrouping.Key] = teleporterGrouping.Select(t => t).ToList();
-            }
+            });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_LOADED"), _teleporters.GetAllItems().Sum(i => i.Count)));
 
             // initialize skills
-            foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
+            ThreadSafeSortedList<short, Skill> _skill = new ThreadSafeSortedList<short, Skill>();
+            Parallel.ForEach(DAOFactory.SkillDAO.LoadAll(), skill =>
             {
-                Skill skill = (Skill)skillDTO;
-                skill.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList());
-                _skills.Add(skill);
-            }
+                Skill skillObj = skill as Skill;
+                skillObj.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skillObj.SkillVNum).ToList());
+                skillObj.BCards = new List<BCard>();
+                DAOFactory.BCardDAO.LoadBySkillVNum(skillObj.SkillVNum).ToList().ForEach(o => skillObj.BCards.Add((BCard)o));
+                _skill[skillObj.SkillVNum] = skillObj as Skill;
+            });
+            _skills.AddRange(_skill.GetAllItems());
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
+
+            // initialize buffs
+            Cards = new List<Card>();
+            foreach (CardDTO carddto in DAOFactory.CardDAO.LoadAll())
+            {
+                Card card = (Card)carddto;
+                card.BCards = new List<BCard>();
+                DAOFactory.BCardDAO.LoadByCardId(card.CardId).ToList().ForEach(o => card.BCards.Add((BCard)o));
+                Cards.Add(card);
+            }
+
+
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), _skills.Count));
 
             // intialize mapnpcs
             _mapNpcs = new ThreadSafeSortedList<short, List<MapNpc>>();
-            foreach (var mapNpcGrouping in DAOFactory.MapNpcDAO.LoadAll().GroupBy(t => t.MapId))
+            Parallel.ForEach(DAOFactory.MapNpcDAO.LoadAll().GroupBy(t => t.MapId), mapNpcGrouping =>
             {
                 _mapNpcs[mapNpcGrouping.Key] = mapNpcGrouping.Select(t => t as MapNpc).ToList();
-            }
+            });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPNPCS_LOADED"), _mapNpcs.GetAllItems().Sum(i => i.Count)));
 
             try
             {
                 int i = 0;
                 int monstercount = 0;
-
-                foreach (MapDTO map in DAOFactory.MapDAO.LoadAll())
+                var mapPartitioner = Partitioner.Create(DAOFactory.MapDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
+                ThreadSafeSortedList<short, Map> _mapList = new ThreadSafeSortedList<short, Map>();
+                Parallel.ForEach(mapPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 8 }, map =>
                 {
                     Guid guid = Guid.NewGuid();
                     Map mapinfo = new Map(map.MapId, map.Data)
                     {
                         Music = map.Music
                     };
-                    _maps.Add(mapinfo);
-
+                    _mapList[map.MapId] = mapinfo;
                     MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance, new InstanceBag());
-
-                    // register for broadcast
                     _mapinstances.TryAdd(guid, newMap);
-                    i++;
 
-                    newMap.LoadMonsters();
+                    Task.Run(() => newMap.LoadPortals());
                     newMap.LoadNpcs();
-                    newMap.LoadPortals();
+                    newMap.LoadMonsters();
 
-                    foreach (MapMonster mapMonster in newMap.Monsters)
-                    {
-                        mapMonster.MapInstance = newMap;
-                        newMap.AddMonster(mapMonster);
-                    }
-
-                    foreach (MapNpc mapNpc in newMap.Npcs)
+                    Parallel.ForEach(newMap.Npcs, mapNpc =>
                     {
                         mapNpc.MapInstance = newMap;
                         newMap.AddNPC(mapNpc);
-                    }
+                    });
+                    Parallel.ForEach(newMap.Monsters, mapMonster =>
+                    {
+                        mapMonster.MapInstance = newMap;
+                        mapMonster.Monster.BCards.ForEach(c => c.ApplyBCards(mapMonster));
+                        newMap.AddMonster(mapMonster);
+                    });
                     monstercount += newMap.Monsters.Count;
-                }
+                    i++;
+                });
+                _maps.AddRange(_mapList.GetAllItems());
                 if (i != 0)
                 {
                     Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_LOADED"), i));
@@ -945,11 +1040,17 @@ namespace OpenNos.GameObject
                 RefreshRanking();
                 CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
                 PenaltyLogs = DAOFactory.PenaltyLogDAO.LoadAll().ToList();
-                ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance, new InstanceBag());
-                ArenaInstance.IsPVP = true;
-                FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance, new InstanceBag());
-                FamilyArenaInstance.IsPVP = true;
-                LoadTimeSpaces();
+                if (DAOFactory.MapDAO.LoadById(2006) != null)
+                {
+                    ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance, new InstanceBag());
+                    ArenaInstance.IsPVP = true;
+                }
+                if (DAOFactory.MapDAO.LoadById(2106) != null)
+                {
+                    FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance, new InstanceBag());
+                    FamilyArenaInstance.IsPVP = true;
+                }
+                LoadScriptedInstances();
             }
             catch (Exception ex)
             {
@@ -1011,50 +1112,6 @@ namespace OpenNos.GameObject
             session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
         }
 
-        public void RaidDisolve(ClientSession session, Raid raid = null)
-        {
-            if (raid == null)
-                raid = Instance.Raids.FirstOrDefault(s => s.IsMemberOfRaid(session.Character.CharacterId));
-            if (raid == null) return;
-            foreach (ClientSession targetSession in raid.Characters)
-            {
-                targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_CLOSED"), 0));
-                raid.Leave(targetSession);
-            }
-            raid.DestroyRaid();
-        }
-
-        public void RaidLeave(ClientSession session)
-        {
-            if (session == null) return;
-            if (Raids == null) return;
-            Raid raid = Instance.Raids.FirstOrDefault(s => s.IsMemberOfRaid(session.Character.CharacterId));
-            if (raid == null) return;
-            if (raid.Characters.Count > 1)
-            {
-                if (raid.Leader != session)
-                {
-                    raid.Leave(session);
-                }
-                else
-                {
-                    raid.Leave(raid.Leader);
-                    raid.Leader.SendPacket(
-                        $"say 1 {raid.Leader.Character.CharacterId} 10 {Language.Instance.GetMessageFromKey("RAID_NEW_LEADER")}");
-                    raid.Leader.SendPacket(
-                        UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_NEW_LEADER"),
-                            0));
-                    raid.Leader.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
-                        string.Format(Language.Instance.GetMessageFromKey("LEAVE_RAID"), session.Character.Name), 0));
-                }
-                session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
-                raid.UpdateVisual();
-            }
-            else
-            {
-                RaidDisolve(session, raid);
-            }
-        }
 
         public int RandomNumber(int min = 0, int max = 100)
         {
@@ -1071,7 +1128,7 @@ namespace OpenNos.GameObject
         public void RelationRefresh(long RelationId)
         {
             inRelationRefreshMode = true;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerGroup, RelationId);
+            CommunicationServiceClient.Instance.UpdateRelation(ServerGroup, RelationId);
             SpinWait.SpinUntil(() => !inRelationRefreshMode);
         }
 
@@ -1081,13 +1138,8 @@ namespace OpenNos.GameObject
             if (!map.Equals(default(KeyValuePair<Guid, MapInstance>)))
             {
                 map.Value.Dispose();
-                ((IDictionary)_mapinstances).Remove(map);
+                ((IDictionary)_mapinstances).Remove(map.Key);
             }
-        }
-
-        public void RemoveRaid(Raid raid)
-        {
-            _raids.Remove(raid.RaidId);
         }
 
         // Map
@@ -1096,7 +1148,7 @@ namespace OpenNos.GameObject
             ClientSession session = GetSessionByCharacterId(characterId);
             if (session != null && session.Character.Hp <= 0)
             {
-                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
+                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance || session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                 {
                     session.Character.Hp = (int)session.Character.HPLoad();
                     session.Character.Mp = (int)session.Character.MPLoad();
@@ -1129,6 +1181,7 @@ namespace OpenNos.GameObject
         {
             List<ClientSession> sessions = Sessions.Where(c => c.IsConnected).ToList();
             sessions.ForEach(s => s.Character?.Save());
+            DAOFactory.BazaarItemDAO.RemoveOutDated();
         }
 
         public void SetProperty(long charId, string property, object value)
@@ -1138,7 +1191,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            PropertyInfo propertyinfo = session.Character.GetType().GetProperties().Single(pi => pi.Name == property);
+            PropertyInfo propertyinfo = session.Character.GetType().GetProperty(property);
             propertyinfo.SetValue(session.Character, value, null);
         }
 
@@ -1146,6 +1199,61 @@ namespace OpenNos.GameObject
         {
             Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
             Broadcast($"msg 2 {message}");
+        }
+
+        public async void ShutdownTask()
+        {
+            string message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 60 * 4; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 30; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 30; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
+            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            for (int i = 0; i < 10; i++)
+            {
+                await Task.Delay(1000);
+                if (Instance.ShutdownStop)
+                {
+                    Instance.ShutdownStop = false;
+                    return;
+                }
+            }
+            Instance.SaveAll();
+            CommunicationServiceClient.Instance.UnregisterWorldServer(WorldId);
+            Environment.Exit(0);
         }
 
         public void TeleportOnRandomPlaceInMap(ClientSession Session, Guid guid)
@@ -1176,7 +1284,8 @@ namespace OpenNos.GameObject
                         foreach (ClientSession session in groupMembers)
                         {
                             session.SendPacket(session.Character.GeneratePinit());
-                            session.Character.SendPst();
+                            session.Character.Group.Characters.ForEach(s => session.SendPacket(s.Character.GenerateStat()));
+                            session.SendPackets(session.Character.GeneratePst());
                         }
                     }
                 }
@@ -1227,8 +1336,7 @@ namespace OpenNos.GameObject
             if (disposing)
             {
                 _monsterDrops.Dispose();
-                _groups.Dispose();
-                _raids.Dispose();
+                GroupsThreadSafe.Dispose();
                 _monsterSkills.Dispose();
                 _shopSkills.Dispose();
                 _shopItems.Dispose();
@@ -1244,7 +1352,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{ RandomNumber(0, 5) }"));
+                Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{RandomNumber(0, 5)}"));
             }
             catch (Exception e)
             {
@@ -1258,7 +1366,7 @@ namespace OpenNos.GameObject
             {
                 if (Groups != null)
                 {
-                    foreach (Group grp in Groups)
+                    Parallel.ForEach(Groups, grp =>
                     {
                         foreach (ClientSession session in grp.Characters)
                         {
@@ -1267,7 +1375,7 @@ namespace OpenNos.GameObject
                                 session.SendPacket(str);
                             }
                         }
-                    }
+                    });
                 }
             }
             catch (Exception e)
@@ -1278,8 +1386,7 @@ namespace OpenNos.GameObject
 
         private void LaunchEvents()
         {
-            _groups = new ThreadSafeSortedList<long, Group>();
-            _raids = new ThreadSafeSortedList<long, Raid>();
+            GroupsThreadSafe = new ThreadSafeSortedList<long, Group>();
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
             {
@@ -1295,19 +1402,13 @@ namespace OpenNos.GameObject
             {
                 BotProcess();
             });
-            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
-            {
-                BotProcess();
-            });
 
-            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
-            foreach (Schedule schedul in Schedules)
+            EventHelper.Instance.RunEvent(new EventContainer(Instance.GetMapInstance(Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
+            foreach (Schedule schedule in Schedules)
             {
-                Observable.Timer(TimeSpan.FromSeconds(EventHelper.Instance.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
-                .Subscribe(
-                e =>
+                Observable.Timer(TimeSpan.FromSeconds(EventHelper.Instance.GetMilisecondsBeforeTime(schedule.Time).TotalSeconds), TimeSpan.FromDays(1)).Subscribe(e =>
                 {
-                    EventHelper.Instance.GenerateEvent(schedul.Event);
+                    EventHelper.Instance.GenerateEvent(schedule.Event);
                 });
             }
 
@@ -1321,14 +1422,14 @@ namespace OpenNos.GameObject
                 RemoveItemProcess();
             });
 
-            ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
-            ServerCommunicationClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
-            ServerCommunicationClient.Instance.FamilyRefresh += OnFamilyRefresh;
-            ServerCommunicationClient.Instance.RelationRefresh += OnRelationRefresh;
-            ServerCommunicationClient.Instance.BazaarRefresh += OnBazaarRefresh;
-            ServerCommunicationClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
+            CommunicationServiceClient.Instance.SessionKickedEvent += OnSessionKicked;
+            CommunicationServiceClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
+            CommunicationServiceClient.Instance.FamilyRefresh += OnFamilyRefresh;
+            CommunicationServiceClient.Instance.RelationRefresh += OnRelationRefresh;
+            CommunicationServiceClient.Instance.BazaarRefresh += OnBazaarRefresh;
+            CommunicationServiceClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
+            CommunicationServiceClient.Instance.ShutdownEvent += OnShutdown;
             _lastGroupId = 1;
-            _lastRaidId = 1;
         }
 
         private void LoadBazaar()
@@ -1336,7 +1437,10 @@ namespace OpenNos.GameObject
             BazaarList = new List<BazaarItemLink>();
             foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
             {
-                BazaarItemLink item = new BazaarItemLink { BazaarItem = bz };
+                BazaarItemLink item = new BazaarItemLink
+                {
+                    BazaarItem = bz
+                };
                 CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
                 if (chara != null)
                 {
@@ -1349,48 +1453,68 @@ namespace OpenNos.GameObject
 
         private void LoadFamilies()
         {
+            // TODO: Parallelization of family load
             FamilyList = new List<Family>();
-            foreach (FamilyDTO fam in DAOFactory.FamilyDAO.LoadAll())
+            ThreadSafeSortedList<int, Family> _family = new ThreadSafeSortedList<int, Family>();
+            Parallel.ForEach(DAOFactory.FamilyDAO.LoadAll(), familyDTO =>
             {
-                Family fami = (Family)fam;
-                fami.FamilyCharacters = new List<FamilyCharacter>();
-                foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
+                Family family = (Family)familyDTO;
+                family.FamilyCharacters = new List<FamilyCharacter>();
+                foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(family.FamilyId).ToList())
                 {
-                    fami.FamilyCharacters.Add((FamilyCharacter)famchar);
+                    family.FamilyCharacters.Add((FamilyCharacter)famchar);
                 }
-                FamilyCharacter familyCharacter = fami.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                FamilyCharacter familyCharacter = family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
                 if (familyCharacter != null)
                 {
-                    fami.Warehouse = new Inventory((Character)familyCharacter.Character);
+                    family.Warehouse = new Inventory((Character)familyCharacter.Character);
                     foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
                     {
                         inventory.CharacterId = familyCharacter.CharacterId;
-                        fami.Warehouse[inventory.Id] = (ItemInstance)inventory;
+                        family.Warehouse[inventory.Id] = (ItemInstance)inventory;
                     }
                 }
-                fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
-                FamilyList.Add(fami);
-            }
+                family.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(family.FamilyId).ToList();
+            });
+            FamilyList.AddRange(_family.GetAllItems());
         }
 
-        private void LoadTimeSpaces()
+        private void LoadScriptedInstances()
         {
-            foreach (var map in _mapinstances)
+            Raids = new List<ScriptedInstance>();
+            Parallel.ForEach(_mapinstances, map =>
             {
-                foreach (ScriptedInstance timespace in DAOFactory.TimeSpaceDAO.LoadByMap(map.Value.Map.MapId).ToList())
+                foreach (ScriptedInstance si in DAOFactory.ScriptedInstanceDAO.LoadByMap(map.Value.Map.MapId).ToList())
                 {
-                    timespace.LoadGlobals();
-                    map.Value.TimeSpaces.Add(timespace);
+                    if (si.Type == ScriptedInstanceType.TimeSpace)
+                    {
+                        si.LoadGlobals();
+                        map.Value.ScriptedInstances.Add(si);
+                    }
+                    else if (si.Type == ScriptedInstanceType.Raid)
+                    {
+                        si.LoadGlobals();
+                        Raids.Add(si);
+                        Portal port = new Portal()
+                        {
+                            Type = (byte)PortalType.Raid,
+                            SourceMapId = si.MapId,
+                            SourceX = si.PositionX,
+                            SourceY = si.PositionY
+                        };
+                        map.Value.Portals.Add(port);
+                    }
                 }
-            }
+            });
         }
+
 
         private void MailProcess()
         {
             try
             {
                 Mails = DAOFactory.MailDAO.LoadAll().ToList();
-                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
+                Parallel.ForEach(Sessions.Where(c => c.IsConnected), session => session.Character?.RefreshMail()); // TODO: TEST!
             }
             catch (Exception e)
             {
@@ -1400,12 +1524,8 @@ namespace OpenNos.GameObject
 
         private void OnBazaarRefresh(object sender, EventArgs e)
         {
-            Tuple<string, long> tuple = (Tuple<string, long>)sender;
-            if (ServerGroup != tuple.Item1)
-            {
-                return;
-            }
-            long BazaarId = tuple.Item2;
+            // TODO: Parallelization of bazaar.
+            long BazaarId = (long)sender;
             BazaarItemDTO bzdto = DAOFactory.BazaarItemDAO.LoadById(BazaarId);
             BazaarItemLink bzlink = BazaarList.FirstOrDefault(s => s.BazaarItem.BazaarItemId == BazaarId);
             lock (BazaarList)
@@ -1423,7 +1543,10 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        BazaarItemLink item = new BazaarItemLink { BazaarItem = bzdto };
+                        BazaarItemLink item = new BazaarItemLink
+                        {
+                            BazaarItem = bzdto
+                        };
                         if (chara != null)
                         {
                             item.Owner = chara.Name;
@@ -1437,20 +1560,15 @@ namespace OpenNos.GameObject
                     BazaarList.Remove(bzlink);
                 }
             }
-            inBazaarRefreshMode = false;
+            InBazaarRefreshMode = false;
         }
 
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
-            Tuple<string, long> tuple = (Tuple<string, long>)sender;
-            if (ServerGroup != tuple.Item1)
-            {
-                return;
-            }
-            long FamilyId = tuple.Item2;
+            // TODO: Parallelization of family.
+            long FamilyId = (long)sender;
             FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(FamilyId);
             Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == FamilyId);
-
             lock (FamilyList)
             {
                 if (famdto != null)
@@ -1506,91 +1624,108 @@ namespace OpenNos.GameObject
                     FamilyList.Remove(fam);
                 }
             }
-            inFamilyRefreshMode = false;
+            InFamilyRefreshMode = false;
         }
 
         private void OnMessageSentToCharacter(object sender, EventArgs e)
         {
             if (sender != null)
             {
-                Tuple<string, string, string, string, int, MessageType> message = (Tuple<string, string, string, string, int, MessageType>)sender;
-                if (ServerGroup != message.Item1 && message.Item1 != "*")
-                {
-                    return;
-                }
-                ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.Name == message.Item3);
-                long familyId;
-                switch (message.Item6)
+                SCSCharacterMessage message = (SCSCharacterMessage)sender;
+
+                ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == message.DestinationCharacterId);
+                switch (message.Type)
                 {
                     case MessageType.WhisperGM:
                     case MessageType.Whisper:
-                        if (targetSession == null || message.Item6 == MessageType.WhisperGM && targetSession.Account.Authority != AuthorityType.GameMaster)
+                        if (targetSession == null || message.Type == MessageType.WhisperGM && targetSession.Account.Authority != AuthorityType.GameMaster)
                         {
                             return;
                         }
 
                         if (targetSession.Character.GmPvtBlock)
                         {
-                            ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerGroup, targetSession.Character.Name, message.Item2, targetSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_CHAT_BLOCKED"), 10), Instance.ChannelId, MessageType.PrivateChat);
+                            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                            {
+                                DestinationCharacterId = message.SourceCharacterId,
+                                SourceCharacterId = message.DestinationCharacterId.Value,
+                                SourceWorldId = WorldId,
+                                Message = targetSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_CHAT_BLOCKED"), 10),
+                                Type = MessageType.PrivateChat
+                            });
                         }
                         else if (targetSession.Character.WhisperBlocked)
                         {
-                            ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerGroup, targetSession.Character.Name, message.Item2, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("USER_WHISPER_BLOCKED"), 0), Instance.ChannelId, MessageType.PrivateChat);
+                            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                            {
+                                DestinationCharacterId = message.SourceCharacterId,
+                                SourceCharacterId = message.DestinationCharacterId.Value,
+                                SourceWorldId = WorldId,
+                                Message = UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("USER_WHISPER_BLOCKED"), 0),
+                                Type = MessageType.PrivateChat
+                            });
                         }
                         else
                         {
-                            if (message.Item5 != ChannelId)
+                            if (message.SourceWorldId != WorldId)
                             {
-                                ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerGroup, targetSession.Character.Name, message.Item2, targetSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MESSAGE_SENT_TO_CHARACTER"), message.Item3, Instance.ChannelId), 11), Instance.ChannelId, MessageType.PrivateChat);
-                                targetSession.SendPacket($"{message.Item4} <{Language.Instance.GetMessageFromKey("CHANNEL")}: {message.Item5}>");
+                                CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                                {
+                                    DestinationCharacterId = message.SourceCharacterId,
+                                    SourceCharacterId = message.DestinationCharacterId.Value,
+                                    SourceWorldId = WorldId,
+                                    Message = targetSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MESSAGE_SENT_TO_CHARACTER"), targetSession.Character.Name, ChannelId), 11),
+                                    Type = MessageType.PrivateChat
+                                });
+                                targetSession.SendPacket($"{message.Message} <{Language.Instance.GetMessageFromKey("CHANNEL")}: {CommunicationServiceClient.Instance.GetChannelIdByWorldId(message.SourceWorldId)}>");
                             }
                             else
                             {
-                                targetSession.SendPacket(message.Item4);
+                                targetSession.SendPacket(message.Message);
                             }
                         }
                         break;
 
                     case MessageType.Shout:
-                        Shout(message.Item4);
+                        Shout(message.Message);
                         break;
 
                     case MessageType.PrivateChat:
-                        targetSession?.SendPacket(message.Item4);
+                        targetSession?.SendPacket(message.Message);
                         break;
 
                     case MessageType.FamilyChat:
-                        if (long.TryParse(message.Item3, out familyId))
+                        if (message.DestinationCharacterId.HasValue)
                         {
-                            if (message.Item5 != ChannelId)
+                            if (message.SourceWorldId != WorldId)
                             {
-                                foreach (ClientSession s in Instance.Sessions)
+                                Parallel.ForEach(Instance.Sessions, session =>
                                 {
-                                    if (s.HasSelectedCharacter && s.Character.Family != null)
+                                    if (session.HasSelectedCharacter && session.Character.Family != null)
                                     {
-                                        if (s.Character.Family.FamilyId == familyId)
+                                        if (session.Character.Family.FamilyId == message.DestinationCharacterId)
                                         {
-                                            s.SendPacket($"say 1 0 6 <{Language.Instance.GetMessageFromKey("CHANNEL")}: {message.Item5}>{message.Item4}");
+                                            session.SendPacket($"say 1 0 6 <{Language.Instance.GetMessageFromKey("CHANNEL")}: {CommunicationServiceClient.Instance.GetChannelIdByWorldId(message.SourceWorldId)}>{message.Message}");
                                         }
                                     }
-                                }
+                                });
                             }
                         }
                         break;
 
                     case MessageType.Family:
-                        if (long.TryParse(message.Item3, out familyId))
+                        if (message.DestinationCharacterId.HasValue)
                         {
-                            foreach (ClientSession s in Instance.Sessions)
+                            Parallel.ForEach(Instance.Sessions, session =>
                             {
-                                if (s.HasSelectedCharacter && s.Character.Family != null)
+                                if (session.HasSelectedCharacter && session.Character.Family != null)
                                 {
-                                    if (s.Character.Family.FamilyId == familyId)
+                                    if (session.Character.Family.FamilyId == message.DestinationCharacterId)
                                     {
-                                        s.SendPacket(message.Item4);
+                                        session.SendPacket(message.Message);
                                     }
                                 }
-                            }
+                            });
                         }
                         break;
                 }
@@ -1622,12 +1757,7 @@ namespace OpenNos.GameObject
         private void OnRelationRefresh(object sender, EventArgs e)
         {
             inRelationRefreshMode = true;
-            Tuple<string, long> tuple = (Tuple<string, long>)sender;
-            if (ServerGroup != tuple.Item1)
-            {
-                return;
-            }
-            long relId = tuple.Item2;
+            long relId = (long)sender;
             lock (CharacterRelations)
             {
                 CharacterRelationDTO reldto = DAOFactory.CharacterRelationDAO.LoadById(relId);
@@ -1655,25 +1785,34 @@ namespace OpenNos.GameObject
         {
             if (sender != null)
             {
-                Tuple<long?, string> kickedSession = (Tuple<long?, string>)sender;
+                Tuple<long?, long?> kickedSession = (Tuple<long?, long?>)sender;
 
                 ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
-                                                        && (string.IsNullOrEmpty(kickedSession.Item2) || s.Account.Name == kickedSession.Item2));
+                && (!kickedSession.Item1.HasValue || s.Account.AccountId == kickedSession.Item2));
 
                 targetSession?.Disconnect();
             }
         }
 
-        private void RemoveGroup(Group grp)
+        private void OnShutdown(object sender, EventArgs e)
         {
-            _groups.Remove(grp.GroupId);
+            if (Instance.TaskShutdown != null)
+            {
+                Instance.ShutdownStop = true;
+                Instance.TaskShutdown = null;
+            }
+            else
+            {
+                Instance.TaskShutdown = new Task(Instance.ShutdownTask);
+                Instance.TaskShutdown.Start();
+            }
         }
 
         private void RemoveItemProcess()
         {
             try
             {
-                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshValidity());
+                Parallel.ForEach(Sessions.Where(c => c.IsConnected), session => session.Character?.RefreshValidity());
             }
             catch (Exception e)
             {

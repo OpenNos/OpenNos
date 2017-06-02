@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
+
 namespace OpenNos.Data
 {
     public class ScriptedInstanceDTO : MappingBaseDTO
@@ -27,6 +29,8 @@ namespace OpenNos.Data
         public string Script { get; set; }
 
         public short ScriptedInstanceId { get; set; }
+
+        public ScriptedInstanceType Type { get; set; }
 
         #endregion
     }

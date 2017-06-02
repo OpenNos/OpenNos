@@ -56,6 +56,7 @@ namespace OpenNos.GameObject
                 if (_transportId == 0)
                 {
                     // create transportId thru factory
+                    // TODO: Review has some problems, aka. issue corresponding to weird/multiple/missplaced drops
                     _transportId = TransportFactory.Instance.GenerateTransportId();
                 }
 

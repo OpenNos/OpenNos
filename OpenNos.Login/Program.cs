@@ -19,12 +19,14 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Handler;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library;
+using OpenNos.Master.Library.Client;
 using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
+using System.Threading;
 
 namespace OpenNos.Login
 {
@@ -39,21 +41,26 @@ namespace OpenNos.Login
                 try
                 {
                     CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
-
+#if DEBUG
+                    Thread.Sleep(1000);
+#endif
                     // initialize Logger
                     Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
                     Assembly assembly = Assembly.GetExecutingAssembly();
                     FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
-                    Console.Title = $"OpenNos Login Server v{fileVersionInfo.ProductVersion}";
+                    Console.Title = $"OpenNos Login Server v{fileVersionInfo.ProductVersion}dev";
                     int port = Convert.ToInt32(ConfigurationManager.AppSettings["LoginPort"]);
-                    string text = $"LOGIN SERVER v{fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
+                    string text = $"LOGIN SERVER v{fileVersionInfo.ProductVersion}dev - PORT : {port} by OpenNos Team";
                     int offset = Console.WindowWidth / 2 + text.Length / 2;
                     string separator = new string('=', Console.WindowWidth);
-                    Console.WriteLine(separator + string.Format("{0," + offset + "}", text) + "\n" + separator);
+                    Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
 
                     // initialize api
-                    ServerCommunicationClient.Instance.InitializeAndRegisterCallbacks();
+                    if (CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]))
+                    {
+                        Logger.Log.Info(Language.Instance.GetMessageFromKey("API_INITIALIZED"));
+                    }
 
                     // initialize DB
                     if (!DataAccessHelper.Initialize())
@@ -74,8 +81,6 @@ namespace OpenNos.Login
 
                         NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>("127.0.0.1", port, typeof(LoginPacketHandler), typeof(LoginEncryption), false);
 
-                        //cleanup api
-                        ServerCommunicationClient.Instance.HubProxy.Invoke("Cleanup");
                     }
                     catch (Exception ex)
                     {

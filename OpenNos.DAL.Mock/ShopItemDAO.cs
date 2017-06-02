@@ -34,7 +34,7 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public ShopItemDTO Insert(ShopItemDTO item)
+        public new ShopItemDTO Insert(ShopItemDTO item)
         {
             throw new NotImplementedException();
         }

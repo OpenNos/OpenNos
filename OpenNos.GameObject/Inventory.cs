@@ -95,8 +95,9 @@ namespace OpenNos.GameObject
         {
             ItemInstance inv = LoadBySlotAndType(slot, inventory);
             if (inv == null || amount > inv.Amount)
+            {
                 return null;
-
+            }
             ItemInstance invcopy = inv.DeepCopy();
             invcopy.Id = Guid.NewGuid();
 
@@ -205,9 +206,9 @@ namespace OpenNos.GameObject
                 {
                     // create new item
                     short? freeSlot = newItem.Type == InventoryType.Wear ? (LoadBySlotAndType((short)newItem.Item.EquipmentSlot, InventoryType.Wear) == null
-                                                                        ? (short?)newItem.Item.EquipmentSlot
-                                                                        : null)
-                                                                      : GetFreeSlot(newItem.Type, Owner.HaveBackpack() ? 1 : 0);
+                                                                         ? (short?)newItem.Item.EquipmentSlot
+                                                                         : null)
+                                                                         : GetFreeSlot(newItem.Type, Owner.HaveBackpack() ? 1 : 0);
                     if (freeSlot.HasValue)
                     {
                         inv = AddToInventoryWithSlotAndType(newItem, newItem.Type, freeSlot.Value);
@@ -266,7 +267,7 @@ namespace OpenNos.GameObject
 
         public int CountItem(int itemVNum)
         {
-            return GetAllItems().Where(s => s.ItemVNum == itemVNum).Sum(i => i.Amount);
+            return GetAllItems().Where(s => s.ItemVNum == itemVNum && s.Type != InventoryType.FamilyWareHouse && s.Type != InventoryType.Bazaar && s.Type != InventoryType.Warehouse && s.Type != InventoryType.PetWarehouse).Sum(i => i.Amount);
         }
 
         public int CountItemInAnInventory(InventoryType inv)
@@ -326,8 +327,7 @@ namespace OpenNos.GameObject
             if (item != null && amount <= item.Amount && amount > 0)
             {
                 MoveItem(inventory, PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, slot, amount, NewSlot, out item, out itemdest);
-                Owner.Session.SendPacket(item != null
-                    ? item.GenerateInventoryAdd()
+                Owner.Session.SendPacket(item != null ? item.GenerateInventoryAdd()
                     : UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory, slot));
 
                 if (itemdest != null)
@@ -355,24 +355,26 @@ namespace OpenNos.GameObject
                 place[itemgroup.FirstOrDefault().Type] -= amount / (type == InventoryType.Equipment ? 1 : 99) + (needanotherslot ? 1 : 0);
 
                 if (place[itemgroup.FirstOrDefault().Type] < 0)
+                {
                     return false;
+                }
             }
             return true;
         }
 
         public void FDepositItem(InventoryType inventory, byte slot, byte amount, byte newSlot, ref ItemInstance item, ref ItemInstance itemdest)
         {
-            if (item != null && amount <= item.Amount && amount > 0)
+            if (item != null && amount <= item.Amount && amount > 0 && item.Item.IsTradable && !item.IsBound)
             {
                 FamilyCharacter fhead = Owner.Family?.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
                 if (fhead == null)
+                {
                     return;
-
+                }
                 MoveItem(inventory, InventoryType.FamilyWareHouse, slot, amount, newSlot, out item, out itemdest);
                 itemdest.CharacterId = fhead.CharacterId;
                 DAOFactory.IteminstanceDAO.InsertOrUpdate(itemdest);
-                Owner.Session.SendPacket(item != null
-                    ? item.GenerateInventoryAdd()
+                Owner.Session.SendPacket(item != null ? item.GenerateInventoryAdd()
                     : UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory, slot));
 
                 if (itemdest != null)
@@ -389,14 +391,12 @@ namespace OpenNos.GameObject
             return this[id];
         }
 
-        public T LoadByItemInstance<T>(Guid id)
-                    where T : ItemInstance
+        public T LoadByItemInstance<T>(Guid id) where T : ItemInstance
         {
             return (T)this[id];
         }
 
-        public T LoadBySlotAndType<T>(short slot, InventoryType type)
-                    where T : ItemInstance
+        public T LoadBySlotAndType<T>(short slot, InventoryType type) where T : ItemInstance
         {
             T retItem = null;
             try
@@ -603,7 +603,7 @@ namespace OpenNos.GameObject
                 Logger.Debug(Owner.Session.GenerateIdentity(), $"vnum: {vnum} amount: {amount}");
                 int remainingAmount = amount;
 
-                foreach (ItemInstance inventory in GetAllItems().Where(s => s.ItemVNum == vnum && s.Type != InventoryType.Wear).OrderBy(i => i.Slot))
+                foreach (ItemInstance inventory in GetAllItems().Where(s => s.ItemVNum == vnum && s.Type != InventoryType.Wear && s.Type != InventoryType.Bazaar && s.Type != InventoryType.Warehouse && s.Type != InventoryType.PetWarehouse && s.Type != InventoryType.FamilyWareHouse).OrderBy(i => i.Slot))
                 {
                     if (remainingAmount > 0)
                     {
@@ -727,7 +727,7 @@ namespace OpenNos.GameObject
             {
                 inventoryitemids.Add(itemfree.Id);
             }
-            return GetAllItems().Where(i => inventoryitemids.Contains(i.Id)).OrderBy(i => i.Slot).FirstOrDefault();
+            return GetAllItems().Where(i => inventoryitemids.Contains(i.Id) && i.Type != InventoryType.Wear && i.Type != InventoryType.PetWarehouse && i.Type != InventoryType.FamilyWareHouse && i.Type != InventoryType.Warehouse && i.Type != InventoryType.Bazaar).OrderBy(i => i.Slot).FirstOrDefault();
         }
 
         private short? GetFreeSlot(InventoryType type, int backPack)

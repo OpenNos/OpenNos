@@ -18,6 +18,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Packets.ClientPackets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,6 +112,7 @@ namespace OpenNos.Handler
 
                         break;
                     }
+
                 case BuyShopType.ItemShop:
                     {
                         // load shop
@@ -139,6 +141,13 @@ namespace OpenNos.Handler
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_SP"), 0));
                                     return;
                                 }
+
+                                if (Session.Character.Skills.GetAllItems().Any(s=>s.LastUse.AddMilliseconds(s.Skill.Cooldown *100) > DateTime.Now))
+                                {
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_NEED_COOLDOWN"), 0));
+                                    return;
+                                }
+
                                 Skill skillinfo = ServerManager.Instance.GetSkill(buyPacket.Slot);
                                 if (Session.Character.Skills.GetAllItems().Any(s => s.SkillVNum == buyPacket.Slot) || skillinfo == null)
                                 {
@@ -193,7 +202,7 @@ namespace OpenNos.Handler
                                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                                             return;
                                         }
-                                        foreach (var skill in Session.Character.Skills.GetAllItems())
+                                        foreach (CharacterSkill skill in Session.Character.Skills.GetAllItems())
                                         {
                                             if (skillinfo.CastId == skill.Skill.CastId && skill.Skill.SkillVNum < 200)
                                             {
@@ -345,8 +354,10 @@ namespace OpenNos.Handler
             string shopname = string.Empty;
             if (packetsplit.Length > 2)
             {
-                short typePacket;
-                short.TryParse(packetsplit[2], out typePacket);
+                if (!short.TryParse(packetsplit[2], out short typePacket))
+                {
+                    return;
+                }
                 if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMapInstance || Session.Character.IsExchanging || Session.Character.ExchangeInfo != null)
                 {
                     return;
@@ -354,6 +365,11 @@ namespace OpenNos.Handler
                 if (Session.CurrentMapInstance.Portals.Any(por => Session.Character.PositionX < por.SourceX + 6 && Session.Character.PositionX > por.SourceX - 6 && Session.Character.PositionY < por.SourceY + 6 && Session.Character.PositionY > por.SourceY - 6))
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"), 0));
+                    return;
+                }
+                if (Session.Character.Group != null && Session.Character.Group?.GroupType != GroupType.Group)
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NOT_ALLOWED_IN_RAID"), 0));
                     return;
                 }
                 if (!Session.CurrentMapInstance.ShopAllowed)
@@ -436,7 +452,7 @@ namespace OpenNos.Handler
                             }
 
                             // truncate the string to a max-length of 20
-                            shopname = StringHelper.Truncate(shopname, 20);
+                            shopname = shopname.Truncate(20);
                             myShop.OwnerId = Session.Character.CharacterId;
                             myShop.Name = shopname;
                             Session.CurrentMapInstance.UserShops.Add(Session.CurrentMapInstance.LastUserShopId++, myShop);
@@ -487,27 +503,32 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("pdtse")]
-        public void Pdtse(string packet)
+        /// <summary>
+        /// pdtse packet
+        /// </summary>
+        /// <param name="pdtsePacket"></param>
+        public void Pdtse(PdtsePacket pdtsePacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length < 4 || !Session.HasCurrentMapInstance)
+            Logger.Debug(Session.Character.GenerateIdentity(), pdtsePacket.ToString());
+            if (!Session.HasCurrentMapInstance)
             {
                 return;
             }
-            byte type;
-            short VNum;
-            if (!byte.TryParse(packetsplit[2], out type) || !short.TryParse(packetsplit[3], out VNum))
-            {
-                return;
-            }
-            if (type == 1)
+            short VNum = pdtsePacket.VNum;
+            if (pdtsePacket.Type == 1)
             {
                 MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
                 if (npc != null)
                 {
-                    int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = npc.MapX, Y = npc.MapY });
+                    int distance = Map.GetDistance(new MapCell
+                    {
+                        X = Session.Character.PositionX,
+                        Y = Session.Character.PositionY
+                    }, new MapCell
+                    {
+                        X = npc.MapX,
+                        Y = npc.MapY
+                    });
                     if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
                     {
                         Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
@@ -529,7 +550,15 @@ namespace OpenNos.Handler
                 MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
                 if (npc != null)
                 {
-                    int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = npc.MapX, Y = npc.MapY });
+                    int distance = Map.GetDistance(new MapCell
+                    {
+                        X = Session.Character.PositionX,
+                        Y = Session.Character.PositionY
+                    }, new MapCell
+                    {
+                        X = npc.MapX,
+                        Y = npc.MapY
+                    });
                     if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
                     {
                         Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
@@ -544,29 +573,23 @@ namespace OpenNos.Handler
                                 return;
                             }
 
-                            List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(rec.ItemVNum, rec.Amount);
-                            if (!inv.Any())
+                            ItemInstance inv = Session.Character.Inventory.AddNewToInventory(rec.ItemVNum, rec.Amount).FirstOrDefault();
+                            if (inv != null)
                             {
-                                return;
-                            }
-                            if (inv.GetType() == typeof(WearableInstance))
-                            {
-                                WearableInstance item = inv.First() as WearableInstance;
-                                if (item != null && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
+                                if (inv.GetType() == typeof(WearableInstance))
                                 {
-                                    item.SetRarityPoint();
+                                    if (inv is WearableInstance item && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
+                                    {
+                                        item.SetRarityPoint();
+                                    }
                                 }
-                            }
-                            if (inv.Any())
-                            {
                                 foreach (RecipeItemDTO ite in rec.Items)
                                 {
                                     Session.Character.Inventory.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
-                                Session.SendPacket($"pdti 11 {inv.First().ItemVNum} {rec.Amount} 29 {inv.First().Upgrade} 0");
+                                Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, Session.Character.CharacterId, 1324));
-
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.First().Item.Name, rec.Amount), 0));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
                             }
                         }
                     }
@@ -599,7 +622,7 @@ namespace OpenNos.Handler
                 }
             }
             /*
-             *   packet.Users.ForEach(u =>
+            packet.Users.ForEach(u =>
             {
                 Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId);
                 if (mate != null)
@@ -615,31 +638,37 @@ namespace OpenNos.Handler
         /// <summary>
         /// say_p packet
         /// </summary>
-        /// <param name="packet"></param>
-        public void PetTalk(SayPPacket packet)
+        /// <param name="sayPPacket"></param>
+        public void PetTalk(SayPPacket sayPPacket)
         {
-            Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == packet.PetId);
+            if (string.IsNullOrEmpty(sayPPacket.Message))
+            {
+                return;
+            }
+            Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == sayPPacket.PetId);
             if (mate != null)
             {
-                Session.CurrentMapInstance.Broadcast(mate.GenerateSay(packet.Message, 2));
+                Session.CurrentMapInstance.Broadcast(mate.GenerateSay(sayPPacket.Message, 2));
             }
         }
 
-        [Packet("sell")]
-        public void SellShop(string packet)
+        /// <summary>
+        /// sell packet
+        /// </summary>
+        /// <param name="sellPacket"></param>
+        public void SellShop(SellPacket sellPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
+            Logger.Debug(Session.Character.GenerateIdentity(), sellPacket.ToString());
             if (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
             {
                 return;
             }
-            if (packetsplit.Length > 6)
+            if (sellPacket.Amount.HasValue && sellPacket.Slot.HasValue)
             {
-                InventoryType type;
-                byte amount, slot;
+                InventoryType type = (InventoryType)sellPacket.Data;
+                byte amount = sellPacket.Amount.Value, slot = sellPacket.Slot.Value;
 
-                if (!Enum.TryParse(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount) || type == InventoryType.Bazaar)
+                if (type == InventoryType.Bazaar)
                 {
                     return;
                 }
@@ -671,10 +700,9 @@ namespace OpenNos.Handler
                 Session.Character.Inventory.RemoveItemAmountFromInventory(amount, inv.Id);
                 Session.SendPacket(Session.Character.GenerateGold());
             }
-            else if (packetsplit.Length == 5)
+            else
             {
-                short vnum;
-                short.TryParse(packetsplit[4], out vnum);
+                short vnum = sellPacket.Data;
                 CharacterSkill skill = Session.Character.Skills[vnum];
                 if (skill == null || vnum == 200 + 20 * (byte)Session.Character.Class || vnum == 201 + 20 * (byte)Session.Character.Class)
                 {
@@ -683,7 +711,7 @@ namespace OpenNos.Handler
                 Session.Character.Gold -= skill.Skill.Price;
                 Session.SendPacket(Session.Character.GenerateGold());
 
-                foreach (var loadedSkill in Session.Character.Skills.GetAllItems())
+                foreach (CharacterSkill loadedSkill in Session.Character.Skills.GetAllItems())
                 {
                     if (skill.Skill.SkillVNum == loadedSkill.Skill.UpgradeSkill)
                     {
@@ -698,14 +726,16 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("shopping")]
-        public void Shopping(string packet)
+        /// <summary>
+        /// shopping packet
+        /// </summary>
+        /// <param name="shoppingPacket"></param>
+        public void Shopping(ShoppingPacket shoppingPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
-            byte type, typeshop = 0;
-            int NpcId;
-            if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type) || Session.Character.IsShopping || !Session.HasCurrentMapInstance)
+            Logger.Debug(Session.Character.GenerateIdentity(), shoppingPacket.ToString());
+            byte type = shoppingPacket.Type, typeshop = 0;
+            int NpcId = shoppingPacket.NpcId;
+            if (Session.Character.IsShopping || !Session.HasCurrentMapInstance)
             {
                 return;
             }
@@ -810,63 +840,47 @@ namespace OpenNos.Handler
             Session.SendPacket($"n_inv 2 {mapnpc.MapNpcId} 0 {typeshop}{shoplist}");
         }
 
-        [Packet("npc_req")]
-        public void ShowShop(string packet)
+        /// <summary>
+        /// npc_req packet
+        /// </summary>
+        /// <param name="requestNpcPacket"></param>
+        public void ShowShop(RequestNpcPacket requestNpcPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
-            long owner;
-            if (packetsplit.Length > 2)
+            Logger.Debug(Session.Character.GenerateIdentity(), requestNpcPacket.ToString());
+            long owner = requestNpcPacket.Owner;
+            if (!Session.HasCurrentMapInstance)
             {
-                int mode;
-                if (!int.TryParse(packetsplit[2], out mode) || !Session.HasCurrentMapInstance)
+                return;
+            }
+            if (requestNpcPacket.Type == 1)
+            {
+                // User Shop
+                KeyValuePair<long, MapShop> shopList = Session.CurrentMapInstance.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
+                LoadShopItem(owner, shopList);
+            }
+            else
+            {
+                // Npc Shop , ignore if has drop
+                MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((int)requestNpcPacket.Owner));
+                if (npc == null)
                 {
                     return;
                 }
-                if (mode == 1)
+                if (npc.Npc.Drops.Any(s => s.MonsterVNum != null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                 {
-                    // User Shop
-                    if (packetsplit.Length <= 3)
-                    {
-                        return;
-                    }
-                    if (!long.TryParse(packetsplit[3], out owner))
-                    {
-                        return;
-                    }
-                    KeyValuePair<long, MapShop> shopList = Session.CurrentMapInstance.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
-                    LoadShopItem(owner, shopList);
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 4, $"#guri^400^{npc.MapNpcId}"));
                 }
-                else
+                else if (npc.Npc.VNumRequired > 0 && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                 {
-                    // Npc Shop , ignore if has drop
-                    short MapNpcId;
-                    if (!short.TryParse(packetsplit[3], out MapNpcId))
-                    {
-                        return;
-                    }
-                    MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
-                    if (npc == null)
-                    {
-                        return;
-                    }
-                    if (npc.Npc.Drops.Any(s => s.MonsterVNum != null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
-                    {
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 4, $"#guri^400^{npc.MapNpcId}"));
-                    }
-                    else if (npc.Npc.VNumRequired > 0 && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
-                    {
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(6000, 4, $"#guri^400^{npc.MapNpcId}"));
-                    }
-                    else if (npc.Npc.MaxHP == 0 && npc.Npc.Drops.All(s => s.MonsterVNum == null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
-                    {
-                        // #guri^710^X^Y^MapNpcId
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 1, $"#guri^710^162^85^{npc.MapNpcId}"));
-                    }
-                    else if (!string.IsNullOrEmpty(npc.GetNpcDialog()))
-                    {
-                        Session.SendPacket(npc.GetNpcDialog());
-                    }
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(6000, 4, $"#guri^400^{npc.MapNpcId}"));
+                }
+                else if (npc.Npc.MaxHP == 0 && npc.Npc.Drops.All(s => s.MonsterVNum == null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 1, $"#guri^710^162^85^{npc.MapNpcId}")); // #guri^710^X^Y^MapNpcId
+                }
+                else if (!string.IsNullOrEmpty(npc.GetNpcDialog()))
+                {
+                    Session.SendPacket(npc.GetNpcDialog());
                 }
             }
         }

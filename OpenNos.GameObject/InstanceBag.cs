@@ -1,4 +1,19 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using System;
+using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
@@ -10,6 +25,9 @@ namespace OpenNos.GameObject
         {
             Clock = new Clock(1);
             DeadList = new List<long>();
+            UnlockEvents = new List<EventContainer>();
+            ButtonLocker = new Locker();
+            MonsterLocker = new Locker();
         }
 
         #endregion
@@ -37,6 +55,9 @@ namespace OpenNos.GameObject
         public int Point { get; set; }
 
         public int RoomsVisited { get; set; }
+        public Locker MonsterLocker { get;  set; }
+        public Locker ButtonLocker { get;  set; }
+        public List<EventContainer> UnlockEvents { get;  set; }
 
         #endregion
 

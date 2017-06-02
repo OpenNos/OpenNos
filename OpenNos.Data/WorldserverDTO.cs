@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace OpenNos.Data
 {
-    public class WorldserverDTO
+    public class WorldServerDTO
     {
         #region Instantiation
 
-        public WorldserverDTO(Guid id, ScsTcpEndPoint endpoint, int accountLimit)
+        public WorldServerDTO(Guid id, ScsTcpEndPoint endpoint, int accountLimit)
         {
             ConnectedAccounts = new Dictionary<string, long>();
             ConnectedCharacters = new Dictionary<string, long>();

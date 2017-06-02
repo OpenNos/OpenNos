@@ -8,8 +8,7 @@ namespace OpenNos.Core
 
         public static void Clear<T>(this ConcurrentQueue<T> queue)
         {
-            T item;
-            while (queue.TryDequeue(out item))
+            while (queue.TryDequeue(out T item))
             {
                 // do nothing
             }

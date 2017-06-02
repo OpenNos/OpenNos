@@ -162,9 +162,31 @@ namespace OpenNos.GameObject.Helpers
                             case "OnMapClean":
                                 evt.MapInstance.OnMapClean.AddRange(even.Item2);
                                 break;
+
+                            case "OnLockerOpen":
+                                evt.MapInstance.InstanceBag.UnlockEvents.AddRange(even.Item2);
+                                break;
+                        }
+                        break;
+                    case EventActionType.REMOVEMONSTERLOCKER:
+                        EventContainer evt2 = (EventContainer)evt.Parameter;
+                        evt.MapInstance.InstanceBag.MonsterLocker.Current--;
+                        if (evt.MapInstance.InstanceBag.MonsterLocker.Current == 0 && evt.MapInstance.InstanceBag.ButtonLocker.Current == 0)
+                        {
+                            evt.MapInstance.InstanceBag.UnlockEvents.ForEach(s => RunEvent(s));
+                            evt.MapInstance.InstanceBag.UnlockEvents.RemoveAll(s => s != null);
                         }
                         break;
 
+                    case EventActionType.REMOVEBUTTONLOCKER:
+                        evt2 = (EventContainer)evt.Parameter;
+                        evt.MapInstance.InstanceBag.ButtonLocker.Current--;
+                        if (evt.MapInstance.InstanceBag.MonsterLocker.Current == 0 && evt.MapInstance.InstanceBag.ButtonLocker.Current == 0)
+                        {
+                            evt.MapInstance.InstanceBag.UnlockEvents.ForEach(s => RunEvent(s));
+                            evt.MapInstance.InstanceBag.UnlockEvents.RemoveAll(s => s != null);
+                        }
+                        break;
                     case EventActionType.CLOCK:
                         evt.MapInstance.InstanceBag.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
                         evt.MapInstance.InstanceBag.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
@@ -180,7 +202,7 @@ namespace OpenNos.GameObject.Helpers
                                 {
                                     Guid MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(client.Character.MapId);
                                     MapInstance map = ServerManager.Instance.GetMapInstance(MapInstanceId);
-                                    ScriptedInstance si = map.TimeSpaces.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
+                                    ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
                                     byte penalty = 0;
                                     if (penalty > (client.Character.Level - si.LevelMinimum) * 2)
                                     {
@@ -194,6 +216,32 @@ namespace OpenNos.GameObject.Helpers
                                     perfection += evt.MapInstance.InstanceBag.RoomsVisited >= si.RoomAmount ? 1 : 0;
 
                                     evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} { si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
+                                }
+                                break;
+                            case MapInstanceType.RaidInstance:
+                                evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
+                                client = evt.MapInstance.Sessions.FirstOrDefault();
+                                if (client != null)
+                                {
+                                    Group grp = client?.Character?.Group;
+
+                                    ClientSession[] grpmembers = new ClientSession[40];
+                                    grp.Characters.CopyTo(grpmembers);
+                                    foreach (ClientSession targetSession in grpmembers)
+                                    {
+                                        if (targetSession != null)
+                                        {
+                                            if(targetSession.Character.Hp <= 0)
+                                            {
+                                                targetSession.Character.Hp = 1;
+                                                targetSession.Character.Mp = 1;
+                                            }
+                                            targetSession.SendPacket(targetSession.Character.GenerateRaidBf());
+                                            grp.LeaveGroup(targetSession);
+                                        }
+                                    }
+                                    ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
+                                    ServerManager.Instance.GroupsThreadSafe.Remove(grp.GroupId);
                                 }
                                 break;
                         }
@@ -210,6 +258,17 @@ namespace OpenNos.GameObject.Helpers
                         evt.MapInstance.InstanceBag.Clock.TimeoutEvents = eve.Item1;
                         evt.MapInstance.InstanceBag.Clock.StartClock();
                         evt.MapInstance.Broadcast(evt.MapInstance.InstanceBag.Clock.GetClock());
+                        break;
+
+                    case EventActionType.TELEPORT:
+                        Tuple<short, short, short, short> tp = (Tuple<short, short, short, short>)evt.Parameter;
+                        List<Character> characters = evt.MapInstance.GetCharactersInRange(tp.Item1, tp.Item2, 5).ToList();
+                        characters.ForEach(s =>
+                        {
+                            s.PositionX = tp.Item3;
+                            s.PositionY = tp.Item4;
+                            evt.MapInstance?.Broadcast(s.Session, s.GenerateTp(), ReceiverType.Group);
+                        });
                         break;
 
                     case EventActionType.STOPCLOCK:
@@ -268,13 +327,20 @@ namespace OpenNos.GameObject.Helpers
                         break;
 
                     case EventActionType.UNSPAWNMONSTERS:
-                        evt.MapInstance.UnspawnMonsters((int)evt.Parameter);
+                        evt.MapInstance.DespawnMonster((int)evt.Parameter);
                         break;
 
                     case EventActionType.SPAWNMONSTERS:
                         evt.MapInstance.SummonMonsters((List<MonsterToSummon>)evt.Parameter);
                         break;
-
+                    case EventActionType.REFRESHRAIDGOAL:
+                        ClientSession cl = evt.MapInstance.Sessions.FirstOrDefault();
+                        if (cl?.Character != null)
+                        {
+                            ServerManager.Instance.Broadcast(cl, cl.Character?.Group.GeneraterRaidmbf(), ReceiverType.Group);
+                            ServerManager.Instance.Broadcast(cl, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEW_MISSION"), 0), ReceiverType.Group);
+                        }
+                        break;
                     case EventActionType.SPAWNNPCS:
                         evt.MapInstance.SummonNpcs((List<NpcToSummon>)evt.Parameter);
                         break;
@@ -284,8 +350,6 @@ namespace OpenNos.GameObject.Helpers
                         break;
 
                     case EventActionType.SPAWNONLASTENTRY:
-
-                        //TODO REVIEW THIS CASE
                         Character lastincharacter = evt.MapInstance.Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
                         List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
                         MapCell hornSpawn = new MapCell
@@ -294,7 +358,7 @@ namespace OpenNos.GameObject.Helpers
                             Y = lastincharacter?.PositionY ?? 140
                         };
                         long hornTarget = lastincharacter?.CharacterId ?? -1;
-                        summonParameters.Add(new MonsterToSummon((short)evt.Parameter, hornSpawn, hornTarget, true, new List<EventContainer>()));
+                        summonParameters.Add(new MonsterToSummon(Convert.ToInt16(evt.Parameter), hornSpawn, hornTarget, true, new List<EventContainer>()));
                         evt.MapInstance.SummonMonsters(summonParameters);
                         break;
 

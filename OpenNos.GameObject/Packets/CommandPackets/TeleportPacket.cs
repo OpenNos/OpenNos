@@ -3,11 +3,13 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$Teleport", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class TeleportPacket : PacketDefinition
     {
+        #region Properties
+
         [PacketIndex(0)]
         public string Data { get; set; }
 
@@ -16,5 +18,12 @@ namespace OpenNos.GameObject
 
         [PacketIndex(2)]
         public short Y { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$Teleport CHARACTERNAME/MAP X(?) Y(?)";
+        }
+
+        #endregion
     }
 }

@@ -52,9 +52,9 @@ namespace OpenNos.GameObject.Event
             {
                 RefreshLOD(LODTime);
 
-                if (LODTime == HornTime)
+                if (LODTime == HornTime || (LODTime == HornTime - (HornRespawn * dhspawns)))
                 {
-                    SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+                    SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
                     foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
                     {
                         if (fam.LandOfDeath != null)
@@ -64,23 +64,10 @@ namespace OpenNos.GameObject.Event
                             SpawnDH(fam.LandOfDeath);
                         }
                     }
-                }
-                else if (LODTime == HornTime - (HornRespawn * dhspawns))
-                {
-                    SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
-                    foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
-                    {
-                        if (fam.LandOfDeath != null)
-                        {
-                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CHANGEXPRATE, 3));
-                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CHANGEDROPRATE, 3));
-                            SpawnDH(fam.LandOfDeath);
-                        }
-                    }
-                }
+                }        
                 else if (LODTime == HornTime - (HornRespawn * dhspawns) - HornStay)
                 {
-                    SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+                    SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
                     foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
                     {
                         if (fam.LandOfDeath != null)
@@ -106,7 +93,7 @@ namespace OpenNos.GameObject.Event
 
         private void EndLOD()
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
             {
                 if (fam.LandOfDeath != null)
@@ -121,7 +108,7 @@ namespace OpenNos.GameObject.Event
 
         private void RefreshLOD(int remaining)
         {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
             {
                 if (fam.LandOfDeath == null)

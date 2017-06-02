@@ -3,15 +3,23 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$SearchItem", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class SearchItemPacket : PacketDefinition
     {
         #region Properties
 
-        [PacketIndex(0, SerializeToEnd = true)]
+        [PacketIndex(0)]
+        public byte Page { get; set; }
+
+        [PacketIndex(1, SerializeToEnd = true)]
         public string Name { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$SearchItem PAGE NAME(*)";
+        }
 
         #endregion
     }

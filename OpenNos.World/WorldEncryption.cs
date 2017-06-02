@@ -238,7 +238,7 @@ namespace OpenNos.World
 
                 return encrypted_string;
             }
-            catch (OverflowException oe)
+            catch (OverflowException)
             {
                 return string.Empty;
             }

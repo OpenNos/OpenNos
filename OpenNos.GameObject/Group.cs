@@ -16,6 +16,8 @@ using OpenNos.Core;
 using OpenNos.Domain;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.GameObject
 {
@@ -23,8 +25,11 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private ThreadSafeGenericList<ClientSession> _characters;
         private int _order;
+
+        public GroupType GroupType { get; set; }
+
+        public ScriptedInstance Raid { get; set; }
 
         #endregion
 
@@ -32,7 +37,7 @@ namespace OpenNos.GameObject
 
         public Group()
         {
-            _characters = new ThreadSafeGenericList<ClientSession>();
+            Characters = new ThreadSafeGenericList<ClientSession>();
             GroupId = ServerManager.Instance.GetNextGroupId();
             _order = 0;
         }
@@ -45,17 +50,11 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return _characters.Count;
+                return Characters.Count;
             }
         }
 
-        public ThreadSafeGenericList<ClientSession> Characters
-        {
-            get
-            {
-                return _characters;
-            }
-        }
+        public ThreadSafeGenericList<ClientSession> Characters { get; }
 
         public long GroupId { get; set; }
 
@@ -73,20 +72,13 @@ namespace OpenNos.GameObject
             {
                 if (session == player)
                 {
-                    str.AddRange(
-                        player.Character.Mates.Where(s => s.IsTeamMember)
-                            .OrderByDescending(s => s.MateType)
-                            .Select(
-                                mate =>
-                                    $"pst 2 {mate.MateTransportId} {(mate.MateType == MateType.Partner ? "0" : "1")} {mate.Hp / mate.MaxHp * 100} {mate.Mp / mate.MaxMp * 100} {mate.Hp} {mate.Mp} 0 0 0"));
+                    str.AddRange(player.Character.Mates.Where(s => s.IsTeamMember).OrderByDescending(s => s.MateType).Select(mate => $"pst 2 {mate.MateTransportId} {(mate.MateType == MateType.Partner ? "0" : "1")} {mate.Hp / mate.MaxHp * 100} {mate.Mp / mate.MaxMp * 100} {mate.Hp} {mate.Mp} 0 0 0"));
                     i = session.Character.Mates.Count(s => s.IsTeamMember);
-                    str.Add(
-                        $"pst 1 {session.Character.CharacterId} {++i} {(int)(session.Character.Hp / session.Character.HPLoad() * 100)} {(int)(session.Character.Mp / session.Character.MPLoad() * 100)} {session.Character.HPLoad()} {session.Character.MPLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}");
+                    str.Add($"pst 1 {session.Character.CharacterId} {++i} {(int)(session.Character.Hp / session.Character.HPLoad() * 100)} {(int)(session.Character.Mp / session.Character.MPLoad() * 100)} {session.Character.HPLoad()} {session.Character.MPLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}");
                 }
                 else
                 {
-                    str.Add(
-                        $"pst 1 {session.Character.CharacterId} {++i} {(int)(session.Character.Hp / session.Character.HPLoad() * 100)} {(int)(session.Character.Mp / session.Character.MPLoad() * 100)} {session.Character.HPLoad()} {session.Character.MPLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}{session.Character.Buff.GetAllActiveBuffs()}");
+                    str.Add($"pst 1 {session.Character.CharacterId} {++i} {(int)(session.Character.Hp / session.Character.HPLoad() * 100)} {(int)(session.Character.Mp / session.Character.MPLoad() * 100)} {session.Character.HPLoad()} {session.Character.MPLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}{(session.Character.Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}"))}");
                 }
             }
             return str;
@@ -114,12 +106,21 @@ namespace OpenNos.GameObject
 
         public bool IsMemberOfGroup(long characterId)
         {
-            return _characters != null && _characters.Any(s => s?.Character?.CharacterId == characterId);
+            return Characters != null && Characters.Any(s => s?.Character?.CharacterId == characterId);
         }
 
         public bool IsMemberOfGroup(ClientSession session)
         {
-            return _characters != null && _characters.Any(s => s?.Character?.CharacterId == session.Character.CharacterId);
+            return Characters != null && Characters.Any(s => s?.Character?.CharacterId == session.Character.CharacterId);
+        }
+
+        public string GenerateRdlst()
+        {
+            string result = string.Empty;
+            result = $"rdlst{((GroupType == GroupType.GiantTeam) ? "f" : "")} {Raid.LevelMinimum} {Raid.LevelMaximum} 0";
+            Characters.ForEach(session => result += $" {session.Character.Level}.{(session.Character.UseSp || session.Character.IsVehicled ? session.Character.Morph : -1)}.{(short)session.Character.Class}.{Raid?.FirstMap?.InstanceBag.DeadList.Count(s=>s==session.Character.CharacterId) ?? 0}.{session.Character.Name}.{(short)session.Character.Gender}.{session.Character.CharacterId}.{session.Character.HeroLevel}");
+
+            return result;
         }
 
         public void JoinGroup(long characterId)
@@ -134,15 +135,28 @@ namespace OpenNos.GameObject
         public void JoinGroup(ClientSession session)
         {
             session.Character.Group = this;
-            _characters.Add(session);
+            Characters.Add(session);
         }
 
         public void LeaveGroup(ClientSession session)
         {
             session.Character.Group = null;
-            _characters.RemoveAll(s => s?.Character.CharacterId == session.Character.CharacterId);
+            if (IsLeader(session) && GroupType != GroupType.Group && Characters.Count > 1)
+            {
+                Characters.ForEach(s=> s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TEAM_LEADER_CHANGE"), Characters.ElementAt(0).Character?.Name), 0)));
+            }
+            Characters.RemoveAll(s => s?.Character.CharacterId == session.Character.CharacterId);
         }
 
+        public bool IsLeader(ClientSession session)
+        {
+            return Characters.ElementAt(0) == session;
+        }
+
+        public string GeneraterRaidmbf()
+        {
+            return $"raidmbf {Raid?.FirstMap?.InstanceBag.MonsterLocker.Initial} {Raid?.FirstMap?.InstanceBag.MonsterLocker.Current} {Raid?.FirstMap?.InstanceBag.ButtonLocker.Initial} {Raid?.FirstMap?.InstanceBag.ButtonLocker.Current} {Raid?.FirstMap?.InstanceBag.Lives - Raid?.FirstMap?.InstanceBag.DeadList.Count()} {Raid?.FirstMap?.InstanceBag.Lives} 25";
+        }
         #endregion
     }
 }

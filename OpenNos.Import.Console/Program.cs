@@ -30,23 +30,17 @@ namespace OpenNos.Import.Console
     {
         #region Methods
 
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
             // initialize logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-            System.Console.Title = $@"OpenNos Import Console v{fileVersionInfo.ProductVersion}";
+            System.Console.Title = $@"OpenNos Import Console v{fileVersionInfo.ProductVersion}dev";
             string text = $"IMPORT CONSOLE VERSION {fileVersionInfo.ProductVersion} by OpenNos Team";
-            if (args.Length == 0)
-            {
-                int offset = (System.Console.WindowWidth - text.Length) / 2;
-                System.Console.WriteLine(new string('=', System.Console.WindowWidth));
-                System.Console.SetCursorPosition(offset < 0 ? 0 : offset, System.Console.CursorTop);
-                System.Console.WriteLine(text + "\n" +
-                new string('=', System.Console.WindowWidth) + "\n");
-            }
-
+            int offset = System.Console.WindowWidth / 2 + text.Length / 2;
+            string separator = new string('=', System.Console.WindowWidth);
+            System.Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
             if (DataAccessHelper.Initialize())
             {
                 RegisterMappings();
@@ -103,12 +97,10 @@ namespace OpenNos.Import.Console
                     factory.ImportMapTypeMap();
                     ImportFactory.ImportAccounts();
                     factory.ImportPortals();
-                    factory.ImportTimeSpaces();
+                    factory.ImportScriptedInstances();
                     factory.ImportItems();
                     factory.ImportSkills();
                     factory.ImportCards();
-                    factory.ImportItemCards();
-                    factory.ImportSkillCards();
                     factory.ImportNpcMonsters();
                     factory.ImportNpcMonsterData();
                     factory.ImportMapNpcs();
@@ -155,7 +147,7 @@ namespace OpenNos.Import.Console
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
-                        factory.ImportTimeSpaces();
+                        factory.ImportScriptedInstances();
                     }
 
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
@@ -192,21 +184,7 @@ namespace OpenNos.Import.Console
                     {
                         factory.ImportSkills();
                     }
-
-                    System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_SKILLCARDS")} [Y/n]");
-                    key = System.Console.ReadKey(true);
-                    if (key.KeyChar != 'n')
-                    {
-                        factory.ImportSkillCards();
-                    }
-
-                    System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_ITEMCARDS")} [Y/n]");
-                    key = System.Console.ReadKey(true);
-                    if (key.KeyChar != 'n')
-                    {
-                        factory.ImportItemCards();
-                    }
-
+                    
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_MAPNPCS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
@@ -291,17 +269,16 @@ namespace OpenNos.Import.Console
             DAOFactory.RecipeDAO.RegisterMapping(typeof(RecipeDTO)).InitializeMapper();
             DAOFactory.RecipeItemDAO.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();
             DAOFactory.RespawnDAO.RegisterMapping(typeof(RespawnDTO)).InitializeMapper();
+            DAOFactory.BCardDAO.RegisterMapping(typeof(BCardDTO)).InitializeMapper();
             DAOFactory.RespawnMapTypeDAO.RegisterMapping(typeof(RespawnMapTypeDTO)).InitializeMapper();
             DAOFactory.ShopDAO.RegisterMapping(typeof(ShopDTO)).InitializeMapper();
             DAOFactory.ShopItemDAO.RegisterMapping(typeof(ShopItemDTO)).InitializeMapper();
             DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
             DAOFactory.CardDAO.RegisterMapping(typeof(CardDTO)).InitializeMapper();
-            DAOFactory.ItemCardDAO.RegisterMapping(typeof(ItemCardDTO)).InitializeMapper();
-            DAOFactory.SkillCardDAO.RegisterMapping(typeof(SkillCardDTO)).InitializeMapper();
             DAOFactory.MateDAO.RegisterMapping(typeof(MateDTO)).InitializeMapper();
             DAOFactory.SkillDAO.RegisterMapping(typeof(SkillDTO)).InitializeMapper();
             DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
-            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
+            DAOFactory.ScriptedInstanceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
         }
 
         #endregion

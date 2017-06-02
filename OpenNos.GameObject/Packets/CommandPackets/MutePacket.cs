@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$Mute", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class MutePacket : PacketDefinition
@@ -18,6 +18,15 @@ namespace OpenNos.GameObject
 
         [PacketIndex(2, SerializeToEnd = true)]
         public string Reason { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$Mute CHARACTERNAME DURATION(MINUTES) REASON";
+        }
+
+        #endregion
+
+        #region Methods
 
         public override string ToString()
         {

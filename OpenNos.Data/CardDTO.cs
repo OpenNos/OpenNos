@@ -12,6 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
+using OpenNos.GameObject;
+using System.Collections.Generic;
+
 namespace OpenNos.Data
 {
     public class CardDTO : MappingBaseDTO
@@ -24,21 +28,20 @@ namespace OpenNos.Data
 
         public int EffectId { get; set; }
 
-        public int FirstData { get; set; }
-
         public byte Level { get; set; }
-
+        
         public string Name { get; set; }
 
-        public short Period { get; set; }
+        public short TimeoutBuff { get; set; }
+
+        public BuffType BuffType { get; set; }
+
+        public byte TimeoutBuffChance { get; set; }
+
+        public int Delay { get; set; }
 
         public byte Propability { get; set; }
-
-        public int SecondData { get; set; }
-
-        public byte SubType { get; set; }
-
-        public sbyte Type { get; set; }
+   
 
         #endregion
     }

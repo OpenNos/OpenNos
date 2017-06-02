@@ -14,13 +14,13 @@
 
 using log4net;
 using OpenNos.Core;
-using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Handler;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 using System;
 using System.Configuration;
 using System.Diagnostics;
@@ -43,13 +43,13 @@ namespace OpenNos.World
 
         #region Delegates
 
-        private delegate bool EventHandler(CtrlType sig);
+        public delegate bool EventHandler(CtrlType sig);
 
         #endregion
 
         #region Enums
 
-        private enum CtrlType
+        public enum CtrlType
         {
             CTRL_C_EVENT = 0,
             CTRL_BREAK_EVENT = 1,
@@ -71,15 +71,18 @@ namespace OpenNos.World
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
-            Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}";
+            Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}dev";
             int port = Convert.ToInt32(ConfigurationManager.AppSettings["WorldPort"]);
-            string text = $"WORLD SERVER v{fileVersionInfo.ProductVersion} - by OpenNos Team";
+            string text = $"WORLD SERVER v{fileVersionInfo.ProductVersion}dev - by OpenNos Team";
             int offset = Console.WindowWidth / 2 + text.Length / 2;
             string separator = new string('=', Console.WindowWidth);
-            Console.WriteLine(separator + string.Format("{0," + offset + "}", text) + "\n" + separator);
+            Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
 
             // initialize api
-            ServerCommunicationClient.Instance.InitializeAndRegisterCallbacks();
+            if (CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]))
+            {
+                Logger.Log.Info(Language.Instance.GetMessageFromKey("API_INITIALIZED"));
+            }
 
             // initialize DB
             if (DataAccessHelper.Initialize())
@@ -92,7 +95,7 @@ namespace OpenNos.World
             }
             else
             {
-                Console.ReadLine();
+                Console.ReadKey();
                 return;
             }
 
@@ -102,14 +105,14 @@ namespace OpenNos.World
             try
             {
                 exitHandler += ExitHandler;
-                SetConsoleCtrlHandler(exitHandler, true);
+                NativeMethods.SetConsoleCtrlHandler(exitHandler, true);
             }
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
             }
             NetworkManager<WorldEncryption> networkManager = null;
-        portloop:
+            portloop:
             try
             {
                 networkManager = new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
@@ -128,7 +131,7 @@ namespace OpenNos.World
 
             ServerManager.Instance.ServerGroup = ConfigurationManager.AppSettings["ServerGroup"];
             int sessionLimit = Convert.ToInt32(ConfigurationManager.AppSettings["SessionLimit"]);
-            int? newChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("RegisterWorldserver", ServerManager.Instance.ServerGroup, new WorldserverDTO(ServerManager.Instance.WorldId, new ScsTcpEndPoint(ConfigurationManager.AppSettings["IPADDRESS"], port), sessionLimit)).Result;
+            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ConfigurationManager.AppSettings["IPADDRESS"], port, sessionLimit, ServerManager.Instance.ServerGroup));
 
             if (newChannelId.HasValue)
             {
@@ -137,6 +140,8 @@ namespace OpenNos.World
             else
             {
                 Logger.Log.ErrorFormat("Could not retrieve ChannelId from Web API.");
+                Console.ReadKey();
+                return;
             }
         }
 
@@ -144,7 +149,7 @@ namespace OpenNos.World
         {
             string serverGroup = ConfigurationManager.AppSettings["ServerGroup"];
             int port = Convert.ToInt32(ConfigurationManager.AppSettings["WorldPort"]);
-            ServerCommunicationClient.Instance.HubProxy.Invoke("UnregisterWorldserver", serverGroup, new ScsTcpEndPoint(ConfigurationManager.AppSettings["IPADDRESS"], port)).Wait();
+            CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.SaveAll();
@@ -197,21 +202,26 @@ namespace OpenNos.World
             DAOFactory.ShopItemDAO.RegisterMapping(typeof(ShopItemDTO)).InitializeMapper();
             DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
             DAOFactory.CardDAO.RegisterMapping(typeof(CardDTO)).InitializeMapper();
-            DAOFactory.ItemCardDAO.RegisterMapping(typeof(ItemCardDTO)).InitializeMapper();
-            DAOFactory.SkillCardDAO.RegisterMapping(typeof(SkillCardDTO)).InitializeMapper();
+            DAOFactory.BCardDAO.RegisterMapping(typeof(BCardDTO)).InitializeMapper();
+            DAOFactory.CardDAO.RegisterMapping(typeof(Card)).InitializeMapper();
+            DAOFactory.BCardDAO.RegisterMapping(typeof(BCard)).InitializeMapper();
             DAOFactory.SkillDAO.RegisterMapping(typeof(Skill)).InitializeMapper();
             DAOFactory.MateDAO.RegisterMapping(typeof(MateDTO)).InitializeMapper();
             DAOFactory.MateDAO.RegisterMapping(typeof(Mate)).InitializeMapper();
             DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
             DAOFactory.StaticBonusDAO.RegisterMapping(typeof(StaticBonusDTO)).InitializeMapper();
+            DAOFactory.StaticBuffDAO.RegisterMapping(typeof(StaticBuffDTO)).InitializeMapper();
             DAOFactory.FamilyDAO.RegisterMapping(typeof(Family)).InitializeMapper();
             DAOFactory.FamilyCharacterDAO.RegisterMapping(typeof(FamilyCharacter)).InitializeMapper();
-            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
-            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstance)).InitializeMapper();
+            DAOFactory.ScriptedInstanceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
+            DAOFactory.ScriptedInstanceDAO.RegisterMapping(typeof(ScriptedInstance)).InitializeMapper();
         }
 
-        [DllImport("Kernel32")]
-        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+        public class NativeMethods
+        {
+            [DllImport("Kernel32")]
+            internal static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+        }
 
         #endregion
     }

@@ -1,11 +1,25 @@
-﻿using OpenNos.Core;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using OpenNos.GameObject;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,45 +47,40 @@ namespace OpenNos.Handler
 
         #region Methods
 
-        [Packet("Char_NEW")]
-        public void CreateCharacter(string packet)
+        /// <summary>
+        /// Char_NEW character creation character
+        /// </summary>
+        /// <param name="characterCreatePacket"></param>
+        public void CreateCharacter(CharacterCreatePacket characterCreatePacket)
         {
-            Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.GenerateIdentity(), characterCreatePacket.ToString());
             if (Session.HasCurrentMapInstance)
             {
                 return;
             }
-
             // TODO: Hold Account Information in Authorized object
             long accountId = Session.Account.AccountId;
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length != 7)
-            {
-                return;
-            }
-            byte slot;
-            string characterName = packetsplit[2];
-            if (byte.TryParse(packetsplit[3], out slot) && slot <= 2 && DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) == null)
+            byte slot = characterCreatePacket.Slot;
+            string characterName = characterCreatePacket.Name;
+            if (slot <= 2 && DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) == null)
             {
                 if (characterName.Length > 3 && characterName.Length < 15)
                 {
                     Regex rg = new Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B\u002E]*$");
-                    int isIllegalCharacter = rg.Matches(characterName).Count;
-
-                    if (isIllegalCharacter == 1)
+                    if (rg.Matches(characterName).Count == 1)
                     {
                         if (DAOFactory.CharacterDAO.LoadByName(characterName) == null)
                         {
-                            if (Convert.ToByte(packetsplit[3]) > 2)
+                            if (characterCreatePacket.Slot > 2)
                             {
                                 return;
                             }
                             CharacterDTO newCharacter = new CharacterDTO
                             {
                                 Class = (byte)ClassType.Adventurer,
-                                Gender = (GenderType)Enum.Parse(typeof(GenderType), packetsplit[4]),
-                                HairColor = (HairColorType)Enum.Parse(typeof(HairColorType), packetsplit[6]),
-                                HairStyle = (HairStyleType)Enum.Parse(typeof(HairStyleType), packetsplit[5]),
+                                Gender = characterCreatePacket.Gender,
+                                HairColor = characterCreatePacket.HairColor,
+                                HairStyle = characterCreatePacket.HairStyle,
                                 Hp = 221,
                                 JobLevel = 1,
                                 Level = 1,
@@ -138,7 +147,7 @@ namespace OpenNos.Handler
                             startupInventory.AddNewToInventory(2081, 1, InventoryType.Etc);
                             startupInventory.GetAllItems().ForEach(i => DAOFactory.IteminstanceDAO.InsertOrUpdate(i));
 
-                            LoadCharacters(packet);
+                            LoadCharacters(characterCreatePacket.OriginalContent);
                         }
                         else
                         {
@@ -202,20 +211,26 @@ namespace OpenNos.Handler
             if (Session.Account == null)
             {
                 bool hasRegisteredAccountLogin = true;
+                AccountDTO account = null;
+                if (loginPacketParts.Length > 4)
+                {
+                    account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+                }
                 try
                 {
-                    hasRegisteredAccountLogin = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("HasRegisteredAccountLogin", loginPacketParts[4], Session.SessionId).Result;
+                    if (account != null)
+                    {
+                        hasRegisteredAccountLogin = CommunicationServiceClient.Instance.IsLoginPermitted(account.AccountId, Session.SessionId);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log.Error("WCF Communication Failed.", ex);
+                    Logger.Log.Error("MS Communication Failed.", ex);
                     Session.Disconnect();
                     return;
                 }
                 if (loginPacketParts.Length > 4 && hasRegisteredAccountLogin)
                 {
-                    AccountDTO account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
-
                     if (account != null)
                     {
                         if (account.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])))
@@ -285,6 +300,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        /// select packet
         /// </summary>
         /// <param name="selectPacket"></param>
         public void SelectCharacter(SelectPacket selectPacket)
@@ -293,8 +309,7 @@ namespace OpenNos.Handler
             {
                 if (Session?.Account != null && !Session.HasSelectedCharacter)
                 {
-                    Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) as Character;
-                    if (character != null)
+                    if (DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) is Character character)
                     {
                         character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
                         character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(character.MapId);
@@ -333,11 +348,11 @@ namespace OpenNos.Handler
                             Session.Character.CharacterLife();
                         });
                         Session.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Connection", Timestamp = DateTime.Now });
-
+                        
                         Session.SendPacket("OK");
 
                         // Inform everyone about connected character
-                        ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectCharacter", ServerManager.Instance.ServerGroup, ServerManager.Instance.WorldId, Session.Character.Name, Session.Character.CharacterId);
+                        CommunicationServiceClient.Instance.ConnectCharacter(ServerManager.Instance.WorldId, character.CharacterId);
                     }
                 }
             }

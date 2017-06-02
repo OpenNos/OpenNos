@@ -13,17 +13,19 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Core.Handling;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.GameObject.CommandPackets;
 using OpenNos.GameObject.Helpers;
-using OpenNos.WebApi.Reference;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace OpenNos.Handler
@@ -78,8 +80,7 @@ namespace OpenNos.Handler
                 if (!DAOFactory.MapMonsterDAO.DoesMonsterExist(monst.MapMonsterId))
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
-                    MapMonster monster = DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) as MapMonster;
-                    if (monster != null)
+                    if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) is MapMonster monster)
                     {
                         monster.Initialize(Session.CurrentMapInstance);
                         Session.CurrentMapInstance.AddMonster(monster);
@@ -90,7 +91,23 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(AddMonsterPacket.ReturnHelp(), 10));
+            }
+        }
+
+        /// <summary>
+        /// $AddPartner Command
+        /// </summary>
+        /// <param name="addPartnerPacket"></param>
+        public void AddPartner(AddPartnerPacket addPartnerPacket)
+        {
+            if (addPartnerPacket != null)
+            {
+                AddMate(addPartnerPacket.MonsterVNum, addPartnerPacket.Level, MateType.Partner);
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(AddPartnerPacket.ReturnHelp(), 10));
             }
         }
 
@@ -102,23 +119,11 @@ namespace OpenNos.Handler
         {
             if (addPetPacket != null)
             {
-                if (Session.CurrentMapInstance == Session.Character.Miniland)
-                {
-                    if (addPetPacket.Level == 0)
-                    {
-                        addPetPacket.Level = 1;
-                    }
-                    Mate mate = new Mate(Session.Character, addPetPacket.MonsterVNum, addPetPacket.Level, MateType.Pet);
-                    Session.Character.AddPet(mate);
-                }
-                else
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_MINILAND"), 0));
-                }
+                AddMate(addPetPacket.MonsterVNum, addPetPacket.Level, MateType.Pet);
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$AddPet MONSTERVNUM LEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(AddPartnerPacket.ReturnHelp(), 10));
             }
         }
 
@@ -138,7 +143,6 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_DOES_NOT_EXIST"), 11));
                     return;
                 }
-
                 if (skillinfo.SkillVNum < 200)
                 {
                     foreach (var skill in Session.Character.Skills.GetAllItems())
@@ -166,9 +170,7 @@ namespace OpenNos.Handler
                         }
                     }
                 }
-
                 Session.Character.Skills[skillVNum] = new CharacterSkill { SkillVNum = skillVNum, CharacterId = Session.Character.CharacterId };
-
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
@@ -176,7 +178,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                Session.SendPacket(Session.Character.GenerateSay(AddSkillPacket.ReturnHelp(), 10));
             }
         }
 
@@ -226,7 +228,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME DURATION(DAYS) REASON", 10));
+                Session.SendPacket(Session.Character.GenerateSay(BanPacket.ReturnHelp(), 10));
             }
         }
 
@@ -269,7 +271,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$BlockExp CHARACTERNAME DURATION(MINUTES) REASON", 10));
+                Session.SendPacket(Session.Character.GenerateSay(BlockExpPacket.ReturnHelp(), 10));
             }
         }
 
@@ -312,7 +314,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$BlockFExp CHARACTERNAME DURATION(MINUTES) REASON", 10));
+                Session.SendPacket(Session.Character.GenerateSay(BlockFExpPacket.ReturnHelp(), 10));
             }
         }
 
@@ -374,7 +376,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$BlockRep CHARACTERNAME DURATION(MINUTES) REASON", 10));
+                Session.SendPacket(Session.Character.GenerateSay(BlockRepPacket.ReturnHelp(), 10));
             }
         }
 
@@ -387,16 +389,11 @@ namespace OpenNos.Handler
             Logger.Debug("Change Class Command", Session.Character.GenerateIdentity());
             if (changeClassPacket != null)
             {
-                var player = Session;
-                if (ServerManager.Instance.GetSessionByCharacterName(changeClassPacket.Name) != null)
-                {
-                    player = ServerManager.Instance.GetSessionByCharacterName(changeClassPacket.Name);
-                }
-                player.Character.ChangeClass(changeClassPacket.ClassType);
+                Session.Character.ChangeClass(changeClassPacket.ClassType);
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeClassPacket.ReturnHelp(), 10));
             }
         }
 
@@ -424,7 +421,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$ChangeDignity DIGNITY", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeDignityPacket.ReturnHelp(), 10));
             }
         }
 
@@ -454,7 +451,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeFairyLevelPacket.ReturnHelp(), 10));
             }
         }
 
@@ -479,21 +476,16 @@ namespace OpenNos.Handler
             {
                 if (changeHeroLevelPacket.HeroLevel <= 255)
                 {
-                    var player = Session;
-                    if (ServerManager.Instance.GetSessionByCharacterName(changeHeroLevelPacket.Name) != null)
-                    {
-                        player = ServerManager.Instance.GetSessionByCharacterName(changeHeroLevelPacket.Name);
-                    }
-                    player.Character.HeroLevel = changeHeroLevelPacket.HeroLevel;
-                    player.Character.HeroXp = 0;
+                    Session.Character.HeroLevel = changeHeroLevelPacket.HeroLevel;
+                    Session.Character.HeroXp = 0;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
-                    player.SendPacket(player.Character.GenerateLev());
-                    player.SendPacket(player.Character.GenerateStatInfo());
-                    player.SendPacket(player.Character.GenerateStatChar());
-                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX, Session.Character.PositionY);
-                    player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.SendPacket(Session.Character.GenerateLev());
+                    Session.SendPacket(Session.Character.GenerateStatInfo());
+                    Session.SendPacket(Session.Character.GenerateStatChar());
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), Session.Character.PositionX, Session.Character.PositionY);
                 }
                 else
                 {
@@ -502,7 +494,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeHeroLevelPacket.ReturnHelp(), 10));
             }
         }
 
@@ -515,30 +507,36 @@ namespace OpenNos.Handler
             Logger.Debug("Change JobLevel Command", Session.Character.GenerateIdentity());
             if (changeJobLevelPacket != null)
             {
-                var player = Session;
-                if (ServerManager.Instance.GetSessionByCharacterName(changeJobLevelPacket.Name) != null)
+                if ((Session.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20 || Session.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 255) && changeJobLevelPacket.JobLevel > 0)
                 {
-                    player = ServerManager.Instance.GetSessionByCharacterName(changeJobLevelPacket.Name);
-                }
-                if ((player.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20 || player.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 255) && changeJobLevelPacket.JobLevel > 0)
-                {
-                    player.Character.JobLevel = changeJobLevelPacket.JobLevel;
-                    player.Character.JobLevelXp = 0;
-                    player.Character.Skills.ClearAll();
-                    player.SendPacket(Session.Character.GenerateLev());
-                    player.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
-                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(8), player.Character.PositionX, player.Character.PositionY);
-
-                    player.Character.Skills[(short)(200 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
-                    player.Character.Skills[(short)(201 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
-                    player.Character.Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = player.Character.CharacterId };
-                    if (!player.Character.UseSp)
+                    Session.Character.JobLevel = changeJobLevelPacket.JobLevel;
+                    Session.Character.JobLevelXp = 0;
+                    Session.Character.Skills.ClearAll();
+                    Session.SendPacket(Session.Character.GenerateLev());
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.Character.Skills[(short)(200 + 20 * (byte)Session.Character.Class)] = new CharacterSkill
                     {
-                        player.SendPacket(player.Character.GenerateSki());
+                        SkillVNum = (short)(200 + 20 * (byte)Session.Character.Class),
+                        CharacterId = Session.Character.CharacterId
+                    };
+                    Session.Character.Skills[(short)(201 + 20 * (byte)Session.Character.Class)] = new CharacterSkill
+                    {
+                        SkillVNum = (short)(201 + 20 * (byte)Session.Character.Class),
+                        CharacterId = Session.Character.CharacterId
+                    };
+                    Session.Character.Skills[236] = new CharacterSkill
+                    {
+                        SkillVNum = 236,
+                        CharacterId = Session.Character.CharacterId
+                    };
+                    if (!Session.Character.UseSp)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSki());
                     }
-                    player.Character.LearnAdventurerSkill();
+                    Session.Character.LearnAdventurerSkill();
                 }
                 else
                 {
@@ -547,7 +545,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeJobLevelPacket.ReturnHelp(), 10));
             }
         }
 
@@ -562,29 +560,31 @@ namespace OpenNos.Handler
             {
                 if (changeLevelPacket.Level > 0)
                 {
-                    var player = Session;
-                    if (ServerManager.Instance.GetSessionByCharacterName(changeLevelPacket.Name) != null)
-                    {
-                        player = ServerManager.Instance.GetSessionByCharacterName(changeLevelPacket.Name);
-                    }
-                    player.Character.Level = changeLevelPacket.Level;
-                    player.Character.LevelXp = 0;
-                    player.Character.Hp = (int)player.Character.HPLoad();
-                    player.Character.Mp = (int)player.Character.MPLoad();
-                    player.SendPacket(player.Character.GenerateStat());
-                    player.SendPacket(player.Character.GenerateStatInfo());
-                    player.SendPacket(player.Character.GenerateStatChar());
+                    Session.Character.Level = changeLevelPacket.Level;
+                    Session.Character.LevelXp = 0;
+                    Session.Character.Hp = (int)Session.Character.HPLoad();
+                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                    Session.SendPacket(Session.Character.GenerateStat());
+                    Session.SendPacket(Session.Character.GenerateStatInfo());
+                    Session.SendPacket(Session.Character.GenerateStatChar());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
-                    player.SendPacket(player.Character.GenerateLev());
-                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(6), player.Character.PositionX, player.Character.PositionY);
-                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(198), player.Character.PositionX, player.Character.PositionY);
-                    ServerManager.Instance.UpdateGroup(player.Character.CharacterId);
-                    if (player.Character.Family != null)
+                    Session.SendPacket(Session.Character.GenerateLev());
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), Session.Character.PositionX, Session.Character.PositionY);
+                    ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
+                    if (Session.Character.Family != null)
                     {
-                        ServerManager.Instance.FamilyRefresh(player.Character.Family.FamilyId);
-                        int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, player.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                        ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                        CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                        {
+                            DestinationCharacterId = Session.Character.Family.FamilyId,
+                            SourceCharacterId = Session.Character.CharacterId,
+                            SourceWorldId = ServerManager.Instance.WorldId,
+                            Message = "fhis_stc",
+                            Type = MessageType.Family
+                        });
                     }
                 }
                 else
@@ -594,7 +594,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeLevelPacket.ReturnHelp(), 10));
             }
         }
 
@@ -609,16 +609,11 @@ namespace OpenNos.Handler
             {
                 if (changeReputationPacket.Reputation > 0)
                 {
-                    var player = Session;
-                    if (ServerManager.Instance.GetSessionByCharacterName(changeReputationPacket.Name) != null)
-                    {
-                        player = ServerManager.Instance.GetSessionByCharacterName(changeReputationPacket.Name);
-                    }
-                    player.Character.Reput = changeReputationPacket.Reputation;
-                    player.SendPacket(Session.Character.GenerateFd());
+                    Session.Character.Reput = changeReputationPacket.Reputation;
+                    Session.SendPacket(Session.Character.GenerateFd());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"), 0));
-                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                 }
                 else
                 {
@@ -627,7 +622,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$ChangeReput AMOUNT", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeReputationPacket.ReturnHelp(), 10));
             }
         }
 
@@ -640,51 +635,36 @@ namespace OpenNos.Handler
             Logger.Debug("Change SpecialistLevel Command", Session.Character.GenerateIdentity());
             if (changeSpecialistLevelPacket != null)
             {
-                var player = Session;
-                if (ServerManager.Instance.GetSessionByCharacterName(changeSpecialistLevelPacket.Name) != null)
-                {
-                    player = ServerManager.Instance.GetSessionByCharacterName(changeSpecialistLevelPacket.Name);
-                }
-                SpecialistInstance sp =
-                    player.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,
-                        InventoryType.Wear);
-
+                SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (sp != null && Session.Character.UseSp)
                 {
-                    if (changeSpecialistLevelPacket.SpecialistLevel <= 255 &&
-                        changeSpecialistLevelPacket.SpecialistLevel > 0)
+                    if (changeSpecialistLevelPacket.SpecialistLevel <= 255 && changeSpecialistLevelPacket.SpecialistLevel > 0)
                     {
                         sp.SpLevel = changeSpecialistLevelPacket.SpecialistLevel;
                         sp.XP = 0;
-                        player.SendPacket(Session.Character.GenerateLev());
-                        Session.SendPacket(
-                            UserInterfaceHelper.Instance.GenerateMsg(
-                                Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
-                        player.SendPacket(Session.Character.GenerateSki());
-                        player.Character.LearnSPSkill();
-                        player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
-                            ReceiverType.AllExceptMe);
-                        player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
-                            ReceiverType.AllExceptMe);
-                        player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8),
-                            Session.Character.PositionX, Session.Character.PositionY);
+                        Session.SendPacket(Session.Character.GenerateLev());
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
+                        Session.Character.LearnSPSkill();
+                        Session.SendPacket(Session.Character.GenerateSki());
+                        Session.SendPackets(Session.Character.GenerateQuicklist());
+                        Session.Character.Skills.GetAllItems().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
+                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), Session.Character.PositionX, Session.Character.PositionY);
                     }
                     else
                     {
-                        Session.SendPacket(
-                            UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"),
-                                0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
                     }
                 }
                 else
                 {
-                    Session.SendPacket(
-                        UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                 }
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeSpecialistLevelPacket.ReturnHelp(), 10));
             }
         }
 
@@ -698,9 +678,35 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("---------CHANNEL INFO---------", 11));
             foreach (ClientSession session in ServerManager.Instance.Sessions)
             {
-                Session.SendPacket(Session.Character.GenerateSay($"CharacterName: {session.Character.Name} SessionId:{session.SessionId}", 12));
+                Session.SendPacket(Session.Character.GenerateSay($"CharacterName: {session.Character.Name} SessionId: {session.SessionId}", 12));
             }
             Session.SendPacket(Session.Character.GenerateSay("---------------------------------------", 11));
+        }
+
+        /// <summary>
+        /// $CharEdit Command
+        /// </summary>
+        /// <param name="characterEditPacket"></param>
+        public void CharacterEdit(CharacterEditPacket characterEditPacket)
+        {
+            Logger.Debug("ChannelInfo Command", Session.Character.GenerateIdentity());
+            if (characterEditPacket != null)
+            {
+                if (characterEditPacket.Property != null && !string.IsNullOrEmpty(characterEditPacket.Data))
+                {
+                    PropertyInfo propertyInfo = Session.Character.GetType().GetProperty(characterEditPacket.Property);
+                    if (propertyInfo != null)
+                    {
+                        propertyInfo.SetValue(Session.Character, Convert.ChangeType(characterEditPacket.Data, propertyInfo.PropertyType));
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                        Session.Character.Save();
+                    }
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(CharacterEditPacket.ReturnHelp(), 10));
+            }
         }
 
         /// <summary>
@@ -710,10 +716,23 @@ namespace OpenNos.Handler
         public void CharStat(CharacterStatsPacket characterStatsPacket)
         {
             Logger.Debug("CharStat Command", Session.Character.GenerateIdentity());
+            string returnHelp = CharacterStatsPacket.ReturnHelp();
             if (characterStatsPacket != null)
             {
                 string name = characterStatsPacket.CharacterName;
-                if (!string.IsNullOrEmpty(name))
+                if (int.TryParse(characterStatsPacket.CharacterName, out int sessionId))
+                {
+                    if (ServerManager.Instance.GetSessionBySessionId(sessionId) != null)
+                    {
+                        Character character = ServerManager.Instance.GetSessionBySessionId(sessionId).Character;
+                        SendStats(character);
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                    }
+                }
+                else if (!string.IsNullOrEmpty(name))
                 {
                     if (ServerManager.Instance.GetSessionByCharacterName(name) != null)
                     {
@@ -732,12 +751,12 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 10));
+                    Session.SendPacket(Session.Character.GenerateSay(returnHelp, 10));
                 }
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(returnHelp, 10));
             }
         }
 
@@ -750,16 +769,16 @@ namespace OpenNos.Handler
             Logger.Debug("ClearInventory Command", Session.Character.GenerateIdentity());
             if (clearInventoryPacket != null && clearInventoryPacket.InventoryType != InventoryType.Wear)
             {
-                foreach (ItemInstance inv in Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType))
+                Parallel.ForEach(Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType), inv =>
                 {
                     Session.Character.Inventory.DeleteById(inv.Id);
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(inv.Type, inv.Slot));
-                }
+                });
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Clear INVENTORYTYPE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ClearInventoryPacket.ReturnHelp(), 10));
             }
         }
 
@@ -773,194 +792,124 @@ namespace OpenNos.Handler
 
             // TODO: Command displaying detailed informations about commands
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
-            Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$AddSkill SKILLID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ArenaWinner", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME TIME REASON ", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$BlockExp CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$BlockFExp CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$BlockPM", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$BlockRep CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ChangeDignity AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ChangeRep AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Clear INVENTORYTYPE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Demote CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$DropRate VALUE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Event EVENT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$FairyXpRate VALUE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME(*) VNUM AMOUNT RARE UPGRADE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Gift VNUM AMOUNT RARE UPGRADE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$GodMode", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$GoldDropRate Value", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$GoldRate Value", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Invisible", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$MapDance", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Music BGM", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME DURATION(MINUTES) REASON", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Position", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Promote CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$RemoveMob", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(%)", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME(%)", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Shout SENDPACKET", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Stat", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME(*)", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Unban CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Undercover", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$XpRate VALUE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
+
+            // TODO: OPTIMIZE!
+            List<Type> classes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).Where(t => t.IsClass && t.Namespace == "OpenNos.GameObject.CommandPackets").ToList();
+            foreach (Type type in classes)
+            {
+                object classInstance = Activator.CreateInstance(type);
+                Type classType = classInstance.GetType();
+                MethodInfo method = classType.GetMethod("ReturnHelp");
+                if (method != null)
+                {
+                    string message = method.Invoke(classInstance, null).ToString();
+                    if (!string.IsNullOrEmpty(message))
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(message, 12));
+                    }
+                }
+            }
+
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
         }
 
-        // TODO: Convert that to PacketDefinition
-        [Packet("$CreateItem")]
-        public void CreateItem(string packet)
+        /// <summary>
+        /// $CreateItem Packet
+        /// </summary>
+        /// <param name="createItemPacket"></param>
+        public void CreateItem(CreateItemPacket createItemPacket)
         {
-            if (Session.Account.Authority >= AuthorityType.GameMaster)
+            if (createItemPacket != null)
             {
-                Logger.Debug(packet, Session.Character.GenerateIdentity());
-                string[] packetsplit = packet.Split(' ');
-                byte amount = 1, upgrade = 0, design = 0;
+                Logger.Debug(createItemPacket.ToString(), Session.Character.GenerateIdentity());
+                short vnum = createItemPacket.VNum;
                 sbyte rare = 0;
-                short vnum;
-                if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
+                byte upgrade = 0, amount = 1, design = 0;
+                if (vnum == 1046)
                 {
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 10));
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 10));
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 10));
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 10));
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 10));
-                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 10));
+                    return; // cannot create gold as item, use $Gold instead
                 }
-                else if (short.TryParse(packetsplit[2], out vnum))
+                Item iteminfo = ServerManager.Instance.GetItem(vnum);
+                if (iteminfo != null)
                 {
-                    if (vnum == 1046)
+                    if (iteminfo.IsColored || iteminfo.VNum == 302)
                     {
-                        return; // cannot create gold as item, use $Gold instead
+                        if (createItemPacket.Design.HasValue)
+                        {
+                            design = createItemPacket.Design.Value;
+                        }
                     }
-
-                    Item iteminfo = ServerManager.Instance.GetItem(vnum);
-                    if (iteminfo != null)
+                    else if (iteminfo.Type == 0)
                     {
-                        if (iteminfo.IsColored || iteminfo.VNum == 302)
+                        if (createItemPacket.Upgrade.HasValue)
                         {
-                            if (packetsplit.Length > 3)
+                            if (iteminfo.EquipmentSlot != EquipmentType.Sp)
                             {
-                                byte.TryParse(packetsplit[3], out design);
+                                upgrade = createItemPacket.Upgrade.Value;
+                            }
+                            else
+                            {
+                                design = createItemPacket.Upgrade.Value;
+                            }
+                            if (iteminfo.EquipmentSlot != EquipmentType.Sp && upgrade == 0 && iteminfo.BasicUpgrade != 0)
+                            {
+                                upgrade = iteminfo.BasicUpgrade;
                             }
                         }
-                        else if (iteminfo.Type == 0)
+                        if (createItemPacket.Design.HasValue)
                         {
-                            switch (packetsplit.Length)
+                            if (iteminfo.EquipmentSlot == EquipmentType.Sp)
                             {
-                                case 4:
-                                    sbyte.TryParse(packetsplit[3], out rare);
+                                upgrade = createItemPacket.Design.Value;
+                            }
+                            else
+                            {
+                                rare = (sbyte)createItemPacket.Design.Value;
+                            }
+                        }
+                    }
+                    if (createItemPacket.Design.HasValue && !createItemPacket.Upgrade.HasValue)
+                    {
+                        amount = createItemPacket.Design.Value > 99 ? (byte)99 : createItemPacket.Design.Value;
+                    }
+                    ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, Rare: rare, Upgrade: upgrade, Design: design).FirstOrDefault();
+                    if (inv != null)
+                    {
+                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
+                        if (wearable != null)
+                        {
+                            switch (wearable.Item.EquipmentSlot)
+                            {
+                                case EquipmentType.Armor:
+                                case EquipmentType.MainWeapon:
+                                case EquipmentType.SecondaryWeapon:
+                                    wearable.SetRarityPoint();
                                     break;
 
-                                case 5:
-                                    if (iteminfo.EquipmentSlot == EquipmentType.Sp)
-                                    {
-                                        byte.TryParse(packetsplit[3], out upgrade);
-                                        upgrade = upgrade > 15 ? (byte)15 : upgrade;
-                                        byte.TryParse(packetsplit[4], out design);
-                                    }
-                                    else
-                                    {
-                                        sbyte.TryParse(packetsplit[3], out rare);
-                                        byte.TryParse(packetsplit[4], out upgrade);
-                                        upgrade = upgrade > 10 ? (byte)10 : upgrade;
-                                        if (upgrade == 0)
-                                        {
-                                            if (iteminfo.BasicUpgrade != 0)
-                                            {
-                                                upgrade = iteminfo.BasicUpgrade;
-                                            }
-                                        }
-                                    }
+                                case EquipmentType.Boots:
+                                case EquipmentType.Gloves:
+                                    wearable.FireResistance = (short)(wearable.Item.FireResistance * upgrade);
+                                    wearable.DarkResistance = (short)(wearable.Item.DarkResistance * upgrade);
+                                    wearable.LightResistance = (short)(wearable.Item.LightResistance * upgrade);
+                                    wearable.WaterResistance = (short)(wearable.Item.WaterResistance * upgrade);
                                     break;
                             }
                         }
-                        else
-                        {
-                            if (packetsplit.Length > 3 && !byte.TryParse(packetsplit[3], out amount))
-                            {
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-                                return;
-                            }
-                        }
-                        amount = amount > 99 ? (byte)99 : amount;
-                        List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, Rare: rare, Upgrade: upgrade, Design: design);
-                        if (inv.Any())
-                        {
-                            WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.First().Slot, inv.First().Type);
-
-                            if (wearable != null)
-                            {
-                                switch (wearable.Item.EquipmentSlot)
-                                {
-                                    case EquipmentType.Armor:
-                                    case EquipmentType.MainWeapon:
-                                    case EquipmentType.SecondaryWeapon:
-                                        wearable.SetRarityPoint();
-                                        break;
-
-                                    case EquipmentType.Boots:
-                                    case EquipmentType.Gloves:
-                                        wearable.FireResistance = (short)(wearable.Item.FireResistance * upgrade);
-                                        wearable.DarkResistance = (short)(wearable.Item.DarkResistance * upgrade);
-                                        wearable.LightResistance = (short)(wearable.Item.LightResistance * upgrade);
-                                        wearable.WaterResistance = (short)(wearable.Item.WaterResistance * upgrade);
-                                        break;
-                                }
-                            }
-                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                        }
-                        else
-                        {
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
-                        }
+                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
                     }
                     else
                     {
-                        UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_ITEM"), 0);
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                     }
                 }
+                else
+                {
+                    UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_ITEM"), 0);
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(CreateItemPacket.ReturnHelp(), 10));
             }
         }
 
@@ -973,30 +922,25 @@ namespace OpenNos.Handler
             Logger.Debug("PortalTo Command", Session.Character.GenerateIdentity());
             if (portalToPacket != null)
             {
-                if (!Session.HasCurrentMapInstance)
+                if (Session.HasCurrentMapInstance)
                 {
-                    return;
+                    Portal portal = new Portal
+                    {
+                        SourceMapId = Session.Character.MapId,
+                        SourceX = Session.Character.PositionX,
+                        SourceY = Session.Character.PositionY,
+                        DestinationMapId = portalToPacket.DestinationMapId,
+                        DestinationX = portalToPacket.DestinationX,
+                        DestinationY = portalToPacket.DestinationY,
+                        Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
+                    };
+                    Session.CurrentMapInstance.Portals.Add(portal);
+                    Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
                 }
-                short mapId = Session.Character.MapId;
-                short mapX = Session.Character.PositionX;
-                short mapY = Session.Character.PositionY;
-                Portal portal = new Portal
-                {
-                    SourceMapId = mapId,
-                    SourceX = mapX,
-                    SourceY = mapY,
-                    DestinationMapId = portalToPacket.DestinationMapId,
-                    DestinationX = portalToPacket.DestinationX,
-                    DestinationY = portalToPacket.DestinationY,
-                    Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
-                };
-                Session.CurrentMapInstance.Portals.Add(portal);
-                Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
-                Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 10));
+                Session.SendPacket(Session.Character.GenerateSay(PortalToPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1011,21 +955,21 @@ namespace OpenNos.Handler
             {
                 string name = demotePacket.CharacterName;
                 AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
-                if (account != null)
+                if (account != null && account.Authority > AuthorityType.User)
                 {
-                    account.Authority = AuthorityType.User;
+                    account.Authority -= 1;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                     if (session != null)
                     {
-                        session.Account.Authority = AuthorityType.User;
-                        session.Character.Authority = AuthorityType.User;
+                        session.Account.Authority -= 1;
+                        session.Character.Authority -= 1;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
-                        DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, "Demotion", $"by: {Session.Character.Name}");
+                        DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
                     }
                     else
                     {
-                        DAOFactory.AccountDAO.WriteGeneralLog(account.AccountId, "127.0.0.1", null, "Demotion", $"by: {Session.Character.Name}");
+                        DAOFactory.AccountDAO.WriteGeneralLog(account.AccountId, "127.0.0.1", null, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
                     }
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
@@ -1036,7 +980,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Demote CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(DemotePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1061,7 +1005,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$DropRate VALUE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(DropRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1078,7 +1022,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
+                Session.SendPacket(Session.Character.GenerateSay(EffectCommandPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1103,7 +1047,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$FairyXpRate VALUE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(FairyXpRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1116,20 +1060,20 @@ namespace OpenNos.Handler
             Logger.Debug("Gift Command", Session.Character.GenerateIdentity());
             if (giftPacket != null)
             {
-                if (giftPacket.Name == "*")
+                if (giftPacket.CharacterName == "*")
                 {
                     if (Session.HasCurrentMapInstance)
                     {
-                        foreach (ClientSession session in Session.CurrentMapInstance.Sessions)
+                        Parallel.ForEach(Session.CurrentMapInstance.Sessions, session =>
                         {
                             Session.Character.SendGift(session.Character.CharacterId, giftPacket.VNum, giftPacket.Amount, giftPacket.Rare, giftPacket.Upgrade, false);
-                        }
+                        });
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFT_SENT"), 10));
                     }
                 }
                 else
                 {
-                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(giftPacket.Name);
+                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(giftPacket.CharacterName);
                     if (chara != null)
                     {
                         Session.Character.SendGift(chara.CharacterId, giftPacket.VNum, giftPacket.Amount, giftPacket.Rare, giftPacket.Upgrade, false);
@@ -1143,7 +1087,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Gift NAME VNUM AMOUNT RARE UPGRADE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(GiftPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1183,7 +1127,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
+                Session.SendPacket(Session.Character.GenerateSay(GoldPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1208,7 +1152,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$GoldDropRate VALUE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(GoldDropRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1234,7 +1178,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$GoldRate RATE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(GoldRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1245,7 +1189,9 @@ namespace OpenNos.Handler
         public void Guri(GuriCommandPacket guriCommandPacket)
         {
             Logger.Debug("Guri Command", Session.Character.GenerateIdentity());
-            Session.SendPacket(guriCommandPacket != null ? UserInterfaceHelper.Instance.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, Session.Character.CharacterId, guriCommandPacket.Value) : Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
+            Session.SendPacket(guriCommandPacket != null ?
+                UserInterfaceHelper.Instance.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, Session.Character.CharacterId, guriCommandPacket.Value) :
+                Session.Character.GenerateSay(GuriCommandPacket.ReturnHelp(), 10));
         }
 
         /// <summary>
@@ -1264,7 +1210,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 10));
+                Session.SendPacket(Session.Character.GenerateSay(HairColorPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1284,7 +1230,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 10));
+                Session.SendPacket(Session.Character.GenerateSay(HairStylePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1292,7 +1238,7 @@ namespace OpenNos.Handler
         /// $FairyXPRate Command
         /// </summary>
         /// <param name="heroXpRatePacket"></param>
-        public void HeroXpRate(HeroXpRate heroXpRatePacket)
+        public void HeroXpRate(HeroXpRatePacket heroXpRatePacket)
         {
             Logger.Debug("Hero Xp Rate Changed", Session.Character.GenerateIdentity());
             if (heroXpRatePacket != null)
@@ -1309,7 +1255,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$HeroXpRate VALUE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(HeroXpRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1323,15 +1269,15 @@ namespace OpenNos.Handler
             Session.Character.Invisible = !Session.Character.Invisible;
             Session.Character.InvisibleGm = !Session.Character.InvisibleGm;
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateInvisible());
-
             Session.SendPacket(Session.Character.GenerateEq());
             if (Session.Character.InvisibleGm)
             {
-                Session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(Session, s.GenerateOut(), ReceiverType.AllExceptMe));
+                Session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateOut()));
                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
             else
             {
+                Session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => Session.CurrentMapInstance?.Broadcast(m.GenerateIn()));
                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
             }
@@ -1348,37 +1294,38 @@ namespace OpenNos.Handler
             {
                 if (kickPacket.CharacterName == "*")
                 {
-                    foreach (ClientSession cs in ServerManager.Instance.Sessions)
+                    Parallel.ForEach(ServerManager.Instance.Sessions, session =>
                     {
-                        cs.Disconnect();
-                    }
+                        session.Disconnect();
+                    });
                 }
                 ServerManager.Instance.Kick(kickPacket.CharacterName);
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(KickPacket.ReturnHelp(), 10));
             }
         }
 
         /// <summary>
         /// $KickSession Command
         /// </summary>
-        public void KickSession(KickSessionPacket kickPacket)
+        public void KickSession(KickSessionPacket kickSessionPacket)
         {
             Logger.Debug("KickSession Command", Session.Character.GenerateIdentity());
-            if (kickPacket != null)
+            if (kickSessionPacket != null)
             {
-                if (kickPacket.SessionId.HasValue) //if you set the sessionId, remove account verification
+                if (kickSessionPacket.SessionId.HasValue) //if you set the sessionId, remove account verification
                 {
-                    kickPacket.AccountName = string.Empty;
+                    kickSessionPacket.AccountName = string.Empty;
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                ServerCommunicationClient.Instance.HubProxy.Invoke("KickSession", kickPacket.SessionId, kickPacket.AccountName);
+                AccountDTO account = DAOFactory.AccountDAO.LoadByName(kickSessionPacket.AccountName);
+                CommunicationServiceClient.Instance.KickSession(account?.AccountId, kickSessionPacket.SessionId);
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$KickSession ACCOUNTNAME <SESSIONID>", 10));
+                Session.SendPacket(Session.Character.GenerateSay(KickSessionPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1392,7 +1339,6 @@ namespace OpenNos.Handler
             if (killPacket != null)
             {
                 string name = killPacket.CharacterName;
-
                 long? id = ServerManager.Instance.GetProperty<long?>(name, nameof(Character.CharacterId));
 
                 if (id != null)
@@ -1421,7 +1367,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(KillPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1497,7 +1443,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 10));
+                Session.SendPacket(Session.Character.GenerateSay(MorphPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1510,15 +1456,14 @@ namespace OpenNos.Handler
             Logger.Debug("Music Command", Session.Character.GenerateIdentity());
             if (musicPacket != null)
             {
-                if (musicPacket.Music > -1)
+                if (musicPacket.Music >= 0)
                 {
                     Session.CurrentMapInstance?.Broadcast($"bgm {musicPacket.Music}");
                 }
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Music BGM", 10));
+                Session.SendPacket(Session.Character.GenerateSay(MusicPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1535,38 +1480,12 @@ namespace OpenNos.Handler
                 {
                     mutePacket.Duration = 60;
                 }
-
                 mutePacket.Reason = mutePacket.Reason?.Trim();
-                CharacterDTO characterToMute = DAOFactory.CharacterDAO.LoadByName(mutePacket.CharacterName);
-                if (characterToMute != null)
-                {
-                    ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == mutePacket.CharacterName);
-                    session?.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), mutePacket.Reason, mutePacket.Duration)));
-                    if (session != null && !session.Character.IsMuted())
-                    {
-                        PenaltyLogDTO log = new PenaltyLogDTO
-                        {
-                            AccountId = characterToMute.AccountId,
-                            Reason = mutePacket.Reason,
-                            Penalty = PenaltyType.Muted,
-                            DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddMinutes(mutePacket.Duration),
-                            AdminName = Session.Character.Name
-                        };
-
-                        session.Character.InsertOrUpdatePenalty(log);
-                    }
-
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-                }
+                MuteMethod(mutePacket.CharacterName, mutePacket.Reason, mutePacket.Duration);
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME DURATION(MINUTES) REASON", 10));
+                Session.SendPacket(Session.Character.GenerateSay(MutePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1581,6 +1500,10 @@ namespace OpenNos.Handler
             {
                 Session.SendPacket(packetCallbackPacket.Packet);
                 Session.SendPacket(Session.Character.GenerateSay(packetCallbackPacket.Packet, 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(PacketCallbackPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1605,21 +1528,21 @@ namespace OpenNos.Handler
             {
                 string name = promotePacket.CharacterName;
                 AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
-                if (account != null)
+                if (account != null && account.Authority >= AuthorityType.User && account.Authority < AuthorityType.GameMaster)
                 {
-                    account.Authority = AuthorityType.GameMaster;
+                    account.Authority += 1;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                     if (session != null)
                     {
-                        session.Account.Authority = AuthorityType.GameMaster;
-                        session.Character.Authority = AuthorityType.GameMaster;
+                        session.Account.Authority += 1;
+                        session.Character.Authority += 1;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
-                        DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, "Promotion", $"by: {Session.Character.Name}");
+                        DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Promotion, $"by: {Session.Character.Name}");
                     }
                     else
                     {
-                        DAOFactory.AccountDAO.WriteGeneralLog(account.AccountId, "127.0.0.1", null, "Promotion", $"by: {Session.Character.Name}");
+                        DAOFactory.AccountDAO.WriteGeneralLog(account.AccountId, "127.0.0.1", null, GeneralLogType.Promotion, $"by: {Session.Character.Name}");
                     }
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
@@ -1630,7 +1553,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Promote CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(PromotePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1643,7 +1566,7 @@ namespace OpenNos.Handler
             Logger.Debug("Rarify Command", Session.Character.GenerateIdentity());
             if (rarifyPacket != null)
             {
-                if (rarifyPacket.Slot > -1)
+                if (rarifyPacket.Slot >= 0)
                 {
                     WearableInstance wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(rarifyPacket.Slot, 0);
                     wearableInstance?.RarifyItem(Session, rarifyPacket.Mode, rarifyPacket.Protection);
@@ -1651,7 +1574,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 10));
+                Session.SendPacket(Session.Character.GenerateSay(RarifyPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1698,12 +1621,12 @@ namespace OpenNos.Handler
             Logger.Debug("RemovePortal Command", Session.Character.GenerateIdentity());
             if (Session.HasCurrentMapInstance)
             {
-                Portal pt = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapInstanceId == Session.Character.MapInstanceId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
-                if (pt != null)
+                Portal portal = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapInstanceId == Session.Character.MapInstanceId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
+                if (portal != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
-                    Session.CurrentMapInstance.Portals.Remove(pt);
-                    Session.CurrentMapInstance?.Broadcast(pt.GenerateGp());
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), portal.SourceMapId, portal.SourceX, portal.SourceY), 12));
+                    Session.CurrentMapInstance.Portals.Remove(portal);
+                    Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
                 }
                 else
                 {
@@ -1721,7 +1644,7 @@ namespace OpenNos.Handler
             Logger.Debug("Resize Packet", Session.Character.GenerateIdentity());
             if (resizePacket != null)
             {
-                if (resizePacket.Value > -1)
+                if (resizePacket.Value >= 0)
                 {
                     Session.Character.Size = resizePacket.Value;
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateScal());
@@ -1729,7 +1652,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ResizePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1742,12 +1665,12 @@ namespace OpenNos.Handler
             Logger.Debug("SearchItem Command", Session.Character.GenerateIdentity());
             if (searchItemPacket != null)
             {
-                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(searchItemPacket.Name).OrderBy(s => s.VNum).ToList();
+                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(string.IsNullOrEmpty(searchItemPacket.Name) ? string.Empty : searchItemPacket.Name).OrderBy(s => s.VNum).Skip(searchItemPacket.Page * 200).Take(200).ToList();
                 if (itemlist.Any())
                 {
                     foreach (ItemDTO item in itemlist)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay($"Item: {item.Name} VNum: {item.VNum}", 12));
+                        Session.SendPacket(Session.Character.GenerateSay($"Item: {(string.IsNullOrEmpty(item.Name) ? "none" : item.Name)} VNum: {item.VNum}", 12));
                     }
                 }
                 else
@@ -1757,7 +1680,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(SearchItemPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1770,12 +1693,12 @@ namespace OpenNos.Handler
             Logger.Debug("SearchMonster Command", Session.Character.GenerateIdentity());
             if (searchMonsterPacket != null)
             {
-                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(searchMonsterPacket.Name).OrderBy(s => s.NpcMonsterVNum).ToList();
+                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(string.IsNullOrEmpty(searchMonsterPacket.Name) ? string.Empty : searchMonsterPacket.Name).OrderBy(s => s.NpcMonsterVNum).Skip(searchMonsterPacket.Page * 200).Take(200).ToList();
                 if (monsterlist.Any())
                 {
                     foreach (NpcMonsterDTO npcMonster in monsterlist)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay($"Monster: {npcMonster.Name} VNum: {npcMonster.NpcMonsterVNum}", 12));
+                        Session.SendPacket(Session.Character.GenerateSay($"Monster: {(string.IsNullOrEmpty(npcMonster.Name) ? "none" : npcMonster.Name)} VNum: {npcMonster.NpcMonsterVNum}", 12));
                     }
                 }
                 else
@@ -1785,7 +1708,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(SearchMonsterPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1798,7 +1721,18 @@ namespace OpenNos.Handler
             Logger.Debug("Shout Command", Session.Character.GenerateIdentity());
             if (shoutPacket != null)
             {
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name, string.Empty, shoutPacket.Message, ServerManager.Instance.ChannelId, MessageType.Shout).Result;
+                CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                {
+                    DestinationCharacterId = null,
+                    SourceCharacterId = Session.Character.CharacterId,
+                    SourceWorldId = ServerManager.Instance.WorldId,
+                    Message = shoutPacket.Message,
+                    Type = MessageType.Shout
+                });
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(ShoutPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1812,6 +1746,10 @@ namespace OpenNos.Handler
             if (shoutHerePacket != null)
             {
                 ServerManager.Instance.Shout(shoutHerePacket.Message);
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(ShoutHerePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1829,8 +1767,33 @@ namespace OpenNos.Handler
             }
             else
             {
-                ServerManager.Instance.TaskShutdown = new Task(ShutdownTask);
+                ServerManager.Instance.TaskShutdown = new Task(ServerManager.Instance.ShutdownTask);
                 ServerManager.Instance.TaskShutdown.Start();
+            }
+        }
+
+        /// <summary>
+        /// $ShutdownAll Command
+        /// </summary>
+        /// <param name="shutdownAllPacket"></param>
+        public void ShutdownAll(ShutdownAllPacket shutdownAllPacket)
+        {
+            Logger.Debug(shutdownAllPacket.ToString(), Session.Character.GenerateIdentity());
+            if (shutdownAllPacket != null)
+            {
+                if (!string.IsNullOrEmpty(shutdownAllPacket.WorldGroup))
+                {
+                    CommunicationServiceClient.Instance.Shutdown(shutdownAllPacket.WorldGroup);
+                }
+                else
+                {
+                    CommunicationServiceClient.Instance.Shutdown(ServerManager.Instance.ServerGroup);
+                }
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(ShutdownAllPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1852,7 +1815,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 10));
+                Session.SendPacket(Session.Character.GenerateSay(SpeedPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1880,6 +1843,10 @@ namespace OpenNos.Handler
             {
                 EventHelper.Instance.GenerateEvent(eventPacket.EventType);
             }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(EventPacket.ReturnHelp(), 10));
+            }
         }
 
         /// <summary>
@@ -1898,7 +1865,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("SERVER_WORKING_TIME")}: {(Process.GetCurrentProcess().StartTime - DateTime.Now).ToString(@"d\ hh\:mm\:ss")} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("MEMORY")}: {GC.GetTotalMemory(true) / (1024 * 1024)}MB ", 13));
 
-            foreach (string message in ServerCommunicationClient.Instance.HubProxy.Invoke<IEnumerable<string>>("RetrieveServerStatistics").Result)
+            foreach (string message in CommunicationServiceClient.Instance.RetrieveServerStatistics())
             {
                 Session.SendPacket(Session.Character.GenerateSay(message, 13));
             }
@@ -1915,18 +1882,13 @@ namespace OpenNos.Handler
             {
                 if (Session.IsOnMap && Session.HasCurrentMapInstance)
                 {
-                    Random random = new Random();
-
-                    short vnum = summonPacket.NpcMonsterVNum;
-                    byte amount = summonPacket.Amount;
-                    bool isMoving = summonPacket.IsMoving;
-
-                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(vnum);
+                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(summonPacket.NpcMonsterVNum);
                     if (npcmonster == null)
                     {
                         return;
                     }
-                    for (int i = 0; i < amount; i++)
+                    Random random = new Random();
+                    for (int i = 0; i < summonPacket.Amount; i++)
                     {
                         List<MapCell> possibilities = new List<MapCell>();
                         for (short x = -4; x < 5; x++)
@@ -1936,6 +1898,7 @@ namespace OpenNos.Handler
                                 possibilities.Add(new MapCell { X = x, Y = y });
                             }
                         }
+                        // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
                         foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                         {
                             short mapx = (short)(Session.Character.PositionX + possibilitie.X);
@@ -1948,7 +1911,17 @@ namespace OpenNos.Handler
 
                         if (Session.HasCurrentMapInstance)
                         {
-                            MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstance.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId(), ShouldRespawn = false };
+                            MapMonster monster = new MapMonster
+                            {
+                                MonsterVNum = summonPacket.NpcMonsterVNum,
+                                MapY = Session.Character.PositionY,
+                                MapX = Session.Character.PositionX,
+                                MapId = Session.Character.MapInstance.Map.MapId,
+                                Position = (byte)Session.Character.Direction,
+                                IsMoving = summonPacket.IsMoving,
+                                MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId(),
+                                ShouldRespawn = false
+                            };
                             monster.Initialize(Session.CurrentMapInstance);
                             Session.CurrentMapInstance.AddMonster(monster);
                             Session.CurrentMapInstance.Broadcast(monster.GenerateIn());
@@ -1958,33 +1931,29 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(SummonPacket.ReturnHelp(), 10));
             }
         }
 
         /// <summary>
         /// $SummonNPC Command
         /// </summary>
-        /// <param name="summonPacket"></param>
-        public void SummonNPC(SummonNPCPacket summonPacket)
+        /// <param name="summonNPCPacket"></param>
+        public void SummonNPC(SummonNPCPacket summonNPCPacket)
         {
+            // TODO: Fix it, doesn't work!
             Logger.Debug("SummonNPC Command", Session.GenerateIdentity());
-            if (summonPacket != null)
+            if (summonNPCPacket != null)
             {
                 if (Session.IsOnMap && Session.HasCurrentMapInstance)
                 {
-                    Random random = new Random();
-
-                    short vnum = summonPacket.NpcMonsterVNum;
-                    byte amount = summonPacket.Amount;
-                    bool isMoving = summonPacket.IsMoving;
-
-                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(vnum);
+                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(summonNPCPacket.NpcMonsterVNum);
                     if (npcmonster == null)
                     {
                         return;
                     }
-                    for (int i = 0; i < amount; i++)
+                    Random random = new Random();
+                    for (int i = 0; i < summonNPCPacket.Amount; i++)
                     {
                         List<MapCell> possibilities = new List<MapCell>();
                         for (short x = -4; x < 5; x++)
@@ -1994,6 +1963,7 @@ namespace OpenNos.Handler
                                 possibilities.Add(new MapCell { X = x, Y = y });
                             }
                         }
+                        // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
                         foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                         {
                             short mapx = (short)(Session.Character.PositionX + possibilitie.X);
@@ -2003,10 +1973,18 @@ namespace OpenNos.Handler
                                 break;
                             }
                         }
-
                         if (Session.HasCurrentMapInstance)
                         {
-                            MapNpc monster = new MapNpc { NpcVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstance.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapNpcId = Session.CurrentMapInstance.GetNextMonsterId() };
+                            MapNpc monster = new MapNpc
+                            {
+                                NpcVNum = summonNPCPacket.NpcMonsterVNum,
+                                MapY = Session.Character.PositionY,
+                                MapX = Session.Character.PositionX,
+                                MapId = Session.Character.MapInstance.Map.MapId,
+                                Position = (byte)Session.Character.Direction,
+                                IsMoving = summonNPCPacket.IsMoving,
+                                MapNpcId = Session.CurrentMapInstance.GetNextMonsterId()
+                            };
                             monster.Initialize(Session.CurrentMapInstance);
                             Session.CurrentMapInstance.AddNPC(monster);
                             Session.CurrentMapInstance.Broadcast(monster.GenerateIn());
@@ -2016,7 +1994,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$SummonNPC VNUM AMOUNT MOVE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(SummonNPCPacket.ReturnHelp(), 10));
             }
         }
 
@@ -2037,8 +2015,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                short mapId;
-                if (short.TryParse(teleportPacket.Data, out mapId))
+                if (short.TryParse(teleportPacket.Data, out short mapId))
                 {
                     ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, teleportPacket.X, teleportPacket.Y);
                 }
@@ -2066,8 +2043,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Teleport MAP X Y", 10));
-                Session.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(TeleportPacket.ReturnHelp(), 10));
             }
         }
 
@@ -2081,15 +2057,12 @@ namespace OpenNos.Handler
             Random random = new Random();
             if (teleportToMePacket != null)
             {
-                string name = teleportToMePacket.CharacterName;
-
-                if (name == "*")
+                if (teleportToMePacket.CharacterName == "*")
                 {
-                    foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId))
+                    Parallel.ForEach(ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId), session =>
                     {
                         // clear any shop or trade on target character
                         session.Character.Dispose();
-
                         if (!session.Character.IsChangingMapInstance && Session.HasCurrentMapInstance)
                         {
                             List<MapCell> possibilities = new List<MapCell>();
@@ -2121,17 +2094,16 @@ namespace OpenNos.Handler
                                 ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.MapInstanceId, mapXPossibility, mapYPossibility);
                             }
                         }
-                    }
+                    });
                 }
                 else
                 {
-                    ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(name);
+                    ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(teleportToMePacket.CharacterName);
 
                     if (targetSession != null && !targetSession.Character.IsChangingMapInstance)
                     {
                         // clear any shop or trade on target character
                         targetSession.Character.Dispose();
-
                         targetSession.Character.IsSitting = false;
                         ServerManager.Instance.ChangeMapInstance(targetSession.Character.CharacterId, Session.Character.MapInstanceId, (short)(Session.Character.PositionX + 1), (short)(Session.Character.PositionY + 1));
                     }
@@ -2143,7 +2115,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(TeleportToMePacket.ReturnHelp(), 10));
             }
         }
 
@@ -2179,7 +2151,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Unban CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(UnbanPacket.ReturnHelp(), 10));
             }
         }
 
@@ -2231,7 +2203,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(UnmutePacket.ReturnHelp(), 10));
             }
         }
 
@@ -2244,7 +2216,7 @@ namespace OpenNos.Handler
             Logger.Debug("Upgrade Command", Session.Character.GenerateIdentity());
             if (upgradePacket != null)
             {
-                if (upgradePacket.Slot > -1)
+                if (upgradePacket.Slot >= 0)
                 {
                     WearableInstance wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(upgradePacket.Slot, 0);
                     wearableInstance?.UpgradeItem(Session, upgradePacket.Mode, upgradePacket.Protection, true);
@@ -2252,99 +2224,71 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 10));
+                Session.SendPacket(Session.Character.GenerateSay(UpgradeCommandPacket.ReturnHelp(), 10));
             }
         }
 
         /// <summary>
-        /// $Inventory Command
+        /// $Warn Command
         /// </summary>
-        /// <param name="inventoryPreviewPacket"></param>
-        public void ViewInventory(InventoryPreviewPacket inventoryPreviewPacket)
+        /// <param name="warningPacket"></param>
+        public void Warn(WarningPacket warningPacket)
         {
-            var player = Session;
-            if (inventoryPreviewPacket != null)
+            Logger.Debug(warningPacket.ToString(), Session.Character.GenerateIdentity());
+            if (warningPacket != null)
             {
-                if (ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name) != null)
+                string characterName = warningPacket.CharacterName;
+                CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
+                if (character != null)
                 {
-                    player = ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name);
+                    ClientSession session = ServerManager.Instance.GetSessionByCharacterName(characterName);
+                    if (session != null)
+                    {
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("WARNING"), warningPacket.Reason)));
+                    }
+                    PenaltyLogDTO log = new PenaltyLogDTO
+                    {
+                        AccountId = character.AccountId,
+                        Reason = warningPacket.Reason,
+                        Penalty = PenaltyType.Warning,
+                        DateStart = DateTime.Now,
+                        DateEnd = DateTime.Now,
+                        AdminName = Session.Character.Name
+                    };
+                    Session.Character.InsertOrUpdatePenalty(log);
+                    int penaltyCount = DAOFactory.PenaltyLogDAO.LoadByAccount(character.AccountId).Count(p => p.Penalty == PenaltyType.Warning);
+                    switch (penaltyCount)
+                    {
+                        case 2:
+                            MuteMethod(characterName, "Auto-Warning mute: 2 strikes", 30);
+                            break;
+
+                        case 3:
+                            MuteMethod(characterName, "Auto-Warning mute: 3 strikes", 60);
+                            break;
+
+                        case 4:
+                            MuteMethod(characterName, "Auto-Warning mute: 4 strikes", 720);
+                            break;
+
+                        case 5:
+                            MuteMethod(characterName, "Auto-Warning mute: 5 strikes", 1440);
+                            break;
+
+                        case 6:
+                            MuteMethod(characterName, "You've been THUNDERSTRUCK", 6969); // imagined number as for I = √(-1), complex z = a + bi
+                            break;
+                    }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                 }
             }
-            string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7";
-
-            // inv 3 used for miniland objects
-            if (player.Character.Inventory == null) return;
-            var listItems = player.Character.Inventory.GetAllItems();
-            foreach (ItemInstance inv in listItems)
+            else
             {
-                switch (inv.Type)
-                {
-                    case InventoryType.Equipment:
-                        if (inv.Item.EquipmentSlot == EquipmentType.Sp)
-                        {
-                            SpecialistInstance specialistInstance = inv as SpecialistInstance;
-                            if (specialistInstance != null)
-                            {
-                                inv0 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
-                            }
-                        }
-                        else
-                        {
-                            WearableInstance wearableInstance = inv as WearableInstance;
-                            if (wearableInstance != null)
-                            {
-                                inv0 +=
-                                    $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
-                            }
-                        }
-                        break;
-
-                    case InventoryType.Main:
-                        inv1 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                        break;
-
-                    case InventoryType.Etc:
-                        inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
-                        break;
-
-                    case InventoryType.Miniland:
-                        inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
-                        break;
-
-                    case InventoryType.Specialist:
-                        SpecialistInstance specialist = inv as SpecialistInstance;
-                        if (specialist != null)
-                        {
-                            inv6 +=
-                                $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
-                        }
-                        break;
-
-                    case InventoryType.Costume:
-                        WearableInstance costumeInstance = inv as WearableInstance;
-                        if (costumeInstance != null)
-                        {
-                            inv7 +=
-                                $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
-                        }
-                        break;
-
-                    case InventoryType.Wear:
-                        break;
-
-                    case InventoryType.Bazaar:
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                Session.SendPacket(Session.Character.GenerateSay(WarningPacket.ReturnHelp(), 10));
             }
-            Session.SendPacket(inv0);
-            Session.SendPacket(inv1);
-            Session.SendPacket(inv2);
-            Session.SendPacket(inv6);
-            Session.SendPacket(inv7);
         }
 
         /// <summary>
@@ -2372,7 +2316,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 10));
+                Session.SendPacket(Session.Character.GenerateSay(WigColorPacket.ReturnHelp(), 10));
             }
         }
 
@@ -2398,7 +2342,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$XpRate RATE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(XpRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -2411,7 +2355,65 @@ namespace OpenNos.Handler
             Logger.Debug("Zoom Command", Session.Character.GenerateIdentity());
             Session.SendPacket(zoomPacket != null
                 ? UserInterfaceHelper.Instance.GenerateGuri(15, zoomPacket.Value, Session.Character.CharacterId)
-                : Session.Character.GenerateSay("$Zoom VALUE", 10));
+                : Session.Character.GenerateSay(ZoomPacket.ReturnHelp(), 10));
+        }
+
+        /// <summary>
+        /// private AddMate method
+        /// </summary>
+        /// <param name="vnum"></param>
+        /// <param name="level"></param>
+        /// <param name="mateType"></param>
+        private void AddMate(short vnum, byte level, MateType mateType)
+        {
+            NpcMonster mateNpc = ServerManager.Instance.GetNpc(vnum);
+            if (Session.CurrentMapInstance == Session.Character.Miniland && mateNpc != null)
+            {
+                if (level == 0)
+                {
+                    level = 1;
+                }
+                Mate mate = new Mate(Session.Character, mateNpc, level, mateType);
+                Session.Character.AddPet(mate);
+            }
+            else
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_MINILAND"), 0));
+            }
+        }
+
+        /// <summary>
+        /// private mute method
+        /// </summary>
+        /// <param name="characterName"></param>
+        /// <param name="reason"></param>
+        /// <param name="duration"></param>
+        private void MuteMethod(string characterName, string reason, int duration)
+        {
+            CharacterDTO characterToMute = DAOFactory.CharacterDAO.LoadByName(characterName);
+            if (characterToMute != null)
+            {
+                ClientSession session = ServerManager.Instance.GetSessionByCharacterName(characterName);
+                if (session != null && !session.Character.IsMuted())
+                {
+                    session?.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
+                }
+                PenaltyLogDTO log = new PenaltyLogDTO
+                {
+                    AccountId = characterToMute.AccountId,
+                    Reason = reason,
+                    Penalty = PenaltyType.Muted,
+                    DateStart = DateTime.Now,
+                    DateEnd = DateTime.Now.AddMinutes(duration),
+                    AdminName = Session.Character.Name
+                };
+                Session.Character.InsertOrUpdatePenalty(log);
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+            }
         }
 
         /// <summary>
@@ -2440,90 +2442,39 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Fraction: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
             Session.SendPacket(Session.Character.GenerateSay("----- --------- -----", 13));
-            AccountDTO acc = DAOFactory.AccountDAO.LoadById(character.AccountId);
-            if (acc != null)
+            AccountDTO account = DAOFactory.AccountDAO.LoadById(character.AccountId);
+            if (account != null)
             {
                 Session.SendPacket(Session.Character.GenerateSay("----- ACCOUNT -----", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Id: {acc.AccountId}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Name: {acc.Name}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Authority: {acc.Authority}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"RegistrationIP: {acc.RegistrationIP}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Email: {acc.Email}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Id: {account.AccountId}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Name: {account.Name}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Authority: {account.Authority}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"RegistrationIP: {account.RegistrationIP}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Email: {account.Email}", 13));
                 Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
-                IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => s.AccountId == acc.AccountId).ToList();
+                IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => s.AccountId == account.AccountId).ToList();
                 PenaltyLogDTO penalty = penaltyLogs.LastOrDefault(s => s.DateEnd > DateTime.Now);
+                Session.SendPacket(Session.Character.GenerateSay("----- PENALTY -----", 13));
                 if (penalty != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateSay("----- PENALTY -----", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"Type: {penalty.Penalty}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"AdminName: {penalty.AdminName}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"Reason: {penalty.Reason}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"DateStart: {penalty.DateStart}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"DateEnd: {penalty.DateEnd}", 13));
-                    Session.SendPacket(Session.Character.GenerateSay($"Bans: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Banned)}", 13));
-                    Session.SendPacket(Session.Character.GenerateSay($"Mutes: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Muted)}", 13));
-                    Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
                 }
+                Session.SendPacket(Session.Character.GenerateSay($"Bans: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Banned)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Mutes: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Muted)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Warnings: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Warning)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
             }
-            var playerSession = ServerManager.Instance.GetSessionByCharacterName(character.Name);
-            if (playerSession == null) return;
-            Session.SendPacket(Session.Character.GenerateSay("----- INFORMATIONS -----", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"ACTUAL IP : {playerSession.IpAddress}", 13));
-            Session.SendPacket(Session.Character.GenerateSay("-------------------", 13));
-        }
-
-        private async void ShutdownTask()
-        {
-            string message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
-            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 60 * 4; i++)
+            ClientSession session = ServerManager.Instance.GetSessionByCharacterName(character.Name);
+            if (session != null)
             {
-                await Task.Delay(1000);
-                if (ServerManager.Instance.ShutdownStop)
-                {
-                    ServerManager.Instance.ShutdownStop = false;
-                    return;
-                }
+                Session.SendPacket(Session.Character.GenerateSay("----- SESSION -----", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Current IP: {session.IpAddress}", 13));
+                Session.SendPacket(Session.Character.GenerateSay("----- ------------ -----", 13));
             }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
-            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 30; i++)
-            {
-                await Task.Delay(1000);
-                if (ServerManager.Instance.ShutdownStop)
-                {
-                    ServerManager.Instance.ShutdownStop = false;
-                    return;
-                }
-            }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
-            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 30; i++)
-            {
-                await Task.Delay(1000);
-                if (ServerManager.Instance.ShutdownStop)
-                {
-                    ServerManager.Instance.ShutdownStop = false;
-                    return;
-                }
-            }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
-            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 10; i++)
-            {
-                await Task.Delay(1000);
-                if (ServerManager.Instance.ShutdownStop)
-                {
-                    ServerManager.Instance.ShutdownStop = false;
-                    return;
-                }
-            }
-            ServerManager.Instance.SaveAll();
-            Environment.Exit(0);
         }
 
         #endregion

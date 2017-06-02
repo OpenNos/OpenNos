@@ -15,16 +15,15 @@
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.GameObject.Buff.BCard;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
-using OpenNos.Pathfinding;
+using OpenNos.PathFinder;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using Type = OpenNos.GameObject.Buff.BCard.Type;
+using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.GameObject
 {
@@ -81,7 +80,7 @@ namespace OpenNos.GameObject
 
         public List<EventContainer> OnDeathEvents { get; set; }
 
-        public List<GridPos> Path { get; set; }
+        public List<Node> Path { get; set; }
 
         public bool? ShouldRespawn { get; set; }
 
@@ -113,7 +112,7 @@ namespace OpenNos.GameObject
         {
             if (IsAlive && !IsDisabled)
             {
-                return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)((float)CurrentHp / (float)Monster.MaxHP * 100)} {(int)((float)CurrentMp / (float)Monster.MaxMP * 100)} 0 0 0 -1 {(byte)InRespawnType.TeleportationEffect} 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
+                return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)((float)CurrentHp / (float)Monster.MaxHP * 100)} {(int)((float)CurrentMp / (float)Monster.MaxMP * 100)} 0 0 0 -1 {(Monster.NoAggresiveIcon ? (byte)InRespawnType.NoEffect : (byte)InRespawnType.TeleportationEffect)} 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
             }
             return string.Empty;
         }
@@ -141,7 +140,7 @@ namespace OpenNos.GameObject
             FirstY = MapY;
             LastSkill = LastMove = LastEffect = DateTime.Now;
             Target = -1;
-            Path = new List<GridPos>();
+            Path = new List<Node>();
             IsAlive = true;
             ShouldRespawn = ShouldRespawn ?? true;
             Monster = ServerManager.Instance.GetNpc(MonsterVNum);
@@ -192,7 +191,6 @@ namespace OpenNos.GameObject
             {
                 EventHelper.Instance.RunEvent(e);
             });
-            OnDeathEvents.RemoveAll(s => s != null);
         }
 
         public void StartLife()
@@ -228,7 +226,6 @@ namespace OpenNos.GameObject
                     {
                         Target = session.Character.CharacterId;
                     }
-                    Path.Clear();
                 }
             }
         }
@@ -245,7 +242,6 @@ namespace OpenNos.GameObject
                     {
                         character.Session.SendPacket(GenerateEff(5000));
                     }
-                    Path.Clear();
                 }
             }
         }
@@ -259,11 +255,8 @@ namespace OpenNos.GameObject
             {
                 Path.Clear();
                 Target = -1;
-
-                if (!Path.Any() && Target == -1)
-                {
-                    Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
-                }
+                //return to origin
+                Path = BestFirstSearch.FindPath(new Node { X = MapX, Y = MapY }, new Node { X = FirstX, Y = FirstY }, MapInstance.Map.Grid);
             }
         }
 
@@ -273,46 +266,40 @@ namespace OpenNos.GameObject
         /// <param name="targetSession">The TargetSession to follow</param>
         private void FollowTarget(ClientSession targetSession)
         {
-            int distance = 0;
-
-            if (targetSession != null)
-            {
-                distance = Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = targetSession.Character.PositionX, Y = targetSession.Character.PositionY });
-            }
             if (IsMoving)
             {
                 short maxDistance = 22;
+                int distance = 0;
                 if (!Path.Any() && targetSession != null)
                 {
                     short xoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                     short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                     try
                     {
-                        Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(targetSession.Character.PositionX + xoffset), Y = (short)(targetSession.Character.PositionY + yoffset) });
+                        List<Node> list = BestFirstSearch.TracePath(new Node() { X = MapX, Y = MapY }, targetSession.Character.BrushFire, targetSession.Character.MapInstance.Map.Grid);
+                        Path = list;
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log.Error($"Pathfinding using JPSPlus failed. Map: {MapId} StartX: {MapX} StartY: {MapY} TargetX: {(short)(targetSession.Character.PositionX + xoffset)} TargetY: {(short)(targetSession.Character.PositionY + yoffset)}", ex);
+                        Logger.Log.Error($"Pathfinding using Pathfinder failed. Map: {MapId} StartX: {MapX} StartY: {MapY} TargetX: {(short)(targetSession.Character.PositionX + xoffset)} TargetY: {(short)(targetSession.Character.PositionY + yoffset)}", ex);
                         RemoveTarget();
                     }
                 }
                 if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
                 {
                     int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                    short mapX = (short)Path.ElementAt(maxindex - 1).X;
-                    short mapY = (short)Path.ElementAt(maxindex - 1).Y;
+                    short mapX = Path.ElementAt(maxindex - 1).X;
+                    short mapY = Path.ElementAt(maxindex - 1).Y;
                     double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Monster.Speed;
                     MapInstance.Broadcast(new BroadcastPacket(null, $"mv 3 {MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                     LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
-                    Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000)))
-                     .Subscribe(
-                         x =>
-                         {
-                             MapX = mapX;
-                             MapY = mapY;
-                         });
-
+                    Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000))).Subscribe(x =>
+                    {
+                        MapX = mapX;
+                        MapY = mapY;
+                    });
+                    distance = (int)Path.First().F;
                     Path.RemoveRange(0, maxindex);
                 }
 
@@ -341,9 +328,9 @@ namespace OpenNos.GameObject
                 return 0;
             }
 
-            int playerDefense = targetCharacter.Buff.Get(Type.Defense, SubType.Increase, false)[0];
-            byte playerDefenseUpgrade = (byte)targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseLevel, false)[0];
-            int playerDodge = targetCharacter.Buff.Get(Type.Dodge, SubType.Increase, false)[0];
+            int playerDefense = targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.DefenceLevelDecreased, false)[0];
+            byte playerDefenseUpgrade = (byte)targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.DefenceLevelIncreased, false)[0];
+            int playerDodge = targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.DefenceLevelIncreased, false)[0];
 
             WearableInstance playerArmor = targetCharacter.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
             if (playerArmor != null)
@@ -375,30 +362,30 @@ namespace OpenNos.GameObject
             {
                 case 0:
                     playerDefense += targetCharacter.Defence
-                        + targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseMelee, false)[0];
+                        + targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.MeleeDecreased, false)[0];
                     playerDodge += targetCharacter.DefenceRate
-                        + targetCharacter.Buff.Get(Type.Dodge, SubType.IncreaseDistance, false)[0];
-                    boostpercentage = targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseMeleePercentage, false)[0];
+                        + targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.RangedDecreased, false)[0];
+                    boostpercentage = targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.MeleeDecreased, false)[0];
                     playerDefense = (int)(playerDefense * (1 + boostpercentage / 100D));
-                    boostpercentage = targetCharacter.Buff.Get(Type.Dodge, SubType.IncreaseMeleePercentage, false)[0];
+                    boostpercentage = targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.MagicalDecreased, false)[0];
                     playerDodge = (int)(playerDodge * (1 + boostpercentage / 100D));
                     break;
 
                 case 1:
                     playerDefense += targetCharacter.DistanceDefence
-                        + targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseDistance, false)[0];
+                        + targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.RangedIncreased, false)[0];
                     playerDodge += targetCharacter.DistanceDefenceRate
-                        + targetCharacter.Buff.Get(Type.Dodge, SubType.IncreaseDistance, false)[0];
-                    boostpercentage = targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseDistancePercentage, false)[0];
+                        + targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.RangedIncreased, false)[0];
+                    boostpercentage = targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.RangedIncreased, false)[0];
                     playerDefense = (int)(playerDefense * (1 + boostpercentage / 100D));
-                    boostpercentage = targetCharacter.Buff.Get(Type.Dodge, SubType.IncreaseDistancePercentage, false)[0];
+                    boostpercentage = targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.RangedIncreased, false)[0];
                     playerDodge = (int)(playerDodge * (1 + boostpercentage / 100D));
                     break;
 
                 case 2:
                     playerDefense += targetCharacter.MagicalDefence
-                        + targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseMagic, false)[0];
-                    boostpercentage = targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseMagicPercentage, false)[0];
+                        + targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.MagicalDecreased, false)[0];
+                    boostpercentage = targetCharacter.GetBuff(CardType.Defence,(byte)AdditionalTypes.Defence.MagicalDecreased, false)[0];
                     playerDefense = (int)(playerDefense * (1 + boostpercentage / 100D));
                     break;
 
@@ -410,10 +397,10 @@ namespace OpenNos.GameObject
 
             #region Basic Damage Data Calculation
 
-            mainCritChance += targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseCriticalChance, false)[0];
-            mainCritChance -= targetCharacter.Buff.Get(Type.Defense, SubType.DecreaseCriticalChance, false)[0];
-            mainCritHit += targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseCriticalDamage, false)[0];
-            mainCritHit -= targetCharacter.Buff.Get(Type.Defense, SubType.DecreaseCriticalDamage, false)[0];
+            mainCritChance += targetCharacter.GetBuff(CardType.Critical,(byte)AdditionalTypes.Critical.ReceivingIncreased, false)[0];
+            mainCritChance -= targetCharacter.GetBuff(CardType.Critical,(byte)AdditionalTypes.Critical.ReceivingDecreased, false)[0];
+            mainCritHit += targetCharacter.GetBuff(CardType.Critical,(byte)AdditionalTypes.Critical.DamageFromCriticalIncreased, false)[0];
+            mainCritHit -= targetCharacter.GetBuff(CardType.Critical,(byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, false)[0];
             mainUpgrade -= playerDefenseUpgrade;
             if (mainUpgrade < -10)
             {
@@ -459,8 +446,8 @@ namespace OpenNos.GameObject
 
             if (skill != null)
             {
-                baseDamage += skill.Damage / 4;
-                elementalDamage += skill.ElementalDamage / 4;
+                // baseDamage += skill.Damage / 4;  it's a bcard need a skillbcardload
+                // elementalDamage += skill.ElementalDamage / 4;  it's a bcard need a skillbcardload
             }
 
             switch (mainUpgrade)
@@ -547,13 +534,21 @@ namespace OpenNos.GameObject
                 case 10:
                     baseDamage += baseDamage * 2;
                     break;
+
+                // sush don't tell ciapa
+                default:
+                    if (mainUpgrade > 10)
+                    {
+                        baseDamage += baseDamage * (mainUpgrade / 5);
+                    }
+                    break;
             }
 
             #endregion
 
             #region Elementary Damage
 
-            int bonusrez = targetCharacter.Buff.Get(Type.Resistance, SubType.Increase, false)[0];
+            int bonusrez = targetCharacter.GetBuff(CardType.ElementResistance,(byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
 
             #region Calculate Elemental Boost + Rate
 
@@ -565,7 +560,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1:
-                    bonusrez += targetCharacter.Buff.Get(Type.Resistance, SubType.IncreaseFire, false)[0];
+                    bonusrez += targetCharacter.GetBuff(CardType.ElementResistance,(byte)AdditionalTypes.ElementResistance.FireIncreased, false)[0];
                     playerRessistance = targetCharacter.FireResistance;
                     switch (targetCharacter.Element)
                     {
@@ -592,7 +587,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 2:
-                    bonusrez += targetCharacter.Buff.Get(Type.Resistance, SubType.IncreaseWater, false)[0];
+                    bonusrez += targetCharacter.GetBuff(CardType.ElementResistance,(byte)AdditionalTypes.ElementResistance.WaterIncreased, false)[0];
                     playerRessistance = targetCharacter.WaterResistance;
                     switch (targetCharacter.Element)
                     {
@@ -619,7 +614,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 3:
-                    bonusrez += targetCharacter.Buff.Get(Type.Resistance, SubType.IncreaseLight, false)[0];
+                    bonusrez += targetCharacter.GetBuff(CardType.ElementResistance,(byte)AdditionalTypes.ElementResistance.LightIncreased, false)[0];
                     playerRessistance = targetCharacter.LightResistance;
                     switch (targetCharacter.Element)
                     {
@@ -646,7 +641,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 4:
-                    bonusrez += targetCharacter.Buff.Get(Type.Resistance, SubType.IncreaseShadow, false)[0];
+                    bonusrez += targetCharacter.GetBuff(CardType.ElementResistance,(byte)AdditionalTypes.ElementResistance.DarkIncreased, false)[0];
                     playerRessistance = targetCharacter.DarkResistance;
                     switch (targetCharacter.Element)
                     {
@@ -799,8 +794,7 @@ namespace OpenNos.GameObject
             }
 
             // handle hit queue
-            HitRequest hitRequest;
-            while (HitQueue.TryDequeue(out hitRequest))
+            while (HitQueue.TryDequeue(out HitRequest hitRequest))
             {
                 if (IsAlive && hitRequest.Session.Character.Hp > 0)
                 {
@@ -836,7 +830,7 @@ namespace OpenNos.GameObject
                             }
                             if (hitRequest.ShowTargetHitAnimation)
                             {
-                                MapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} 0 0 {(IsAlive ? 1 : 0)} {(int)((double)hitRequest.Session.Character.Hp / hitRequest.Session.Character.HPLoad()) * 100} 0 0 {hitRequest.Skill.SkillType - 1}");
+                                MapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} 0 0 {(IsAlive ? 1 : 0)} {(int)((float)CurrentHp / (float)Monster.MaxHP * 100)} 0 0 {hitRequest.Skill.SkillType - 1}");
                             }
                             MapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)CurrentHp / (float)Monster.MaxHP * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
                             break;
@@ -921,13 +915,29 @@ namespace OpenNos.GameObject
                     if (!targetSession.Character.InvisibleGm && !targetSession.Character.Invisible && targetSession.Character.Hp > 0)
                     {
                         if (npcMonsterSkill != null && CurrentMp >= npcMonsterSkill.Skill.MpCost &&
-                             Map.GetDistance(new MapCell { X = MapX, Y = MapY },
-                                 new MapCell { X = targetSession.Character.PositionX, Y = targetSession.Character.PositionY }) < npcMonsterSkill.Skill.Range)
+                             Map.GetDistance(new MapCell
+                             {
+                                 X = MapX,
+                                 Y = MapY
+                             },
+                                 new MapCell
+                                 {
+                                     X = targetSession.Character.PositionX,
+                                     Y = targetSession.Character.PositionY
+                                 }) < npcMonsterSkill.Skill.Range)
                         {
                             TargetHit(targetSession, npcMonsterSkill);
                         }
-                        else if (Map.GetDistance(new MapCell { X = MapX, Y = MapY },
-                                    new MapCell { X = targetSession.Character.PositionX, Y = targetSession.Character.PositionY }) <= Monster.BasicRange)
+                        else if (Map.GetDistance(new MapCell
+                        {
+                            X = MapX,
+                            Y = MapY
+                        },
+                                    new MapCell
+                                    {
+                                        X = targetSession.Character.PositionX,
+                                        Y = targetSession.Character.PositionY
+                                    }) <= Monster.BasicRange)
                         {
                             TargetHit(targetSession, npcMonsterSkill);
                         }
@@ -982,7 +992,15 @@ namespace OpenNos.GameObject
                     short mapX = FirstX, mapY = FirstY;
                     if (MapInstance.Map?.GetFreePosition(ref mapX, ref mapY, (byte)ServerManager.Instance.RandomNumber(0, 2), (byte)_random.Next(0, 2)) ?? false)
                     {
-                        int distance = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY });
+                        int distance = Map.GetDistance(new MapCell
+                        {
+                            X = mapX,
+                            Y = mapY
+                        }, new MapCell
+                        {
+                            X = MapX,
+                            Y = MapY
+                        });
 
                         double value = 1000d * distance / (2 * Monster.Speed);
                         Observable.Timer(TimeSpan.FromMilliseconds(value))
@@ -1012,7 +1030,7 @@ namespace OpenNos.GameObject
                 CurrentMp = Monster.MaxMP;
                 MapX = FirstX;
                 MapY = FirstY;
-                Path = new List<GridPos>();
+                Path = new List<Node>();
                 MapInstance.Broadcast(GenerateIn());
             }
         }
@@ -1059,12 +1077,14 @@ namespace OpenNos.GameObject
                     castTime = npcMonsterSkill.Skill.CastTime * 100;
                 }
                 Observable.Timer(TimeSpan.FromMilliseconds(castTime))
-                                       .Subscribe(
-                                       o =>
-                                       {
-                                           if (targetSession.Character.Hp > 0)
-                                               TargetHit2(targetSession, npcMonsterSkill, damage, hitmode);
-                                       });
+                    .Subscribe(
+                    o =>
+                    {
+                        if (targetSession.Character.Hp > 0)
+                        {
+                            TargetHit2(targetSession, npcMonsterSkill, damage, hitmode);
+                        }
+                    });
             }
         }
 

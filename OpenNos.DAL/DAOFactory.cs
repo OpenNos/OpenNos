@@ -28,6 +28,7 @@ namespace OpenNos.DAL
         private static IAccountDAO _accountDAO;
         private static IBazaarItemDAO _bazaarItemDAO;
         private static ICardDAO _cardDAO;
+        private static IBCardDAO _bcardDAO;
         private static ICellonOptionDAO _cellonoptionDAO;
         private static ICharacterDAO _characterDAO;
         private static ICharacterRelationDAO _characterRelationDAO;
@@ -38,7 +39,6 @@ namespace OpenNos.DAL
         private static IFamilyDAO _familyDAO;
         private static IFamilyLogDAO _familylogDAO;
         private static IGeneralLogDAO _generallogDAO;
-        private static IItemCardDAO _itemCardDAO;
         private static IItemDAO _itemDAO;
         private static IItemInstanceDAO _iteminstanceDAO;
         private static IMailDAO _mailDAO;
@@ -62,9 +62,9 @@ namespace OpenNos.DAL
         private static IShopDAO _shopDAO;
         private static IShopItemDAO _shopitemDAO;
         private static IShopSkillDAO _shopskillDAO;
-        private static ISkillCardDAO _skillCardDAO;
         private static ISkillDAO _skillDAO;
         private static IStaticBonusDAO _staticBonusDAO;
+        private static IStaticBuffDAO _staticBuffDAO;
         private static ITeleporterDAO _teleporterDAO;
 
         #endregion
@@ -76,11 +76,6 @@ namespace OpenNos.DAL
             try
             {
                 _useMock = Convert.ToBoolean(ConfigurationManager.AppSettings["UseMock"]);
-
-                if (!_useMock)
-                {
-                    //MigrationHelper.GenerateSQLScript();
-                }
             }
             catch (Exception ex)
             {
@@ -352,25 +347,6 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IItemCardDAO ItemCardDAO
-        {
-            get
-            {
-                if (_itemCardDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _itemCardDAO = new ItemCardDAO();
-                    }
-                    else
-                    {
-                        _itemCardDAO = new EF.ItemCardDAO();
-                    }
-                }
-
-                return _itemCardDAO;
-            }
-        }
 
         public static IItemDAO ItemDAO
         {
@@ -812,26 +788,6 @@ namespace OpenNos.DAL
             }
         }
 
-        public static ISkillCardDAO SkillCardDAO
-        {
-            get
-            {
-                if (_skillCardDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _skillCardDAO = new SkillCardDAO();
-                    }
-                    else
-                    {
-                        _skillCardDAO = new EF.SkillCardDAO();
-                    }
-                }
-
-                return _skillCardDAO;
-            }
-        }
-
         public static ISkillDAO SkillDAO
         {
             get
@@ -872,6 +828,26 @@ namespace OpenNos.DAL
             }
         }
 
+        public static IStaticBuffDAO StaticBuffDAO
+        {
+            get
+            {
+                if (_staticBuffDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _staticBuffDAO = new StaticBuffDAO();
+                    }
+                    else
+                    {
+                        _staticBuffDAO = new EF.StaticBuffDAO();
+                    }
+                }
+
+                return _staticBuffDAO;
+            }
+        }
+
         public static ITeleporterDAO TeleporterDAO
         {
             get
@@ -892,7 +868,7 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IScriptedInstanceDAO TimeSpaceDAO
+        public static IScriptedInstanceDAO ScriptedInstanceDAO
         {
             get
             {
@@ -909,6 +885,26 @@ namespace OpenNos.DAL
                 }
 
                 return _scriptedinstanceDAO;
+            }
+        }
+
+        public static IBCardDAO BCardDAO
+        {
+            get
+            {
+                if (_bcardDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _bcardDAO = new BCardDAO();
+                    }
+                    else
+                    {
+                        _bcardDAO = new EF.BCardDAO();
+                    }
+                }
+
+                return _bcardDAO;
             }
         }
 
