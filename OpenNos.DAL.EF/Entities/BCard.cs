@@ -13,7 +13,6 @@
  */
 
 using System.ComponentModel.DataAnnotations;
-using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.DAL.EF
 {

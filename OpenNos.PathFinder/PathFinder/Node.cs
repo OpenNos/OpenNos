@@ -4,7 +4,7 @@ namespace OpenNos.PathFinder
 {
     public class Node : GridPos, IComparable<Node>
     {
-        private Node node;
+        #region Instantiation
 
         public Node(GridPos node)
         {
@@ -15,10 +15,13 @@ namespace OpenNos.PathFinder
 
         public Node()
         {
-
         }
 
+        #endregion
+
         #region Properties
+
+        public bool Closed { get; internal set; }
 
         public double F { get; internal set; }
 
@@ -27,8 +30,6 @@ namespace OpenNos.PathFinder
         public bool Opened { get; internal set; }
 
         public Node Parent { get; internal set; }
-
-        public bool Closed { get; internal set; }
 
         #endregion
 

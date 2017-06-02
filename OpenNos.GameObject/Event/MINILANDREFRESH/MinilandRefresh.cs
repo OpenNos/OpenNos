@@ -30,8 +30,8 @@ namespace OpenNos.GameObject.Event
             ServerManager.Instance.SaveAll();
             foreach (CharacterDTO chara in DAOFactory.CharacterDAO.LoadAll())
             {
-                GeneralLogDTO gen = DAOFactory.GeneralLogDAO.LoadByAccount(null).LastOrDefault(s => s.LogData == "MinilandRefresh" && s.LogType == "World" && s.Timestamp.Day == DateTime.Now.Day);
-                int count = DAOFactory.GeneralLogDAO.LoadByAccount(chara.AccountId).Count(s => s.LogData == "MINILAND" && s.Timestamp > DateTime.Now.AddDays(-1) && s.CharacterId == chara.CharacterId);
+                GeneralLogDTO gen = DAOFactory.GeneralLogDAO.LoadByAccount(null).LastOrDefault(s => s.LogData == "World" && s.LogType == GeneralLogType.MinilandRefresh && s.Timestamp.Day == DateTime.Now.Day);
+                int count = DAOFactory.GeneralLogDAO.LoadByAccount(chara.AccountId).Count(s => s.LogType == GeneralLogType.MinilandJoin && s.Timestamp > DateTime.Now.AddDays(-1) && s.CharacterId == chara.CharacterId);
 
                 ClientSession Session = ServerManager.Instance.GetSessionByCharacterId(chara.CharacterId);
                 if (Session != null)
@@ -50,7 +50,7 @@ namespace OpenNos.GameObject.Event
                     DAOFactory.CharacterDAO.InsertOrUpdate(ref chara2);
                 }
             }
-            DAOFactory.GeneralLogDAO.Insert(new GeneralLogDTO { LogData = "MinilandRefresh", LogType = "World", Timestamp = DateTime.Now });
+            DAOFactory.GeneralLogDAO.Insert(new GeneralLogDTO { LogData = "World", LogType = GeneralLogType.MinilandRefresh, Timestamp = DateTime.Now });
             ServerManager.Instance.StartedEvents.Remove(EventType.MINILANDREFRESHEVENT);
         }
 

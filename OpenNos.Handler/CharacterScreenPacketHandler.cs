@@ -19,6 +19,7 @@ using OpenNos.Data;
 using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.GameObject.Helpers;
 using OpenNos.Master.Library.Client;
 using System;
 using System.Collections.Generic;
@@ -151,12 +152,12 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            Session.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
+                            Session.SendPacketFormat(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("ALREADY_TAKEN")));
                         }
                     }
                     else
                     {
-                        Session.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("INVALID_CHARNAME")}");
+                        Session.SendPacketFormat(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("INVALID_CHARNAME")));
                     }
                 }
             }
@@ -193,7 +194,8 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("BAD_PASSWORD")}");
+
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BAD_PASSWORD")));
             }
         }
 
@@ -318,7 +320,7 @@ namespace OpenNos.Handler
                         character.PositionY = character.MapY;
                         character.Authority = Session.Account.Authority;
                         Session.SetCharacter(character);
-                        if (!Session.Character.GeneralLogs.Any(s => s.Timestamp == DateTime.Now && s.LogData == "World" && s.LogType == "Connection"))
+                        if (!Session.Character.GeneralLogs.Any(s => s.Timestamp == DateTime.Now && s.LogData == "World" && s.LogType == GeneralLogType.Connection))
                         {
                             Session.Character.SpAdditionPoint += Session.Character.SpPoint;
                             Session.Character.SpPoint = 10000;
@@ -348,8 +350,8 @@ namespace OpenNos.Handler
                         {
                             Session.Character.CharacterLife();
                         });
-                        Session.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Connection", Timestamp = DateTime.Now });
-                        
+                        DAOFactory.AccountDAO.WriteGeneralLog(Session.Account.AccountId, Session.IpAddress, Session.Character.CharacterId, GeneralLogType.Connection, "World");
+
                         Session.SendPacket("OK");
 
                         // Inform everyone about connected character

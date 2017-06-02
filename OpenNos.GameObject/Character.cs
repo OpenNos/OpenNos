@@ -534,7 +534,7 @@ namespace OpenNos.GameObject
                     MapInstance.Broadcast(GenerateEff(CurrentMinigame));
                     LastEffect = DateTime.Now;
                 }
-              
+
                 if (LastEffect.AddSeconds(5) <= DateTime.Now)
                 {
                     if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
@@ -2219,12 +2219,12 @@ namespace OpenNos.GameObject
 
         public string GenerateMlinfo()
         {
-            return $"mlinfo 3800 {MinilandPoint} 100 {GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day)} {GeneralLogs.Count(s => s.LogData == "Miniland")} 10 {(byte)MinilandState} {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}";
+            return $"mlinfo 3800 {MinilandPoint} 100 {GeneralLogs.Count(s => s.LogType == GeneralLogType.MinilandJoin && s.Timestamp.Day == DateTime.Now.Day)} {GeneralLogs.Count(s => s.LogType == GeneralLogType.MinilandJoin)} 10 {(byte)MinilandState} {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}";
         }
 
         public string GenerateMlinfobr()
         {
-            return $"mlinfobr 3800 {Name} {GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day)} {GeneralLogs.Count(s => s.LogData == "Miniland")} 25 {MinilandMessage.Replace(' ', '^')}";
+            return $"mlinfobr 3800 {Name} {GeneralLogs.Count(s => s.LogType == GeneralLogType.MinilandJoin && s.Timestamp.Day == DateTime.Now.Day)} {GeneralLogs.Count(s => s.LogType == GeneralLogType.MinilandJoin)} 25 {MinilandMessage.Replace(' ', '^')}";
         }
 
         public string GenerateMloMg(MinilandObject mlobj, MinigamePacket packet)
@@ -4774,7 +4774,9 @@ namespace OpenNos.GameObject
         private int GetGold(MapMonster mapMonster)
         {
             if (MapId == 2006 || MapId == 150)
+            {
                 return 0;
+            }
             int lowBaseGold = ServerManager.Instance.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
             int actMultiplier = Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
             if (Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) == true)
@@ -4929,7 +4931,7 @@ namespace OpenNos.GameObject
             {
                 case 0:
                     result = $"raid 0";
-                    Group?.Characters?.ForEach(s=> { result += $" {s.Character?.CharacterId}"; });
+                    Group?.Characters?.ForEach(s => { result += $" {s.Character?.CharacterId}"; });
                     break;
                 case 2:
                     result = $"raid 2 {(Exit ? "-1" : $"{CharacterId}")}";
@@ -4977,22 +4979,18 @@ namespace OpenNos.GameObject
                 Buff.Add(bf);
             }
             bf.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
-            Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime))
-                .Subscribe(
-                    o =>
-                    {
-                        RemoveBuff(bf.Card.CardId);
-                        if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
-                            bf.Card.TimeoutBuffChance)
-                        {
-                            AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
-                        }
-                    });
+            Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime)).Subscribe(o =>
+            {
+                RemoveBuff(bf.Card.CardId);
+                if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
+                    bf.Card.TimeoutBuffChance)
+                {
+                    AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
+                }
+            });
 
             Session.SendPacket($"vb {bf.Card.CardId} 1 {bf.RemainingTime * 10}");
-            Session.SendPacket(
-                Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name),
-                    12));
+            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 12));
         }
 
         public void AddBuff(Buff indicator)
@@ -5002,24 +5000,19 @@ namespace OpenNos.GameObject
             indicator.RemainingTime = indicator.Card.Duration;
             indicator.Start = DateTime.Now;
 
-            Session.SendPacket(
-                $"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
-            Session.SendPacket(
-                Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name),
-                    20));
+            Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
+            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 20));
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
-            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100))
-                .Subscribe(
-                    o =>
-                    {
-                        RemoveBuff(indicator.Card.CardId);
-                        if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
-                            indicator.Card.TimeoutBuffChance)
-                        {
-                            AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
-                        }
-                    });
+            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>
+            {
+                RemoveBuff(indicator.Card.CardId);
+                if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
+                    indicator.Card.TimeoutBuffChance)
+                {
+                    AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
+                }
+            });
         }
 
         private void RemoveBuff(int id)
@@ -5030,19 +5023,15 @@ namespace OpenNos.GameObject
                 if (indicator.StaticBuff)
                 {
                     Session.SendPacket($"vb {indicator.Card.CardId} 0 {indicator.Card.Duration}");
-                    Session.SendPacket(
-                        Session.Character.GenerateSay(
-                            string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 11));
                 }
                 else
                 {
                     Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
-                    Session.SendPacket(
-                        Session.Character.GenerateSay(
-                            string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
                 }
                 Buff.Remove(indicator);
-                if (indicator.Card.BCards.Any(s => s.Type == (byte)BCardType.CardType.Move))
+                if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move))
                 {
                     LastSpeedChange = DateTime.Now;
                     Session.SendPacket(GenerateCond());
@@ -5054,8 +5043,7 @@ namespace OpenNos.GameObject
         {
             lock (Buff)
             {
-                Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level < level).ToList()
-                    .ForEach(s => RemoveBuff(s.Card.CardId));
+                Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level < level).ToList().ForEach(s => RemoveBuff(s.Card.CardId));
             }
         }
 
@@ -5072,8 +5060,7 @@ namespace OpenNos.GameObject
         {
             int value1 = 0;
             int value2 = 0;
-            foreach (BCard entry in EquipmentBCards.Where(
-                s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10))))
+            foreach (BCard entry in EquipmentBCards.Where(s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10))))
             {
                 value1 += entry.FirstData;
                 value2 += entry.SecondData;
@@ -5091,12 +5078,8 @@ namespace OpenNos.GameObject
             {
                 foreach (Buff buff in Buff)
                 {
-                    // THIS ONE DOES NOT FOR STUFFS
-                    foreach (BCard entry in buff.Card.BCards.Concat(EquipmentBCards).Where(
-                        s => s.Type.Equals((byte)type)
-                             && s.SubType.Equals((byte)(subtype / 10)) &&
-                             (!s.IsDelayed || (s.IsDelayed &&
-                                               buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
+                    foreach (BCard entry in buff.Card.BCards.Concat(EquipmentBCards).Where(s => s.Type.Equals((byte)type)
+                             && s.SubType.Equals((byte)(subtype / 10)) && (!s.IsDelayed || (s.IsDelayed && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
                     {
                         value1 += entry.FirstData;
                         value2 += entry.SecondData;

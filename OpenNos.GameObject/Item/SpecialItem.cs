@@ -81,9 +81,11 @@ namespace OpenNos.GameObject
                     ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj => obj.VNum == raidSeal.ItemVNum)).GetClone();
                     if (raid != null)
                     {
-                        Group group = new Group();
-                        group.GroupType = GroupType.Team;
-                        group.Raid = raid;
+                        Group group = new Group()
+                        {
+                            GroupType = GroupType.Team,
+                            Raid = raid
+                        };
                         group.JoinGroup(session.Character.CharacterId);
                         ServerManager.Instance.AddGroup(group);
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 0));

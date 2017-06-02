@@ -165,8 +165,8 @@ namespace OpenNos.Handler
                 long complimentedCharacterId = complimentPacket.CharacterId;
                 if (Session.Character.Level >= 30)
                 {
-                    GeneralLogDTO dto = Session.Character.GeneralLogs.LastOrDefault(s => s.LogData == "World" && s.LogType == "Connection");
-                    GeneralLogDTO lastcompliment = Session.Character.GeneralLogs.LastOrDefault(s => s.LogData == "World" && s.LogType == "Compliment");
+                    GeneralLogDTO dto = Session.Character.GeneralLogs.LastOrDefault(s => s.LogData == "World" && s.LogType == GeneralLogType.Connection);
+                    GeneralLogDTO lastcompliment = Session.Character.GeneralLogs.LastOrDefault(s => s.LogData == "World" && s.LogType == GeneralLogType.Compliment);
                     if (dto != null && dto.Timestamp.AddMinutes(60) <= DateTime.Now)
                     {
                         if (lastcompliment == null || lastcompliment.Timestamp.AddDays(1) <= DateTime.Now.Date)
@@ -175,15 +175,7 @@ namespace OpenNos.Handler
                             compliment++;
                             ServerManager.Instance.SetProperty(complimentedCharacterId, nameof(Character.Compliment), compliment);
                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentedCharacterId, nameof(Character.Name))), 12));
-                            Session.Character.GeneralLogs.Add(new GeneralLogDTO
-                            {
-                                AccountId = Session.Account.AccountId,
-                                CharacterId = Session.Character.CharacterId,
-                                IpAddress = Session.IpAddress,
-                                LogData = "World",
-                                LogType = "Compliment",
-                                Timestamp = DateTime.Now
-                            });
+                            DAOFactory.AccountDAO.WriteGeneralLog(Session.Account.AccountId, Session.IpAddress, Session.Character.CharacterId, GeneralLogType.Compliment, "World");
 
                             Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, characterId: complimentedCharacterId);
                         }
@@ -1336,12 +1328,12 @@ namespace OpenNos.Handler
                                 }
                                 else
                                 {
-                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_TEAM_LEADER_CAN_START"),10));
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_TEAM_LEADER_CAN_START"), 10));
                                 }
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"),10));
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"), 10));
                             }
                             return;
                         default:
@@ -1480,7 +1472,7 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GenerateStat());
                             }
                             break;
-                        
+
                         default:
                             const int seed = 1012;
                             if (Session.Character.Inventory.CountItem(seed) < 10 && Session.Character.Level > 20)
@@ -1773,7 +1765,7 @@ namespace OpenNos.Handler
                 return;
             }
             Session.CurrentMapInstance = Session.Character.MapInstance;
-            if (ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType != "Connection") < 2)
+            if (ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType != GeneralLogType.Connection) < 2)
             {
                 Session.SendPacket("scene 40");
             }

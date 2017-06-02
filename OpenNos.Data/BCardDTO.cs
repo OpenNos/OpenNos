@@ -1,6 +1,4 @@
-﻿using static OpenNos.Domain.BCardType;
-
-namespace OpenNos.Data
+﻿namespace OpenNos.Data
 {
     public class BCardDTO : MappingBaseDTO
     {

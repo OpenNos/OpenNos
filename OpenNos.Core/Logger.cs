@@ -88,11 +88,6 @@ namespace OpenNos.Core
             Log = log;
         }
 
-        public static void InitializeLogger(object p)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
     }
 }

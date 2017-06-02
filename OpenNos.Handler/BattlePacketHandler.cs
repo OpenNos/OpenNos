@@ -274,10 +274,12 @@ namespace OpenNos.Handler
                             target.SendPacket(target.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), (short)(target.Character.Level * 50)), 11));
                         }
                         target.SendPacket(target.Character.GenerateFd());
-                        List<BuffType> bufftodisable = new List<BuffType>();
-                        bufftodisable.Add(BuffType.Bad);
-                        bufftodisable.Add(BuffType.Good);
-                        bufftodisable.Add(BuffType.Neutral);
+                        List<BuffType> bufftodisable = new List<BuffType>
+                        {
+                            BuffType.Bad,
+                            BuffType.Good,
+                            BuffType.Neutral
+                        };
                         Session.Character.DisableBuffs(bufftodisable);
                         target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateGidx(), ReceiverType.AllExceptMe);

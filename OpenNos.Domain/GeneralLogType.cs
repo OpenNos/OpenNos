@@ -14,10 +14,13 @@
 
 namespace OpenNos.Domain
 {
-    public enum GeneralLogType
+    public enum GeneralLogType : byte
     {
-        Connection,
-        Promotion,
-        Demotion
+        Connection = 0,
+        Promotion = 1,
+        Demotion = 2,
+        Compliment = 3,
+        MinilandRefresh = 4,
+        MinilandJoin = 5
     }
 }
