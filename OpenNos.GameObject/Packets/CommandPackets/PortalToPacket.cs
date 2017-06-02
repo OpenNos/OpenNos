@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$PortalTo", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class PortalToPacket : PacketDefinition
@@ -21,6 +21,11 @@ namespace OpenNos.GameObject
 
         [PacketIndex(3)]
         public PortalType? PortalType { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$PortalTo MAPID DESTX DESTY PORTALTYPE(?)";
+        }
 
         #endregion
     }

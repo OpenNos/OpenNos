@@ -112,7 +112,7 @@ namespace OpenNos.GameObject
         {
             if (IsAlive && !IsDisabled)
             {
-                return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)((float)CurrentHp / (float)Monster.MaxHP * 100)} {(int)((float)CurrentMp / (float)Monster.MaxMP * 100)} 0 0 0 -1 {(byte)InRespawnType.TeleportationEffect} 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
+                return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)((float)CurrentHp / (float)Monster.MaxHP * 100)} {(int)((float)CurrentMp / (float)Monster.MaxMP * 100)} 0 0 0 -1 {(Monster.NoAggresiveIcon ? (byte)InRespawnType.NoEffect : (byte)InRespawnType.TeleportationEffect)} 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
             }
             return string.Empty;
         }
@@ -294,13 +294,11 @@ namespace OpenNos.GameObject
                     MapInstance.Broadcast(new BroadcastPacket(null, $"mv 3 {MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                     LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
-                    Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000)))
-                     .Subscribe(
-                         x =>
-                         {
-                             MapX = mapX;
-                             MapY = mapY;
-                         });
+                    Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000))).Subscribe(x =>
+                    {
+                        MapX = mapX;
+                        MapY = mapY;
+                    });
                     distance = (int)Path.First().F;
                     Path.RemoveRange(0, maxindex);
                 }
@@ -796,8 +794,7 @@ namespace OpenNos.GameObject
             }
 
             // handle hit queue
-            HitRequest hitRequest;
-            while (HitQueue.TryDequeue(out hitRequest))
+            while (HitQueue.TryDequeue(out HitRequest hitRequest))
             {
                 if (IsAlive && hitRequest.Session.Character.Hp > 0)
                 {

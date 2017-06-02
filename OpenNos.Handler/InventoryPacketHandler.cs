@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
@@ -198,10 +199,10 @@ namespace OpenNos.Handler
         {
             Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
-            long gold;
-            if (packetsplit.Length < 3)
+            if (!long.TryParse(packetsplit[2], out long gold))
+            {
                 return;
-            long.TryParse(packetsplit[2], out gold);
+            }
             byte[] type = new byte[10], qty = new byte[10];
             short[] slot = new short[10];
             string packetList = string.Empty;
@@ -577,8 +578,7 @@ namespace OpenNos.Handler
                     }
                     if (canpick && Session.HasCurrentMapInstance)
                     {
-                        MonsterMapItem item = mapItem as MonsterMapItem;
-                        if (item != null)
+                        if (mapItem is MonsterMapItem item)
                         {
                             MonsterMapItem monsterMapItem = item;
                             if (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.LodInstance && monsterMapItem.OwnerId.HasValue && monsterMapItem.OwnerId.Value != -1)
@@ -618,19 +618,19 @@ namespace OpenNos.Handler
                                 lock (Session.Character.Inventory)
                                 {
                                     byte amount = mapItem.Amount;
-                                    List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(mapItemInstance);
-                                    if (newInv.Any(s => s != null))
+                                    ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
+                                    if (inv != null)
                                     {
                                         Session.CurrentMapInstance.DroppedList.Remove(getPacket.TransportId);
                                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                                         if (getPacket.PickerType == 2)
                                         {
-                                            Session.SendPacket(Session.Character.GenerateIcon(1, 1, newInv.First().ItemVNum));
+                                            Session.SendPacket(Session.Character.GenerateIcon(1, 1, inv.ItemVNum));
                                         }
-                                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {amount}", 12));
+                                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {inv.Item.Name} x {amount}", 12));
                                         if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
                                         {
-                                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{string.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {newInv.First().Item.Name} x {mapItem.Amount}", 10));
+                                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{string.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {inv.Item.Name} x {mapItem.Amount}", 10));
                                         }
                                     }
                                     else
@@ -644,8 +644,7 @@ namespace OpenNos.Handler
                         {
                             // handle gold drop
                             long maxGold = ServerManager.Instance.MaxGold;
-                            MonsterMapItem droppedGold = mapItem as MonsterMapItem;
-                            if (droppedGold != null && Session.Character.Gold + droppedGold.GoldAmount <= maxGold)
+                            if (mapItem is MonsterMapItem droppedGold && Session.Character.Gold + droppedGold.GoldAmount <= maxGold)
                             {
                                 if (getPacket.PickerType == 2)
                                 {
@@ -707,9 +706,6 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), mviPacket.ToString());
             lock (Session.Character.Inventory)
             {
-                ItemInstance previousInventory;
-                ItemInstance newInventory;
-
                 // check if the destination slot is out of range
                 if (mviPacket.DestinationSlot > 48 + (Session.Character.HaveBackpack() ? 1 : 0) * 12)
                 {
@@ -723,7 +719,7 @@ namespace OpenNos.Handler
                 }
 
                 // actually move the item from source to destination
-                Session.Character.Inventory.MoveItem(mviPacket.InventoryType, mviPacket.InventoryType, mviPacket.Slot, mviPacket.Amount, mviPacket.DestinationSlot, out previousInventory, out newInventory);
+                Session.Character.Inventory.MoveItem(mviPacket.InventoryType, mviPacket.InventoryType, mviPacket.Slot, mviPacket.Amount, mviPacket.DestinationSlot, out ItemInstance previousInventory, out ItemInstance newInventory);
                 if (newInventory == null)
                 {
                     return;
@@ -879,9 +875,6 @@ namespace OpenNos.Handler
         /// <param name="reposPacket"></param>
         public void Repos(ReposPacket reposPacket)
         {
-            ItemInstance previousInventory;
-            ItemInstance newInventory;
-
             // check if the destination slot is out of range
             if (reposPacket.NewSlot >= (reposPacket.PartnerBackpack ? (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0) : Session.Character.WareHouseSize))
             {
@@ -895,7 +888,7 @@ namespace OpenNos.Handler
             }
 
             // actually move the item from source to destination
-            Session.Character.Inventory.MoveItem(reposPacket.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, reposPacket.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, reposPacket.OldSlot, reposPacket.Amount, reposPacket.NewSlot, out previousInventory, out newInventory);
+            Session.Character.Inventory.MoveItem(reposPacket.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, reposPacket.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, reposPacket.OldSlot, reposPacket.Amount, reposPacket.NewSlot, out ItemInstance previousInventory, out ItemInstance newInventory);
             if (newInventory == null)
             {
                 return;
@@ -922,11 +915,8 @@ namespace OpenNos.Handler
                         {
                             if (Session.Character.Inventory.LoadBySlotAndType<ItemInstance>((short)(x + 1), type) != null)
                             {
-                                ItemInstance invdest;
-                                ItemInstance inv;
-                                Session.Character.Inventory.MoveItem(type, type, (short)(x + 1), 1, x, out inv, out invdest);
-                                WearableInstance wearableInstance = invdest as WearableInstance;
-                                if (wearableInstance != null)
+                                Session.Character.Inventory.MoveItem(type, type, (short)(x + 1), 1, x, out ItemInstance inv, out ItemInstance invdest);
+                                if (invdest is WearableInstance wearableInstance)
                                 {
                                     Session.SendPacket(invdest.GenerateInventoryAdd());
                                 }
@@ -1740,13 +1730,13 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateStatChar());
                 Session.Character.SkillsSp = new ThreadSafeSortedList<int, CharacterSkill>();
-                foreach (Skill ski in ServerManager.Instance.GetAllSkill())
+                Parallel.ForEach(ServerManager.Instance.GetAllSkill(), skill =>
                 {
-                    if (ski.Class == Session.Character.Morph + 31 && sp.SpLevel >= ski.LevelMinimum)
+                    if (skill.Class == Session.Character.Morph + 31 && sp.SpLevel >= skill.LevelMinimum)
                     {
-                        Session.Character.SkillsSp[ski.SkillVNum] = new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId };
+                        Session.Character.SkillsSp[skill.SkillVNum] = new CharacterSkill { SkillVNum = skill.SkillVNum, CharacterId = Session.Character.CharacterId };
                     }
-                }
+                });
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());
             }
@@ -1806,6 +1796,7 @@ namespace OpenNos.Handler
                 List<ItemInstance> inv = targetSession.Character.Inventory.AddToInventory(item2);
                 if (!inv.Any())
                 {
+                    // do what?
                 }
             }
 
@@ -1862,13 +1853,11 @@ namespace OpenNos.Handler
                 Session.SendPackets(Session.Character.GenerateQuicklist());
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateStatChar());
-                Observable.Timer(TimeSpan.FromMilliseconds(Session.Character.SpCooldown * 1000))
-                           .Subscribe(
-                           o =>
-                           {
-                               Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
-                               Session.SendPacket("sd 0");
-                           });
+                Observable.Timer(TimeSpan.FromMilliseconds(Session.Character.SpCooldown * 1000)).Subscribe(o =>
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
+                    Session.SendPacket("sd 0");
+                });
             }
         }
 

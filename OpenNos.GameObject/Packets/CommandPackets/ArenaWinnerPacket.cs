@@ -3,10 +3,14 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$ArenaWinner", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ArenaWinner : PacketDefinition
     {
+        public static string ReturnHelp()
+        {
+            return "$ArenaWinner";
+        }
     }
 }

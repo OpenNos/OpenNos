@@ -267,8 +267,7 @@ namespace OpenNos.GameObject.Helpers
                         if (bz.Item.Item.Type == InventoryType.Equipment)
                             if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 2)
                             {
-                                BoxInstance boxInstance = bz.Item as BoxInstance;
-                                if (boxInstance != null)
+                                if (bz.Item is BoxInstance boxInstance)
                                 {
                                     if (packet.SubTypeFilter == 0)
                                     {
@@ -329,8 +328,7 @@ namespace OpenNos.GameObject.Helpers
                         if (bz.Item.Item.Type == InventoryType.Equipment)
                             if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 0)
                             {
-                                BoxInstance instance = bz.Item as BoxInstance;
-                                if (instance != null && (packet.LevelFilter == 0 || instance.SpLevel < packet.LevelFilter * 10 + 1 && instance.SpLevel >= packet.LevelFilter * 10 - 9))
+                                if (bz.Item is BoxInstance instance && (packet.LevelFilter == 0 || instance.SpLevel < packet.LevelFilter * 10 + 1 && instance.SpLevel >= packet.LevelFilter * 10 - 9))
                                     if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && ((BoxInstance)bz.Item).HoldingVNum == 0 || packet.SubTypeFilter == 2 && ((BoxInstance)bz.Item).HoldingVNum != 0)
                                         bzlist.Add(bz);
                             }
@@ -340,8 +338,7 @@ namespace OpenNos.GameObject.Helpers
                         if (bz.Item.Item.Type == InventoryType.Equipment)
                             if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 1)
                             {
-                                BoxInstance box = bz.Item as BoxInstance;
-                                if (box != null && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))
+                                if (bz.Item is BoxInstance box && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))
                                     if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && ((BoxInstance)bz.Item).HoldingVNum == 0 || packet.SubTypeFilter == 2 && ((BoxInstance)bz.Item).HoldingVNum != 0)
                                         bzlist.Add(bz);
                             }
@@ -353,8 +350,7 @@ namespace OpenNos.GameObject.Helpers
                                 if (packet.SubTypeFilter == 0 || bz.Item.Item.ItemSubType == bz.Item.Item.ItemSubType + 1)
                                     if (packet.RareFilter == 0 || packet.RareFilter == bz.Item.Rare + 1)
                                     {
-                                        BoxInstance box = bz.Item as BoxInstance;
-                                        if (box != null && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))
+                                        if (bz.Item is BoxInstance box && (packet.LevelFilter == 0 || box.SpLevel < packet.LevelFilter * 10 + 1 && box.SpLevel >= packet.LevelFilter * 10 - 9))
                                             bzlist.Add(bz);
                                     }
                         break;
@@ -379,11 +375,8 @@ namespace OpenNos.GameObject.Helpers
 
                     case BazaarListType.Vehicle:
                         if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 4)
-                        {
-                            BoxInstance box = bz.Item as BoxInstance;
-                            if (box != null && (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && box.HoldingVNum == 0 || packet.SubTypeFilter == 2 && box.HoldingVNum != 0))
+                            if (bz.Item is BoxInstance box && (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && box.HoldingVNum == 0 || packet.SubTypeFilter == 2 && box.HoldingVNum != 0))
                                 bzlist.Add(bz);
-                        }
                         break;
 
                     default:

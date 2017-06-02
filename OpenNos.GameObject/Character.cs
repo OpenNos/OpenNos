@@ -702,13 +702,11 @@ namespace OpenNos.GameObject
                                     Session.SendPackets(GenerateQuicklist());
                                     Session.SendPacket(GenerateStat());
                                     Session.SendPacket(GenerateStatChar());
-                                    Observable.Timer(TimeSpan.FromMilliseconds(SpCooldown * 1000))
-                                               .Subscribe(
-                                               o =>
-                                               {
-                                                   Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
-                                                   Session.SendPacket("sd 0");
-                                               });
+                                    Observable.Timer(TimeSpan.FromMilliseconds(SpCooldown * 1000)).Subscribe(o =>
+                                    {
+                                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
+                                        Session.SendPacket("sd 0");
+                                    });
                                 }
                             }
                         }
@@ -878,9 +876,15 @@ namespace OpenNos.GameObject
             FriendRequestCharacters.Clear();
         }
 
+        public string GenerateAct()
+        {
+            return $"act 6"; // act6 1 0 14 0 0 0 14 0 0 0
+        }
+
         public string GenerateAt()
         {
             MapInstance mapForMusic = MapInstance;
+
             //at 698495 20001 5 8 2 0 {SecondaryMusic} {SecondaryMusicType} -1
             return $"at {CharacterId} {MapInstance.Map.MapId} {PositionX} {PositionY} 2 0 {mapForMusic?.Map.Music ?? 0} -1";
         }
@@ -2158,6 +2162,11 @@ namespace OpenNos.GameObject
             return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.XP)} {XPLoad()} {(!UseSp || specialist == null ? JobXPLoad() : SPXPLoad())} {Reput} {GetCP()} {HeroXp} {HeroLevel} {HeroXPLoad()}";
         }
 
+        public string GenerateLevelUp()
+        {
+            return $"levelup {CharacterId}";
+        }
+
         public void GenerateMiniland()
         {
             if (Miniland == null)
@@ -2286,11 +2295,6 @@ namespace OpenNos.GameObject
                 return result;
             }
             return $"pidx -1 1.{CharacterId}";
-        }
-
-        public string GenerateAct()
-        {
-            return $"act 6"; // act6 1 0 14 0 0 0 14 0 0 0
         }
 
         public string GeneratePinit()
@@ -3146,11 +3150,11 @@ namespace OpenNos.GameObject
             List<string> list = new List<string>();
             byte i = 0;
             Mates.Where(s => s.MateType == MateType.Pet).Skip(Page * 10).Take(10).ToList().ForEach(s =>
-              {
-                  s.PetId = i;
-                  list.Add(s.GenerateScPacket());
-                  i++;
-              });
+            {
+                s.PetId = i;
+                list.Add(s.GenerateScPacket());
+                i++;
+            });
             return list;
         }
 
@@ -3215,16 +3219,14 @@ namespace OpenNos.GameObject
                         case InventoryType.Equipment:
                             if (inv.Item.EquipmentSlot == EquipmentType.Sp)
                             {
-                                SpecialistInstance specialistInstance = inv as SpecialistInstance;
-                                if (specialistInstance != null)
+                                if (inv is SpecialistInstance specialistInstance)
                                 {
                                     inv0 += $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
                                 }
                             }
                             else
                             {
-                                WearableInstance wearableInstance = inv as WearableInstance;
-                                if (wearableInstance != null)
+                                if (inv is WearableInstance wearableInstance)
                                 {
                                     inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
                                 }
@@ -3827,20 +3829,9 @@ namespace OpenNos.GameObject
         /// </summary>
         /// <param name="xCoordinate">The x coordinate of the object to check.</param>
         /// <param name="yCoordinate">The y coordinate of the object to check.</param>
-        /// <returns>True if the object is in Range, False if not.</returns>
-        public bool IsInRange(int xCoordinate, int yCoordinate)
-        {
-            return Math.Abs(PositionX - xCoordinate) <= 50 && Math.Abs(PositionY - yCoordinate) <= 50;
-        }
-
-        /// <summary>
-        /// Checks if the current character is in range of the given position
-        /// </summary>
-        /// <param name="xCoordinate">The x coordinate of the object to check.</param>
-        /// <param name="yCoordinate">The y coordinate of the object to check.</param>
         /// <param name="range">The range of the coordinates to be maximal distanced.</param>
         /// <returns>True if the object is in Range, False if not.</returns>
-        public bool IsInRange(int xCoordinate, int yCoordinate, int range)
+        public bool IsInRange(int xCoordinate, int yCoordinate, int range = 50)
         {
             return Math.Abs(PositionX - xCoordinate) <= range && Math.Abs(PositionY - yCoordinate) <= range;
         }
@@ -4593,8 +4584,7 @@ namespace OpenNos.GameObject
 
                 if (Inventory != null)
                 {
-                    specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,
-                        InventoryType.Wear);
+                    specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 }
 
                 if (Level < ServerManager.Instance.MaxLevel)
@@ -4674,8 +4664,7 @@ namespace OpenNos.GameObject
                             });
                         }
                     }
-
-                    Session.SendPacket($"levelup {CharacterId}");
+                    Session.SendPacket(GenerateLevelUp());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(6), PositionX, PositionY);
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
@@ -4727,7 +4716,7 @@ namespace OpenNos.GameObject
                     Hp = (int)HPLoad();
                     Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
-                    Session.SendPacket($"levelup {CharacterId}");
+                    Session.SendPacket(GenerateLevelUp());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
                     LearnAdventurerSkill();
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
@@ -4743,7 +4732,7 @@ namespace OpenNos.GameObject
                         specialist.SpLevel++;
                         t = SPXPLoad();
                         Session.SendPacket(GenerateStat());
-                        Session.SendPacket($"levelup {CharacterId}");
+                        Session.SendPacket(GenerateLevelUp());
                         if (specialist.SpLevel >= ServerManager.Instance.MaxSPLevel)
                         {
                             specialist.SpLevel = ServerManager.Instance.MaxSPLevel;
@@ -4773,7 +4762,7 @@ namespace OpenNos.GameObject
                     Hp = (int)HPLoad();
                     Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
-                    Session.SendPacket($"levelup {CharacterId}");
+                    Session.SendPacket(GenerateLevelUp());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_LEVELUP"), 0));
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);

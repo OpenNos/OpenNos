@@ -3,10 +3,14 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$GodMode", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class GodModePacket : PacketDefinition
     {
+        public static string ReturnHelp()
+        {
+            return "$GodMode";
+        }
     }
 }

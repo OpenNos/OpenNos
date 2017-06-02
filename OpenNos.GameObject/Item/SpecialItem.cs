@@ -169,8 +169,7 @@ namespace OpenNos.GameObject
                     {
                         if (Option == 0)
                         {
-                            session.SendPacket(
-                                UserInterfaceHelper.Instance.GenerateGuri(10, 2, session.Character.CharacterId, 1));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 2, session.Character.CharacterId, 1));
                         }
                     }
                     break;
@@ -279,8 +278,7 @@ namespace OpenNos.GameObject
                     {
                         if (session.HasCurrentMapInstance)
                         {
-                            if (session.CurrentMapInstance.Map.MapTypes.All(
-                                m => m.MapTypeId != (short)MapTypeEnum.Act4))
+                            if (session.CurrentMapInstance.Map.MapTypes.All(m => m.MapTypeId != (short)MapTypeEnum.Act4))
                             {
                                 short[] vnums =
                                 {
@@ -321,9 +319,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1003:
-                    if (!session.Character.StaticBonusList.Any(
-                        s => s.StaticBonusType == StaticBonusType.BazaarMedalGold ||
-                             s.StaticBonusType == StaticBonusType.BazaarMedalSilver))
+                    if (!session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver))
                     {
                         session.Character.StaticBonusList.Add(new StaticBonusDTO
                         {
@@ -332,16 +328,12 @@ namespace OpenNos.GameObject
                             StaticBonusType = StaticBonusType.BazaarMedalGold
                         });
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                        session.SendPacket(
-                            session.Character.GenerateSay(
-                                string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
 
                 case 1004:
-                    if (!session.Character.StaticBonusList.Any(
-                        s => s.StaticBonusType == StaticBonusType.BazaarMedalGold ||
-                             s.StaticBonusType == StaticBonusType.BazaarMedalGold))
+                    if (!session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalGold))
                     {
                         session.Character.StaticBonusList.Add(new StaticBonusDTO
                         {
@@ -350,9 +342,7 @@ namespace OpenNos.GameObject
                             StaticBonusType = StaticBonusType.BazaarMedalSilver
                         });
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                        session.SendPacket(
-                            session.Character.GenerateSay(
-                                string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
 
@@ -367,17 +357,14 @@ namespace OpenNos.GameObject
                         });
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         session.SendPacket(session.Character.GenerateExts());
-                        session.SendPacket(
-                            session.Character.GenerateSay(
-                                string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
 
                 case 1006:
                     if (Option == 0)
                     {
-                        session.SendPacket(
-                            $"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2 {Language.Instance.GetMessageFromKey("ASK_PET_MAX")}");
+                        session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2 {Language.Instance.GetMessageFromKey("ASK_PET_MAX")}");
                     }
                     else
                     {
@@ -402,9 +389,7 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         session.SendPacket(session.Character.GenerateExts());
                         session.SendPacket("ib 1278 1");
-                        session.SendPacket(
-                            session.Character.GenerateSay(
-                                string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
 

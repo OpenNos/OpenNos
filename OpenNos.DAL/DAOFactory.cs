@@ -76,11 +76,6 @@ namespace OpenNos.DAL
             try
             {
                 _useMock = Convert.ToBoolean(ConfigurationManager.AppSettings["UseMock"]);
-
-                if (!_useMock)
-                {
-                    //MigrationHelper.GenerateSQLScript();
-                }
             }
             catch (Exception ex)
             {

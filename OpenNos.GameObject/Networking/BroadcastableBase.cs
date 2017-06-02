@@ -18,10 +18,11 @@ using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public abstract class BroadcastableBase
+    public abstract class BroadcastableBase : IDisposable
     {
         #region Members
 
@@ -173,7 +174,7 @@ namespace OpenNos.GameObject
                 switch (sentPacket.Receiver)
                 {
                     case ReceiverType.All: // send packet to everyone
-                        foreach (ClientSession session in Sessions)
+                        Parallel.ForEach(Sessions, session =>
                         {
                             if (session.HasSelectedCharacter)
                             {
@@ -189,11 +190,11 @@ namespace OpenNos.GameObject
                                     session.SendPacket(sentPacket.Packet);
                                 }
                             }
-                        }
+                        });
                         break;
 
                     case ReceiverType.AllExceptMe: // send to everyone except the sender
-                        foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId))
+                        Parallel.ForEach(Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId), session =>
                         {
                             if (session.HasSelectedCharacter)
                             {
@@ -209,7 +210,7 @@ namespace OpenNos.GameObject
                                     session.SendPacket(sentPacket.Packet);
                                 }
                             }
-                        }
+                        });
                         break;
                     case ReceiverType.AllExceptGroup:
                         foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId && (s.Character?.Group == null || (s.Character?.Group?.GroupId != sentPacket.Sender?.Character?.Group?.GroupId))))
@@ -233,7 +234,7 @@ namespace OpenNos.GameObject
                     case ReceiverType.AllInRange: // send to everyone which is in a range of 50x50
                         if (sentPacket.XCoordinate != 0 && sentPacket.YCoordinate != 0)
                         {
-                            foreach (ClientSession session in Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)))
+                            Parallel.ForEach(Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)), session =>
                             {
                                 if (session.HasSelectedCharacter)
                                 {
@@ -249,7 +250,7 @@ namespace OpenNos.GameObject
                                         session.SendPacket(sentPacket.Packet);
                                     }
                                 }
-                            }
+                            });
                         }
                         break;
 
@@ -279,7 +280,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case ReceiverType.AllNoEmoBlocked:
-                        foreach (ClientSession session in Sessions.Where(s => !s.Character.EmoticonsBlocked))
+                        Parallel.ForEach(Sessions.Where(s => !s.Character.EmoticonsBlocked), session =>
                         {
                             if (session.HasSelectedCharacter)
                             {
@@ -288,11 +289,11 @@ namespace OpenNos.GameObject
                                     session.SendPacket(sentPacket.Packet);
                                 }
                             }
-                        }
+                        });
                         break;
 
                     case ReceiverType.AllNoHeroBlocked:
-                        foreach (ClientSession session in Sessions.Where(s => !s.Character.HeroChatBlocked))
+                        Parallel.ForEach(Sessions.Where(s => !s.Character.HeroChatBlocked), session =>
                         {
                             if (session.HasSelectedCharacter)
                             {
@@ -301,14 +302,14 @@ namespace OpenNos.GameObject
                                     session.SendPacket(sentPacket.Packet);
                                 }
                             }
-                        }
+                        });
                         break;
 
                     case ReceiverType.Group:
-                        foreach (ClientSession session in Sessions.Where(s => s.Character?.Group != null && sentPacket.Sender?.Character?.Group != null && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId))
+                        Parallel.ForEach(Sessions.Where(s => s.Character?.Group != null && sentPacket.Sender?.Character?.Group != null && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId), session =>
                         {
                             session.SendPacket(sentPacket.Packet);
-                        }
+                        });
                         break;
 
                     case ReceiverType.Unknown:

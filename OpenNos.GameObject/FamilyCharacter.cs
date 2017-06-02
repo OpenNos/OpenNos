@@ -45,6 +45,7 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
+            // do nothing
         }
 
         #endregion

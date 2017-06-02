@@ -5,28 +5,29 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject.CommandPackets
 {
-    [PacketHeader("$BlockFExp", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
-    public class BlockFExpPacket : PacketDefinition
+    [PacketHeader("$Warn", PassNonParseablePacket = true, Authority = AuthorityType.Moderator)]
+    public class WarningPacket : PacketDefinition
     {
         #region Properties
 
         [PacketIndex(0)]
         public string CharacterName { get; set; }
 
-        [PacketIndex(1)]
-        public int Duration { get; set; }
-
-        [PacketIndex(2, SerializeToEnd = true)]
+        [PacketIndex(1, serializeToEnd: true)]
         public string Reason { get; set; }
 
         public static string ReturnHelp()
         {
-            return "$BlockFExp CHARACTERNAME DURATION REASON";
+            return "$Warn CHARACTERNAME REASON";
         }
+
+        #endregion
+
+        #region Methods
 
         public override string ToString()
         {
-            return $"BlockFExp Command CharacterName: {CharacterName} Duration: {Duration} Reason: {Reason}";
+            return $"Warning Command CharacterName: {CharacterName} Message: {Reason}";
         }
 
         #endregion

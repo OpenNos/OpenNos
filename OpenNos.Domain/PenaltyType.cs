@@ -20,6 +20,7 @@ namespace OpenNos.Domain
         Banned = 1,
         BlockExp = 2,
         BlockFExp = 3,
-        BlockRep = 4
+        BlockRep = 4,
+        Warning = 5
     }
 }

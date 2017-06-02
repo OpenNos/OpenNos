@@ -56,7 +56,7 @@ namespace OpenNos.Handler
         /// RSelPacket packet
         /// </summary>
         /// <param name="packet"></param>
-        public void getGift(RSelPacket packet)
+        public void GetGift(RSelPacket packet)
         {
             if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
             {
@@ -78,25 +78,25 @@ namespace OpenNos.Handler
                     for (int i = 0; i < 3; i++)
                     {
                         Gift gift = si.GiftItems.ElementAtOrDefault(i);
-                        repay += $" {(gift == null ? "-1.0.0" : $"{gift.VNum}.0.{gift.Amount}")}";
+                        repay += gift == null ? "-1.0.0 " : $"{gift.VNum}.0.{gift.Amount} ";
                         if (gift != null)
                         {
                             Session.Character.GiftAdd(gift.VNum, gift.Amount);
                         }
                     }
 
-                    // TODO ADD HASALREADYDONE
+                    // TODO: Add HasAlreadyDone
                     for (int i = 0; i < 2; i++)
                     {
                         Gift gift = si.SpecialItems.ElementAtOrDefault(i);
-                        repay += $" {(gift == null ? "-1.0.0" : $"{gift.VNum}.0.{gift.Amount}")}";
+                        repay += gift == null ? "-1.0.0 " : $"{gift.VNum}.0.{gift.Amount} ";
                         if (gift != null)
                         {
                             Session.Character.GiftAdd(gift.VNum, gift.Amount);
                         }
                     }
 
-                    repay += $" {si.DrawItems[rand].VNum}.0.{si.DrawItems[rand].Amount}";
+                    repay += $"{si.DrawItems[rand].VNum}.0.{si.DrawItems[rand].Amount}";
                     Session.SendPacket(repay);
                 }
             }
@@ -210,8 +210,7 @@ namespace OpenNos.Handler
                             break;
 
                         case 1:
-                            byte record;
-                            byte.TryParse(packet.Param.ToString(), out record);
+                            byte.TryParse(packet.Param.ToString(), out byte record);
                             GetTreq(new TreqPacket()
                             {
                                 X = portal.PositionX,

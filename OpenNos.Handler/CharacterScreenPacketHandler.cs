@@ -47,6 +47,10 @@ namespace OpenNos.Handler
 
         #region Methods
 
+        /// <summary>
+        /// Char_NEW character creation character
+        /// </summary>
+        /// <param name="characterCreatePacket"></param>
         public void CreateCharacter(CharacterCreatePacket characterCreatePacket)
         {
             Logger.Debug(Session.GenerateIdentity(), characterCreatePacket.ToString());
@@ -221,7 +225,7 @@ namespace OpenNos.Handler
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log.Error("WCF Communication Failed.", ex);
+                    Logger.Log.Error("MS Communication Failed.", ex);
                     Session.Disconnect();
                     return;
                 }
@@ -305,8 +309,7 @@ namespace OpenNos.Handler
             {
                 if (Session?.Account != null && !Session.HasSelectedCharacter)
                 {
-                    Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) as Character;
-                    if (character != null)
+                    if (DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) is Character character)
                     {
                         character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
                         character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(character.MapId);

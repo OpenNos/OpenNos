@@ -17,6 +17,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.GameObject.CommandPackets;
 using OpenNos.GameObject.Helpers;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
@@ -79,8 +80,7 @@ namespace OpenNos.Handler
                 if (!DAOFactory.MapMonsterDAO.DoesMonsterExist(monst.MapMonsterId))
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
-                    MapMonster monster = DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) as MapMonster;
-                    if (monster != null)
+                    if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) is MapMonster monster)
                     {
                         monster.Initialize(Session.CurrentMapInstance);
                         Session.CurrentMapInstance.AddMonster(monster);
@@ -91,7 +91,23 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(AddMonsterPacket.ReturnHelp(), 10));
+            }
+        }
+
+        /// <summary>
+        /// $AddPartner Command
+        /// </summary>
+        /// <param name="addPartnerPacket"></param>
+        public void AddPartner(AddPartnerPacket addPartnerPacket)
+        {
+            if (addPartnerPacket != null)
+            {
+                AddMate(addPartnerPacket.MonsterVNum, addPartnerPacket.Level, MateType.Partner);
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(AddPartnerPacket.ReturnHelp(), 10));
             }
         }
 
@@ -103,23 +119,11 @@ namespace OpenNos.Handler
         {
             if (addPetPacket != null)
             {
-                if (Session.CurrentMapInstance == Session.Character.Miniland)
-                {
-                    if (addPetPacket.Level == 0)
-                    {
-                        addPetPacket.Level = 1;
-                    }
-                    Mate mate = new Mate(Session.Character, addPetPacket.MonsterVNum, addPetPacket.Level, MateType.Pet);
-                    Session.Character.AddPet(mate);
-                }
-                else
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_MINILAND"), 0));
-                }
+                AddMate(addPetPacket.MonsterVNum, addPetPacket.Level, MateType.Pet);
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$AddPet MONSTERVNUM LEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(AddPartnerPacket.ReturnHelp(), 10));
             }
         }
 
@@ -139,7 +143,6 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_DOES_NOT_EXIST"), 11));
                     return;
                 }
-
                 if (skillinfo.SkillVNum < 200)
                 {
                     foreach (var skill in Session.Character.Skills.GetAllItems())
@@ -167,9 +170,7 @@ namespace OpenNos.Handler
                         }
                     }
                 }
-
                 Session.Character.Skills[skillVNum] = new CharacterSkill { SkillVNum = skillVNum, CharacterId = Session.Character.CharacterId };
-
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
@@ -177,7 +178,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                Session.SendPacket(Session.Character.GenerateSay(AddSkillPacket.ReturnHelp(), 10));
             }
         }
 
@@ -227,7 +228,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME DURATION(DAYS) REASON", 10));
+                Session.SendPacket(Session.Character.GenerateSay(BanPacket.ReturnHelp(), 10));
             }
         }
 
@@ -270,7 +271,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$BlockExp CHARACTERNAME DURATION(MINUTES) REASON", 10));
+                Session.SendPacket(Session.Character.GenerateSay(BlockExpPacket.ReturnHelp(), 10));
             }
         }
 
@@ -313,7 +314,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$BlockFExp CHARACTERNAME DURATION(MINUTES) REASON", 10));
+                Session.SendPacket(Session.Character.GenerateSay(BlockFExpPacket.ReturnHelp(), 10));
             }
         }
 
@@ -375,7 +376,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$BlockRep CHARACTERNAME DURATION(MINUTES) REASON", 10));
+                Session.SendPacket(Session.Character.GenerateSay(BlockRepPacket.ReturnHelp(), 10));
             }
         }
 
@@ -392,7 +393,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeClassPacket.ReturnHelp(), 10));
             }
         }
 
@@ -420,7 +421,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$ChangeDignity DIGNITY", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeDignityPacket.ReturnHelp(), 10));
             }
         }
 
@@ -450,7 +451,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeFairyLevelPacket.ReturnHelp(), 10));
             }
         }
 
@@ -493,7 +494,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeHeroLevelPacket.ReturnHelp(), 10));
             }
         }
 
@@ -544,7 +545,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeJobLevelPacket.ReturnHelp(), 10));
             }
         }
 
@@ -593,7 +594,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeLevelPacket.ReturnHelp(), 10));
             }
         }
 
@@ -621,7 +622,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$ChangeReput AMOUNT", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeReputationPacket.ReturnHelp(), 10));
             }
         }
 
@@ -663,7 +664,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ChangeSpecialistLevelPacket.ReturnHelp(), 10));
             }
         }
 
@@ -682,7 +683,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("---------------------------------------", 11));
         }
 
-
         /// <summary>
         /// $CharEdit Command
         /// </summary>
@@ -699,12 +699,13 @@ namespace OpenNos.Handler
                     {
                         propertyInfo.SetValue(Session.Character, Convert.ChangeType(characterEditPacket.Data, propertyInfo.PropertyType));
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                        Session.Character.Save();
                     }
                 }
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$CharEdit PROPERTY DATA", 10));
+                Session.SendPacket(Session.Character.GenerateSay(CharacterEditPacket.ReturnHelp(), 10));
             }
         }
 
@@ -715,11 +716,11 @@ namespace OpenNos.Handler
         public void CharStat(CharacterStatsPacket characterStatsPacket)
         {
             Logger.Debug("CharStat Command", Session.Character.GenerateIdentity());
+            string returnHelp = CharacterStatsPacket.ReturnHelp();
             if (characterStatsPacket != null)
             {
-                int sessionId = 0;
                 string name = characterStatsPacket.CharacterName;
-                if (int.TryParse(characterStatsPacket.CharacterName, out sessionId))
+                if (int.TryParse(characterStatsPacket.CharacterName, out int sessionId))
                 {
                     if (ServerManager.Instance.GetSessionBySessionId(sessionId) != null)
                     {
@@ -750,12 +751,12 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 10));
+                    Session.SendPacket(Session.Character.GenerateSay(returnHelp, 10));
                 }
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(returnHelp, 10));
             }
         }
 
@@ -768,16 +769,16 @@ namespace OpenNos.Handler
             Logger.Debug("ClearInventory Command", Session.Character.GenerateIdentity());
             if (clearInventoryPacket != null && clearInventoryPacket.InventoryType != InventoryType.Wear)
             {
-                foreach (ItemInstance inv in Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType))
+                Parallel.ForEach(Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType), inv =>
                 {
                     Session.Character.Inventory.DeleteById(inv.Id);
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(inv.Type, inv.Slot));
-                }
+                });
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Clear INVENTORYTYPE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ClearInventoryPacket.ReturnHelp(), 10));
             }
         }
 
@@ -791,85 +792,24 @@ namespace OpenNos.Handler
 
             // TODO: Command displaying detailed informations about commands
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
-            Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$AddPet VNUM LEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$AddSkill SKILLID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ArenaWinner", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME TIME REASON ", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$BlockExp CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$BlockFExp CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$BlockPM", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$BlockRep CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ChangeDignity AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ChangeRep AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ChannelInfo", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Clear INVENTORYTYPE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Demote CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$DropRate VALUE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Event EVENT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$FairyXpRate VALUE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME(*) VNUM AMOUNT RARE UPGRADE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Gift VNUM AMOUNT RARE UPGRADE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$GodMode", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$GoldDropRate Value", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$GoldRate Value", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Invisible", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$KickSession ACCOUNTNAME <SESSIONID>", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$MapDance", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Music BGM", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME DURATION(MINUTES) REASON", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Packet STRING", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Position", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Promote CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$RemoveMob", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(*)", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME(*)", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Shout SENDPACKET", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ShutdownAll WORLDGROUP(*)", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Stat", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SummonNPC MONSTERVNUM", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME(*)", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Unban CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Undercover", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$XpRate VALUE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
+
+            // TODO: OPTIMIZE!
+            List<Type> classes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).Where(t => t.IsClass && t.Namespace == "OpenNos.GameObject.CommandPackets").ToList();
+            foreach (Type type in classes)
+            {
+                object classInstance = Activator.CreateInstance(type);
+                Type classType = classInstance.GetType();
+                MethodInfo method = classType.GetMethod("ReturnHelp");
+                if (method != null)
+                {
+                    string message = method.Invoke(classInstance, null).ToString();
+                    if (!string.IsNullOrEmpty(message))
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(message, 12));
+                    }
+                }
+            }
+
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
         }
 
@@ -903,7 +843,14 @@ namespace OpenNos.Handler
                     {
                         if (createItemPacket.Upgrade.HasValue)
                         {
-                            upgrade = createItemPacket.Upgrade.Value;
+                            if (iteminfo.EquipmentSlot != EquipmentType.Sp)
+                            {
+                                upgrade = createItemPacket.Upgrade.Value;
+                            }
+                            else
+                            {
+                                design = createItemPacket.Upgrade.Value;
+                            }
                             if (iteminfo.EquipmentSlot != EquipmentType.Sp && upgrade == 0 && iteminfo.BasicUpgrade != 0)
                             {
                                 upgrade = iteminfo.BasicUpgrade;
@@ -913,7 +860,7 @@ namespace OpenNos.Handler
                         {
                             if (iteminfo.EquipmentSlot == EquipmentType.Sp)
                             {
-                                design = createItemPacket.Design.Value;
+                                upgrade = createItemPacket.Design.Value;
                             }
                             else
                             {
@@ -925,10 +872,10 @@ namespace OpenNos.Handler
                     {
                         amount = createItemPacket.Design.Value > 99 ? (byte)99 : createItemPacket.Design.Value;
                     }
-                    List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, Rare: rare, Upgrade: upgrade, Design: design);
-                    if (inv.Any())
+                    ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, Rare: rare, Upgrade: upgrade, Design: design).FirstOrDefault();
+                    if (inv != null)
                     {
-                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.First().Slot, inv.First().Type);
+                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
                         if (wearable != null)
                         {
                             switch (wearable.Item.EquipmentSlot)
@@ -960,6 +907,10 @@ namespace OpenNos.Handler
                     UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_ITEM"), 0);
                 }
             }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(CreateItemPacket.ReturnHelp(), 10));
+            }
         }
 
         /// <summary>
@@ -989,8 +940,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
-                Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 10));
+                Session.SendPacket(Session.Character.GenerateSay(PortalToPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1005,15 +955,15 @@ namespace OpenNos.Handler
             {
                 string name = demotePacket.CharacterName;
                 AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
-                if (account != null)
+                if (account != null && account.Authority > AuthorityType.User)
                 {
-                    account.Authority = AuthorityType.User;
+                    account.Authority -= 1;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                     if (session != null)
                     {
-                        session.Account.Authority = AuthorityType.User;
-                        session.Character.Authority = AuthorityType.User;
+                        session.Account.Authority -= 1;
+                        session.Character.Authority -= 1;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
                         DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
                     }
@@ -1030,7 +980,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Demote CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(DemotePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1055,7 +1005,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$DropRate VALUE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(DropRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1072,7 +1022,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
+                Session.SendPacket(Session.Character.GenerateSay(EffectCommandPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1097,7 +1047,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$FairyXpRate VALUE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(FairyXpRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1110,20 +1060,20 @@ namespace OpenNos.Handler
             Logger.Debug("Gift Command", Session.Character.GenerateIdentity());
             if (giftPacket != null)
             {
-                if (giftPacket.Name == "*")
+                if (giftPacket.CharacterName == "*")
                 {
                     if (Session.HasCurrentMapInstance)
                     {
-                        foreach (ClientSession session in Session.CurrentMapInstance.Sessions)
+                        Parallel.ForEach(Session.CurrentMapInstance.Sessions, session =>
                         {
                             Session.Character.SendGift(session.Character.CharacterId, giftPacket.VNum, giftPacket.Amount, giftPacket.Rare, giftPacket.Upgrade, false);
-                        }
+                        });
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFT_SENT"), 10));
                     }
                 }
                 else
                 {
-                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(giftPacket.Name);
+                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(giftPacket.CharacterName);
                     if (chara != null)
                     {
                         Session.Character.SendGift(chara.CharacterId, giftPacket.VNum, giftPacket.Amount, giftPacket.Rare, giftPacket.Upgrade, false);
@@ -1137,7 +1087,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Gift NAME VNUM AMOUNT RARE UPGRADE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(GiftPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1177,7 +1127,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
+                Session.SendPacket(Session.Character.GenerateSay(GoldPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1202,7 +1152,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$GoldDropRate VALUE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(GoldDropRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1228,7 +1178,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$GoldRate RATE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(GoldRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1239,7 +1189,9 @@ namespace OpenNos.Handler
         public void Guri(GuriCommandPacket guriCommandPacket)
         {
             Logger.Debug("Guri Command", Session.Character.GenerateIdentity());
-            Session.SendPacket(guriCommandPacket != null ? UserInterfaceHelper.Instance.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, Session.Character.CharacterId, guriCommandPacket.Value) : Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
+            Session.SendPacket(guriCommandPacket != null ?
+                UserInterfaceHelper.Instance.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, Session.Character.CharacterId, guriCommandPacket.Value) :
+                Session.Character.GenerateSay(GuriCommandPacket.ReturnHelp(), 10));
         }
 
         /// <summary>
@@ -1258,7 +1210,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 10));
+                Session.SendPacket(Session.Character.GenerateSay(HairColorPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1278,7 +1230,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 10));
+                Session.SendPacket(Session.Character.GenerateSay(HairStylePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1286,7 +1238,7 @@ namespace OpenNos.Handler
         /// $FairyXPRate Command
         /// </summary>
         /// <param name="heroXpRatePacket"></param>
-        public void HeroXpRate(HeroXpRate heroXpRatePacket)
+        public void HeroXpRate(HeroXpRatePacket heroXpRatePacket)
         {
             Logger.Debug("Hero Xp Rate Changed", Session.Character.GenerateIdentity());
             if (heroXpRatePacket != null)
@@ -1303,7 +1255,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$HeroXpRate VALUE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(HeroXpRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1342,38 +1294,38 @@ namespace OpenNos.Handler
             {
                 if (kickPacket.CharacterName == "*")
                 {
-                    foreach (ClientSession session in ServerManager.Instance.Sessions)
+                    Parallel.ForEach(ServerManager.Instance.Sessions, session =>
                     {
                         session.Disconnect();
-                    }
+                    });
                 }
                 ServerManager.Instance.Kick(kickPacket.CharacterName);
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(KickPacket.ReturnHelp(), 10));
             }
         }
 
         /// <summary>
         /// $KickSession Command
         /// </summary>
-        public void KickSession(KickSessionPacket kickPacket)
+        public void KickSession(KickSessionPacket kickSessionPacket)
         {
             Logger.Debug("KickSession Command", Session.Character.GenerateIdentity());
-            if (kickPacket != null)
+            if (kickSessionPacket != null)
             {
-                if (kickPacket.SessionId.HasValue) //if you set the sessionId, remove account verification
+                if (kickSessionPacket.SessionId.HasValue) //if you set the sessionId, remove account verification
                 {
-                    kickPacket.AccountName = string.Empty;
+                    kickSessionPacket.AccountName = string.Empty;
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                AccountDTO acc = DAOFactory.AccountDAO.LoadByName(kickPacket.AccountName);
-                CommunicationServiceClient.Instance.KickSession(acc?.AccountId, kickPacket.SessionId);
+                AccountDTO account = DAOFactory.AccountDAO.LoadByName(kickSessionPacket.AccountName);
+                CommunicationServiceClient.Instance.KickSession(account?.AccountId, kickSessionPacket.SessionId);
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$KickSession ACCOUNTNAME <SESSIONID>", 10));
+                Session.SendPacket(Session.Character.GenerateSay(KickSessionPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1415,7 +1367,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(KillPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1491,7 +1443,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 10));
+                Session.SendPacket(Session.Character.GenerateSay(MorphPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1511,7 +1463,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Music BGM", 10));
+                Session.SendPacket(Session.Character.GenerateSay(MusicPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1528,38 +1480,12 @@ namespace OpenNos.Handler
                 {
                     mutePacket.Duration = 60;
                 }
-
                 mutePacket.Reason = mutePacket.Reason?.Trim();
-                CharacterDTO characterToMute = DAOFactory.CharacterDAO.LoadByName(mutePacket.CharacterName);
-                if (characterToMute != null)
-                {
-                    ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == mutePacket.CharacterName);
-                    session?.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), mutePacket.Reason, mutePacket.Duration)));
-                    if (session != null && !session.Character.IsMuted())
-                    {
-                        PenaltyLogDTO log = new PenaltyLogDTO
-                        {
-                            AccountId = characterToMute.AccountId,
-                            Reason = mutePacket.Reason,
-                            Penalty = PenaltyType.Muted,
-                            DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddMinutes(mutePacket.Duration),
-                            AdminName = Session.Character.Name
-                        };
-
-                        session.Character.InsertOrUpdatePenalty(log);
-                    }
-
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-                }
+                MuteMethod(mutePacket.CharacterName, mutePacket.Reason, mutePacket.Duration);
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME DURATION(MINUTES) REASON", 10));
+                Session.SendPacket(Session.Character.GenerateSay(MutePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1574,6 +1500,10 @@ namespace OpenNos.Handler
             {
                 Session.SendPacket(packetCallbackPacket.Packet);
                 Session.SendPacket(Session.Character.GenerateSay(packetCallbackPacket.Packet, 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(PacketCallbackPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1598,15 +1528,15 @@ namespace OpenNos.Handler
             {
                 string name = promotePacket.CharacterName;
                 AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
-                if (account != null)
+                if (account != null && account.Authority >= AuthorityType.User && account.Authority < AuthorityType.GameMaster)
                 {
-                    account.Authority = AuthorityType.GameMaster;
+                    account.Authority += 1;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                     if (session != null)
                     {
-                        session.Account.Authority = AuthorityType.GameMaster;
-                        session.Character.Authority = AuthorityType.GameMaster;
+                        session.Account.Authority += 1;
+                        session.Character.Authority += 1;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
                         DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Promotion, $"by: {Session.Character.Name}");
                     }
@@ -1623,7 +1553,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Promote CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(PromotePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1644,7 +1574,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 10));
+                Session.SendPacket(Session.Character.GenerateSay(RarifyPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1722,7 +1652,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ResizePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1735,7 +1665,7 @@ namespace OpenNos.Handler
             Logger.Debug("SearchItem Command", Session.Character.GenerateIdentity());
             if (searchItemPacket != null)
             {
-                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(searchItemPacket.Name == null ? string.Empty : searchItemPacket.Name).OrderBy(s => s.VNum).Take(200).ToList();
+                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(string.IsNullOrEmpty(searchItemPacket.Name) ? string.Empty : searchItemPacket.Name).OrderBy(s => s.VNum).Skip(searchItemPacket.Page * 200).Take(200).ToList();
                 if (itemlist.Any())
                 {
                     foreach (ItemDTO item in itemlist)
@@ -1750,7 +1680,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(SearchItemPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1763,12 +1693,12 @@ namespace OpenNos.Handler
             Logger.Debug("SearchMonster Command", Session.Character.GenerateIdentity());
             if (searchMonsterPacket != null)
             {
-                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(searchMonsterPacket.Name).OrderBy(s => s.NpcMonsterVNum).Take(200).ToList();
+                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(string.IsNullOrEmpty(searchMonsterPacket.Name) ? string.Empty : searchMonsterPacket.Name).OrderBy(s => s.NpcMonsterVNum).Skip(searchMonsterPacket.Page * 200).Take(200).ToList();
                 if (monsterlist.Any())
                 {
                     foreach (NpcMonsterDTO npcMonster in monsterlist)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay($"Monster: {npcMonster.Name} VNum: {npcMonster.NpcMonsterVNum}", 12));
+                        Session.SendPacket(Session.Character.GenerateSay($"Monster: {(string.IsNullOrEmpty(npcMonster.Name) ? "none" : npcMonster.Name)} VNum: {npcMonster.NpcMonsterVNum}", 12));
                     }
                 }
                 else
@@ -1778,7 +1708,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(SearchMonsterPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1800,6 +1730,10 @@ namespace OpenNos.Handler
                     Type = MessageType.Shout
                 });
             }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(ShoutPacket.ReturnHelp(), 10));
+            }
         }
 
         /// <summary>
@@ -1812,6 +1746,10 @@ namespace OpenNos.Handler
             if (shoutHerePacket != null)
             {
                 ServerManager.Instance.Shout(shoutHerePacket.Message);
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(ShoutHerePacket.ReturnHelp(), 10));
             }
         }
 
@@ -1855,7 +1793,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$ShutdownAll WORLDGROUP(*)", 10));
+                Session.SendPacket(Session.Character.GenerateSay(ShutdownAllPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1877,7 +1815,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 10));
+                Session.SendPacket(Session.Character.GenerateSay(SpeedPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1904,6 +1842,10 @@ namespace OpenNos.Handler
             if (eventPacket != null)
             {
                 EventHelper.Instance.GenerateEvent(eventPacket.EventType);
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(EventPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1956,6 +1898,7 @@ namespace OpenNos.Handler
                                 possibilities.Add(new MapCell { X = x, Y = y });
                             }
                         }
+                        // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
                         foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                         {
                             short mapx = (short)(Session.Character.PositionX + possibilitie.X);
@@ -1988,29 +1931,29 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(SummonPacket.ReturnHelp(), 10));
             }
         }
 
         /// <summary>
         /// $SummonNPC Command
         /// </summary>
-        /// <param name="summonPacket"></param>
-        public void SummonNPC(SummonNPCPacket summonPacket)
+        /// <param name="summonNPCPacket"></param>
+        public void SummonNPC(SummonNPCPacket summonNPCPacket)
         {
             // TODO: Fix it, doesn't work!
             Logger.Debug("SummonNPC Command", Session.GenerateIdentity());
-            if (summonPacket != null)
+            if (summonNPCPacket != null)
             {
                 if (Session.IsOnMap && Session.HasCurrentMapInstance)
                 {
-                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(summonPacket.NpcMonsterVNum);
+                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(summonNPCPacket.NpcMonsterVNum);
                     if (npcmonster == null)
                     {
                         return;
                     }
                     Random random = new Random();
-                    for (int i = 0; i < summonPacket.Amount; i++)
+                    for (int i = 0; i < summonNPCPacket.Amount; i++)
                     {
                         List<MapCell> possibilities = new List<MapCell>();
                         for (short x = -4; x < 5; x++)
@@ -2020,6 +1963,7 @@ namespace OpenNos.Handler
                                 possibilities.Add(new MapCell { X = x, Y = y });
                             }
                         }
+                        // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
                         foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                         {
                             short mapx = (short)(Session.Character.PositionX + possibilitie.X);
@@ -2033,12 +1977,12 @@ namespace OpenNos.Handler
                         {
                             MapNpc monster = new MapNpc
                             {
-                                NpcVNum = summonPacket.NpcMonsterVNum,
+                                NpcVNum = summonNPCPacket.NpcMonsterVNum,
                                 MapY = Session.Character.PositionY,
                                 MapX = Session.Character.PositionX,
                                 MapId = Session.Character.MapInstance.Map.MapId,
                                 Position = (byte)Session.Character.Direction,
-                                IsMoving = summonPacket.IsMoving,
+                                IsMoving = summonNPCPacket.IsMoving,
                                 MapNpcId = Session.CurrentMapInstance.GetNextMonsterId()
                             };
                             monster.Initialize(Session.CurrentMapInstance);
@@ -2050,7 +1994,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$SummonNPC VNUM AMOUNT MOVE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(SummonNPCPacket.ReturnHelp(), 10));
             }
         }
 
@@ -2071,8 +2015,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                short mapId;
-                if (short.TryParse(teleportPacket.Data, out mapId))
+                if (short.TryParse(teleportPacket.Data, out short mapId))
                 {
                     ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, teleportPacket.X, teleportPacket.Y);
                 }
@@ -2100,8 +2043,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Teleport MAP X Y", 10));
-                Session.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(TeleportPacket.ReturnHelp(), 10));
             }
         }
 
@@ -2117,11 +2059,10 @@ namespace OpenNos.Handler
             {
                 if (teleportToMePacket.CharacterName == "*")
                 {
-                    foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId))
+                    Parallel.ForEach(ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId), session =>
                     {
                         // clear any shop or trade on target character
                         session.Character.Dispose();
-
                         if (!session.Character.IsChangingMapInstance && Session.HasCurrentMapInstance)
                         {
                             List<MapCell> possibilities = new List<MapCell>();
@@ -2153,7 +2094,7 @@ namespace OpenNos.Handler
                                 ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.MapInstanceId, mapXPossibility, mapYPossibility);
                             }
                         }
-                    }
+                    });
                 }
                 else
                 {
@@ -2163,7 +2104,6 @@ namespace OpenNos.Handler
                     {
                         // clear any shop or trade on target character
                         targetSession.Character.Dispose();
-
                         targetSession.Character.IsSitting = false;
                         ServerManager.Instance.ChangeMapInstance(targetSession.Character.CharacterId, Session.Character.MapInstanceId, (short)(Session.Character.PositionX + 1), (short)(Session.Character.PositionY + 1));
                     }
@@ -2175,7 +2115,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(TeleportToMePacket.ReturnHelp(), 10));
             }
         }
 
@@ -2211,7 +2151,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Unban CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(UnbanPacket.ReturnHelp(), 10));
             }
         }
 
@@ -2263,7 +2203,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay(UnmutePacket.ReturnHelp(), 10));
             }
         }
 
@@ -2284,10 +2224,72 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 10));
+                Session.SendPacket(Session.Character.GenerateSay(UpgradeCommandPacket.ReturnHelp(), 10));
             }
         }
 
+        /// <summary>
+        /// $Warn Command
+        /// </summary>
+        /// <param name="warningPacket"></param>
+        public void Warn(WarningPacket warningPacket)
+        {
+            Logger.Debug(warningPacket.ToString(), Session.Character.GenerateIdentity());
+            if (warningPacket != null)
+            {
+                string characterName = warningPacket.CharacterName;
+                CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
+                if (character != null)
+                {
+                    ClientSession session = ServerManager.Instance.GetSessionByCharacterName(characterName);
+                    if (session != null)
+                    {
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("WARNING"), warningPacket.Reason)));
+                    }
+                    PenaltyLogDTO log = new PenaltyLogDTO
+                    {
+                        AccountId = character.AccountId,
+                        Reason = warningPacket.Reason,
+                        Penalty = PenaltyType.Warning,
+                        DateStart = DateTime.Now,
+                        DateEnd = DateTime.Now,
+                        AdminName = Session.Character.Name
+                    };
+                    Session.Character.InsertOrUpdatePenalty(log);
+                    int penaltyCount = DAOFactory.PenaltyLogDAO.LoadByAccount(character.AccountId).Count(p => p.Penalty == PenaltyType.Warning);
+                    switch (penaltyCount)
+                    {
+                        case 2:
+                            MuteMethod(characterName, "Auto-Warning mute: 2 strikes", 30);
+                            break;
+
+                        case 3:
+                            MuteMethod(characterName, "Auto-Warning mute: 3 strikes", 60);
+                            break;
+
+                        case 4:
+                            MuteMethod(characterName, "Auto-Warning mute: 4 strikes", 720);
+                            break;
+
+                        case 5:
+                            MuteMethod(characterName, "Auto-Warning mute: 5 strikes", 1440);
+                            break;
+
+                        case 6:
+                            MuteMethod(characterName, "You've been THUNDERSTRUCK", 6969); // imagined number as for I = √(-1), complex z = a + bi
+                            break;
+                    }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(WarningPacket.ReturnHelp(), 10));
+            }
+        }
 
         /// <summary>
         /// $WigColor Command
@@ -2314,7 +2316,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 10));
+                Session.SendPacket(Session.Character.GenerateSay(WigColorPacket.ReturnHelp(), 10));
             }
         }
 
@@ -2340,7 +2342,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$XpRate RATE", 10));
+                Session.SendPacket(Session.Character.GenerateSay(XpRatePacket.ReturnHelp(), 10));
             }
         }
 
@@ -2353,7 +2355,65 @@ namespace OpenNos.Handler
             Logger.Debug("Zoom Command", Session.Character.GenerateIdentity());
             Session.SendPacket(zoomPacket != null
                 ? UserInterfaceHelper.Instance.GenerateGuri(15, zoomPacket.Value, Session.Character.CharacterId)
-                : Session.Character.GenerateSay("$Zoom VALUE", 10));
+                : Session.Character.GenerateSay(ZoomPacket.ReturnHelp(), 10));
+        }
+
+        /// <summary>
+        /// private AddMate method
+        /// </summary>
+        /// <param name="vnum"></param>
+        /// <param name="level"></param>
+        /// <param name="mateType"></param>
+        private void AddMate(short vnum, byte level, MateType mateType)
+        {
+            NpcMonster mateNpc = ServerManager.Instance.GetNpc(vnum);
+            if (Session.CurrentMapInstance == Session.Character.Miniland && mateNpc != null)
+            {
+                if (level == 0)
+                {
+                    level = 1;
+                }
+                Mate mate = new Mate(Session.Character, mateNpc, level, mateType);
+                Session.Character.AddPet(mate);
+            }
+            else
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_MINILAND"), 0));
+            }
+        }
+
+        /// <summary>
+        /// private mute method
+        /// </summary>
+        /// <param name="characterName"></param>
+        /// <param name="reason"></param>
+        /// <param name="duration"></param>
+        private void MuteMethod(string characterName, string reason, int duration)
+        {
+            CharacterDTO characterToMute = DAOFactory.CharacterDAO.LoadByName(characterName);
+            if (characterToMute != null)
+            {
+                ClientSession session = ServerManager.Instance.GetSessionByCharacterName(characterName);
+                if (session != null && !session.Character.IsMuted())
+                {
+                    session?.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
+                }
+                PenaltyLogDTO log = new PenaltyLogDTO
+                {
+                    AccountId = characterToMute.AccountId,
+                    Reason = reason,
+                    Penalty = PenaltyType.Muted,
+                    DateStart = DateTime.Now,
+                    DateEnd = DateTime.Now.AddMinutes(duration),
+                    AdminName = Session.Character.Name
+                };
+                Session.Character.InsertOrUpdatePenalty(log);
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+            }
         }
 
         /// <summary>
@@ -2394,18 +2454,19 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
                 IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => s.AccountId == account.AccountId).ToList();
                 PenaltyLogDTO penalty = penaltyLogs.LastOrDefault(s => s.DateEnd > DateTime.Now);
+                Session.SendPacket(Session.Character.GenerateSay("----- PENALTY -----", 13));
                 if (penalty != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateSay("----- PENALTY -----", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"Type: {penalty.Penalty}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"AdminName: {penalty.AdminName}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"Reason: {penalty.Reason}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"DateStart: {penalty.DateStart}", 13));
                     Session.SendPacket(Session.Character.GenerateSay($"DateEnd: {penalty.DateEnd}", 13));
-                    Session.SendPacket(Session.Character.GenerateSay($"Bans: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Banned)}", 13));
-                    Session.SendPacket(Session.Character.GenerateSay($"Mutes: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Muted)}", 13));
-                    Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
                 }
+                Session.SendPacket(Session.Character.GenerateSay($"Bans: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Banned)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Mutes: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Muted)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Warnings: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Warning)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
             }
             ClientSession session = ServerManager.Instance.GetSessionByCharacterName(character.Name);
             if (session != null)

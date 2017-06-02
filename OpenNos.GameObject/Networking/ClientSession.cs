@@ -75,8 +75,7 @@ namespace OpenNos.GameObject
 
             // start observer for receiving packets
             _receiveQueue = new ConcurrentQueue<byte[]>();
-            _receiveQueueObservable = Observable.Interval(new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 10))
-                .Subscribe(x => HandlePackets());
+            _receiveQueueObservable = Observable.Interval(new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 10)).Subscribe(x => HandlePackets());
         }
 
         #endregion
@@ -252,21 +251,14 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SendPacket(object score)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendPacketAfterWait(string packet, int Millisecond)
+        public void SendPacketAfter(string packet, int milliseconds)
         {
             if (!IsDisposing)
             {
-                Observable.Timer(TimeSpan.FromMilliseconds(Millisecond))
-                .Subscribe(
-                 o =>
-                 {
-                     SendPacket(packet);
-                 });
+                Observable.Timer(TimeSpan.FromMilliseconds(milliseconds)).Subscribe(o =>
+                {
+                    SendPacket(packet);
+                });
             }
         }
 
@@ -313,9 +305,9 @@ namespace OpenNos.GameObject
 
         private void ClearReceiveQueue()
         {
-            byte[] outPacket;
-            while (_receiveQueue.TryDequeue(out outPacket))
+            while (_receiveQueue.TryDequeue(out byte[] outPacket))
             {
+                // do nothing
             }
         }
 
@@ -362,8 +354,7 @@ namespace OpenNos.GameObject
         /// </summary>
         private void HandlePackets()
         {
-            byte[] packetData;
-            while (_receiveQueue.TryDequeue(out packetData))
+            while (_receiveQueue.TryDequeue(out byte[] packetData))
             {
                 // determine first packet
                 if (_encryptor.HasCustomParameter && SessionId == 0)
@@ -375,8 +366,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    int lastka;
-                    if (!int.TryParse(sessionParts[0], out lastka))
+                    if (!int.TryParse(sessionParts[0], out int lastka))
                     {
                         Disconnect();
                     }
@@ -387,8 +377,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    int sessid;
-                    if (int.TryParse(sessionParts[1].Split('\\').FirstOrDefault(), out sessid))
+                    if (int.TryParse(sessionParts[1].Split('\\').FirstOrDefault(), out int sessid))
                     {
                         SessionId = sessid;
                         Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), SessionId);
@@ -412,9 +401,7 @@ namespace OpenNos.GameObject
                     {
                         // keep alive
                         string nextKeepAliveRaw = packetsplit[0];
-                        int nextKeepaliveIdentity;
-                        if (!int.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) &&
-                            nextKeepaliveIdentity != LastKeepAliveIdentity + 1)
+                        if (!int.TryParse(nextKeepAliveRaw, out int nextKeepaliveIdentity) && nextKeepaliveIdentity != LastKeepAliveIdentity + 1)
                         {
                             Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"), _client.ClientId);
                             _client.Disconnect();
@@ -489,7 +476,7 @@ namespace OpenNos.GameObject
         /// <param name="e"></param>
         private void OnNetworkClientMessageReceived(object sender, MessageEventArgs e)
         {
-            var message = e.Message as ScsRawDataMessage;
+            ScsRawDataMessage message = e.Message as ScsRawDataMessage;
             if (message == null)
             {
                 return;
@@ -525,14 +512,14 @@ namespace OpenNos.GameObject
         private void OnOtherCharacterDisconnected(object sender, EventArgs e)
         {
             Tuple<long, string> loggedOutCharacter = (Tuple<long, string>)sender;
-
             if (Character.IsFriendOfCharacter(loggedOutCharacter.Item1))
-
+            {
                 if (Character != null && Character.CharacterId != loggedOutCharacter.Item1)
                 {
                     _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item2), 10));
                     _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item1, false));
                 }
+            }
         }
 
         private void TriggerHandler(string packetHeader, string packet, bool force)

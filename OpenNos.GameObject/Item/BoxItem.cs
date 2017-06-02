@@ -66,8 +66,7 @@ namespace OpenNos.GameObject
                             {
                                 if (packetsplit.Length == 1)
                                 {
-                                    int PetId;
-                                    if (int.TryParse(packetsplit[0], out PetId))
+                                    if (int.TryParse(packetsplit[0], out int PetId))
                                     {
                                         Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
                                         box.HoldingVNum = mate.NpcMonsterVNum;
@@ -85,15 +84,19 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                Mate mate = new Mate(session.Character, box.HoldingVNum, 1, MateType.Pet)
+                                NpcMonster heldMonster = ServerManager.Instance.GetNpc(box.HoldingVNum);
+                                if (heldMonster != null)
                                 {
-                                    Attack = box.SpDamage,
-                                    Defence = box.SpDefence
-                                };
-                                if (session.Character.AddPet(mate))
-                                {
-                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
+                                    Mate mate = new Mate(session.Character, heldMonster, 1, MateType.Pet)
+                                    {
+                                        Attack = box.SpDamage,
+                                        Defence = box.SpDefence
+                                    };
+                                    if (session.Character.AddPet(mate))
+                                    {
+                                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
+                                    }
                                 }
                             }
                         }
@@ -107,9 +110,10 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        if (session.CurrentMapInstance == session.Character.Miniland)
+                        NpcMonster heldMonster = ServerManager.Instance.GetNpc((short)EffectValue);
+                        if (session.CurrentMapInstance == session.Character.Miniland && heldMonster != null)
                         {
-                            Mate mate = new Mate(session.Character, (short)EffectValue, LevelMinimum, ItemSubType == 1 ? MateType.Partner : MateType.Pet);
+                            Mate mate = new Mate(session.Character, heldMonster, LevelMinimum, ItemSubType == 1 ? MateType.Partner : MateType.Pet);
                             if (session.Character.AddPet(mate))
                             {
                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -139,7 +143,8 @@ namespace OpenNos.GameObject
                                 List<ItemInstance> newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
                                 if (newInv.Any())
                                 {
-                                    SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(newInv.First().Slot, newInv.First().Type);
+                                    ItemInstance itemInstance = newInv.First();
+                                    SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(itemInstance.Slot, itemInstance.Type);
                                     if (specialist != null)
                                     {
                                         specialist.SlDamage = box.SlDamage;
@@ -191,7 +196,8 @@ namespace OpenNos.GameObject
                                 List<ItemInstance> newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
                                 if (newInv.Any())
                                 {
-                                    WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(newInv.First().Slot, newInv.First().Type);
+                                    ItemInstance itemInstance = newInv.First();
+                                    WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(itemInstance.Slot, itemInstance.Type);
                                     if (fairy != null)
                                     {
                                         fairy.ElementRate = box.ElementRate;

@@ -23,16 +23,17 @@ namespace OpenNos.Core
 
         public LoginEncryption() : base(false)
         {
+            // do nothing
         }
 
         #endregion
 
         #region Methods
 
-        public static string GetPassword(string passcrypt)
+        public static string GetPassword(string password)
         {
-            bool equal = passcrypt.Length % 2 == 0;
-            string str = equal ? passcrypt.Remove(0, 3) : passcrypt.Remove(0, 4);
+            bool equal = password.Length % 2 == 0;
+            string str = equal ? password.Remove(0, 3) : password.Remove(0, 4);
             string decpass = string.Empty;
             for (int i = 0; i < str.Length; i += 2)
             {
@@ -40,7 +41,7 @@ namespace OpenNos.Core
             }
             if (decpass.Length % 2 != 0)
             {
-                str = passcrypt.Remove(0, 2);
+                str = password.Remove(0, 2);
                 decpass = string.Empty;
                 for (int i = 0; i < str.Length; i += 2)
                 {

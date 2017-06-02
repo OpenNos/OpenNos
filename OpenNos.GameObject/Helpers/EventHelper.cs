@@ -327,7 +327,7 @@ namespace OpenNos.GameObject.Helpers
                         break;
 
                     case EventActionType.UNSPAWNMONSTERS:
-                        evt.MapInstance.UnspawnMonsters((int)evt.Parameter);
+                        evt.MapInstance.DespawnMonster((int)evt.Parameter);
                         break;
 
                     case EventActionType.SPAWNMONSTERS:

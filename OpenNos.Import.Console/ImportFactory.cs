@@ -2181,6 +2181,7 @@ namespace OpenNos.Import.Console
                     {
                         skill.TargetType = byte.Parse(currentLine[2]);
                         skill.HitType = byte.Parse(currentLine[3]);
+                        skill.Range = byte.Parse(currentLine[4]);
                         skill.TargetRange = byte.Parse(currentLine[5]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "DATA")
@@ -2191,7 +2192,6 @@ namespace OpenNos.Import.Console
                         skill.Cooldown = short.Parse(currentLine[7]);
                         skill.MpCost = short.Parse(currentLine[10]);
                         skill.ItemVNum = short.Parse(currentLine[12]);
-                        skill.Range = byte.Parse(currentLine[13]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
                     {

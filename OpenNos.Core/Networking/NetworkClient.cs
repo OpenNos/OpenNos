@@ -71,8 +71,6 @@ namespace OpenNos.Core
             if (!IsDisposing && packet != null && packet != string.Empty)
             {
                 ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
-
-                // Logger.Debug(packet, -1);
                 SendMessage(rawMessage, priority);
             }
         }

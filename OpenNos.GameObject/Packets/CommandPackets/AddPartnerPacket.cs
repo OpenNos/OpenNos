@@ -5,8 +5,8 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject.CommandPackets
 {
-    [PacketHeader("$AddPet", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
-    public class AddPetPacket : PacketDefinition
+    [PacketHeader("$AddPartner", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
+    public class AddPartnerPacket : PacketDefinition
     {
         #region Properties
 
@@ -22,12 +22,12 @@ namespace OpenNos.GameObject.CommandPackets
 
         public static string ReturnHelp()
         {
-            return "$AddPet MONSTERVNUM LEVEL";
+            return "$AddPartner MONSTERVNUM LEVEL";
         }
 
         public override string ToString()
         {
-            return $"AddPet Command MonsterVNum: {MonsterVNum} Level: {Level}";
+            return $"AddPartner Command MonsterVNum: {MonsterVNum} Level: {Level}";
         }
 
         #endregion

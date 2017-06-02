@@ -20,6 +20,7 @@ namespace OpenNos.GameObject
 
         public Gift()
         {
+            // do nothing
         }
 
         public Gift(short vnum, byte amount)

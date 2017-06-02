@@ -3,7 +3,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$Gold", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class GoldPacket : PacketDefinition
@@ -12,6 +12,11 @@ namespace OpenNos.GameObject
 
         [PacketIndex(0)]
         public long Amount { get; set; }
+
+        public static string ReturnHelp()
+        {
+            return "$Gold AMOUNT";
+        }
 
         #endregion
     }

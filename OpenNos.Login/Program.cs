@@ -26,6 +26,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
+using System.Threading;
 
 namespace OpenNos.Login
 {
@@ -40,7 +41,9 @@ namespace OpenNos.Login
                 try
                 {
                     CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
-
+#if DEBUG
+                    Thread.Sleep(1000);
+#endif
                     // initialize Logger
                     Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
                     Assembly assembly = Assembly.GetExecutingAssembly();

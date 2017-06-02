@@ -32,9 +32,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (NpcMonster NpcMonster in context.NpcMonster.Where(s => s.Name.Contains(name)))
+                foreach (NpcMonster npcMonster in context.NpcMonster.Where(s => s.Name.Contains(name)))
                 {
-                    yield return _mapper.Map<NpcMonsterDTO>(NpcMonster);
+                    yield return _mapper.Map<NpcMonsterDTO>(npcMonster);
                 }
             }
         }
