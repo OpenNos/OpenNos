@@ -15,8 +15,8 @@
 using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.GameObject.Buff;
 using OpenNos.Master.Library.Client;
 using System;
 using System.Collections.Concurrent;
@@ -119,7 +119,6 @@ namespace OpenNos.GameObject
                 _handlerMethods = value;
             }
         }
-
         public bool HasCurrentMapInstance => CurrentMapInstance != null;
 
         public bool HasSelectedCharacter { get; set; }
@@ -293,7 +292,7 @@ namespace OpenNos.GameObject
             // register for servermanager
             ServerManager.Instance.RegisterSession(this);
             Character.SetSession(this);
-            Character.Buff = new BuffContainer(this);
+            Character.Buff = new List<Buff>();
         }
 
         private void ClearReceiveQueue()

@@ -16,6 +16,8 @@ using OpenNos.Core;
 using OpenNos.Domain;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.GameObject
 {
@@ -24,6 +26,10 @@ namespace OpenNos.GameObject
         #region Members
 
         private int _order;
+
+        public GroupType GroupType { get; set; }
+
+        public ScriptedInstance Raid { get; set; }
 
         #endregion
 
@@ -72,7 +78,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    str.Add($"pst 1 {session.Character.CharacterId} {++i} {(int)(session.Character.Hp / session.Character.HPLoad() * 100)} {(int)(session.Character.Mp / session.Character.MPLoad() * 100)} {session.Character.HPLoad()} {session.Character.MPLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}{session.Character.Buff.GetAllActiveBuffs()}");
+                    str.Add($"pst 1 {session.Character.CharacterId} {++i} {(int)(session.Character.Hp / session.Character.HPLoad() * 100)} {(int)(session.Character.Mp / session.Character.MPLoad() * 100)} {session.Character.HPLoad()} {session.Character.MPLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}{(session.Character.Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}"))}");
                 }
             }
             return str;
@@ -108,6 +114,15 @@ namespace OpenNos.GameObject
             return Characters != null && Characters.Any(s => s?.Character?.CharacterId == session.Character.CharacterId);
         }
 
+        public string GenerateRdlst()
+        {
+            string result = string.Empty;
+            result = $"rdlst{((GroupType == GroupType.GiantTeam) ? "f" : "")} {Raid.LevelMinimum} {Raid.LevelMaximum} 0";
+            Characters.ForEach(session => result += $" {session.Character.Level}.{(session.Character.UseSp || session.Character.IsVehicled ? session.Character.Morph : -1)}.{(short)session.Character.Class}.0.{session.Character.Name}.{(short)session.Character.Gender}.{session.Character.CharacterId}.{session.Character.HeroLevel}");
+
+            return result;
+        }
+
         public void JoinGroup(long characterId)
         {
             ClientSession session = ServerManager.Instance.GetSessionByCharacterId(characterId);
@@ -126,9 +141,26 @@ namespace OpenNos.GameObject
         public void LeaveGroup(ClientSession session)
         {
             session.Character.Group = null;
+            if(session.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+            {
+                ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+            }
+            if(IsLeader(session) && GroupType != GroupType.Group && Characters.Count > 1)
+            {
+                Characters.ForEach(s=> s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TEAM_LEADER_CHANGE"), Characters.ElementAt(0).Character?.Name), 0)));
+            }
             Characters.RemoveAll(s => s?.Character.CharacterId == session.Character.CharacterId);
         }
 
+        public bool IsLeader(ClientSession session)
+        {
+            return Characters.ElementAt(0) == session;
+        }
+
+        public string GeneraterRaidmbf()
+        {
+            return $"raidmbf {Raid?.FirstMap?.InstanceBag.MonsterLocker.Initial} {Raid?.FirstMap?.InstanceBag.MonsterLocker.Current} {Raid?.FirstMap?.InstanceBag.ButtonLocker.Initial} {Raid?.FirstMap?.InstanceBag.ButtonLocker.Current} {Raid?.FirstMap?.InstanceBag.Lives} {Raid?.FirstMap?.InstanceBag.Lives - Raid?.FirstMap?.InstanceBag.DeadList.Count()} 25";
+        }
         #endregion
     }
 }

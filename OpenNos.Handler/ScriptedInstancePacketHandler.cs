@@ -50,8 +50,8 @@ namespace OpenNos.Handler
             {
                 Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(Session.Character.MapId);
                 MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
-                ScriptedInstance scriptedInstance = map.TimeSpaces.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
-                if (scriptedInstance != null)
+                ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
+                if (si != null)
                 {
                     Session.Character.GetReput(scriptedInstance.Reputation);
 
@@ -96,13 +96,13 @@ namespace OpenNos.Handler
         /// <param name="treqPacket"></param>
         public void GetTreq(TreqPacket treqPacket)
         {
-            ScriptedInstance timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY).GetClone();
+            ScriptedInstance timespace = Session.CurrentMapInstance.ScriptedInstances.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY).GetClone();
 
             if (timespace != null)
             {
                 if (treqPacket.StartPress == 1 || treqPacket.RecordPress == 1)
                 {
-                    timespace.LoadScript();
+                    timespace.LoadScript(MapInstanceType.TimeSpaceInstance);
                     if (timespace.FirstMap == null) return;
                     foreach (var i in timespace.RequieredItems)
                     {
@@ -133,6 +133,42 @@ namespace OpenNos.Handler
                 }
             }
         }
+        /// <summary>
+        /// mkraid packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void GenerateRaid(MkraidPacket packet)
+        {
+            if (Session.Character.Group?.Raid != null && Session.Character.Group.IsLeader(Session))
+            {
+                Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
+                if (Session.Character.Group.Raid.FirstMap == null) return;
+                Session.Character.Group.Raid.FirstMap.InstanceBag.Lock = true;
+                if (Session.Character.Group.CharacterCount > 4)
+                {
+                    Session.Character.Group.Characters.Where(s => s.CurrentMapInstance != Session.CurrentMapInstance).ToList().ForEach(
+                    session =>
+                    {
+                        Session.Character.Group.LeaveGroup(session);
+                    });
+                    Session.Character.Group.Raid.FirstMap.InstanceBag.Lives = (short)Session.Character.Group.CharacterCount;
+                    Session.Character.Group.Characters.ForEach(
+                    session =>
+                    {
+                        ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.Group.Raid.FirstMap.MapInstanceId, Session.Character.Group.Raid.StartX, Session.Character.Group.Raid.StartY);
+                        session.SendPacket("raidbf 0 0 25");
+                        session.SendPacket(session.Character.Group.GeneraterRaidmbf());
+                        session.SendPacket(session.Character.GenerateRaid(5, false));
+                        session.SendPacket(session.Character.GenerateRaid(4, false));
+                        session.SendPacket(session.Character.GenerateRaid(3, false));
+                    });
+                }
+                else
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg("RAID_TEAM_NOT_READY", 0));
+                }
+            }
+        }
 
         /// <summary>
         /// wreq packet
@@ -140,7 +176,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void GetWreq(WreqPacket packet)
         {
-            foreach (ScriptedInstance portal in Session.CurrentMapInstance.TimeSpaces)
+            foreach (ScriptedInstance portal in Session.CurrentMapInstance.ScriptedInstances)
             {
                 if (Session.Character.PositionY >= portal.PositionY - 1 && Session.Character.PositionY <= portal.PositionY + 1
                     && Session.Character.PositionX >= portal.PositionX - 1 && Session.Character.PositionX <= portal.PositionX + 1)

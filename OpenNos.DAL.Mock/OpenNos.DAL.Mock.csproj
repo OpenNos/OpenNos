@@ -73,6 +73,7 @@
     <Compile Include="Base\BaseDAO.cs" />
     <Compile Include="Base\SynchronizableBaseDAO.cs" />
     <Compile Include="BazaarItemDAO.cs" />
+    <Compile Include="BCardDAO.cs" />
     <Compile Include="CardDAO.cs" />
     <Compile Include="CellonOptionDAO.cs" />
     <Compile Include="CharacterDAO.cs" />
@@ -86,7 +87,6 @@
     <Compile Include="FamilyDAO.cs" />
     <Compile Include="FamilyLogDAO.cs" />
     <Compile Include="GeneralLogDAO.cs" />
-    <Compile Include="ItemCardDAO.cs" />
     <Compile Include="ItemInstanceDAO.cs" />
     <Compile Include="ItemDAO.cs" />
     <Compile Include="MailDAO.cs" />
@@ -109,8 +109,8 @@
     <Compile Include="ShopDAO.cs" />
     <Compile Include="ShopItemDAO.cs" />
     <Compile Include="ShopSkillDAO.cs" />
-    <Compile Include="SkillCardDAO.cs" />
     <Compile Include="SkillDAO.cs" />
+    <Compile Include="StaticBuffDAO.cs" />
     <Compile Include="StaticBonusDAO.cs" />
     <Compile Include="TeleporterDAO.cs" />
   </ItemGroup>

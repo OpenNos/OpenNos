@@ -240,20 +240,8 @@
   <data name="PARSE_CARDS" xml:space="preserve">
     <value>Do you want to parse Cards?</value>
   </data>
-  <data name="PARSE_SKILLCARDS" xml:space="preserve">
-    <value>Do you want to parse SkillCards?</value>
-  </data>
   <data name="CARDS_PARSED" xml:space="preserve">
     <value>{0} cards parsed</value>
-  </data>
-  <data name="SKILLCARDS_PARSED" xml:space="preserve">
-    <value>{0} skillcards parsed</value>
-  </data>
-  <data name="ITEMCARDS_PARSED" xml:space="preserve">
-    <value>{0} itemcards parsed</value>
-  </data>
-  <data name="PARSE_ITEMCARDS" xml:space="preserve">
-    <value>Do you want to parse ItemCards?</value>
   </data>
   <data name="TIMESPACES_PARSED" xml:space="preserve">
     <value>{0} timespaces parsed</value>

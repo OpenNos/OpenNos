@@ -12,11 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using CloneExtensions;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.GameObject.Buff.Indicators;
-using OpenNos.GameObject.Buff.Indicators.Item;
 using OpenNos.GameObject.Helpers;
 using System;
 using System.Linq;
@@ -37,6 +36,8 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
+            inv.Item.BCards.ForEach(c => c.ApplyBCards(session.Character));
+
             switch (Effect)
             {
                 // sp point potions
@@ -69,18 +70,33 @@ namespace OpenNos.GameObject
                     break;
 
                 case 301:
-                    if (session.Character.Raid != null) return;
-                    ItemInstance raidSeal = session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
-                    Raid raid = new Raid(raidSeal.Item);
-                    raid.Join(session);
-                    if (session.Character.Raid == null)
+                    if (ServerManager.Instance.IsCharacterMemberOfGroup(session.Character.CharacterId))
                     {
+                        //TODO you are in group
                         return;
                     }
+                    ItemInstance raidSeal = session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
-                    raid.SendCreationPacket(session);
-                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 0));
-                    ServerManager.Instance.AddRaid(raid);
+
+                    ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj => obj.VNum == raidSeal.ItemVNum)).GetClone();
+                    if (raid != null)
+                    {
+                        Group group = new Group();
+                        group.GroupType = GroupType.Team;
+                        group.Raid = raid;
+                        group.JoinGroup(session.Character.CharacterId);
+                        ServerManager.Instance.AddGroup(group);
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 0));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 10));
+                        if (session.Character.Level > raid.LevelMaximum || session.Character.Level < raid.LevelMinimum)
+                        {
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RAID_LEVEL_INCORRECT"), 10));
+                        }
+                        session.SendPacket(session.Character.GenerateRaid(2, false));
+                        session.SendPacket(session.Character.GenerateRaid(0, false));
+                        session.SendPacket(session.Character.GenerateRaid(1, false));
+                        session.SendPacket(group.GenerateRdlst());
+                    }
                     break;
 
                 case 305:
@@ -95,35 +111,13 @@ namespace OpenNos.GameObject
 
                 //Atk/Def/HP/Exp potions
                 case 6600:
-                    switch (EffectValue)
-                    {
-                        case 1:
-                            IndicatorBase buff1 = new AttackPotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
-                            session.Character.Buff.Add(buff1);
-                            break;
-
-                        case 2:
-                            IndicatorBase buff2 = new DefensePotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
-                            session.Character.Buff.Add(buff2);
-                            break;
-
-                        case 3:
-                            IndicatorBase buff3 = new EnergyPotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
-                            session.Character.Buff.Add(buff3);
-                            break;
-
-                        case 4:
-                            IndicatorBase buff4 = new ExperiencePotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
-                            session.Character.Buff.Add(buff4);
-                            break;
-                    }
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
 
+                case 208:
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    session.Character.AddStaticBuff(new StaticBuffDTO() { CardId = 121 });
+                    break;
                 // Divorce letter
                 case 6969: // this is imaginary number I = √(-1)
                     break;
@@ -419,6 +413,9 @@ namespace OpenNos.GameObject
                     break;
             }
         }
+
+
+
 
         #endregion
     }

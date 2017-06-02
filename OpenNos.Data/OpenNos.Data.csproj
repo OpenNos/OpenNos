@@ -73,6 +73,7 @@
     <Compile Include="Base\MappingBaseDTO.cs" />
     <Compile Include="Base\SynchronizableBaseDTO.cs" />
     <Compile Include="BazaarItemDTO.cs" />
+    <Compile Include="BCardDTO.cs" />
     <Compile Include="BoxItemDTO.cs" />
     <Compile Include="CardDTO.cs" />
     <Compile Include="CellonOptionDTO.cs" />
@@ -89,7 +90,6 @@
     <Compile Include="Interfaces\IItemInstance.cs" />
     <Compile Include="Interfaces\ISpecialistInstance.cs" />
     <Compile Include="Interfaces\IWearableInstance.cs" />
-    <Compile Include="ItemCardDTO.cs" />
     <Compile Include="MailDTO.cs" />
     <Compile Include="MapMonsterDTO.cs" />
     <Compile Include="MapNpcDTO.cs" />
@@ -115,7 +115,6 @@
     <Compile Include="Enums\DeleteResult.cs" />
     <Compile Include="Enums\SaveResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SkillCardDTO.cs" />
     <Compile Include="SkillDTO.cs" />
     <Compile Include="ShopSkillDTO.cs" />
     <Compile Include="CharacterSkillDTO.cs" />

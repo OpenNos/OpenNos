@@ -12,9 +12,11 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.DAL.EF
 {
@@ -24,8 +26,7 @@ namespace OpenNos.DAL.EF
 
         public Card()
         {
-            SkillCard = new HashSet<SkillCard>();
-            ItemCard = new HashSet<ItemCard>();
+            BCards = new HashSet<BCard>();
         }
 
         #endregion
@@ -38,28 +39,26 @@ namespace OpenNos.DAL.EF
 
         public int Duration { get; set; }
 
-        public int EffectId { get; set; }
-
-        public int FirstData { get; set; }
-
-        public virtual ICollection<ItemCard> ItemCard { get; set; }
+        public int EffectId { get; set; }   
 
         public byte Level { get; set; }
 
         [MaxLength(255)]
         public string Name { get; set; }
 
-        public short Period { get; set; }
+        public int Delay { get; set; }
 
-        public byte Propability { get; set; }
+        public short TimeoutBuff { get; set; } 
 
-        public int SecondData { get; set; }
+        public byte TimeoutBuffChance { get; set; }
 
-        public virtual ICollection<SkillCard> SkillCard { get; set; }
+        public CardType BuffType { get; set; }
 
-        public byte SubType { get; set; }
+        public byte Propability { get; set; }   
 
-        public short Type { get; set; }
+        public virtual ICollection<BCard> BCards { get; set; }
+
+        public virtual ICollection<StaticBuff> StaticBuff { get; set; }
 
         #endregion
     }

@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IBazaarItemDAO.cs" />
+    <Compile Include="IBCardDAO.cs" />
     <Compile Include="ICardDAO.cs" />
     <Compile Include="IFamilyCharacterDAO.cs" />
     <Compile Include="IFamilyDAO.cs" />
@@ -108,10 +109,10 @@
     <Compile Include="IMapDAO.cs" />
     <Compile Include="INpcMonsterDAO.cs" />
     <Compile Include="IPortalDAO.cs" />
-    <Compile Include="ISkillCardDAO.cs" />
     <Compile Include="ISkillDAO.cs" />
     <Compile Include="IShopSkillDAO.cs" />
     <Compile Include="ICharacterSkillDAO.cs" />
+    <Compile Include="IStaticBuffDAO.cs" />
     <Compile Include="IStaticBonusDAO.cs" />
     <Compile Include="ISynchronizableBaseDAO.cs" />
     <Compile Include="ITeleporterDAO.cs" />

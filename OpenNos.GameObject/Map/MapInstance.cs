@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
             _random = new Random();
             Map = map;
             MapInstanceId = guid;
-            TimeSpaces = new List<ScriptedInstance>();
+            ScriptedInstances = new List<ScriptedInstance>();
             OnCharacterDiscoveringMapEvents = new List<Tuple<EventContainer, List<long>>>();
             OnMoveOnMapEvents = new List<EventContainer>();
             OnMapClean = new List<EventContainer>();
@@ -151,7 +151,7 @@ namespace OpenNos.GameObject
 
         public bool ShopAllowed { get; set; }
 
-        public List<ScriptedInstance> TimeSpaces { get; set; }
+        public List<ScriptedInstance> ScriptedInstances { get; set; }
 
         public Dictionary<long, MapShop> UserShops { get; }
 
@@ -267,8 +267,8 @@ namespace OpenNos.GameObject
             });
             // TODO: Parallelize getting of items of mapinstance
             Portals.ForEach(s => packets.Add(s.GenerateGp()));
-            TimeSpaces.ForEach(s => packets.Add(s.GenerateWp()));
-
+            ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList().ForEach(s => packets.Add(s.GenerateWp()));
+           
             Monsters.ForEach(s => packets.Add(s.GenerateIn()));
             Npcs.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateNPCShopOnMap());
@@ -499,9 +499,10 @@ namespace OpenNos.GameObject
                 NpcMonster npcmonster = ServerManager.Instance.GetNpc(mon.VNum);
                 if (npcmonster != null)
                 {
-                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.X, MapX = mon.SpawnCell.Y, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents, IsTarget = mon.IsTarget, IsBonus = mon.IsBonus };
+                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.Y, MapX = mon.SpawnCell.X, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents, IsTarget = mon.IsTarget, IsBonus = mon.IsBonus };
                     monster.Initialize(this);
                     monster.IsHostile = mon.IsHostile;
+                    monster.Monster.BCards.ForEach(c => c.ApplyBCards(monster));
                     AddMonster(monster);
                     Broadcast(monster.GenerateIn());
                     ids.Add(monster.MapMonsterId);
@@ -540,6 +541,7 @@ namespace OpenNos.GameObject
                     ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
                 }
                 _monsters.Dispose();
+                _npcs.Dispose();
             }
         }
 

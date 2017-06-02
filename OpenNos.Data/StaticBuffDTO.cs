@@ -14,17 +14,17 @@
 
 namespace OpenNos.Data
 {
-    public class StaticBuffDTO
+    public class StaticBuffDTO : MappingBaseDTO
     {
         #region Properties
 
         public long CharacterId { get; set; }
 
-        public int EffectId { get; set; }
-
         public int RemainingTime { get; set; }
 
         public long StaticBuffId { get; set; }
+      
+        public short CardId { get; set; }
 
         #endregion
     }

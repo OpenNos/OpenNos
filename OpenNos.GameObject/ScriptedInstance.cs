@@ -61,13 +61,15 @@ namespace OpenNos.GameObject
 
         public int Reputation { get; set; }
 
+        public short StartX { get; set; }
+
+        public short StartY { get; set; }
+
         public List<Gift> RequieredItems { get; set; }
 
         public int RoomAmount { get; internal set; }
 
         public List<Gift> SpecialItems { get; set; }
-
-        public ScriptedInstanceType Type { get; set; }
 
         #endregion
 
@@ -144,7 +146,17 @@ namespace OpenNos.GameObject
                 Gold = gold;
                 int.TryParse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value, out int reputation);
                 Reputation = reputation;
-                byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out byte lives);
+
+                short startx = 0;
+                short.TryParse(def.SelectSingleNode("StartX")?.Attributes["Value"].Value, out startx);
+                StartX = startx;
+
+                short starty = 0;
+                short.TryParse(def.SelectSingleNode("StartY")?.Attributes["Value"].Value, out starty);
+                StartY = starty;
+
+                byte lives;
+                byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out lives);
                 Lives = lives;
                 if (def.SelectSingleNode("RequieredItems")?.ChildNodes != null)
                 {
@@ -177,7 +189,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void LoadScript()
+        public void LoadScript(MapInstanceType mapinstancetype)
         {
             XmlDocument doc = new XmlDocument();
             if (Script != null)
@@ -191,9 +203,15 @@ namespace OpenNos.GameObject
                     if (variable.Name == "CreateMap")
                     {
                         _instancebag.Lives = Lives;
-                        MapInstance newmap = ServerManager.Instance.GenerateMapInstance(short.Parse(variable?.Attributes["VNum"].Value), MapInstanceType.TimeSpaceInstance, _instancebag);
-                        newmap.MapIndexX = byte.Parse(variable?.Attributes["IndexX"].Value);
-                        newmap.MapIndexY = byte.Parse(variable?.Attributes["IndexY"].Value);
+                        MapInstance newmap = ServerManager.Instance.GenerateMapInstance(short.Parse(variable?.Attributes["VNum"].Value), mapinstancetype, _instancebag);
+                        byte indexx;
+                        byte.TryParse(variable?.Attributes["IndexX"]?.Value, out indexx);
+                        newmap.MapIndexX = indexx;
+
+                        byte indexy;
+                        byte.TryParse(variable?.Attributes["IndexY"]?.Value, out indexy);
+                        newmap.MapIndexY = indexy;
+
                         if (!_mapinstancedictionary.ContainsKey(int.Parse(variable?.Attributes["Map"].Value)))
                         {
                             _mapinstancedictionary.Add(int.Parse(variable?.Attributes["Map"].Value), newmap);
@@ -296,12 +314,7 @@ namespace OpenNos.GameObject
                 {
                     mapinstance = parentmapinstance;
                 }
-                MapCell cell = mapinstance?.Map?.GetRandomPosition();
-                if (cell != null && (positionX == -1 || positionY == -1))
-                {
-                    positionX = cell.X;
-                    positionY = cell.Y;
-                }
+                MapCell cell;
                 switch (mapevent.Name)
                 {
                     //master events
@@ -318,7 +331,18 @@ namespace OpenNos.GameObject
                     case "OnCharacterDiscoveringMap":
                     case "OnMoveOnMap":
                     case "OnMapClean":
+                    case "OnLockerOpen":
                         evts.Add(new EventContainer(mapinstance, EventActionType.REGISTEREVENT, new Tuple<string, List<EventContainer>>(mapevent.Name, GenerateEvent(mapevent, mapinstance))));
+                        break;
+
+                    case "SetMonsterLockers":
+                        _instancebag.MonsterLocker.Current = byte.Parse(mapevent?.Attributes["Value"]?.Value);
+                        _instancebag.MonsterLocker.Initial = _instancebag.MonsterLocker.Current;
+                        break;
+
+                    case "SetButtonLockers":
+                        _instancebag.ButtonLocker.Current = byte.Parse(mapevent?.Attributes["Value"]?.Value);
+                        _instancebag.ButtonLocker.Initial = _instancebag.ButtonLocker.Current;
                         break;
 
                     //child events
@@ -332,6 +356,15 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SummonMonster":
+                        if (positionX == -1 || positionY == -1)
+                        {
+                            cell = mapinstance?.Map?.GetRandomPosition();
+                            if (cell != null)
+                            {
+                                positionX = cell.X;
+                                positionY = cell.Y;
+                            }
+                        }
                         MonsterAmount++;
                         List<MonsterToSummon> lst = new List<MonsterToSummon>
                         {
@@ -348,7 +381,20 @@ namespace OpenNos.GameObject
                             short.Parse(mapevent?.Attributes["Amount"].Value), new List<EventContainer>(), isMate, isProtected)));
                         break;
 
+                    case "RefreshRaidGoals":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.REFRESHRAIDGOAL, null));
+                        break;
+                        
                     case "SummonNpc":
+                        if (positionX == -1 || positionY == -1)
+                        {
+                            cell = mapinstance?.Map?.GetRandomPosition();
+                            if (cell != null)
+                            {
+                                positionX = cell.X;
+                                positionY = cell.Y;
+                            }
+                        }
                         NpcAmount++;
                         List<NpcToSummon> lstn = new List<NpcToSummon>
                         {
@@ -358,6 +404,15 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SpawnButton":
+                        if (positionX == -1 || positionY == -1)
+                        {
+                            cell = mapinstance?.Map?.GetRandomPosition();
+                            if (cell != null)
+                            {
+                                positionX = cell.X;
+                                positionY = cell.Y;
+                            }
+                        }
                         MapButton button = new MapButton(
                             int.Parse(mapevent?.Attributes["Id"].Value), positionX, positionY, 
                             short.Parse(mapevent?.Attributes["VNumEnabled"].Value), 
@@ -394,6 +449,14 @@ namespace OpenNos.GameObject
                         evts.Add(new EventContainer(mapinstance, EventActionType.REFRESHMAPITEMS, null));
                         break;
 
+                    case "RemoveMonsterLocker":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.REMOVEMONSTERLOCKER, null));
+                        break;
+
+                    case "RemoveButtonLocker":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.REMOVEBUTTONLOCKER, null));
+                        break;
+
                     case "ChangePortalType":
                         evts.Add(new EventContainer(mapinstance, EventActionType.CHANGEPORTALTYPE, 
                             new Tuple<int, PortalType>(int.Parse(mapevent?.Attributes["IdOnMap"].Value), (PortalType)sbyte.Parse(mapevent?.Attributes["Type"].Value))));
@@ -417,6 +480,10 @@ namespace OpenNos.GameObject
 
                     case "GenerateMapClock":
                         evts.Add(new EventContainer(mapinstance, EventActionType.MAPCLOCK, int.Parse(mapevent?.Attributes["Value"].Value)));
+                        break;
+
+                    case "Teleport":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.TELEPORT, new Tuple<short, short, short, short>(short.Parse(mapevent?.Attributes["PositionX"].Value), short.Parse(mapevent?.Attributes["PositionY"].Value), short.Parse(mapevent?.Attributes["DestinationX"].Value), short.Parse(mapevent?.Attributes["DestinationY"].Value))));
                         break;
 
                     case "StartClock":

@@ -23,6 +23,7 @@ namespace OpenNos.Domain
         OnlySomeone = 4,
         AllNoEmoBlocked = 5,
         AllNoHeroBlocked = 6,
-        Group = 7
+        Group = 7,
+        AllExceptGroup = 8
     }
 }

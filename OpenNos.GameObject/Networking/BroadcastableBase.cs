@@ -212,7 +212,25 @@ namespace OpenNos.GameObject
                             }
                         });
                         break;
-
+                    case ReceiverType.AllExceptGroup:
+                        foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId && (s.Character?.Group == null || (s.Character?.Group?.GroupId != sentPacket.Sender?.Character?.Group?.GroupId))))
+                        {
+                            if (session.HasSelectedCharacter)
+                            {
+                                if (sentPacket.Sender != null)
+                                {
+                                    if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
+                                    {
+                                        session.SendPacket(sentPacket.Packet);
+                                    }
+                                }
+                                else
+                                {
+                                    session.SendPacket(sentPacket.Packet);
+                                }
+                            }
+                        }
+                        break;
                     case ReceiverType.AllInRange: // send to everyone which is in a range of 50x50
                         if (sentPacket.XCoordinate != 0 && sentPacket.YCoordinate != 0)
                         {

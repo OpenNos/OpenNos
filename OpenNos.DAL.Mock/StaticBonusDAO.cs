@@ -22,6 +22,10 @@ namespace OpenNos.DAL.Mock
 {
     public class StaticBonusDAO : BaseDAO<StaticBonusDTO>, IStaticBonusDAO
     {
+        public void Delete(short bonusToDelete, long characterId)
+        {
+            throw new NotImplementedException();
+        }
         #region Methods
 
         public SaveResult InsertOrUpdate(ref StaticBonusDTO staticBonus)
@@ -30,6 +34,11 @@ namespace OpenNos.DAL.Mock
         }
 
         public IEnumerable<StaticBonusDTO> LoadByCharacterId(long characterId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<short> LoadTypeByCharacterId(long characterId)
         {
             throw new NotImplementedException();
         }

@@ -294,6 +294,18 @@ namespace OpenNos.Handler
                             return;
                         }
 
+                        if (targetSession.Character.Group != null && targetSession.Character.Group?.GroupType != GroupType.Group)
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_NOT_ALLOWED_IN_RAID"), 0));
+                            return;
+                        }
+
+                        if (Session.Character.Group != null && Session.Character.Group?.GroupType != GroupType.Group)
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_NOT_ALLOWED_WITH_RAID_MEMBER"), 0));
+                            return;
+                        }
+
                         if (Session.Character.IsBlockedByCharacter(exchangeRequestPacket.CharacterId))
                         {
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
@@ -353,6 +365,17 @@ namespace OpenNos.Handler
 
                             if (targetSession == null)
                             {
+                                return;
+                            }
+                            if (Session.Character.Group != null && Session.Character.Group?.GroupType != GroupType.Group)
+                            {
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_NOT_ALLOWED_IN_RAID"), 0));
+                                return;
+                            }
+
+                            if (targetSession.Character.Group != null && targetSession.Character.Group?.GroupType != GroupType.Group)
+                            {
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_NOT_ALLOWED_WITH_RAID_MEMBER"), 0));
                                 return;
                             }
 
@@ -464,6 +487,18 @@ namespace OpenNos.Handler
                             {
                                 return;
                             }
+                            if (Session.Character.Group != null && Session.Character.Group?.GroupType != GroupType.Group)
+                            {
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_NOT_ALLOWED_IN_RAID"), 0));
+                                return;
+                            }
+
+                            if (otherSession.Character.Group != null && otherSession.Character.Group?.GroupType != GroupType.Group)
+                            {
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_NOT_ALLOWED_WITH_RAID_MEMBER"), 0));
+                                return;
+                            }
+
                             Session.SendPacket($"exc_list 1 {exchangeRequestPacket.CharacterId} -1");
                             ExchangeInfo exc = new ExchangeInfo
                             {
@@ -803,6 +838,7 @@ namespace OpenNos.Handler
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                             return;
                         }
+                        Session.Character.EquipmentBCards.RemoveAll(o => o.ItemVnum == inventory.ItemVNum);
                     }
 
                     ItemInstance inv = Session.Character.Inventory.MoveInInventory(removePacket.InventorySlot, equipment, InventoryType.Equipment);
@@ -828,6 +864,7 @@ namespace OpenNos.Handler
                     {
                         Session.SendPacket(mate.GenerateScPacket());
                     }
+
                 }
             }
         }
@@ -1641,7 +1678,7 @@ namespace OpenNos.Handler
         public void Withdraw(WithdrawPacket withdrawPacket)
         {
             ItemInstance previousInventory = Session.Character.Inventory.LoadBySlotAndType(withdrawPacket.Slot, withdrawPacket.PetBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse);
-            if (withdrawPacket.Amount <= 0 || previousInventory == null || withdrawPacket.Amount > previousInventory.Amount)
+            if (withdrawPacket.Amount <= 0 || previousInventory == null || withdrawPacket.Amount > previousInventory.Amount || !Session.Character.Inventory.CanAddItem(previousInventory.ItemVNum))
             {
                 return;
             }
@@ -1673,7 +1710,11 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                     return;
                 }
-                Session.Character.Buff.Clear();
+                List<BuffType> bufftodisable = new List<BuffType>();
+                bufftodisable.Add(BuffType.Bad);
+                bufftodisable.Add(BuffType.Good);
+                bufftodisable.Add(BuffType.Neutral);
+                Session.Character.DisableBuffs(bufftodisable);
                 Session.Character.LastTransform = DateTime.Now;
                 Session.Character.UseSp = true;
                 Session.Character.Morph = sp.Item.Morph;
@@ -1781,7 +1822,11 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                Session.Character.Buff.Clear();
+                List<BuffType> bufftodisable = new List<BuffType>();
+                bufftodisable.Add(BuffType.Bad);
+                bufftodisable.Add(BuffType.Good);
+                bufftodisable.Add(BuffType.Neutral);
+                Session.Character.DisableBuffs(bufftodisable);
                 Logger.Debug(Session.Character.GenerateIdentity(), vnum.ToString());
                 Session.Character.UseSp = false;
                 Session.Character.LoadSpeed();

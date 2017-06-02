@@ -16,8 +16,6 @@ using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.GameObject.Buff;
-using OpenNos.GameObject.Buff.BCard;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.Master.Library.Client;
@@ -29,7 +27,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
-using Type = OpenNos.GameObject.Buff.BCard.Type;
+using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.GameObject
 {
@@ -54,17 +52,20 @@ namespace OpenNos.GameObject
             StaticBonusList = new List<StaticBonusDTO>();
             MinilandObjects = new List<MinilandObject>();
             Mates = new List<Mate>();
+            EquipmentBCards = new List<BCard>();
         }
 
         #endregion
 
         #region Properties
 
+        public List<BCard> EquipmentBCards { get; set; }
+
         public AuthorityType Authority { get; set; }
 
         public Node[,] BrushFire { get; set; }
 
-        public BuffContainer Buff { get; internal set; }
+        public List<Buff> Buff { get; internal set; }
 
         public bool CanFight => !IsSitting && ExchangeInfo == null;
 
@@ -191,8 +192,6 @@ namespace OpenNos.GameObject
 
         public DateTime LastHealth { get; set; }
 
-        public DateTime LastMailRefresh { get; set; }
-
         public DateTime LastMapObject { get; set; }
 
         public int LastMonsterId { get; set; }
@@ -258,8 +257,6 @@ namespace OpenNos.GameObject
         public short PositionY { get; set; }
 
         public List<QuicklistEntryDTO> QuicklistEntries { get; private set; }
-
-        public Raid Raid { get; set; }
 
         public RespawnMapTypeDTO Respawn
         {
@@ -366,7 +363,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                byte bonusSpeed = (byte)Buff.Get(Type.Speed, SubType.Increase, false)[0];
+                byte bonusSpeed = (byte)GetBuff(CardType.Move, (byte)AdditionalTypes.Move.SetMovementNegated, false)[0];
                 if (_speed + bonusSpeed > 59)
                 {
                     return 59;
@@ -498,7 +495,7 @@ namespace OpenNos.GameObject
                         Pos = 1
                     }
                 };
-            if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session)))
+            if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session) && s.GroupType == GroupType.Group))
             {
                 Session.CurrentMapInstance?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
             }
@@ -532,15 +529,20 @@ namespace OpenNos.GameObject
             }
             else
             {
-                WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
                 if (CurrentMinigame != 0 && LastEffect.AddSeconds(3) <= DateTime.Now)
                 {
                     MapInstance.Broadcast(GenerateEff(CurrentMinigame));
                     LastEffect = DateTime.Now;
                 }
-
+              
                 if (LastEffect.AddSeconds(5) <= DateTime.Now)
                 {
+                    if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        Session.SendPacket(Session.Character.GenerateRaid(3, false));
+                    }
+
+                    WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
                     if (amulet != null)
                     {
                         if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
@@ -551,6 +553,11 @@ namespace OpenNos.GameObject
                         {
                             Session.CurrentMapInstance?.Broadcast(GenerateEff(amulet.Item.EffectValue), PositionX, PositionY);
                         }
+                    }
+                    if (Group != null && (Group.GroupType == GroupType.Team || Group.GroupType == GroupType.BigTeam || Group.GroupType == GroupType.GiantTeam))
+                    {
+                        Session.CurrentMapInstance?.Broadcast(Session, GenerateEff(828 + (Group.IsLeader(Session) ? 1 : 0)), ReceiverType.AllExceptGroup);
+                        Session.CurrentMapInstance?.Broadcast(Session, GenerateEff(830 + (Group.IsLeader(Session) ? 1 : 0)), ReceiverType.Group);
                     }
                     Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateEff(3007)));
                     LastEffect = DateTime.Now;
@@ -602,7 +609,14 @@ namespace OpenNos.GameObject
                         }
                         if (change)
                         {
-                            Session.SendPacket(GenerateStat());
+                            if (Session.Character.Group != null)
+                            {
+                                Session.Character.Group.Characters.ForEach(s => ServerManager.Instance.GetSessionByCharacterId(s.Character.CharacterId)?.SendPacket(Session.Character.GenerateStat()));
+                            }
+                            else
+                            {
+                                Session.SendPacket(GenerateStat());
+                            }
                         }
                     }
                 }
@@ -830,22 +844,21 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            foreach (ItemInstance item in Inventory.GetAllItems())
-            {
-                if (item.IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
-                {
-                    Inventory.DeleteById(item.Id);
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
-                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
-                }
-            }
 
             foreach (ItemInstance item in Inventory.GetAllItems())
             {
                 if (item.IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                 {
                     Inventory.DeleteById(item.Id);
-                    Session.SendPacket(GenerateEquipment());
+                    Session.Character.EquipmentBCards.RemoveAll(o => o.ItemVnum == item.ItemVNum);
+                    if (item.Type == InventoryType.Wear)
+                    {
+                        Session.SendPacket(GenerateEquipment());
+                    }
+                    else
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
+                    }
                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                 }
             }
@@ -924,9 +937,9 @@ namespace OpenNos.GameObject
             int monsterDefence = 0;
             int monsterDodge = 0;
 
-            int morale = Level + Buff.Get(Type.Morale, SubType.Increase, false)[0];
+            int morale = Level + GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleIncreased, false)[0];
 
-            short mainUpgrade = (short)Buff.Get(Type.Damage, SubType.IncreaseLevel, false)[0];
+            short mainUpgrade = (short)GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0];
             int mainCritChance = 0;
             int mainCritHit = 0;
             int mainMinDmg = 0;
@@ -991,10 +1004,10 @@ namespace OpenNos.GameObject
                         mainMinDmg = secMinDmg;
                         mainUpgrade = secUpgrade;
                     }
-                    boost = Buff.Get(Type.Damage, SubType.Increase, false)[0]
-                        + Buff.Get(Type.Damage, SubType.IncreaseMelee, false)[0];
-                    boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, false)[0]
-                        + Buff.Get(Type.Damage, SubType.IncreaseMeleePercentage, false)[0];
+                    boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
+                        + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0];
+                    boostpercentage = GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0]
+                        + GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
                     mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -1013,10 +1026,10 @@ namespace OpenNos.GameObject
                         mainMinDmg = secMinDmg;
                         mainUpgrade = secUpgrade;
                     }
-                    boost = Buff.Get(Type.Damage, SubType.Increase, false)[0]
-                        + Buff.Get(Type.Damage, SubType.IncreaseDistance, false)[0];
-                    boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, false)[0]
-                        + Buff.Get(Type.Damage, SubType.IncreaseDistancePercentage, false)[0];
+                    boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
+                        + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, false)[0];
+                    boostpercentage = GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0]
+                        + GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
                     mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -1025,10 +1038,10 @@ namespace OpenNos.GameObject
 
                 case 2:
                     monsterDefence = monsterToAttack.Monster.MagicDefence;
-                    boost = Buff.Get(Type.Damage, SubType.Increase, false)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseMagic, false)[0];
-                    boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, false)[0]
-                        + Buff.Get(Type.Damage, SubType.IncreaseMagicPercentage, false)[0];
+                    boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, false)[0];
+                    boostpercentage = GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0]
+                        + GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
                     mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -1040,10 +1053,10 @@ namespace OpenNos.GameObject
                     {
                         case ClassType.Swordman:
                             monsterDefence = monsterToAttack.Monster.CloseDefence;
-                            boost = Buff.Get(Type.Damage, SubType.Increase, false)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseMelee, false)[0];
-                            boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, false)[0]
-                                + Buff.Get(Type.Damage, SubType.IncreaseMeleePercentage, false)[0];
+                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0];
+                            boostpercentage = GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0]
+                                + GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
                             mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -1052,10 +1065,10 @@ namespace OpenNos.GameObject
 
                         case ClassType.Archer:
                             monsterDefence = monsterToAttack.Monster.DistanceDefence;
-                            boost = Buff.Get(Type.Damage, SubType.Increase, false)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseDistance, false)[0];
-                            boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, false)[0]
-                                + Buff.Get(Type.Damage, SubType.IncreaseDistancePercentage, false)[0];
+                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, false)[0];
+                            boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
+                                + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedDecreased, false)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
                             mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -1064,10 +1077,10 @@ namespace OpenNos.GameObject
 
                         case ClassType.Magician:
                             monsterDefence = monsterToAttack.Monster.MagicDefence;
-                            boost = Buff.Get(Type.Damage, SubType.Increase, false)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseMagic, false)[0];
-                            boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, false)[0]
-                                + Buff.Get(Type.Damage, SubType.IncreaseMagicPercentage, false)[0];
+                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, false)[0];
+                            boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
+                                + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, false)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
                             mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -1076,10 +1089,10 @@ namespace OpenNos.GameObject
 
                         case ClassType.Adventurer:
                             monsterDefence = monsterToAttack.Monster.CloseDefence;
-                            boost = Buff.Get(Type.Damage, SubType.Increase, false)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseMelee, false)[0];
-                            boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, false)[0]
-                                + Buff.Get(Type.Damage, SubType.IncreaseMeleePercentage, false)[0];
+                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0];
+                            boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
+                                + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
                             mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -1102,8 +1115,8 @@ namespace OpenNos.GameObject
                     }
                     if (Class == ClassType.Magician)
                     {
-                        boost = Buff.Get(Type.Damage, SubType.Increase, false)[0] + Buff.Get(Type.Damage, SubType.IncreaseMagic, false)[0];
-                        boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, false)[0] + Buff.Get(Type.Damage, SubType.IncreaseMagicPercentage, false)[0];
+                        boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0] + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, false)[0];
+                        boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0] + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, false)[0];
                         mainMinDmg += boost;
                         mainMaxDmg += boost;
                         mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -1111,8 +1124,8 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        boost = Buff.Get(Type.Damage, SubType.Increase, false)[0] + Buff.Get(Type.Damage, SubType.IncreaseMelee, false)[0];
-                        boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, false)[0] + Buff.Get(Type.Damage, SubType.IncreaseMeleePercentage, false)[0];
+                        boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0] + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0];
+                        boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0] + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0];
                         mainMinDmg += boost;
                         mainMaxDmg += boost;
                         mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -1125,10 +1138,10 @@ namespace OpenNos.GameObject
 
             #region Basic Damage Data Calculation
 
-            mainCritChance += Buff.Get(Type.Damage, SubType.IncreaseCriticalChance, false)[0];
-            mainCritChance -= Buff.Get(Type.Damage, SubType.DecreaseCriticalChance, false)[0];
-            mainCritHit += Buff.Get(Type.Damage, SubType.IncreaseCriticalDamage, false)[0];
-            mainCritHit -= Buff.Get(Type.Damage, SubType.DecreaseCriticalDamage, false)[0];
+            mainCritChance += GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageIncreased, false)[0];
+            mainCritChance -= GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, false)[0];
+            mainCritHit += GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageIncreased, false)[0];
+            mainCritHit -= GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, false)[0];
 
             mainUpgrade -= monsterToAttack.Monster.DefenceUpgrade;
             if (mainUpgrade < -10)
@@ -1158,7 +1171,7 @@ namespace OpenNos.GameObject
                 {
                     chance = 1;
                 }
-                if (Buff.Get(Type.Effect, SubType.EagleEyes, false)[0] != 0)
+                if (GetBuff(CardType.DodgeAndDefencePercent, (byte)AdditionalTypes.DodgeAndDefencePercent.DodgeIncreased, false)[0] != 0)
                 {
                     chance = 10;
                 }
@@ -1177,15 +1190,15 @@ namespace OpenNos.GameObject
             #region Base Damage
 
             int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg, mainMaxDmg + 1);
-            baseDamage += skill.Damage / 4;
+            // baseDamage += skill.Damage / 4; it's a bcard need a skillbcardload
             baseDamage += morale - monsterToAttack.Monster.Level; //Morale
             if (Class == ClassType.Adventurer)
             {
                 //HACK: Damage is ~10 lower in OpenNos than in official. Fix this...
                 baseDamage += 20;
             }
-            int elementalDamage = Buff.Get(Type.Element, SubType.Increase, false)[0];
-            elementalDamage += skill.ElementalDamage / 4;
+            int elementalDamage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0];
+            //   elementalDamage += skill.ElementalDamage / 4; it's a bcard need a skillbcardload
             switch (mainUpgrade)
             {
                 case -10:
@@ -1299,7 +1312,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1:
-                    elementalDamage += Buff.Get(Type.Element, SubType.IncreaseFire, false)[0];
+                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.FireIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.FireResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1326,7 +1339,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 2:
-                    elementalDamage += Buff.Get(Type.Element, SubType.IncreaseWater, false)[0];
+                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.WaterIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.WaterResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1353,7 +1366,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 3:
-                    elementalDamage += Buff.Get(Type.Element, SubType.IncreaseLight, false)[0];
+                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.LightIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.LightResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1380,7 +1393,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 4:
-                    elementalDamage += Buff.Get(Type.Element, SubType.IncreaseShadow, false)[0];
+                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.DarkIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.DarkResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1449,10 +1462,10 @@ namespace OpenNos.GameObject
             #region Critical Damage
 
             baseDamage -= monsterDefence;
-            if (Buff.Get(Type.Damage, SubType.NeverCritical, false)[0] == 0)
+            if (GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, false)[0] == 0)
             {
                 if (ServerManager.Instance.RandomNumber() <= mainCritChance
-                    || Buff.Get(Type.Damage, SubType.AlwaysCritical, false)[0] != 0)
+                    || GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0] != 0)
                 {
                     if (skill.Type == 2)
                     {
@@ -1931,7 +1944,7 @@ namespace OpenNos.GameObject
                 }
                 fairy = Inventory.LoadBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
             }
-            return $"in 1 {(Authority == AuthorityType.Moderator ? "[Support]" + Name : Name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {Group?.GroupId ?? -1} {(fairy != null ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {Family?.FamilyId ?? -1} {Family?.Name ?? "-"} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
+            return $"in 1 {(Authority == AuthorityType.Moderator ? "[Support]" + Name : Name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (Group?.GroupId ?? -1) : -1)} {(fairy != null ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {Family?.FamilyId ?? -1} {Family?.Name ?? "-"} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
         }
 
         public string GenerateInvisible()
@@ -1992,7 +2005,7 @@ namespace OpenNos.GameObject
                                     }
                                     else
                                     {
-                                        if (group != null)
+                                        if (group != null && group.GroupType == GroupType.Group)
                                         {
                                             if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                                             {
@@ -2286,7 +2299,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePinit()
         {
-            Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId));
+            Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId) && s.GroupType == GroupType.Group);
             List<Mate> mates = Mates;
             int i = 0;
             string str = string.Empty;
@@ -2334,11 +2347,7 @@ namespace OpenNos.GameObject
         public string GeneratePStashAll()
         {
             string stash = $"pstash_all {(StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)}";
-            foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.PetWarehouse))
-            {
-                stash += $" {item.GenerateStashPacket()}";
-            }
-            return stash;
+            return Inventory.GetAllItems().Where(s => s.Type == InventoryType.PetWarehouse).Aggregate(stash, (current, item) => current + $" {item.GenerateStashPacket()}");
         }
 
         public int GeneratePVPDamage(Character target, Skill skill, ref int hitmode)
@@ -2351,14 +2360,14 @@ namespace OpenNos.GameObject
             }
 
             // int miss_chance = 20;
-            int monsterMorale = target.Level + target.Buff.Get(Type.Morale, SubType.Increase, true)[0];
-            int monsterDefence = target.Buff.Get(Type.Defense, SubType.Increase, true)[0] - target.Buff.Get(Type.Defense, SubType.Decrease, true)[0] + monsterMorale;
+            int monsterMorale = target.Level + target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0];
+            int monsterDefence = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0] - target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllIncreased, true)[0] + monsterMorale;
 
-            int monsterDodge = target.Buff.Get(Type.Dodge, SubType.Increase, true)[0] + monsterMorale;
-            short monsterDefLevel = (short)target.Buff.Get(Type.Defense, SubType.IncreaseLevel, true)[0];
+            int monsterDodge = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0] + monsterMorale;
+            short monsterDefLevel = (short)target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.DefenceLevelDecreased, true)[0];
 
-            int morale = Level + Buff.Get(Type.Morale, SubType.Increase, true)[0];
-            short mainUpgrade = (short)Buff.Get(Type.Damage, SubType.IncreaseLevel, true)[0];
+            int morale = Level + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0];
+            short mainUpgrade = (short)GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0];
             int mainCritChance = 0;
             int mainCritHit = 0;
             int mainMinDmg = 0;
@@ -2418,16 +2427,16 @@ namespace OpenNos.GameObject
             switch (skill.Type)
             {
                 case 0:
-                    boost = target.Buff.Get(Type.Defense, SubType.IncreaseMelee, true)[0];
-                    boostpercentage = target.Buff.Get(Type.Defense, SubType.IncreaseMeleePercentage, true)[0];
-                    boost -= target.Buff.Get(Type.Defense, SubType.DecreaseMelee, true)[0];
-                    boostpercentage -= target.Buff.Get(Type.Defense, SubType.DecreaseMeleePercentage, true)[0];
+                    boost = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                    boostpercentage = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                    boost -= target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllDecreased, true)[0];
+                    boostpercentage -= target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.DefenceLevelDecreased, true)[0];
                     monsterDefence += target.Defence + boost;
                     monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
-                    boost = target.Buff.Get(Type.Dodge, SubType.IncreaseMelee, true)[0];
-                    boost -= target.Buff.Get(Type.Defense, SubType.DecreaseMelee, true)[0];
-                    boostpercentage = target.Buff.Get(Type.Dodge, SubType.IncreaseMeleePercentage, true)[0];
-                    boostpercentage += target.Buff.Get(Type.Dodge, SubType.IncreasePercentage, true)[0];
+                    boost = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                    boost -= target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, true)[0];
+                    boostpercentage = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                    boostpercentage += target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0];
                     monsterDodge += target.DefenceRate + boost;
                     monsterDodge = (int)(monsterDodge * (1 + boostpercentage / 100D));
 
@@ -2440,11 +2449,11 @@ namespace OpenNos.GameObject
                         mainMinDmg = secMinDmg;
                         mainUpgrade = secUpgrade;
                     }
-                    boost = Buff.Get(Type.Damage, SubType.Increase, true)[0]
-                        + Buff.Get(Type.Damage, SubType.IncreaseMelee, true)[0];
-                    boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, true)[0]
-                        + Buff.Get(Type.Damage, SubType.IncreaseMeleePercentage, true)[0]
-                        - target.Buff.Get(Type.Damage, SubType.DecreaseMeleePercentage, true, true)[0];
+                    boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+                        + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                    boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+                        + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0]
+                        - target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageDecreased, true, true)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
                     mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -2452,15 +2461,15 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1:
-                    boost = target.Buff.Get(Type.Defense, SubType.IncreaseDistance, true)[0];
-                    boostpercentage = target.Buff.Get(Type.Defense, SubType.IncreaseDistancePercentage, true)[0];
-                    boost -= target.Buff.Get(Type.Defense, SubType.DecreaseDistance, true)[0];
-                    boostpercentage -= target.Buff.Get(Type.Defense, SubType.DecreaseDistancePercentage, true)[0];
+                    boost = target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedIncreased, true)[0];
+                    boostpercentage = target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.DefenceLevelDecreased, true)[0];
+                    boost -= target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedDecreased, true)[0];
+                    boostpercentage -= target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedIncreased, true)[0];
                     monsterDefence += target.DistanceDefence + boost;
                     monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
-                    boost = target.Buff.Get(Type.Dodge, SubType.IncreaseDistance, true)[0];
-                    boostpercentage = target.Buff.Get(Type.Dodge, SubType.IncreaseDistancePercentage, true)[0];
-                    boostpercentage += target.Buff.Get(Type.Dodge, SubType.IncreasePercentage, true)[0];
+                    boost = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, true)[0];
+                    boostpercentage = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, true)[0];
+                    boostpercentage += target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0];
                     monsterDodge += target.DistanceDefenceRate + boost;
                     monsterDodge = (int)(monsterDodge * (1 + boostpercentage / 100D));
                     if (Class == ClassType.Swordman || Class == ClassType.Adventurer || Class == ClassType.Magician)
@@ -2472,11 +2481,11 @@ namespace OpenNos.GameObject
                         mainMinDmg = secMinDmg;
                         mainUpgrade = secUpgrade;
                     }
-                    boost = Buff.Get(Type.Damage, SubType.Increase, true)[0]
-                        + Buff.Get(Type.Damage, SubType.IncreaseDistance, true)[0];
-                    boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, true)[0]
-                        + Buff.Get(Type.Damage, SubType.IncreaseDistancePercentage, true)[0]
-                        - target.Buff.Get(Type.Damage, SubType.DecreaseDistancePercentage, true, true)[0];
+                    boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+                        + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, true)[0];
+                    boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+                        + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, true)[0]
+                        - target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedDecreased, true, true)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
                     mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -2484,18 +2493,18 @@ namespace OpenNos.GameObject
                     break;
 
                 case 2:
-                    boost = target.Buff.Get(Type.Defense, SubType.IncreaseMagic, true)[0];
-                    boostpercentage = target.Buff.Get(Type.Defense, SubType.IncreaseMagicPercentage, true)[0];
-                    boost -= target.Buff.Get(Type.Defense, SubType.DecreaseMagic, true)[0];
-                    boostpercentage -= target.Buff.Get(Type.Defense, SubType.DecreaseMagicPercentage, true)[0];
+                    boost = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, true)[0];
+                    boostpercentage = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, true)[0];
+                    boost -= target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalDecreased, true)[0];
+                    boostpercentage -= target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalDecreased, true)[0];
                     monsterDefence += target.MagicalDefence + boost;
                     monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
 
-                    boost = Buff.Get(Type.Damage, SubType.Increase, true)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseMagic, true)[0];
-                    boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, true)[0]
-                        + Buff.Get(Type.Damage, SubType.IncreaseMagicPercentage, true)[0]
-                        - target.Buff.Get(Type.Damage, SubType.DecreaseMagicPercentage, true, true)[0];
+                    boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, true)[0];
+                    boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+                        + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, true)[0]
+                        - target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalDecreased, true, true)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
                     mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -2506,17 +2515,17 @@ namespace OpenNos.GameObject
                     switch (Class)
                     {
                         case ClassType.Swordman:
-                            boost = target.Buff.Get(Type.Defense, SubType.IncreaseMelee, true)[0];
-                            boostpercentage = target.Buff.Get(Type.Defense, SubType.IncreaseMeleePercentage, true)[0];
-                            boost -= target.Buff.Get(Type.Defense, SubType.DecreaseMelee, true)[0];
-                            boostpercentage -= target.Buff.Get(Type.Defense, SubType.DecreaseMeleePercentage, true)[0];
+                            boost = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                            boostpercentage = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                            boost -= target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, true)[0];
+                            boostpercentage -= target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, true)[0];
                             monsterDefence += target.Defence + boost;
                             monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
-                            boost = Buff.Get(Type.Damage, SubType.Increase, true)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseMelee, true)[0];
-                            boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, true)[0]
-                                + Buff.Get(Type.Damage, SubType.IncreaseMeleePercentage, true)[0]
-                                - target.Buff.Get(Type.Damage, SubType.DecreaseMeleePercentage, true, true)[0];
+                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                            boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+                                + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0]
+                                - target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, true, true)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
                             mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -2524,15 +2533,15 @@ namespace OpenNos.GameObject
                             break;
 
                         case ClassType.Archer:
-                            boost = target.Buff.Get(Type.Defense, SubType.IncreaseDistance, true)[0];
-                            boostpercentage = target.Buff.Get(Type.Defense, SubType.IncreaseDistancePercentage, true)[0];
+                            boost = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, true)[0];
+                            boostpercentage = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedDecreased, true)[0];
                             monsterDefence += target.DistanceDefence + boost;
                             monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
-                            boost = Buff.Get(Type.Damage, SubType.Increase, true)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseDistance, true)[0];
-                            boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, true)[0]
-                                + Buff.Get(Type.Damage, SubType.IncreaseDistancePercentage, true)[0]
-                                - target.Buff.Get(Type.Damage, SubType.DecreaseDistancePercentage, true, true)[0];
+                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, true)[0];
+                            boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+                                + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, true)[0]
+                                - target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedDecreased, true, true)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
                             mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -2540,17 +2549,17 @@ namespace OpenNos.GameObject
                             break;
 
                         case ClassType.Magician:
-                            boost = target.Buff.Get(Type.Defense, SubType.IncreaseMagic, true)[0];
-                            boostpercentage = target.Buff.Get(Type.Defense, SubType.IncreaseMagicPercentage, true)[0];
-                            boost -= target.Buff.Get(Type.Defense, SubType.DecreaseMagic, true)[0];
-                            boostpercentage -= target.Buff.Get(Type.Defense, SubType.DecreaseMagicPercentage, true)[0];
+                            boost = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, true)[0];
+                            boostpercentage = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, true)[0];
+                            boost -= target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalDecreased, true)[0];
+                            boostpercentage -= target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalDecreased, true)[0];
                             monsterDefence += target.MagicalDefence + boost;
                             monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
-                            boost = Buff.Get(Type.Damage, SubType.Increase, true)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseMagic, true)[0];
-                            boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, true)[0]
-                                + Buff.Get(Type.Damage, SubType.IncreaseMagicPercentage, true)[0]
-                                - target.Buff.Get(Type.Damage, SubType.DecreaseMagicPercentage, true, true)[0];
+                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, true)[0];
+                            boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+                                + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, true)[0]
+                                - target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalDecreased, true, true)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
                             mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -2558,17 +2567,17 @@ namespace OpenNos.GameObject
                             break;
 
                         case ClassType.Adventurer:
-                            boost = target.Buff.Get(Type.Defense, SubType.IncreaseMelee, true)[0];
-                            boostpercentage = target.Buff.Get(Type.Defense, SubType.IncreaseMeleePercentage, true)[0];
-                            boost -= target.Buff.Get(Type.Defense, SubType.DecreaseMelee, true)[0];
-                            boostpercentage -= target.Buff.Get(Type.Defense, SubType.DecreaseMeleePercentage, true)[0];
+                            boost = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                            boostpercentage = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                            boost -= target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, true)[0];
+                            boostpercentage -= target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, true)[0];
                             monsterDefence += target.Defence + boost;
                             monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
-                            boost = Buff.Get(Type.Damage, SubType.Increase, true)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseMelee, true)[0];
-                            boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, true)[0]
-                                + Buff.Get(Type.Damage, SubType.IncreaseMeleePercentage, true)[0]
-                                - target.Buff.Get(Type.Damage, SubType.DecreaseMeleePercentage, true, true)[0];
+                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                            boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+                                + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0]
+                                - target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, true, true)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
                             mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -2578,10 +2587,10 @@ namespace OpenNos.GameObject
                     break;
 
                 case 5:
-                    boost = target.Buff.Get(Type.Defense, SubType.IncreaseMelee, true)[0];
-                    boostpercentage = target.Buff.Get(Type.Defense, SubType.IncreaseMeleePercentage, true)[0];
-                    boost -= target.Buff.Get(Type.Defense, SubType.DecreaseMelee, true)[0];
-                    boostpercentage -= target.Buff.Get(Type.Defense, SubType.DecreaseMeleePercentage, true)[0];
+                    boost = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                    boostpercentage = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                    boost -= target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, true)[0];
+                    boostpercentage -= target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, true)[0];
                     monsterDefence += target.Defence + boost;
                     monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
                     if (Class == ClassType.Archer)
@@ -2595,11 +2604,11 @@ namespace OpenNos.GameObject
                     }
                     if (Class == ClassType.Magician)
                     {
-                        boost = Buff.Get(Type.Damage, SubType.Increase, true)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseMagic, true)[0];
-                        boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, true)[0]
-                            + Buff.Get(Type.Damage, SubType.IncreaseMagicPercentage, true)[0]
-                            - target.Buff.Get(Type.Damage, SubType.DecreaseMagicPercentage, true, true)[0];
+                        boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, true)[0];
+                        boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+                            + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, true)[0]
+                            - target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalDecreased, true, true)[0];
                         mainMinDmg += boost;
                         mainMaxDmg += boost;
                         mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -2607,11 +2616,11 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        boost = Buff.Get(Type.Damage, SubType.Increase, true)[0]
-    + Buff.Get(Type.Damage, SubType.IncreaseMelee, true)[0];
-                        boostpercentage = Buff.Get(Type.Damage, SubType.IncreasePercentage, true)[0]
-                            + Buff.Get(Type.Damage, SubType.IncreaseMeleePercentage, true)[0]
-                            - target.Buff.Get(Type.Damage, SubType.DecreaseMeleePercentage, true, true)[0];
+                        boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0];
+                        boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0]
+                            + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, true)[0]
+                            - target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, true, true)[0];
                         mainMinDmg += boost;
                         mainMaxDmg += boost;
                         mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
@@ -2624,14 +2633,14 @@ namespace OpenNos.GameObject
 
             #region Basic Damage Data Calculation
 
-            mainCritChance += Buff.Get(Type.Damage, SubType.IncreaseCriticalChance, true)[0];
-            mainCritChance -= Buff.Get(Type.Damage, SubType.DecreaseCriticalChance, true)[0];
-            mainCritChance += target.Buff.Get(Type.Defense, SubType.IncreaseCriticalChance, true)[0];
-            mainCritChance -= target.Buff.Get(Type.Defense, SubType.DecreaseCriticalChance, true)[0];
-            mainCritHit += Buff.Get(Type.Damage, SubType.IncreaseCriticalDamage, true)[0];
-            mainCritHit -= Buff.Get(Type.Damage, SubType.DecreaseCriticalDamage, true)[0];
-            mainCritHit += target.Buff.Get(Type.Defense, SubType.IncreaseCriticalDamage, true)[0];
-            mainCritHit -= target.Buff.Get(Type.Defense, SubType.DecreaseCriticalDamage, true)[0];
+            mainCritChance += GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageIncreasingPropability, true)[0];
+            mainCritChance -= GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, true)[0];
+            mainCritChance += target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageIncreasingPropability, true)[0];
+            mainCritChance -= target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalIncreased, true)[0];
+            mainCritHit += GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalIncreased, true)[0];
+            mainCritHit -= GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, true)[0];
+            mainCritHit += target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalIncreased, true)[0];
+            mainCritHit -= target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, true)[0];
 
             mainUpgrade -= monsterDefLevel;
             if (mainUpgrade < -10)
@@ -2661,7 +2670,7 @@ namespace OpenNos.GameObject
                 {
                     chance = 1;
                 }
-                if (Buff.Get(Type.Effect, SubType.EagleEyes, true)[0] != 0)
+                if (GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.IgnoreEnemyMorale, true)[0] != 0)
                 {
                     chance = 10;
                 }
@@ -2680,15 +2689,15 @@ namespace OpenNos.GameObject
             #region Base Damage
 
             int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg, mainMaxDmg + 1);
-            baseDamage += skill.Damage / 4;
+            //baseDamage += skill.Damage / 4;  it's a bcard need a skillbcardload
             baseDamage += Level - target.Level; //Morale
             if (Class == ClassType.Adventurer)
             {
                 //HACK: Damage is ~10 lower in OpenNos than in official. Fix this...
                 baseDamage += 20;
             }
-            int elementalDamage = Buff.Get(Type.Element, SubType.Increase, true)[0];
-            elementalDamage += skill.ElementalDamage / 4;
+            int elementalDamage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0];
+            //  elementalDamage += skill.ElementalDamage / 4;  it's a bcard need a skillbcardload
             switch (mainUpgrade)
             {
                 case -10:
@@ -2784,7 +2793,7 @@ namespace OpenNos.GameObject
 
             #region Elementary Damage
 
-            int bonusrez = target.Buff.Get(Type.Resistance, SubType.Increase, true)[0];
+            int bonusrez = target.GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, true)[0];
 
             #region Calculate Elemental Boost + Rate
 
@@ -2796,8 +2805,8 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1:
-                    bonusrez += target.Buff.Get(Type.Resistance, SubType.IncreaseFire, true)[0];
-                    elementalDamage += Buff.Get(Type.Element, SubType.IncreaseFire, true)[0];
+                    bonusrez += target.GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.FireIncreased, true)[0];
+                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.FireDecreased, true)[0];
                     monsterResistance = target.FireResistance;
                     switch (target.Element)
                     {
@@ -2824,8 +2833,8 @@ namespace OpenNos.GameObject
                     break;
 
                 case 2:
-                    bonusrez += target.Buff.Get(Type.Resistance, SubType.IncreaseWater, true)[0];
-                    elementalDamage += Buff.Get(Type.Element, SubType.IncreaseWater, true)[0];
+                    bonusrez += target.GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.WaterIncreased, true)[0];
+                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.WaterIncreased, true)[0];
                     monsterResistance = target.WaterResistance;
                     switch (target.Element)
                     {
@@ -2852,8 +2861,8 @@ namespace OpenNos.GameObject
                     break;
 
                 case 3:
-                    bonusrez += target.Buff.Get(Type.Resistance, SubType.IncreaseLight, true)[0];
-                    elementalDamage += Buff.Get(Type.Element, SubType.IncreaseLight, true)[0];
+                    bonusrez += target.GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.LightIncreased, true)[0];
+                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.LightDecreased, true)[0];
                     monsterResistance = target.LightResistance;
                     switch (target.Element)
                     {
@@ -2880,8 +2889,8 @@ namespace OpenNos.GameObject
                     break;
 
                 case 4:
-                    bonusrez += target.Buff.Get(Type.Resistance, SubType.IncreaseShadow, true)[0];
-                    elementalDamage += Buff.Get(Type.Element, SubType.IncreaseShadow, true)[0];
+                    bonusrez += target.GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.DarkIncreased, true)[0];
+                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.DarkDecreased, true)[0];
                     monsterResistance = target.DarkResistance;
                     switch (target.Element)
                     {
@@ -2954,12 +2963,12 @@ namespace OpenNos.GameObject
             #region Critical Damage
 
             baseDamage -= monsterDefence;
-            if (Buff.Get(Type.Damage, SubType.NeverCritical, true)[0] == 0
-                && target.Buff.Get(Type.Damage, SubType.NeverCritical, true, true)[0] == 0)
+            if (GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingDecreased, true)[0] == 0
+                && target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingDecreased, true, true)[0] == 0)
             {
                 if (ServerManager.Instance.RandomNumber() <= mainCritChance
-                    || Buff.Get(Type.Damage, SubType.AlwaysCritical, true)[0] != 0
-                    || target.Buff.Get(Type.Damage, SubType.AlwaysCritical, true, true)[0] != 0)
+                    || GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingIncreased, true)[0] != 0
+                    || target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingIncreased, true, true)[0] != 0)
                 {
                     if (skill.Type == 2)
                     {
@@ -3030,16 +3039,16 @@ namespace OpenNos.GameObject
             {
                 if (bz.Item != null)
                 {
-                    int SoldedAmount = bz.BazaarItem.Amount - bz.Item.Amount;
-                    int Amount = bz.BazaarItem.Amount;
-                    bool Package = bz.BazaarItem.IsPackage;
-                    bool IsNosbazar = bz.BazaarItem.MedalUsed;
-                    long Price = bz.BazaarItem.Price;
-                    long MinutesLeft = (long)(bz.BazaarItem.DateStart.AddHours(bz.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
-                    byte Status = MinutesLeft >= 0 ? (SoldedAmount < Amount ? (byte)BazaarType.OnSale : (byte)BazaarType.Solded) : (byte)BazaarType.DelayExpired;
+                    int soldedAmount = bz.BazaarItem.Amount - bz.Item.Amount;
+                    int amount = bz.BazaarItem.Amount;
+                    bool package = bz.BazaarItem.IsPackage;
+                    bool isNosbazar = bz.BazaarItem.MedalUsed;
+                    long price = bz.BazaarItem.Price;
+                    long minutesLeft = (long)(bz.BazaarItem.DateStart.AddHours(bz.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
+                    byte Status = minutesLeft >= 0 ? (soldedAmount < amount ? (byte)BazaarType.OnSale : (byte)BazaarType.Solded) : (byte)BazaarType.DelayExpired;
                     if (Status == (byte)BazaarType.DelayExpired)
                     {
-                        MinutesLeft = (long)(bz.BazaarItem.DateStart.AddHours(bz.BazaarItem.Duration).AddDays(IsNosbazar ? 30 : 7) - DateTime.Now).TotalMinutes;
+                        minutesLeft = (long)(bz.BazaarItem.DateStart.AddHours(bz.BazaarItem.Duration).AddDays(isNosbazar ? 30 : 7) - DateTime.Now).TotalMinutes;
                     }
                     string info = string.Empty;
                     if (bz.Item.Item.Type == InventoryType.Equipment)
@@ -3052,7 +3061,7 @@ namespace OpenNos.GameObject
 
                     if (packet.Filter == 0 || packet.Filter == Status)
                     {
-                        list += $"{bz.BazaarItem.BazaarItemId}|{bz.BazaarItem.SellerId}|{bz.Item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1 : 0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar ? 1 : 0)}|0|{bz.Item.Rare}|{bz.Item.Upgrade}|{info} ";
+                        list += $"{bz.BazaarItem.BazaarItemId}|{bz.BazaarItem.SellerId}|{bz.Item.ItemVNum}|{soldedAmount}|{amount}|{(package ? 1 : 0)}|{price}|{Status}|{minutesLeft}|{(isNosbazar ? 1 : 0)}|0|{bz.Item.Rare}|{bz.Item.Upgrade}|{info} ";
                     }
                 }
             }
@@ -3074,27 +3083,27 @@ namespace OpenNos.GameObject
                 weapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
             }
 
-            bool isPVPPrimary = false;
-            bool isPVPSecondary = false;
-            bool isPVPArmor = false;
+            bool isPvpPrimary = false;
+            bool isPvpSecondary = false;
+            bool isPvpArmor = false;
 
             if (weapon?.Item.Name.Contains(": ") == true)
             {
-                isPVPPrimary = true;
+                isPvpPrimary = true;
             }
             if (weapon2?.Item.Name.Contains(": ") == true)
             {
-                isPVPSecondary = true;
+                isPvpSecondary = true;
             }
             if (armor?.Item.Name.Contains(": ") == true)
             {
-                isPVPArmor = true;
+                isPvpArmor = true;
             }
 
             // tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph
             // talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary
             // ispvparmor herolvl desc
-            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} {(Family != null ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPVPPrimary ? 1 : 0)} {(isPVPSecondary ? 1 : 0)} {(isPVPArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
+            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} {(Family != null ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPvpPrimary ? 1 : 0)} {(isPvpSecondary ? 1 : 0)} {(isPvpArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
         }
 
         public string GenerateRest()
@@ -3190,7 +3199,8 @@ namespace OpenNos.GameObject
             return $"sp {SpAdditionPoint} 1000000 {SpPoint} 10000";
         }
 
-        [Obsolete("GenerateStartupInventory is deprecated, for refreshing inventory please use GenerateInventoryAdd instead.")]
+
+        [Obsolete("GenerateStartupInventory should be used only on startup, for refreshing an inventory slot please use GenerateInventoryAdd instead.")]
         public void GenerateStartupInventory()
         {
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
@@ -3198,6 +3208,7 @@ namespace OpenNos.GameObject
             {
                 foreach (ItemInstance inv in Inventory.GetAllItems())
                 {
+                    EquipmentBCards.AddRange(inv.Item.BCards);
                     switch (inv.Type)
                     {
                         case InventoryType.Equipment:
@@ -3326,10 +3337,10 @@ namespace OpenNos.GameObject
             DistanceRate = CharacterHelper.DistanceRate(Class, Level);
             DistanceCriticalRate = CharacterHelper.DistCriticalRate(Class, Level);
             DistanceCritical = CharacterHelper.DistCritical(Class, Level);
-            FireResistance = CharacterHelper.FireResistance(Class, Level);
-            LightResistance = CharacterHelper.LightResistance(Class, Level);
-            WaterResistance = CharacterHelper.WaterResistance(Class, Level);
-            DarkResistance = CharacterHelper.DarkResistance(Class, Level);
+            FireResistance = CharacterHelper.FireResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.FireIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
+            LightResistance = CharacterHelper.LightResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.LightIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
+            WaterResistance = CharacterHelper.WaterResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.WaterIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
+            DarkResistance = CharacterHelper.DarkResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.DarkIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
             Defence = CharacterHelper.Defence(Class, Level);
             DefenceRate = CharacterHelper.DefenceRate(Class, Level);
             ElementRate = CharacterHelper.ElementRate(Class, Level);
@@ -3507,7 +3518,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStatInfo()
         {
-            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}{Buff.GetAllActiveBuffs()}";
+            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}{(Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}"))}";
         }
 
         public TalkPacket GenerateTalk(string message)
@@ -3745,7 +3756,8 @@ namespace OpenNos.GameObject
             int hp = 0;
             if (UseSp)
             {
-                SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                SpecialistInstance specialist =
+                    Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (specialist != null)
                 {
                     int point = CharacterHelper.SlPoint(specialist.SlHP, 3);
@@ -3761,7 +3773,7 @@ namespace OpenNos.GameObject
                     hp = specialist.HP + specialist.SpHP * 100;
                 }
             }
-            return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp) * (multiplicator + Buff.Get(Type.HP, SubType.IncreasePercentage, false)[0] / 100D));
+            return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
         }
 
         public override void Initialize()
@@ -3777,7 +3789,6 @@ namespace OpenNos.GameObject
             LastEffect = DateTime.Now;
             Session = null;
             MailList = new Dictionary<int, MailDTO>();
-            LastMailRefresh = DateTime.Now;
             Group = null;
             GmPvtBlock = false;
         }
@@ -3909,8 +3920,6 @@ namespace OpenNos.GameObject
             if (SkillsSp.Count != SkillSpCount)
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                Session.SendPacket(GenerateSki());
-                Session.SendPackets(GenerateQuicklist());
             }
         }
 
@@ -4013,11 +4022,10 @@ namespace OpenNos.GameObject
                     {
                         multiplicator += 0.5 + (point - 50.00) / 50.00;
                     }
-
                     mp = specialist.MP + specialist.SpHP * 100;
                 }
             }
-            return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp) * (multiplicator + Buff.Get(Type.MP, SubType.IncreasePercentage, false)[0] / 100D));
+            return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0]) * multiplicator);
         }
 
         public void NotifyRarifyResult(sbyte rare)
@@ -4092,7 +4100,6 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.Debug("Error while refreshing mail: " + ex.Message);
             }
-            LastMailRefresh = DateTime.Now;
         }
 
         public void RemoveVehicle()
@@ -4239,13 +4246,39 @@ namespace OpenNos.GameObject
                     DAOFactory.MinilandObjectDAO.InsertOrUpdate(ref mobj);
                 }
 
+                IEnumerable<short> currentlySavedBonus = DAOFactory.StaticBonusDAO.LoadTypeByCharacterId(CharacterId);
+                foreach (short bonusToDelete in currentlySavedBonus.Except(Buff.Select(s => s.Card.CardId)))
+                {
+                    DAOFactory.StaticBonusDAO.Delete(bonusToDelete, CharacterId);
+                }
                 foreach (StaticBonusDTO bonus in StaticBonusList.ToArray())
                 {
                     StaticBonusDTO bonus2 = bonus;
                     DAOFactory.StaticBonusDAO.InsertOrUpdate(ref bonus2);
                 }
 
-                //DAOFactory.StaticBonusDAO.RemoveOutDated();
+                IEnumerable<short> currentlySavedBuff = DAOFactory.StaticBuffDAO.LoadByTypeCharacterId(CharacterId);
+                foreach (short bonusToDelete in currentlySavedBuff.Except(Buff.Select(s => s.Card.CardId)))
+                {
+                    DAOFactory.StaticBuffDAO.Delete(bonusToDelete, CharacterId);
+                }
+
+                foreach (Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
+                {
+                    StaticBuffDTO bf = new StaticBuffDTO()
+                    {
+                        CharacterId = CharacterId,
+                        RemainingTime = (int)(buff.RemainingTime - (DateTime.Now - buff.Start).TotalSeconds),
+                        CardId = buff.Card.CardId
+                    };
+                    DAOFactory.StaticBuffDAO.InsertOrUpdate(ref bf);
+                }
+
+                foreach (StaticBonusDTO bonus in StaticBonusList.ToArray())
+                {
+                    StaticBonusDTO bonus2 = bonus;
+                    DAOFactory.StaticBonusDAO.InsertOrUpdate(ref bonus2);
+                }
 
                 foreach (GeneralLogDTO general in GeneralLogs)
                 {
@@ -4369,9 +4402,9 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        resp.X = PositionX;
-                        resp.Y = PositionY;
-                        resp.MapId = MapInstance.Map.MapId;
+                        resp.X = mapX;
+                        resp.Y = mapY;
+                        resp.MapId = mapId;
                     }
                 }
             }
@@ -4553,32 +4586,34 @@ namespace OpenNos.GameObject
                 {
                     if (isMonsterOwner)
                     {
-                        LevelXp += (int)(GetXP(monsterinfo, grp) * (1 + Buff.Get(Type.Experience, SubType.IncreasePercentage, false)[0] / 100D));
+                        LevelXp += (int)(GetXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                     }
                     else
                     {
-                        LevelXp += (int)(GetXP(monsterinfo, grp) / 3D * (1 + Buff.Get(Type.Experience, SubType.IncreasePercentage, false)[0] / 100D));
+                        LevelXp += (int)(GetXP(monsterinfo, grp) / 3D * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                     }
                 }
                 if (Class == 0 && JobLevel < 20 || Class != 0 && JobLevel < ServerManager.Instance.MaxJobLevel)
                 {
                     if (specialist != null && UseSp && specialist.SpLevel < ServerManager.Instance.MaxSPLevel && specialist.SpLevel > 19)
                     {
-                        JobLevelXp += (int)(GetJXP(monsterinfo, grp) / 2D * (1 + Buff.Get(Type.JobExperience, SubType.IncreasePercentage, false)[0] / 100D));
+                        JobLevelXp += (int)(GetJXP(monsterinfo, grp) / 2D * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                     }
                     else
                     {
-                        JobLevelXp += (int)(GetJXP(monsterinfo, grp) * (1 + Buff.Get(Type.JobExperience, SubType.IncreasePercentage, false)[0] / 100D));
+                        JobLevelXp += (int)(GetJXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                     }
                 }
                 if (specialist != null && UseSp && specialist.SpLevel < ServerManager.Instance.MaxSPLevel)
                 {
                     int multiplier = specialist.SpLevel < 10 ? 10 : specialist.SpLevel < 19 ? 5 : 1;
-                    specialist.XP += (int)(GetJXP(monsterinfo, grp) * (multiplier + Buff.Get(Type.SpExperience, SubType.IncreasePercentage, false)[0] / 100D));
+                    specialist.XP += (int)(GetJXP(monsterinfo, grp) * (multiplier + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                 }
                 if (HeroLevel > 0 && HeroLevel < ServerManager.Instance.MaxHeroLevel)
                 {
-                    HeroXp += (int)(GetHXP(monsterinfo, grp) * (1 + Buff.Get(Type.HeroExperience, SubType.IncreasePercentage, false)[0] / 100D));
+                    HeroXp += (int)
+                        (GetHXP(monsterinfo, grp) *
+                         (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                 }
                 double t = XPLoad();
                 while (LevelXp >= t)
@@ -4699,6 +4734,9 @@ namespace OpenNos.GameObject
                             specialist.XP = 0;
                         }
                         LearnSPSkill();
+                        Skills.GetAllItems().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
+                        Session.SendPacket(GenerateSki());
+                        Session.SendPackets(GenerateQuicklist());
 
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
                         Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
@@ -4879,6 +4917,192 @@ namespace OpenNos.GameObject
             return CharacterHelper.XPData[Level - 1];
         }
 
+        public string GenerateRaid(int Type, bool Exit)
+        {
+            string result = string.Empty;
+            switch (Type)
+            {
+                case 0:
+                    result = $"raid 0";
+                    Group?.Characters?.ForEach(s=> { result += $" {s.Character?.CharacterId}"; });
+                    break;
+                case 2:
+                    result = $"raid 2 {(Exit ? "-1" : $"{CharacterId}")}";
+                    break;
+                case 1:
+                    result = $"raid 1 {(Exit ? 0 : 1)}";
+                    break;
+                case 3:
+                    result = $"raid 3";
+                    Group?.Characters?.ForEach(s => { result += $" {s.Character?.CharacterId}.{Math.Ceiling(Hp / HPLoad() * 100)}.{Math.Ceiling(Mp / MPLoad() * 100)}"; });
+                    break;
+                case 4:
+                    result = $"raid 4";
+                    break;
+                case 5:
+                    result = $"raid 5 1";
+                    break;
+            }
+            return result;
+        }
+
+        public void AddStaticBuff(StaticBuffDTO staticBuff)
+        {
+            Buff bf = new Buff(staticBuff.CardId, Session.Character.Level)
+            {
+                Start = DateTime.Now,
+                StaticBuff = true
+            };
+            Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
+            if (staticBuff.RemainingTime > 0)
+            {
+                bf.RemainingTime = staticBuff.RemainingTime;
+                Buff.Add(bf);
+            }
+            else if (oldbuff != null)
+            {
+                Buff.RemoveAll(s => s.Card.CardId.Equals(bf.Card.CardId));
+
+                bf.RemainingTime = bf.Card.Duration * 6 / 10 + oldbuff.RemainingTime;
+                Buff.Add(bf);
+            }
+            else
+            {
+                bf.RemainingTime = bf.Card.Duration * 6 / 10;
+                Buff.Add(bf);
+            }
+            bf.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
+            Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime))
+                .Subscribe(
+                    o =>
+                    {
+                        RemoveBuff(bf.Card.CardId);
+                        if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
+                            bf.Card.TimeoutBuffChance)
+                        {
+                            AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
+                        }
+                    });
+
+            Session.SendPacket($"vb {bf.Card.CardId} 1 {bf.RemainingTime * 10}");
+            Session.SendPacket(
+                Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name),
+                    12));
+        }
+
+        public void AddBuff(Buff indicator)
+        {
+            Buff.RemoveAll(s => s.Card.CardId.Equals(indicator.Card.CardId));
+            Buff.Add(indicator);
+            indicator.RemainingTime = indicator.Card.Duration;
+            indicator.Start = DateTime.Now;
+
+            Session.SendPacket(
+                $"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
+            Session.SendPacket(
+                Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name),
+                    20));
+
+            indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
+            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100))
+                .Subscribe(
+                    o =>
+                    {
+                        RemoveBuff(indicator.Card.CardId);
+                        if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
+                            indicator.Card.TimeoutBuffChance)
+                        {
+                            AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
+                        }
+                    });
+        }
+
+        private void RemoveBuff(int id)
+        {
+            Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
+            if (indicator != null)
+            {
+                if (indicator.StaticBuff)
+                {
+                    Session.SendPacket($"vb {indicator.Card.CardId} 0 {indicator.Card.Duration}");
+                    Session.SendPacket(
+                        Session.Character.GenerateSay(
+                            string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 11));
+                }
+                else
+                {
+                    Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
+                    Session.SendPacket(
+                        Session.Character.GenerateSay(
+                            string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
+                }
+                Buff.Remove(indicator);
+                if (indicator.Card.BCards.Any(s => s.Type == (byte)BCardType.CardType.Move))
+                {
+                    LastSpeedChange = DateTime.Now;
+                    Session.SendPacket(GenerateCond());
+                }
+            }
+        }
+
+        public void DisableBuffs(List<BuffType> types, int level = 100)
+        {
+            lock (Buff)
+            {
+                Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level < level).ToList()
+                    .ForEach(s => RemoveBuff(s.Card.CardId));
+            }
+        }
+
+        /// <summary>
+        /// Get Stuff Buffs
+        /// Useful for Stats for example
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="subtype"></param>
+        /// <param name="pvp"></param>
+        /// <param name="affectingOpposite"></param>
+        /// <returns></returns>
+        public int[] GetStuffBuff(CardType type, byte subtype, bool pvp, bool affectingOpposite = false)
+        {
+            int value1 = 0;
+            int value2 = 0;
+            foreach (BCard entry in EquipmentBCards.Where(
+                s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10))))
+            {
+                value1 += entry.FirstData;
+                value2 += entry.SecondData;
+            }
+
+            return new[] { value1, value2 };
+        }
+
+        public int[] GetBuff(CardType type, byte subtype, bool pvp, bool affectingOpposite = false)
+        {
+            int value1 = 0;
+            int value2 = 0;
+
+            lock (Buff)
+            {
+                foreach (Buff buff in Buff)
+                {
+                    // THIS ONE DOES NOT FOR STUFFS
+                    foreach (BCard entry in buff.Card.BCards.Concat(EquipmentBCards).Where(
+                        s => s.Type.Equals((byte)type)
+                             && s.SubType.Equals((byte)(subtype / 10)) &&
+                             (!s.IsDelayed || (s.IsDelayed &&
+                                               buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
+                    {
+                        value1 += entry.FirstData;
+                        value2 += entry.SecondData;
+                    }
+                }
+            }
+
+            return new[] { value1, value2 };
+        }
+
         #endregion
+
     }
 }

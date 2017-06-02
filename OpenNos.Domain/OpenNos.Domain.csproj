@@ -68,8 +68,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BazaarListType.cs" />
+    <Compile Include="BuffType.cs" />
     <Compile Include="EventActionType.cs" />
     <Compile Include="EventType.cs" />
+    <Compile Include="GroupType.cs" />
     <Compile Include="GeneralLogType.cs" />
     <Compile Include="MapInstanceType.cs" />
     <Compile Include="FamilyLogType.cs" />
