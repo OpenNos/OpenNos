@@ -976,7 +976,7 @@ namespace OpenNos.GameObject
 
         public bool IsCharactersGroupFull(long characterId)
         {
-            return Groups != null && Groups.Any(g => g.IsMemberOfGroup(characterId) && g.CharacterCount == 3);
+            return Groups != null && Groups.Any(g => g.IsMemberOfGroup(characterId) && g.CharacterCount  == (byte)g.GroupType);
         }
 
         public void JoinMiniland(ClientSession Session, ClientSession MinilandOwner)
