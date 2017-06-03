@@ -1260,6 +1260,55 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        /// $InstanceMusic Command
+        /// </summary>
+        /// <param name="instanceMusicPacket"></param>
+        public void InstanceMusic(InstanceMusicPacket instanceMusicPacket)
+        {
+            Logger.Debug("InstanceMusic Command", Session.Character.GenerateIdentity());
+            if (instanceMusicPacket != null)
+            {
+                // method in a method yay! \o/
+                void changeMusic(bool isRevert)
+                {
+                    try
+                    {
+                        foreach (MapInstance instance in ServerManager.Instance.GetMapInstances())
+                        {
+                            instance.InstanceMusic = isRevert ? instance.Map.Music : instanceMusicPacket.Music;
+                            instance.Broadcast($"bgm {instance.InstanceMusic}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex);
+                    }
+                }
+
+                if (instanceMusicPacket.Maps == "*")
+                {
+                    changeMusic(false);
+                }
+                else if (instanceMusicPacket.Maps == "?")
+                {
+                    changeMusic(true);
+                }
+                else
+                {
+                    if (Session.CurrentMapInstance != null)
+                    {
+                        Session.CurrentMapInstance.InstanceMusic = instanceMusicPacket.Music;
+                        Session.CurrentMapInstance.Broadcast($"bgm {instanceMusicPacket.Music}");
+                    }
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(InstanceMusicPacket.ReturnHelp(), 10));
+            }
+        }
+
+        /// <summary>
         /// $Invisible Command
         /// </summary>
         /// <param name="invisiblePacket"></param>
@@ -1444,26 +1493,6 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay(MorphPacket.ReturnHelp(), 10));
-            }
-        }
-
-        /// <summary>
-        /// $Music Command
-        /// </summary>
-        /// <param name="musicPacket"></param>
-        public void Music(MusicPacket musicPacket)
-        {
-            Logger.Debug("Music Command", Session.Character.GenerateIdentity());
-            if (musicPacket != null)
-            {
-                if (musicPacket.Music >= 0)
-                {
-                    Session.CurrentMapInstance?.Broadcast($"bgm {musicPacket.Music}");
-                }
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay(MusicPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1898,7 +1927,9 @@ namespace OpenNos.Handler
                                 possibilities.Add(new MapCell { X = x, Y = y });
                             }
                         }
-                        // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
+
+                        // TODO: Find a fancy way to parallelize as we dont care about order it needs
+                        //       to be randomized
                         foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                         {
                             short mapx = (short)(Session.Character.PositionX + possibilitie.X);
@@ -1963,7 +1994,9 @@ namespace OpenNos.Handler
                                 possibilities.Add(new MapCell { X = x, Y = y });
                             }
                         }
-                        // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
+
+                        // TODO: Find a fancy way to parallelize as we dont care about order it needs
+                        //       to be randomized
                         foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                         {
                             short mapx = (short)(Session.Character.PositionX + possibilitie.X);

@@ -56,6 +56,7 @@ namespace OpenNos.GameObject
             Buttons = new List<MapButton>();
             XpRate = 1;
             DropRate = 1;
+            InstanceMusic = map.Music;
             ShopAllowed = shopAllowed;
             MapInstanceType = type;
             _isSleeping = true;
@@ -92,6 +93,8 @@ namespace OpenNos.GameObject
         public int DropRate { get; set; }
 
         public InstanceBag InstanceBag { get; set; }
+
+        public int InstanceMusic { get; set; }
 
         public bool IsDancing { get; set; }
 
@@ -147,9 +150,9 @@ namespace OpenNos.GameObject
 
         public List<Portal> Portals => _portals;
 
-        public bool ShopAllowed { get; set; }
-
         public List<ScriptedInstance> ScriptedInstances { get; set; }
+
+        public bool ShopAllowed { get; set; }
 
         public Dictionary<long, MapShop> UserShops { get; }
 
@@ -167,6 +170,19 @@ namespace OpenNos.GameObject
         public void AddNPC(MapNpc monster)
         {
             _npcs[monster.MapNpcId] = monster;
+        }
+
+        public void DespawnMonster(int monsterVnum)
+        {
+            Parallel.ForEach(_monsters.GetAllItems().Where(s => s.MonsterVNum == monsterVnum), monster =>
+            {
+                monster.IsAlive = false;
+                monster.LastMove = DateTime.Now;
+                monster.CurrentHp = 0;
+                monster.CurrentMp = 0;
+                monster.Death = DateTime.Now;
+                Broadcast(monster.GenerateOut());
+            });
         }
 
         public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY)
@@ -253,6 +269,7 @@ namespace OpenNos.GameObject
             {
                 s.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => packets.Add(m.GenerateIn()));
             });
+
             // TODO: Parallelize getting of items of mapinstance
             Portals.ForEach(s => packets.Add(s.GenerateGp()));
             ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList().ForEach(s => packets.Add(s.GenerateWp()));
@@ -409,17 +426,21 @@ namespace OpenNos.GameObject
             Broadcast(parameter.GenerateIn());
         }
 
-        public void DespawnMonster(int monsterVnum)
+        public void ThrowItems(Tuple<short, byte, int, int, short, short> parameter)
         {
-            Parallel.ForEach(_monsters.GetAllItems().Where(s => s.MonsterVNum == monsterVnum), monster =>
+            short originX = parameter.Item5;
+            short originY = parameter.Item6;
+            short destX;
+            short destY;
+            int amount = ServerManager.Instance.RandomNumber(parameter.Item3, parameter.Item4);
+            for (int i = 0; i < parameter.Item2; i++)
             {
-                monster.IsAlive = false;
-                monster.LastMove = DateTime.Now;
-                monster.CurrentHp = 0;
-                monster.CurrentMp = 0;
-                monster.Death = DateTime.Now;
-                Broadcast(monster.GenerateOut());
-            });
+                destX = (short)(originX + ServerManager.Instance.RandomNumber(-10, 10));
+                destY = (short)(originY + ServerManager.Instance.RandomNumber(-10, 10));
+                MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item1, amount);
+                DroppedList[droppedItem.TransportId] = droppedItem;
+                Broadcast($"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
+            }
         }
 
         internal void CreatePortal(Portal portal)
@@ -450,23 +471,6 @@ namespace OpenNos.GameObject
             {
                 monster.RemoveTarget();
             });
-        }
-
-        public void ThrowItems(Tuple<short, byte, int, int, short, short> parameter)
-        {
-            short originX = parameter.Item5;
-            short originY = parameter.Item6;
-            short destX;
-            short destY;
-            int amount = ServerManager.Instance.RandomNumber(parameter.Item3, parameter.Item4);
-            for (int i = 0; i < parameter.Item2; i++)
-            {
-                destX = (short)(originX + ServerManager.Instance.RandomNumber(-10, 10));
-                destY = (short)(originY + ServerManager.Instance.RandomNumber(-10, 10));
-                MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item1, amount);
-                DroppedList[droppedItem.TransportId] = droppedItem;
-                Broadcast($"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
-            }
         }
 
         internal void StartLife()

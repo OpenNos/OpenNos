@@ -484,17 +484,17 @@ namespace OpenNos.GameObject
             }
 
             QuicklistEntries = new List<QuicklistEntryDTO>
+            {
+                new QuicklistEntryDTO
                 {
-                    new QuicklistEntryDTO
-                    {
-                        CharacterId = CharacterId,
-                        Q1 = 0,
-                        Q2 = 9,
-                        Type = 1,
-                        Slot = 3,
-                        Pos = 1
-                    }
-                };
+                    CharacterId = CharacterId,
+                    Q1 = 0,
+                    Q2 = 9,
+                    Type = 1,
+                    Slot = 3,
+                    Pos = 1
+                }
+            };
             if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session) && s.GroupType == GroupType.Group))
             {
                 Session.CurrentMapInstance?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
@@ -876,17 +876,10 @@ namespace OpenNos.GameObject
             FriendRequestCharacters.Clear();
         }
 
-        public string GenerateAct()
-        {
-            return $"act 6"; // act6 1 0 14 0 0 0 14 0 0 0
-        }
-
         public string GenerateAt()
         {
             MapInstance mapForMusic = MapInstance;
-
-            //at 698495 20001 5 8 2 0 {SecondaryMusic} {SecondaryMusicType} -1
-            return $"at {CharacterId} {MapInstance.Map.MapId} {PositionX} {PositionY} 2 0 {mapForMusic?.Map.Music ?? 0} -1";
+            return $"at {CharacterId} {MapInstance.Map.MapId} {PositionX} {PositionY} 2 0 {mapForMusic?.InstanceMusic ?? 0} -1";
         }
 
         public string GenerateBlinit()

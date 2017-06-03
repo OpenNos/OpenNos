@@ -153,6 +153,7 @@
     <Compile Include="Packets\ClientPackets\UseItemPacket.cs" />
     <Compile Include="Packets\CommandPackets\AddPartnerPacket.cs" />
     <Compile Include="Packets\CommandPackets\CreateItemPacket.cs" />
+    <Compile Include="Packets\CommandPackets\InstanceMusicPacket.cs" />
     <Compile Include="Packets\CommandPackets\ShutdownAllPacket.cs" />
     <Compile Include="Packets\CommandPackets\CharacterEditPacket.cs" />
     <Compile Include="Packets\ClientPackets\FDelPacket.cs" />
@@ -322,7 +323,6 @@
     <Compile Include="Packets\CommandPackets\KickSessionPacket.cs" />
     <Compile Include="Packets\CommandPackets\KickPacket.cs" />
     <Compile Include="Packets\CommandPackets\KillPacket.cs" />
-    <Compile Include="Packets\CommandPackets\MusicPacket.cs" />
     <Compile Include="Packets\CommandPackets\PortalToPacket.cs" />
     <Compile Include="Packets\CommandPackets\PromotePacket.cs" />
     <Compile Include="Packets\CommandPackets\RarifyPacket.cs" />
