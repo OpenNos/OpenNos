@@ -850,7 +850,7 @@ namespace OpenNos.GameObject
                 if (item.IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                 {
                     Inventory.DeleteById(item.Id);
-                    Session.Character.EquipmentBCards.RemoveAll(o => o.ItemVnum == item.ItemVNum);
+                    Session.Character.EquipmentBCards.RemoveAll(o => o.ItemVNum == item.ItemVNum);
                     if (item.Type == InventoryType.Wear)
                     {
                         Session.SendPacket(GenerateEquipment());
