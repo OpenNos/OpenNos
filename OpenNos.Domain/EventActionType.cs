@@ -43,6 +43,8 @@ namespace OpenNos.Domain
         REMOVEMONSTERLOCKER,
         REFRESHRAIDGOAL,
         TELEPORT,
-        THROWITEMS
+        THROWITEMS,
+        SETMONSTERLOCKERS,
+        SETBUTTONLOCKERS
     }
 }

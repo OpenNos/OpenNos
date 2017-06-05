@@ -192,6 +192,15 @@ namespace OpenNos.GameObject.Helpers
                         evt.MapInstance.InstanceBag.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
                         break;
 
+                    case EventActionType.SETMONSTERLOCKERS:
+                        evt.MapInstance.InstanceBag.MonsterLocker.Current = Convert.ToByte(evt.Parameter);
+                        evt.MapInstance.InstanceBag.MonsterLocker.Initial = Convert.ToByte(evt.Parameter);
+                        break;
+
+                    case EventActionType.SETBUTTONLOCKERS:
+                        evt.MapInstance.InstanceBag.ButtonLocker.Current = Convert.ToByte(evt.Parameter);
+                        evt.MapInstance.InstanceBag.ButtonLocker.Initial = Convert.ToByte(evt.Parameter);
+                        break;
                     case EventActionType.SCRIPTEND:
                         switch (evt.MapInstance.MapInstanceType)
                         {
@@ -361,7 +370,8 @@ namespace OpenNos.GameObject.Helpers
                         break;
 
                     case EventActionType.THROWITEMS:
-                        evt.MapInstance.ThrowItems((Tuple<short, byte, int, int, short, short>)evt.Parameter);
+                        Tuple<int, short, byte, int, int> parameters = (Tuple<int, short, byte, int, int>)evt.Parameter;
+                          evt.MapInstance.ThrowItems(parameters);
                         break;
 
                     case EventActionType.SPAWNONLASTENTRY:

@@ -144,16 +144,12 @@ namespace OpenNos.Import.Console
                                     CardId = card.CardId,
                                     Type = Convert.ToByte(currentLine[2 + i * 6]),
                                     SubType = Convert.ToByte(currentLine[3 + i * 6]),
-                                    Probability = Convert.ToByte(currentLine[4 + i * 6]),
+                                  
                                     Delay = Convert.ToByte(currentLine[5 + i * 6]),
                                     FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
                                     SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
 
                                 };
-                                if (bcard.Probability == 0)
-                                {
-                                    bcard.Probability = 100;
-                                }
                                 bcards.Add(bcard);
                             }
                         }
@@ -168,17 +164,12 @@ namespace OpenNos.Import.Console
                                 {
                                     IsDelayed = true,
                                     CardId = card.CardId,
-                                    Type = Convert.ToByte(currentLine[2 + i * 6]),
-                                    SubType = Convert.ToByte(currentLine[3 + i * 6]),
-                                    Probability = Convert.ToByte(currentLine[4 + i * 6]),
-                                    Delay = Convert.ToByte(currentLine[5 + i * 6]),
-                                    FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
-                                    SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
+                                    Type = byte.Parse(currentLine[2+i * 6]),
+                                    SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
+                                    FirstData = (short)(int.Parse(currentLine[5]) / 4),
+                                    SecondData = (short)(int.Parse(currentLine[6]) / 4),
+                                    Delay = (short)(int.Parse(currentLine[7]) / 4),
                                 };
-                                if (bcard.Probability == 0)
-                                {
-                                    bcard.Probability = 100;
-                                }
                                 bcards.Add(bcard);
                             }
                         }
@@ -1764,9 +1755,9 @@ namespace OpenNos.Import.Console
                             {
                                 SkillVNum = skill.SkillVNum,
                                 Type = type,
-                                SubType = (byte)((int.Parse(currentLine[6]) + 1) * 10),
-                                FirstData = (short)(int.Parse(currentLine[4]) / 4),
-                                SecondData = (short)(int.Parse(currentLine[5]) / 4),
+                                SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
+                                FirstData = (short)(int.Parse(currentLine[5]) / 4),
+                                SecondData = (short)(int.Parse(currentLine[6]) / 4),
                                 Delay = (short)(int.Parse(currentLine[7]) / 4),
                             };
                             skillCards.Add(itemCard);
@@ -3014,13 +3005,13 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 5; i++)
                         {
-                            byte type = (byte)(Int32.Parse(currentLine[2 + 5 * i]));
-                            if (type != 0)
+                            int type = Int32.Parse(currentLine[2 + 5 * i]);
+                            if (type != 0 && type != -1)
                             {
                                 BCardDTO itemCard = new BCardDTO
                                 {
-                                    ItemVnum = item.VNum,
-                                    Type = type,
+                                    ItemVNum = item.VNum,
+                                    Type = (byte)type,
                                     SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1)),
                                     FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
                                     SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),

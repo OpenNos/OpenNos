@@ -426,21 +426,17 @@ namespace OpenNos.GameObject
             Broadcast(parameter.GenerateIn());
         }
 
-        public void ThrowItems(Tuple<short, byte, int, int, short, short> parameter)
+        public void DespawnMonster(int monsterVnum)
         {
-            short originX = parameter.Item5;
-            short originY = parameter.Item6;
-            short destX;
-            short destY;
-            int amount = ServerManager.Instance.RandomNumber(parameter.Item3, parameter.Item4);
-            for (int i = 0; i < parameter.Item2; i++)
+            Parallel.ForEach(_monsters.GetAllItems().Where(s => s.MonsterVNum == monsterVnum), monster =>
             {
-                destX = (short)(originX + ServerManager.Instance.RandomNumber(-10, 10));
-                destY = (short)(originY + ServerManager.Instance.RandomNumber(-10, 10));
-                MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item1, amount);
-                DroppedList[droppedItem.TransportId] = droppedItem;
-                Broadcast($"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
-            }
+                monster.IsAlive = false;
+                monster.LastMove = DateTime.Now;
+                monster.CurrentHp = 0;
+                monster.CurrentMp = 0;
+                monster.Death = DateTime.Now;
+                Broadcast(monster.GenerateOut());
+            });
         }
 
         internal void CreatePortal(Portal portal)
@@ -471,6 +467,24 @@ namespace OpenNos.GameObject
             {
                 monster.RemoveTarget();
             });
+        }
+
+        public void ThrowItems(Tuple<int, short, byte, int, int> parameter)
+        {
+            MapMonster mon = Monsters.FirstOrDefault(s => s.MapMonsterId == parameter.Item1);
+            short originX = mon.MapX;
+            short originY = mon.MapY;
+            short destX;
+            short destY;
+            int amount = ServerManager.Instance.RandomNumber(parameter.Item4, parameter.Item5);
+            for (int i = 0; i < parameter.Item3; i++)
+            {
+                destX = (short)(originX + ServerManager.Instance.RandomNumber(-10, 10));
+                destY = (short)(originY + ServerManager.Instance.RandomNumber(-10, 10));
+                MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item2, amount);
+                DroppedList[droppedItem.TransportId] = droppedItem;
+                Broadcast($"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
+            }
         }
 
         internal void StartLife()

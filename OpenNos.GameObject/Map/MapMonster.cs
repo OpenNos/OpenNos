@@ -191,6 +191,11 @@ namespace OpenNos.GameObject
             MapInstance.InstanceBag.MonstersKilled++;
             OnDeathEvents.ForEach(e =>
             {
+                if (e.EventActionType == EventActionType.THROWITEMS)
+                {
+                    Tuple<int, short, byte, int, int> evt = (Tuple<int, short, byte, int, int>)e.Parameter;
+                    e.Parameter = new Tuple<int, short, byte, int, int>(MapMonsterId, evt.Item2, evt.Item3, evt.Item4, evt.Item5);
+                }
                 EventHelper.Instance.RunEvent(e);
             });
         }
