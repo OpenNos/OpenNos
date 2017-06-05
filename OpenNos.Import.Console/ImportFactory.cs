@@ -3443,13 +3443,13 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 5; i++)
                         {
-                            byte type = (byte)(Int32.Parse(currentLine[2 + 5 * i]));
-                            if (type != 0)
+                            int type = Int32.Parse(currentLine[2 + 5 * i]);
+                            if (type != 0 && type != -1)
                             {
                                 BCardDTO itemCard = new BCardDTO
                                 {
                                     ItemVNum = item.VNum,
-                                    Type = type,
+                                    Type = (byte)type,
                                     SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1)),
                                     FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
                                     SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
