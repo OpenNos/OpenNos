@@ -341,13 +341,11 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SetMonsterLockers":
-                        _instancebag.MonsterLocker.Current = byte.Parse(mapevent?.Attributes["Value"]?.Value);
-                        _instancebag.MonsterLocker.Initial = _instancebag.MonsterLocker.Current;
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SETMONSTERLOCKERS, byte.Parse(mapevent?.Attributes["Value"]?.Value)));
                         break;
 
                     case "SetButtonLockers":
-                        _instancebag.ButtonLocker.Current = byte.Parse(mapevent?.Attributes["Value"]?.Value);
-                        _instancebag.ButtonLocker.Initial = _instancebag.ButtonLocker.Current;
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SETBUTTONLOCKERS, byte.Parse(mapevent?.Attributes["Value"]?.Value)));
                         break;
 
                     //child events
@@ -463,7 +461,7 @@ namespace OpenNos.GameObject
                         byte.TryParse(mapevent?.Attributes["PackAmount"]?.Value, out byte packAmount);
                         int.TryParse(mapevent?.Attributes["MinAmount"]?.Value, out int minAmount);
                         int.TryParse(mapevent?.Attributes["MaxAmount"]?.Value, out int maxAmount);
-                        evts.Add(new EventContainer(mapinstance, EventActionType.THROWITEMS, new Tuple<short, byte, int, int, short, short>(vnum, packAmount == 0 ? (byte)1 : packAmount, minAmount == 0 ? 1 : minAmount, maxAmount == 0 ? 1 : maxAmount, PositionX, PositionY)));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, vnum, packAmount == 0 ? (byte)1 : packAmount, minAmount == 0 ? 1 : minAmount, maxAmount == 0 ? 1 : maxAmount)));
                         break;
 
                     case "RemoveButtonLocker":
