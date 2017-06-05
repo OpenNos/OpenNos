@@ -151,6 +151,7 @@
     <Compile Include="Packets\ClientPackets\SellPacket.cs" />
     <Compile Include="Packets\ClientPackets\ShoppingPacket.cs" />
     <Compile Include="Packets\ClientPackets\UseItemPacket.cs" />
+    <Compile Include="Packets\ClientPackets\XResPacket.cs" />
     <Compile Include="Packets\CommandPackets\AddPartnerPacket.cs" />
     <Compile Include="Packets\CommandPackets\CreateItemPacket.cs" />
     <Compile Include="Packets\CommandPackets\InstanceMusicPacket.cs" />

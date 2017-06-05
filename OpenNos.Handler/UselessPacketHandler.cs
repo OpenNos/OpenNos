@@ -78,6 +78,11 @@ namespace OpenNos.Handler
             // Not needed for now. (pictures)
         }
 
+        public void XRes(XResPacket packet)
+        {
+            // testing purposes
+        }
+
         #endregion
     }
 }
