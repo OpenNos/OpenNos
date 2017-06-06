@@ -269,7 +269,14 @@ namespace OpenNos.GameObject
             Portals.ForEach(s => packets.Add(s.GenerateGp()));
             ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList().ForEach(s => packets.Add(s.GenerateWp()));
 
-            Monsters.ForEach(s => packets.Add(s.GenerateIn()));
+            Monsters.ForEach(s =>
+            {
+                packets.Add(s.GenerateIn());
+                if(s.IsBoss)
+                {
+                    packets.Add(s.GenerateBoss());
+                }
+            });
             Npcs.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateNPCShopOnMap());
             Parallel.ForEach(DroppedList.GetAllItems(), session => packets.Add(session.GenerateIn()));

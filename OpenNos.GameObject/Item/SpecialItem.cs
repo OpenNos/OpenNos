@@ -81,8 +81,7 @@ namespace OpenNos.GameObject
                     ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj => obj.VNum == raidSeal.ItemVNum)).GetClone();
                     if (raid != null)
                     {
-                        Group group = new Group();
-                        group.GroupType = GroupType.Team;
+                        Group group = new Group(GroupType.Team);
                         group.Raid = raid;
                         group.JoinGroup(session.Character.CharacterId);
                         ServerManager.Instance.AddGroup(group);
