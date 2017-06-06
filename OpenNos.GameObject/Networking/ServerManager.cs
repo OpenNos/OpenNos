@@ -523,10 +523,18 @@ namespace OpenNos.GameObject
                         });
                     }
 
-                    if (session.Character.Group != null && session.Character.Group.GroupType == GroupType.Group)
+                    if (session.Character.Group != null)
                     {
-                        session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                        if (session.Character.Group.GroupType == GroupType.Group)
+                        {
+                            session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                        }
+                        else if(session.Character.Group.IsLeader(session))
+                        {
+                            session.SendPacket(session.Character.GenerateRaid(4, false));
+                        }  
                     }
+
                     session.Character.IsChangingMapInstance = false;
                     session.SendPacket(session.Character.GenerateMinimapPosition());
                     session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>
@@ -1069,7 +1077,7 @@ namespace OpenNos.GameObject
 
         public bool IsCharactersGroupFull(long characterId)
         {
-            return Groups != null && Groups.Any(g => g.IsMemberOfGroup(characterId) && g.CharacterCount  == (byte)g.GroupType);
+            return Groups != null && Groups.Any(g => g.IsMemberOfGroup(characterId) && g.CharacterCount == (byte)g.GroupType);
         }
 
         public void JoinMiniland(ClientSession Session, ClientSession MinilandOwner)

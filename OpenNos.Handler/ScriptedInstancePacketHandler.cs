@@ -178,7 +178,6 @@ namespace OpenNos.Handler
                         session.SendPacket("raidbf 0 0 25");
                         session.SendPacket(session.Character.Group.GeneraterRaidmbf());
                         session.SendPacket(session.Character.GenerateRaid(5, false));
-                        session.SendPacket(session.Character.GenerateRaid(4, false));
                         session.SendPacket(session.Character.GenerateRaid(3, false));
                     });
                 }
