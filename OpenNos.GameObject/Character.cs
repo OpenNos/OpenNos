@@ -2205,7 +2205,7 @@ namespace OpenNos.GameObject
 
         public string GenerateMinimapPosition()
         {
-            if (MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
+            if (MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance || MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
             {
                 return $"rsfp {MapInstance.MapIndexX} {MapInstance.MapIndexY}";
             }

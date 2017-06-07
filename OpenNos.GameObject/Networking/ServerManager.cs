@@ -523,16 +523,9 @@ namespace OpenNos.GameObject
                         });
                     }
 
-                    if (session.Character.Group != null)
+                    if (session.Character.Group != null && session.Character.Group.GroupType == GroupType.Group)
                     {
-                        if (session.Character.Group.GroupType == GroupType.Group)
-                        {
-                            session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
-                        }
-                        else if(session.Character.Group.IsLeader(session))
-                        {
-                            session.SendPacket(session.Character.GenerateRaid(4, false));
-                        }  
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
                     }
 
                     session.Character.IsChangingMapInstance = false;

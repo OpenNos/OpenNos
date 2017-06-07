@@ -233,6 +233,10 @@ namespace OpenNos.GameObject.Helpers
                                 if (client != null)
                                 {
                                     Group grp = client?.Character?.Group;
+                                    if (grp == null)
+                                    {
+                                        return;
+                                    }
                                     if (evt.MapInstance.InstanceBag.EndState == 1)
                                     {
                                         ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp?.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
