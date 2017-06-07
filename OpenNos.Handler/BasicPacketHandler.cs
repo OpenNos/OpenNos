@@ -654,7 +654,7 @@ namespace OpenNos.Handler
 
                 if (createNewGroup)
                 {
-                    Group group = new Group();
+                    Group group = new Group(GroupType.Group);
                     group.JoinGroup(pjoinPacket.CharacterId);
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), targetSession.Character.Name), 10));
                     group.JoinGroup(Session.Character.CharacterId);
