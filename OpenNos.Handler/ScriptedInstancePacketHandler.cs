@@ -63,7 +63,7 @@ namespace OpenNos.Handler
                 Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(Session.Character.MapId);
                 MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
                 ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
-                if (si != null)
+                if (si != null && map.InstanceBag.EndState == 5)
                 {
                     Session.Character.GetReput(si.Reputation);
 
@@ -98,6 +98,7 @@ namespace OpenNos.Handler
 
                     repay += $"{si.DrawItems[rand].VNum}.0.{si.DrawItems[rand].Amount}";
                     Session.SendPacket(repay);
+                    map.InstanceBag.EndState = 6;
                 }
             }
         }
@@ -177,7 +178,6 @@ namespace OpenNos.Handler
                         session.SendPacket("raidbf 0 0 25");
                         session.SendPacket(session.Character.Group.GeneraterRaidmbf());
                         session.SendPacket(session.Character.GenerateRaid(5, false));
-                        session.SendPacket(session.Character.GenerateRaid(4, false));
                         session.SendPacket(session.Character.GenerateRaid(3, false));
                     });
                 }
