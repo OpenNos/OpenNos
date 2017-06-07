@@ -922,6 +922,11 @@ namespace OpenNos.GameObject
                         npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
                     }
 
+                    if (npcMonsterSkill?.Skill.TargetType == 1 && npcMonsterSkill?.Skill.HitType == 0)
+                    {
+                        TargetHit(targetSession, npcMonsterSkill);
+                    }
+
                     // check if target is in range
                     if (!targetSession.Character.InvisibleGm && !targetSession.Character.Invisible && targetSession.Character.Hp > 0)
                     {
@@ -1061,6 +1066,7 @@ namespace OpenNos.GameObject
             if (Monster != null && ((DateTime.Now - LastSkill).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 200 || npcMonsterSkill != null))
             {
                 int hitmode = 0;
+
                 int damage = npcMonsterSkill != null ? GenerateDamage(targetSession.Character, npcMonsterSkill.Skill, ref hitmode) : GenerateDamage(targetSession.Character, null, ref hitmode);
 
                 if (npcMonsterSkill != null)
@@ -1115,7 +1121,7 @@ namespace OpenNos.GameObject
                 MapInstance.Broadcast(npcMonsterSkill != null
                     ? $"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0"
                     : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0");
-
+                npcMonsterSkill?.Skill.BCards.ForEach(s => s.ApplyBCards(this));
                 LastSkill = DateTime.Now;
                 if (targetSession.Character.Hp <= 0)
                 {
