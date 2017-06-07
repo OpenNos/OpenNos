@@ -553,7 +553,6 @@ namespace OpenNos.GameObject
                 DroppedList.Dispose();
                 _npcs.Dispose();
                 _monsters.Dispose();
-                _npcs.Dispose();
             }
         }
 
