@@ -142,7 +142,7 @@ namespace OpenNos.Handler
                                     return;
                                 }
 
-                                if (Session.Character.Skills.GetAllItems().Any(s=>s.LastUse.AddMilliseconds(s.Skill.Cooldown *100) > DateTime.Now))
+                                if (Session.Character.Skills.GetAllItems().Any(s => s.LastUse.AddMilliseconds(s.Skill.Cooldown * 100) > DateTime.Now))
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_NEED_COOLDOWN"), 0));
                                     return;
@@ -352,9 +352,9 @@ namespace OpenNos.Handler
             short[] slot = new short[20];
             byte[] qty = new byte[20];
             string shopname = string.Empty;
-            if (packetsplit.Length > 2)
+            if (packetsplit.Length > 1)
             {
-                if (!short.TryParse(packetsplit[2], out short typePacket))
+                if (!short.TryParse(packetsplit[1], out short typePacket))
                 {
                     return;
                 }
@@ -389,11 +389,11 @@ namespace OpenNos.Handler
                     }
                     MapShop myShop = new MapShop();
 
-                    if (packetsplit.Length > 82)
+                    if (packetsplit.Length > 81)
                     {
                         short shopSlot = 0;
 
-                        for (short j = 3, i = 0; j < 82; j += 4, i++)
+                        for (short j = 2, i = 0; j < 81; j += 4, i++)
                         {
                             Enum.TryParse(packetsplit[j], out type[i]);
                             short.TryParse(packetsplit[j + 1], out slot[i]);
@@ -437,7 +437,7 @@ namespace OpenNos.Handler
                     {
                         if (!myShop.Items.Any(s => !s.ItemInstance.Item.IsSoldable || s.ItemInstance.IsBound))
                         {
-                            for (int i = 83; i < packetsplit.Length; i++)
+                            for (int i = 82; i < packetsplit.Length; i++)
                             {
                                 shopname += $"{packetsplit[i]} ";
                             }
@@ -600,13 +600,13 @@ namespace OpenNos.Handler
         /// <summary>
         /// ptctl packet
         /// </summary>
-        /// <param name="packet"></param>
-        public void PetMove(PtCtlPacket packet)
+        /// <param name="ptCtlPacket"></param>
+        public void PetMove(PtCtlPacket ptCtlPacket)
         {
-            string[] packetsplit = packet.PacketEnd.Split(' ');
-            for (int i = 0; i < packet.Amount * 3; i += 3)
+            string[] packetsplit = ptCtlPacket.PacketEnd.Split(' ');
+            for (int i = 0; i < ptCtlPacket.Amount * 3; i += 3)
             {
-                if (packetsplit.Count() >= packet.Amount * 3)
+                if (packetsplit.Count() >= ptCtlPacket.Amount * 3)
                 {
                     int PetId = int.Parse(packetsplit[i]);
                     short PositionX = short.Parse(packetsplit[i + 1]);
@@ -629,7 +629,7 @@ namespace OpenNos.Handler
                 {
                     mate.PositionX = u.UserX;
                     mate.PositionY = u.UserY;
-                    Session.CurrentMapInstance.Broadcast($"mv 2 {u.UserId} { u.UserX} { u.UserY} {mate.Monster.Speed}");
+                    Session.CurrentMapInstance.Broadcast($"mv 2 { u.UserId } { u.UserX} { u.UserY } { mate.Monster.Speed }");
                 }
             });
              */

@@ -22,7 +22,6 @@ namespace OpenNos.Core.Threading
     {
         #region Members
 
-        // private Task _task;
         private Action<TValue> _action;
 
         private SequentialItemProcessor<TValue> _queue;
@@ -34,11 +33,7 @@ namespace OpenNos.Core.Threading
         public ThreadedBase(long milliseconds, Action<TValue> triggeredMethod)
         {
             _action = triggeredMethod;
-            var cancellationTokenSource = new CancellationTokenSource();
-
-            // this will cost a lot of resource _task =
-            // Repeat.Interval(TimeSpan.FromMilliseconds(milliseconds), () =>
-            // triggeredMethod((TValue)Activator.CreateInstance(typeof(TValue))), cancellationTokenSource.Token);
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             Queue.Start();
         }
 
@@ -65,9 +60,7 @@ namespace OpenNos.Core.Threading
     {
         #region Methods
 
-        public static bool WaitCancellationRequested(
-            this CancellationToken token,
-            TimeSpan timeout)
+        public static bool WaitCancellationRequested(this CancellationToken token, TimeSpan timeout)
         {
             return token.WaitHandle.WaitOne(timeout);
         }
@@ -79,25 +72,21 @@ namespace OpenNos.Core.Threading
     {
         #region Methods
 
-        public static Task Interval(
-            TimeSpan pollInterval,
-            Action action,
-            CancellationToken token)
+        public static Task Interval(TimeSpan pollInterval, Action action, CancellationToken token)
         {
             // We don't use Observable.Interval: If we block, the values start bunching up behind
             // each other.
-            return Task.Factory.StartNew(
-                () =>
+            return Task.Factory.StartNew(() =>
+            {
+                for (;;)
                 {
-                    for (;;)
+                    if (token.WaitCancellationRequested(pollInterval))
                     {
-                        if (token.WaitCancellationRequested(pollInterval))
-                        {
-                            break;
-                        }
-                        action();
+                        break;
                     }
-                }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                    action();
+                }
+            }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         #endregion

@@ -151,16 +151,13 @@ namespace OpenNos.GameObject
                 int.TryParse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value, out int reputation);
                 Reputation = reputation;
 
-                short startx = 0;
-                short.TryParse(def.SelectSingleNode("StartX")?.Attributes["Value"].Value, out startx);
+                short.TryParse(def.SelectSingleNode("StartX")?.Attributes["Value"].Value, out short startx);
                 StartX = startx;
 
-                short starty = 0;
-                short.TryParse(def.SelectSingleNode("StartY")?.Attributes["Value"].Value, out starty);
+                short.TryParse(def.SelectSingleNode("StartY")?.Attributes["Value"].Value, out short starty);
                 StartY = starty;
 
-                byte lives;
-                byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out lives);
+                byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out byte lives);
                 Lives = lives;
                 if (def.SelectSingleNode("RequieredItems")?.ChildNodes != null)
                 {
@@ -208,12 +205,9 @@ namespace OpenNos.GameObject
                     {
                         _instancebag.Lives = Lives;
                         MapInstance newmap = ServerManager.Instance.GenerateMapInstance(short.Parse(variable?.Attributes["VNum"].Value), mapinstancetype, _instancebag);
-                        byte indexx;
-                        byte.TryParse(variable?.Attributes["IndexX"]?.Value, out indexx);
+                        byte.TryParse(variable?.Attributes["IndexX"]?.Value, out byte indexx);
                         newmap.MapIndexX = indexx;
-
-                        byte indexy;
-                        byte.TryParse(variable?.Attributes["IndexY"]?.Value, out indexy);
+                        byte.TryParse(variable?.Attributes["IndexY"]?.Value, out byte indexy);
                         newmap.MapIndexY = indexy;
 
                         if (!_mapinstancedictionary.ContainsKey(int.Parse(variable?.Attributes["Map"].Value)))
@@ -224,15 +218,14 @@ namespace OpenNos.GameObject
                 }
 
                 FirstMap = _mapinstancedictionary.Values.FirstOrDefault();
-                Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(
-                   x =>
-                   {
-                       if (!FirstMap.InstanceBag.Lock)
-                       {
-                           _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
-                           Dispose();
-                       }
-                   });
+                Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(x =>
+                {
+                    if (!FirstMap.InstanceBag.Lock)
+                    {
+                        _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
+                        Dispose();
+                    }
+                });
                 obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
                 {
                     if (_instancebag.Lives - _instancebag.DeadList.Count() < 0)

@@ -872,33 +872,33 @@ namespace OpenNos.Handler
         public void Guri(string packet)
         {
             string[] guriPacket = packet.Split(' ');
-            if (guriPacket[2] == "10" && Convert.ToInt32(guriPacket[5]) >= 973 && Convert.ToInt32(guriPacket[5]) <= 999 && !Session.Character.EmoticonsBlocked)
+            if (guriPacket[1] == "10" && Convert.ToInt32(guriPacket[4]) >= 973 && Convert.ToInt32(guriPacket[4]) <= 999 && !Session.Character.EmoticonsBlocked)
             {
-                if (Convert.ToInt64(guriPacket[4]) == Session.Character.CharacterId)
+                if (Convert.ToInt64(guriPacket[3]) == Session.Character.CharacterId)
                 {
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[4]) + 4099), ReceiverType.AllNoEmoBlocked);
                 }
                 else
                 {
-                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == Convert.ToInt32(guriPacket[4]));
+                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == Convert.ToInt32(guriPacket[3]));
                     if (mate != null)
                     {
-                        Session.CurrentMapInstance?.Broadcast(Session, mate.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
+                        Session.CurrentMapInstance?.Broadcast(Session, mate.GenerateEff(Convert.ToInt32(guriPacket[4]) + 4099), ReceiverType.AllNoEmoBlocked);
                     }
                 }
             }
-            else if (guriPacket[2] == "300")
+            else if (guriPacket[1] == "300")
             {
-                if (guriPacket[3] == "8023")
+                if (guriPacket[2] == "8023")
                 {
-                    if (short.TryParse(guriPacket[4], out short slot))
+                    if (short.TryParse(guriPacket[3], out short slot))
                     {
                         ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
                         if (box != null)
                         {
-                            if (guriPacket.Length == 6)
+                            if (guriPacket.Length == 5)
                             {
-                                box.Item.Use(Session, ref box, 1, new string[] { guriPacket[5] });
+                                box.Item.Use(Session, ref box, 1, new string[] { guriPacket[4] });
                             }
                             else
                             {
@@ -908,14 +908,14 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            else if (guriPacket[2] == "506")
+            else if (guriPacket[1] == "506")
             {
                 if (ServerManager.Instance.EventInWaiting)
                 {
                     Session.Character.IsWaitingForEvent = true;
                 }
             }
-            else if (guriPacket[2] == "199" && guriPacket[3] == "2")
+            else if (guriPacket[1] == "199" && guriPacket[2] == "2")
             {
                 short[] listWingOfFriendship = { 2160, 2312, 10048 };
                 short vnumToUse = -1;
@@ -928,7 +928,7 @@ namespace OpenNos.Handler
                 }
                 if (vnumToUse != -1)
                 {
-                    if (!long.TryParse(guriPacket[4], out long charId))
+                    if (!long.TryParse(guriPacket[3], out long charId))
                     {
                         return;
                     }
@@ -967,11 +967,11 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_WINGS"), 10));
                 }
             }
-            else if (guriPacket[2] == "400")
+            else if (guriPacket[1] == "400")
             {
-                if (guriPacket.Length > 3)
+                if (guriPacket.Length > 2)
                 {
-                    if (!short.TryParse(guriPacket[3], out short MapNpcId))
+                    if (!short.TryParse(guriPacket[2], out short MapNpcId))
                     {
                         return;
                     }
@@ -1036,21 +1036,21 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            else if (guriPacket[2] == "710")
+            else if (guriPacket[1] == "710")
             {
-                if (guriPacket.Length > 5)
+                if (guriPacket.Length > 4)
                 {
                     // MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n =>
                     // n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5]))); NpcMonster mapObject
                     // = ServerManager.Instance.GetNpc(npc.NpcVNum); teleport free
                 }
             }
-            else if (guriPacket[2] == "750")
+            else if (guriPacket[1] == "750")
             {
-                if (guriPacket.Length > 3)
+                if (guriPacket.Length > 2)
                 {
                     const short baseVnum = 1623;
-                    if (short.TryParse(guriPacket[3], out short faction))
+                    if (short.TryParse(guriPacket[2], out short faction))
                     {
                         if (Session.Character.Inventory.CountItem(baseVnum + faction) > 0)
                         {
@@ -1064,20 +1064,20 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            else if (guriPacket[2] == "2")
+            else if (guriPacket[1] == "2")
             {
                 Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
             }
-            else if (guriPacket[2] == "4")
+            else if (guriPacket[1] == "4")
             {
                 const int speakerVNum = 2173;
                 const int petnameVNum = 2157;
-                if (guriPacket[3] == "1")
+                if (guriPacket[2] == "1")
                 {
-                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == int.Parse(guriPacket[5]));
+                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == int.Parse(guriPacket[4]));
                     if (mate != null)
                     {
-                        mate.Name = guriPacket[6];
+                        mate.Name = guriPacket[5];
                         Session.CurrentMapInstance.Broadcast(mate.GenerateOut());
                         Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_NAME_PET")));
@@ -1089,7 +1089,7 @@ namespace OpenNos.Handler
                 }
 
                 // presentation message
-                if (guriPacket[3] == "2")
+                if (guriPacket[2] == "2")
                 {
                     int presentationVNum = Session.Character.Inventory.CountItem(1117) > 0 ? 1117 : (Session.Character.Inventory.CountItem(9013) > 0 ? 9013 : -1);
                     if (presentationVNum != -1)
@@ -1097,7 +1097,7 @@ namespace OpenNos.Handler
                         string message = string.Empty;
 
                         // message = $" ";
-                        for (int i = 6; i < guriPacket.Length; i++)
+                        for (int i = 5; i < guriPacket.Length; i++)
                         {
                             message += guriPacket[i] + "^";
                         }
@@ -1115,12 +1115,12 @@ namespace OpenNos.Handler
                 }
 
                 // Speaker
-                if (guriPacket[3] == "3")
+                if (guriPacket[2] == "3")
                 {
                     if (Session.Character.Inventory.CountItem(speakerVNum) > 0)
                     {
                         string message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
-                        for (int i = 6; i < guriPacket.Length; i++)
+                        for (int i = 5; i < guriPacket.Length; i++)
                         {
                             message += guriPacket[i] + " ";
                         }
@@ -1141,9 +1141,9 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            else if (guriPacket[2] == "199" && guriPacket[3] == "1")
+            else if (guriPacket[1] == "199" && guriPacket[2] == "1")
             {
-                long.TryParse(guriPacket[4], out long charId);
+                long.TryParse(guriPacket[3], out long charId);
                 if (!Session.Character.IsFriendOfCharacter(charId))
                 {
                     Session.SendPacket(Language.Instance.GetMessageFromKey("CHARACTER_NOT_IN_FRIENDLIST"));
@@ -1151,21 +1151,21 @@ namespace OpenNos.Handler
                 }
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 4, $"#guri^199^2^{charId}"));
             }
-            else if (guriPacket[2] == "201")
+            else if (guriPacket[1] == "201")
             {
                 if (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBasket))
                 {
                     Session.SendPacket(Session.Character.GenerateStashAll());
                 }
             }
-            else if (guriPacket[2] == "202")
+            else if (guriPacket[1] == "202")
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PARTNER_BACKPACK"), 10));
                 Session.SendPacket(Session.Character.GeneratePStashAll());
             }
-            else if (guriPacket[2] == "208" && guriPacket[3] == "0")
+            else if (guriPacket[1] == "208" && guriPacket[2] == "0")
             {
-                if (short.TryParse(guriPacket[4], out short pearlSlot) && short.TryParse(guriPacket[6], out short mountSlot))
+                if (short.TryParse(guriPacket[3], out short pearlSlot) && short.TryParse(guriPacket[5], out short mountSlot))
                 {
                     ItemInstance mount = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(mountSlot, InventoryType.Main);
                     BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
@@ -1176,9 +1176,9 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            else if (guriPacket[2] == "209" && guriPacket[3] == "0")
+            else if (guriPacket[1] == "209" && guriPacket[2] == "0")
             {
-                if (short.TryParse(guriPacket[4], out short pearlSlot) && short.TryParse(guriPacket[6], out short mountSlot))
+                if (short.TryParse(guriPacket[3], out short pearlSlot) && short.TryParse(guriPacket[5], out short mountSlot))
                 {
                     WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(mountSlot, InventoryType.Equipment);
                     BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
@@ -1190,7 +1190,7 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            else if (guriPacket[2] == "203" && guriPacket[3] == "0")
+            else if (guriPacket[1] == "203" && guriPacket[2] == "0")
             {
                 // SP points initialization
                 int[] listPotionResetVNums = { 1366, 1427, 5115, 9040 };
@@ -1575,8 +1575,8 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             switch (packetsplit.Length)
             {
-                case 10:
-                    CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(packetsplit[7]);
+                case 9:
+                    CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(packetsplit[6]);
                     if (Receiver != null)
                     {
                         WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
@@ -1586,8 +1586,8 @@ namespace OpenNos.Handler
                             AttachmentAmount = 0,
                             IsOpened = false,
                             Date = DateTime.Now,
-                            Title = packetsplit[8],
-                            Message = packetsplit[9],
+                            Title = packetsplit[7],
+                            Message = packetsplit[8],
                             ReceiverId = Receiver.CharacterId,
                             SenderId = Session.Character.CharacterId,
                             IsSenderCopy = true,
@@ -1603,8 +1603,8 @@ namespace OpenNos.Handler
                             AttachmentAmount = 0,
                             IsOpened = false,
                             Date = DateTime.Now,
-                            Title = packetsplit[8],
-                            Message = packetsplit[9],
+                            Title = packetsplit[7],
+                            Message = packetsplit[8],
                             ReceiverId = Receiver.CharacterId,
                             SenderId = Session.Character.CharacterId,
                             IsSenderCopy = false,
@@ -1629,12 +1629,10 @@ namespace OpenNos.Handler
                     }
                     break;
 
-                case 5:
-                    int id;
-                    byte type;
-                    if (int.TryParse(packetsplit[4], out id) && byte.TryParse(packetsplit[3], out type))
+                case 4:
+                    if (byte.TryParse(packetsplit[2], out byte type) && int.TryParse(packetsplit[3], out int id))
                     {
-                        if (packetsplit[2] == "3")
+                        if (packetsplit[1] == "3")
                         {
                             if (Session.Character.MailList.ContainsKey(id))
                             {
@@ -1647,7 +1645,7 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GeneratePostMessage(Session.Character.MailList[id], type));
                             }
                         }
-                        else if (packetsplit[2] == "2")
+                        else if (packetsplit[1] == "2")
                         {
                             if (Session.Character.MailList.ContainsKey(id))
                             {

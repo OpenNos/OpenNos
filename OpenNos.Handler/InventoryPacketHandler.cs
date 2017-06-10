@@ -199,7 +199,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
-            if (!long.TryParse(packetsplit[2], out long gold))
+            if (!long.TryParse(packetsplit[1], out long gold))
             {
                 return;
             }
@@ -219,7 +219,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            for (int j = 6, i = 0; j <= packetsplit.Length && i < 10; j += 3, i++)
+            for (int j = 5, i = 0; j <= packetsplit.Length && i < 10; j += 3, i++)
             {
                 byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
@@ -898,10 +898,13 @@ namespace OpenNos.Handler
             Session.SendPacket(previousInventory != null ? (reposPacket.PartnerBackpack ? previousInventory.GeneratePStash() : previousInventory.GenerateStash()) : (reposPacket.PartnerBackpack ? UserInterfaceHelper.Instance.GeneratePStashRemove(reposPacket.OldSlot) : UserInterfaceHelper.Instance.GenerateStashRemove(reposPacket.OldSlot)));
         }
 
-        [Packet("sortopen")]
-        public void SortOpen(string packet)
+        /// <summary>
+        /// sortopen packet
+        /// </summary>
+        /// <param name="sortOpenPacket"></param>
+        public void SortOpen(SortOpenPacket sortOpenPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), sortOpenPacket.OriginalContent);
             bool gravity = true;
             while (gravity)
             {

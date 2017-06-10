@@ -21,7 +21,7 @@ namespace OpenNos.Core.Handling
     {
         #region Instantiation
 
-        //[Obsolete]
+        [Obsolete]
         public PacketAttribute(string header, int amount = 1)
         {
             Header = header;

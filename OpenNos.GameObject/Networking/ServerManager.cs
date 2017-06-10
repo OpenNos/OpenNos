@@ -333,7 +333,7 @@ namespace OpenNos.GameObject
             {
                 if (MapId != null)
                 {
-                    session.Character.MapInstanceId = GetBaseMapInstanceIdByMapId((short)MapId);
+                    session.Character.MapInstanceId = GetBaseMapInstanceIdByMapId((int)MapId);
                 }
                 ChangeMapInstance(id, session.Character.MapInstanceId, mapX, mapY);
             }

@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
     public class Character : CharacterDTO
     {
         #region Members
-        
+
         private Random _random;
         private byte _speed;
 
@@ -898,7 +898,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCMap()
         {
-            return $"c_map 0 {MapInstance.Map.MapId} {(MapInstance.MapInstanceType!=MapInstanceType.BaseMapInstance?1:0)}";
+            return $"c_map 0 {MapInstance.Map.MapId} {(MapInstance.MapInstanceType != MapInstanceType.BaseMapInstance ? 1 : 0)}";
         }
 
         public string GenerateCMode()
@@ -2088,15 +2088,13 @@ namespace OpenNos.GameObject
                                 }
 
                                 // delayed Drop
-                                Observable.Timer(TimeSpan.FromMilliseconds(500))
-                                      .Subscribe(
-                                      o =>
-                                      {
-                                          if (Session.HasCurrentMapInstance)
-                                          {
-                                              Session.CurrentMapInstance.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
-                                          }
-                                      });
+                                Observable.Timer(TimeSpan.FromMilliseconds(500)).Subscribe(o =>
+                                {
+                                    if (Session.HasCurrentMapInstance)
+                                    {
+                                        Session.CurrentMapInstance.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
+                                    }
+                                });
                             }
                         }
                     }
