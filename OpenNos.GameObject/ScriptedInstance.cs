@@ -173,21 +173,27 @@ namespace OpenNos.GameObject
                 {
                     foreach (XmlNode node in def.SelectSingleNode("DrawItems")?.ChildNodes)
                     {
-                        DrawItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
+                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool IsRandomRare);
+                        short.TryParse(node.Attributes["Design"]?.Value, out short design);
+                        DrawItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, IsRandomRare));
                     }
                 }
                 if (def.SelectSingleNode("SpecialItems")?.ChildNodes != null)
                 {
                     foreach (XmlNode node in def.SelectSingleNode("SpecialItems")?.ChildNodes)
                     {
-                        SpecialItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
+                        short.TryParse(node.Attributes["Design"]?.Value, out short design);
+                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool IsRandomRare);
+                        SpecialItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, IsRandomRare));
                     }
                 }
                 if (def.SelectSingleNode("GiftItems")?.ChildNodes != null)
                 {
                     foreach (XmlNode node in def.SelectSingleNode("GiftItems")?.ChildNodes)
                     {
-                        GiftItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value)));
+                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool IsRandomRare);
+                        short.TryParse(node.Attributes["Design"]?.Value, out short design);
+                        GiftItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, IsRandomRare));
                     }
                 }
             }

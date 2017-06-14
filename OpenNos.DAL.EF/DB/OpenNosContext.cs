@@ -296,6 +296,18 @@ namespace OpenNos.DAL.EF.DB
                  .HasForeignKey(e => e.AttachmentVNum)
                  .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<RollGeneratedItem>()
+               .HasRequired(e => e.OriginalItem)
+               .WithMany(e => e.RollGeneratedItem)
+               .HasForeignKey(e => e.OriginalItemVNum)
+               .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<RollGeneratedItem>()
+               .HasRequired(e => e.ItemGenerated)
+               .WithMany(e => e.RollGeneratedItem2)
+               .HasForeignKey(e => e.ItemGeneratedVNum)
+               .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Map>()
                 .HasMany(e => e.Character)
                 .WithRequired(e => e.Map)

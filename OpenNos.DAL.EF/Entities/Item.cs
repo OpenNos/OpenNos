@@ -31,6 +31,8 @@ namespace OpenNos.DAL.EF
             Drop = new HashSet<Drop>();
             Recipe = new HashSet<Recipe>();
             Mail = new HashSet<Mail>();
+            RollGeneratedItem = new HashSet<RollGeneratedItem>();
+            RollGeneratedItem2 = new HashSet<RollGeneratedItem>();
             RecipeItem = new HashSet<RecipeItem>();
             ShopItem = new HashSet<ShopItem>();
             BCards = new HashSet<BCard>();
@@ -133,6 +135,10 @@ namespace OpenNos.DAL.EF
         public short MagicDefence { get; set; }
 
         public virtual ICollection<Mail> Mail { get; set; }
+
+        public virtual ICollection<RollGeneratedItem> RollGeneratedItem { get; set; }
+
+        public virtual ICollection<RollGeneratedItem> RollGeneratedItem2 { get; set; }
 
         public byte MaxCellon { get; set; }
 

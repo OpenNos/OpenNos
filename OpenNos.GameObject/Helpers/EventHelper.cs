@@ -239,6 +239,19 @@ namespace OpenNos.GameObject.Helpers
                                     }
                                     if (evt.MapInstance.InstanceBag.EndState == 1)
                                     {
+                                        foreach (ClientSession sess in grp.Characters)
+                                        {
+                                            foreach(Gift gift in grp?.Raid?.GiftItems)
+                                            {
+                                                byte rare = 0;
+                                                if (gift.IsRandomRare)
+                                                {
+                                                    rare = (byte)ServerManager.Instance.RandomNumber(0, 7);
+                                                }
+                                               //TODO add random rarity for some object
+                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
+                                            }
+                                        }
                                         ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp?.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
                                     }
 
@@ -375,7 +388,7 @@ namespace OpenNos.GameObject.Helpers
 
                     case EventActionType.THROWITEMS:
                         Tuple<int, short, byte, int, int> parameters = (Tuple<int, short, byte, int, int>)evt.Parameter;
-                          evt.MapInstance.ThrowItems(parameters);
+                        evt.MapInstance.ThrowItems(parameters);
                         break;
 
                     case EventActionType.SPAWNONLASTENTRY:
