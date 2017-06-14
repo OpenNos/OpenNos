@@ -45,7 +45,11 @@ namespace OpenNos.GameObject
                             BoxInstance box = session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot, InventoryType.Equipment);
                             if (box != null)
                             {
-                                if (box.HoldingVNum == 0)
+                                if (box.Item.ItemSubType == 3)
+                                {
+                                    session.SendPacket($"qna #guri^300^8023^{inv.Slot} {Language.Instance.GetMessageFromKey("ASK_OPEN_BOX")}");
+                                }
+                                else if (box.HoldingVNum == 0)
                                 {
                                     session.SendPacket($"qna #guri^300^8023^{inv.Slot}^{packetsplit[3]} {Language.Instance.GetMessageFromKey("ASK_STORE_PET")}");
                                 }
@@ -62,7 +66,36 @@ namespace OpenNos.GameObject
                         BoxInstance box = session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot, InventoryType.Equipment);
                         if (box != null)
                         {
-                            if (box.HoldingVNum == 0)
+                            if (box.Item.ItemSubType == 3)
+                            {
+                                List<RollGeneratedItemDTO> roll = box.Item.RollGeneratedItems.Where(s => s.MinimumOriginalItemRare <= box.Rare && s.MaximumOriginalItemRare >= box.Rare && s.OriginalItemDesign == box.Design).ToList();
+                                int probabilities = roll.Sum(s => s.Probability);
+                                int rnd = ServerManager.Instance.RandomNumber(0, probabilities);
+                                int currentrnd = 0;
+                                List<ItemInstance> newInv = null;
+                                foreach (RollGeneratedItemDTO rollitem in roll)
+                                {
+                                    if (newInv == null)
+                                    {
+                                        currentrnd += rollitem.Probability;
+                                        if (currentrnd >= rnd)
+                                        {
+                                            newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
+                                            if (newInv.Any())
+                                            {
+                                                short Slot = inv.Slot;
+                                                if (Slot != -1)
+                                                {
+                                                    session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
+                                                    newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
+                                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (box.HoldingVNum == 0)
                             {
                                 if (packetsplit.Length == 1)
                                 {

@@ -51,6 +51,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<CharacterSkill> CharacterSkill { get; set; }
 
+        public virtual DbSet<RollGeneratedItem> RollGeneratedItem { get; set; }
+
         public virtual DbSet<Combo> Combo { get; set; }
 
         public virtual DbSet<Drop> Drop { get; set; }

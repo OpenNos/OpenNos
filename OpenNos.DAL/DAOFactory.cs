@@ -29,6 +29,7 @@ namespace OpenNos.DAL
         private static IBazaarItemDAO _bazaarItemDAO;
         private static ICardDAO _cardDAO;
         private static IBCardDAO _bcardDAO;
+        private static IRollGeneratedItemDAO _rollGeneratedItemDAO;
         private static ICellonOptionDAO _cellonoptionDAO;
         private static ICharacterDAO _characterDAO;
         private static ICharacterRelationDAO _characterRelationDAO;
@@ -905,6 +906,26 @@ namespace OpenNos.DAL
                 }
 
                 return _bcardDAO;
+            }
+        }
+
+        public static IRollGeneratedItemDAO RollGeneratedItemDAO
+        {
+            get
+            {
+                if (_rollGeneratedItemDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _rollGeneratedItemDAO = new RollGeneratedItemDAO();
+                    }
+                    else
+                    {
+                        _rollGeneratedItemDAO = new EF.RollGeneratedItemDAO();
+                    }
+                }
+
+                return _rollGeneratedItemDAO;
             }
         }
 

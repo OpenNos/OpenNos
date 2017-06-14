@@ -36,6 +36,7 @@ namespace OpenNos.GameObject
 
         #region Properties
         public List<BCard> BCards { get; set; }
+        public List<RollGeneratedItemDTO> RollGeneratedItems { get; set; }
         #endregion
 
         #region Methods
@@ -115,6 +116,7 @@ namespace OpenNos.GameObject
             WaterResistance = item.WaterResistance;
             BCards = new List<BCard>();
             DAOFactory.BCardDAO.LoadByItemVNum(item.VNum).ToList().ForEach(o => BCards.Add((BCard)o));
+            RollGeneratedItems = DAOFactory.RollGeneratedItemDAO.LoadByItemVNum(item.VNum).ToList();
         }
 
         //TODO: Convert to PacketDefinition

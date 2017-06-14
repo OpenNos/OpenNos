@@ -178,6 +178,7 @@ namespace OpenNos.World
             DAOFactory.ItemDAO.RegisterMapping(typeof(ItemDTO)).InitializeMapper();
             DAOFactory.BazaarItemDAO.RegisterMapping(typeof(BazaarItemDTO)).InitializeMapper();
             DAOFactory.MailDAO.RegisterMapping(typeof(MailDTO)).InitializeMapper();
+            DAOFactory.RollGeneratedItemDAO.RegisterMapping(typeof(RollGeneratedItemDTO)).InitializeMapper();
             DAOFactory.MapDAO.RegisterMapping(typeof(MapDTO)).InitializeMapper();
             DAOFactory.MapMonsterDAO.RegisterMapping(typeof(MapMonster)).InitializeMapper();
             DAOFactory.MapNpcDAO.RegisterMapping(typeof(MapNpc)).InitializeMapper();

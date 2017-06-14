@@ -13,32 +13,18 @@
  */
 
 using OpenNos.Domain;
+using OpenNos.GameObject;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using static OpenNos.Domain.BCardType;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.Data
 {
-    public class RollGeneratedItem
+    public class RollGeneratedItemDTO : MappingBaseDTO
     {
-        #region Instantiation
-
-        public RollGeneratedItem()
-        {
-
-        }
-
-        #endregion
-
         #region Properties
 
-        [Key]
-        public short RollGeneratedItemId { get; set; }
-        
-        public short OriginalItemDesign { get; set; }
+        public short RollGeneratedItemId { get; set; }   
 
-        public virtual Item OriginalItem { get; set; }
+        public short OriginalItemDesign { get; set; }
 
         public short OriginalItemVNum { get; set; }
 
@@ -53,8 +39,6 @@ namespace OpenNos.DAL.EF
         public byte MinimumOriginalItemRare { get; set; }
 
         public byte MaximumOriginalItemRare { get; set; }
-
-        public virtual Item ItemGenerated { get; set; }
 
         #endregion
     }
