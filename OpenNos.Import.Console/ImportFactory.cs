@@ -2186,13 +2186,13 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
                     {
-                        byte type = (byte)(Int32.Parse(currentLine[3]));
-                        if (type != 0)
+                        int type = Int32.Parse(currentLine[3]);
+                        if (type != 0 && type!=-1)
                         {
                             BCardDTO itemCard = new BCardDTO
                             {
                                 SkillVNum = skill.SkillVNum,
-                                Type = type,
+                                Type =(byte)type,
                                 SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
                                 FirstData = (short)(int.Parse(currentLine[5]) / 4),
                                 SecondData = (short)(int.Parse(currentLine[6]) / 4),
