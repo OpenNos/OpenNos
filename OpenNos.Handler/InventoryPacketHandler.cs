@@ -706,6 +706,16 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), mviPacket.ToString());
             lock (Session.Character.Inventory)
             {
+                if(mviPacket.Amount == 0)
+                {
+                    return;
+                }
+
+                if (mviPacket.Slot == mviPacket.DestinationSlot)
+                {
+                    return;
+                }
+
                 // check if the destination slot is out of range
                 if (mviPacket.DestinationSlot > 48 + (Session.Character.HaveBackpack() ? 1 : 0) * 12)
                 {
