@@ -889,6 +889,16 @@ namespace OpenNos.Handler
         /// <param name="reposPacket"></param>
         public void Repos(ReposPacket reposPacket)
         {
+            if(reposPacket.OldSlot.Equals(reposPacket.NewSlot))
+            {
+                return;
+            }
+
+            if(reposPacket.Amount == 0)
+            {
+                return;
+            }
+
             // check if the destination slot is out of range
             if (reposPacket.NewSlot >= (reposPacket.PartnerBackpack ? (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0) : Session.Character.WareHouseSize))
             {
