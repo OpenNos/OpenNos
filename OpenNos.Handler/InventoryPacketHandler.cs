@@ -676,6 +676,10 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), mvePacket.ToString());
             lock (Session.Character.Inventory)
             {
+                if(mvePacket.Slot.Equals(mvePacket.DestinationSlot) && mvePacket.InventoryType.Equals(mvePacket.DestinationInventoryType))
+                {
+                    return;
+                }
                 if (mvePacket.DestinationSlot > 48 + (Session.Character.HaveBackpack() ? 1 : 0) * 12)
                 {
                     return;
@@ -706,6 +710,16 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), mviPacket.ToString());
             lock (Session.Character.Inventory)
             {
+                if(mviPacket.Amount == 0)
+                {
+                    return;
+                }
+
+                if (mviPacket.Slot == mviPacket.DestinationSlot)
+                {
+                    return;
+                }
+
                 // check if the destination slot is out of range
                 if (mviPacket.DestinationSlot > 48 + (Session.Character.HaveBackpack() ? 1 : 0) * 12)
                 {
@@ -875,6 +889,16 @@ namespace OpenNos.Handler
         /// <param name="reposPacket"></param>
         public void Repos(ReposPacket reposPacket)
         {
+            if(reposPacket.OldSlot.Equals(reposPacket.NewSlot))
+            {
+                return;
+            }
+
+            if(reposPacket.Amount == 0)
+            {
+                return;
+            }
+
             // check if the destination slot is out of range
             if (reposPacket.NewSlot >= (reposPacket.PartnerBackpack ? (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0) : Session.Character.WareHouseSize))
             {
