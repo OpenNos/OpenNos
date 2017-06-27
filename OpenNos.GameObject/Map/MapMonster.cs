@@ -916,55 +916,58 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    NpcMonsterSkill npcMonsterSkill = null;
-                    if (ServerManager.Instance.RandomNumber(0, 10) > 8 && Skills != null)
+                    lock (targetSession)
                     {
-                        npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
-                    }
+                        NpcMonsterSkill npcMonsterSkill = null;
+                        if (ServerManager.Instance.RandomNumber(0, 10) > 8 && Skills != null)
+                        {
+                            npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
+                        }
 
-                    if (npcMonsterSkill?.Skill.TargetType == 1 && npcMonsterSkill?.Skill.HitType == 0)
-                    {
-                        TargetHit(targetSession, npcMonsterSkill);
-                    }
-
-                    // check if target is in range
-                    if (!targetSession.Character.InvisibleGm && !targetSession.Character.Invisible && targetSession.Character.Hp > 0)
-                    {
-                        if (npcMonsterSkill != null && CurrentMp >= npcMonsterSkill.Skill.MpCost &&
-                             Map.GetDistance(new MapCell
-                             {
-                                 X = MapX,
-                                 Y = MapY
-                             },
-                                 new MapCell
-                                 {
-                                     X = targetSession.Character.PositionX,
-                                     Y = targetSession.Character.PositionY
-                                 }) < npcMonsterSkill.Skill.Range)
+                        if (npcMonsterSkill?.Skill.TargetType == 1 && npcMonsterSkill?.Skill.HitType == 0)
                         {
                             TargetHit(targetSession, npcMonsterSkill);
                         }
-                        else if (Map.GetDistance(new MapCell
+
+                        // check if target is in range
+                        if (!targetSession.Character.InvisibleGm && !targetSession.Character.Invisible && targetSession.Character.Hp > 0)
                         {
-                            X = MapX,
-                            Y = MapY
-                        },
-                                    new MapCell
-                                    {
-                                        X = targetSession.Character.PositionX,
-                                        Y = targetSession.Character.PositionY
-                                    }) <= Monster.BasicRange)
-                        {
-                            TargetHit(targetSession, npcMonsterSkill);
+                            if (npcMonsterSkill != null && CurrentMp >= npcMonsterSkill.Skill.MpCost &&
+                                 Map.GetDistance(new MapCell
+                                 {
+                                     X = MapX,
+                                     Y = MapY
+                                 },
+                                     new MapCell
+                                     {
+                                         X = targetSession.Character.PositionX,
+                                         Y = targetSession.Character.PositionY
+                                     }) < npcMonsterSkill.Skill.Range)
+                            {
+                                TargetHit(targetSession, npcMonsterSkill);
+                            }
+                            else if (Map.GetDistance(new MapCell
+                            {
+                                X = MapX,
+                                Y = MapY
+                            },
+                                        new MapCell
+                                        {
+                                            X = targetSession.Character.PositionX,
+                                            Y = targetSession.Character.PositionY
+                                        }) <= Monster.BasicRange)
+                            {
+                                TargetHit(targetSession, npcMonsterSkill);
+                            }
+                            else
+                            {
+                                FollowTarget(targetSession);
+                            }
                         }
                         else
                         {
                             FollowTarget(targetSession);
                         }
-                    }
-                    else
-                    {
-                        FollowTarget(targetSession);
                     }
                 }
             }
