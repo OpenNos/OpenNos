@@ -18,6 +18,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -76,14 +77,21 @@ namespace OpenNos.GameObject
                             short y = (short)(ServerManager.Instance.RandomNumber(-3, 3) + (session as MapMonster).MapY);
                             summonParameters.Add(new MonsterToSummon((short)SecondData, new MapCell() { X = x, Y = y }, -1, true, new List<EventContainer>()));
                         }
-                        switch (SubType)
+                        int rnd = ServerManager.Instance.RandomNumber();
+                        if (rnd <= Math.Abs(ThirdData) || ThirdData == 0)
                         {
-                            case 20:
-                                EventHelper.Instance.RunEvent(new EventContainer((session as MapMonster).MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
-                                break;
-                            default:
-                                (session as MapMonster).OnDeathEvents.Add(new EventContainer((session as MapMonster).MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
-                                break;
+                            switch (SubType)
+                            {
+                                case 20:
+                                    EventHelper.Instance.RunEvent(new EventContainer((session as MapMonster).MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
+                                    break;
+                                default:
+                                    if (!(session as MapMonster).OnDeathEvents.Any(s => s.EventActionType == EventActionType.SPAWNMONSTERS))
+                                    {
+                                        (session as MapMonster).OnDeathEvents.Add(new EventContainer((session as MapMonster).MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
+                                    }
+                                    break;
+                            }
                         }
                     }
                     else if (session.GetType() == typeof(MapNpc))

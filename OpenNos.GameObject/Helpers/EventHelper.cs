@@ -166,7 +166,14 @@ namespace OpenNos.GameObject.Helpers
                             case "OnLockerOpen":
                                 evt.MapInstance.InstanceBag.UnlockEvents.AddRange(even.Item2);
                                 break;
+                                
                         }
+                        break;
+
+                    case EventActionType.SETAREAENTRY:
+                        Tuple<Zone, List<EventContainer>> even2 = (Tuple<Zone, List<EventContainer>>)evt.Parameter;
+                        even2.Item2.ForEach(s => evt.MapInstance.OnAreaEntryEvents.Add(new Tuple<EventContainer,Zone>(s, even2.Item1)));
+                     
                         break;
                     case EventActionType.REMOVEMONSTERLOCKER:
                         EventContainer evt2 = (EventContainer)evt.Parameter;

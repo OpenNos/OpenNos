@@ -5099,7 +5099,7 @@ namespace OpenNos.GameObject
                     foreach (BCard entry in buff.Card.BCards.Concat(EquipmentBCards).Where(
                         s => s.Type.Equals((byte)type)
                              && s.SubType.Equals((byte)(subtype / 10)) &&
-                             (!s.IsDelayed || (s.IsDelayed &&
+                             (s.CastType != 1 || (s.CastType == 1 &&
                                                buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
                     {
                         value1 += entry.FirstData;

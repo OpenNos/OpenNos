@@ -1338,12 +1338,12 @@ namespace OpenNos.Handler
                                 }
                                 else
                                 {
-                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_TEAM_LEADER_CAN_START"),10));
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_TEAM_LEADER_CAN_START"), 10));
                                 }
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"),10));
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"), 10));
                             }
                             return;
                         default:
@@ -1482,7 +1482,7 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GenerateStat());
                             }
                             break;
-                        
+
                         default:
                             const int seed = 1012;
                             if (Session.Character.Inventory.CountItem(seed) < 10 && Session.Character.Level > 20)
@@ -1937,6 +1937,12 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;
+
+                    Session.CurrentMapInstance?.OnAreaEntryEvents?.Where(s => s.Item2.InZone(Session.Character.PositionX, Session.Character.PositionY)).ToList().ForEach(e =>
+                    {
+                        EventHelper.Instance.RunEvent(e.Item1);
+                    });
+                    Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s.Item2.InZone(Session.Character.PositionX, Session.Character.PositionY));
 
                     Session.CurrentMapInstance?.OnMoveOnMapEvents?.ForEach(e =>
                     {

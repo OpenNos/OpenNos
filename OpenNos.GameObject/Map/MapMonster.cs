@@ -1125,6 +1125,7 @@ namespace OpenNos.GameObject
                     ? $"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0"
                     : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0");
                 npcMonsterSkill?.Skill.BCards.ForEach(s => s.ApplyBCards(this));
+                Monster.BCards.ForEach(s => s.ApplyBCards(this));
                 LastSkill = DateTime.Now;
                 if (targetSession.Character.Hp <= 0)
                 {

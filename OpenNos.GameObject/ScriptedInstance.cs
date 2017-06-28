@@ -346,6 +346,10 @@ namespace OpenNos.GameObject
                         evts.Add(new EventContainer(mapinstance, EventActionType.REGISTEREVENT, new Tuple<string, List<EventContainer>>(mapevent.Name, GenerateEvent(mapevent, mapinstance))));
                         break;
 
+                    case "OnAreaEntry":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SETAREAENTRY, new Tuple< Zone, List<EventContainer>>(new Zone() { X = positionX, Y= positionY, Range = byte.Parse(mapevent?.Attributes["Range"]?.Value) }, GenerateEvent(mapevent, mapinstance))));
+                        break;
+
                     case "SetMonsterLockers":
                         evts.Add(new EventContainer(mapinstance, EventActionType.SETMONSTERLOCKERS, byte.Parse(mapevent?.Attributes["Value"]?.Value)));
                         break;
