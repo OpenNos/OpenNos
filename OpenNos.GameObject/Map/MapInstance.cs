@@ -71,6 +71,7 @@ namespace OpenNos.GameObject
             OnCharacterDiscoveringMapEvents = new List<Tuple<EventContainer, List<long>>>();
             OnMoveOnMapEvents = new List<EventContainer>();
             OnAreaEntryEvents = new List<Tuple<EventContainer, Zone>>();
+            WaveEvents = new List<EventWave>();
             OnMapClean = new List<EventContainer>();
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _npcs = new ThreadSafeSortedList<long, MapNpc>();
@@ -149,7 +150,9 @@ namespace OpenNos.GameObject
         public List<EventContainer> OnMoveOnMapEvents { get; set; }
 
         public List<Tuple<EventContainer, Zone>> OnAreaEntryEvents { get; set; }
-        
+
+        public List<EventWave> WaveEvents { get; set; }
+
         public List<Portal> Portals => _portals;
 
         public bool ShopAllowed { get; set; }
@@ -275,7 +278,7 @@ namespace OpenNos.GameObject
             Monsters.ForEach(s =>
             {
                 packets.Add(s.GenerateIn());
-                if(s.IsBoss)
+                if (s.IsBoss)
                 {
                     packets.Add(s.GenerateBoss());
                 }
@@ -496,6 +499,18 @@ namespace OpenNos.GameObject
         {
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
             {
+                WaveEvents.ForEach(s =>
+                {
+                    if (s.LastStart.AddSeconds(s.Delay) <= DateTime.Now)
+                    {
+                        if(s.Offset == 0)
+                        {
+                            s.Events.ForEach(e => EventHelper.Instance.RunEvent(e));
+                        }
+                        s.Offset = s.Offset > 0 ? (byte)(s.Offset - 1) : (byte)0;
+                        s.LastStart = DateTime.Now;
+                    }
+                });
                 try
                 {
                     if (Monsters.Count(s => s.IsAlive) == 0)

@@ -169,7 +169,9 @@ namespace OpenNos.GameObject.Helpers
                                 
                         }
                         break;
-
+                    case EventActionType.REGISTERWAVE:
+                        evt.MapInstance.WaveEvents.Add((EventWave)evt.Parameter);
+                        break;
                     case EventActionType.SETAREAENTRY:
                         Tuple<Zone, List<EventContainer>> even2 = (Tuple<Zone, List<EventContainer>>)evt.Parameter;
                         even2.Item2.ForEach(s => evt.MapInstance.OnAreaEntryEvents.Add(new Tuple<EventContainer,Zone>(s, even2.Item1)));

@@ -350,6 +350,11 @@ namespace OpenNos.GameObject
                         evts.Add(new EventContainer(mapinstance, EventActionType.SETAREAENTRY, new Tuple< Zone, List<EventContainer>>(new Zone() { X = positionX, Y= positionY, Range = byte.Parse(mapevent?.Attributes["Range"]?.Value) }, GenerateEvent(mapevent, mapinstance))));
                         break;
 
+                    case "Wave":
+                        byte.TryParse(mapevent?.Attributes["Offset"]?.Value, out byte Offset);
+                        evts.Add(new EventContainer(mapinstance, EventActionType.REGISTERWAVE, new EventWave(byte.Parse(mapevent?.Attributes["Delay"]?.Value), GenerateEvent(mapevent, mapinstance), Offset)));
+                        break;
+
                     case "SetMonsterLockers":
                         evts.Add(new EventContainer(mapinstance, EventActionType.SETMONSTERLOCKERS, byte.Parse(mapevent?.Attributes["Value"]?.Value)));
                         break;

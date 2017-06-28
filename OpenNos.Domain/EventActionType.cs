@@ -46,6 +46,7 @@ namespace OpenNos.Domain
         THROWITEMS,
         SETMONSTERLOCKERS,
         SETBUTTONLOCKERS,
-        SETAREAENTRY
+        SETAREAENTRY,
+        REGISTERWAVE
     }
 }
