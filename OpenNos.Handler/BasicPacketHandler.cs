@@ -1938,11 +1938,11 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;
 
-                    Session.CurrentMapInstance?.OnAreaEntryEvents?.Where(s => s.Item2.InZone(Session.Character.PositionX, Session.Character.PositionY)).ToList().ForEach(e =>
+                    Session.CurrentMapInstance?.OnAreaEntryEvents?.Where(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY)).ToList().ForEach(e =>
                     {
-                        EventHelper.Instance.RunEvent(e.Item1);
+                        e.Events.ForEach(evt => EventHelper.Instance.RunEvent(evt));
                     });
-                    Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s.Item2.InZone(Session.Character.PositionX, Session.Character.PositionY));
+                    Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY));
 
                     Session.CurrentMapInstance?.OnMoveOnMapEvents?.ForEach(e =>
                     {

@@ -70,7 +70,7 @@ namespace OpenNos.GameObject
             ScriptedInstances = new List<ScriptedInstance>();
             OnCharacterDiscoveringMapEvents = new List<Tuple<EventContainer, List<long>>>();
             OnMoveOnMapEvents = new List<EventContainer>();
-            OnAreaEntryEvents = new List<Tuple<EventContainer, Zone>>();
+            OnAreaEntryEvents = new List<ZoneEvent>();
             WaveEvents = new List<EventWave>();
             OnMapClean = new List<EventContainer>();
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
@@ -149,7 +149,7 @@ namespace OpenNos.GameObject
 
         public List<EventContainer> OnMoveOnMapEvents { get; set; }
 
-        public List<Tuple<EventContainer, Zone>> OnAreaEntryEvents { get; set; }
+        public List<ZoneEvent> OnAreaEntryEvents { get; set; }
 
         public List<EventWave> WaveEvents { get; set; }
 
@@ -542,7 +542,7 @@ namespace OpenNos.GameObject
                 NpcMonster npcmonster = ServerManager.Instance.GetNpc(mon.VNum);
                 if (npcmonster != null)
                 {
-                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.Y, MapX = mon.SpawnCell.X, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents, IsTarget = mon.IsTarget, IsBonus = mon.IsBonus, IsBoss = mon.IsBoss };
+                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.Y, MapX = mon.SpawnCell.X, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents,OnNoticeEvents=mon.NoticingEvents, IsTarget = mon.IsTarget, IsBonus = mon.IsBonus, IsBoss = mon.IsBoss,NoticeRange = mon.NoticeRange };
                     monster.Initialize(this);
                     monster.IsHostile = mon.IsHostile;
                     AddMonster(monster);

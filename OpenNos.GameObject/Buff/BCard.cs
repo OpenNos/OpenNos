@@ -75,7 +75,7 @@ namespace OpenNos.GameObject
                         {
                             short x = (short)(ServerManager.Instance.RandomNumber(-3, 3) + (session as MapMonster).MapX);
                             short y = (short)(ServerManager.Instance.RandomNumber(-3, 3) + (session as MapMonster).MapY);
-                            summonParameters.Add(new MonsterToSummon((short)SecondData, new MapCell() { X = x, Y = y }, -1, true, new List<EventContainer>()));
+                            summonParameters.Add(new MonsterToSummon((short)SecondData, new MapCell() { X = x, Y = y }, -1, true));
                         }
                         int rnd = ServerManager.Instance.RandomNumber();
                         if (rnd <= Math.Abs(ThirdData) || ThirdData == 0)

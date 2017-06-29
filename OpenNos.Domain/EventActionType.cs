@@ -47,6 +47,10 @@ namespace OpenNos.Domain
         SETMONSTERLOCKERS,
         SETBUTTONLOCKERS,
         SETAREAENTRY,
-        REGISTERWAVE
+        REGISTERWAVE,
+        EFFECT,
+        MOVE,
+        ONTARGET,
+        CONTROLEMONSTERINRANGE
     }
 }

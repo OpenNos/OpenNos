@@ -365,13 +365,13 @@ namespace OpenNos.Handler
                         }
                     case TargetHitType.ZoneHit:
                         {
-                            // Zone HIT
+                            // ZoneEvent HIT
                             hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.MapX} {hitRequest.MapY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} 5 {hitRequest.Skill.SkillType - 1}");
                             break;
                         }
                     case TargetHitType.SpecialZoneHit:
                         {
-                            // Special Zone hit
+                            // Special ZoneEvent hit
                             hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} 0 {hitRequest.Skill.SkillType - 1}");
                             break;
                         }

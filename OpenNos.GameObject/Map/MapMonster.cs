@@ -42,6 +42,7 @@ namespace OpenNos.GameObject
         {
             HitQueue = new ConcurrentQueue<HitRequest>();
             OnDeathEvents = new List<EventContainer>();
+            OnNoticeEvents = new List<EventContainer>();
         }
 
         #endregion
@@ -64,6 +65,8 @@ namespace OpenNos.GameObject
 
         public bool IsBoss { get; set; }
 
+        public byte NoticeRange { get; set; }
+
         public bool IsHostile { get; set; }
 
         public bool IsTarget { get; set; }
@@ -81,6 +84,10 @@ namespace OpenNos.GameObject
         public NpcMonster Monster { get; private set; }
 
         public List<EventContainer> OnDeathEvents { get; set; }
+
+        public List<EventContainer> OnNoticeEvents { get; set; }
+
+        public ZoneEvent MoveEvent { get; set; }
 
         public List<Node> Path { get; set; }
 
@@ -191,12 +198,7 @@ namespace OpenNos.GameObject
             MapInstance.InstanceBag.MonstersKilled++;
             OnDeathEvents.ForEach(e =>
             {
-                if (e.EventActionType == EventActionType.THROWITEMS)
-                {
-                    Tuple<int, short, byte, int, int> evt = (Tuple<int, short, byte, int, int>)e.Parameter;
-                    e.Parameter = new Tuple<int, short, byte, int, int>(MapMonsterId, evt.Item2, evt.Item3, evt.Item4, evt.Item5);
-                }
-                EventHelper.Instance.RunEvent(e);
+                EventHelper.Instance.RunEvent(e, monster: this);
             });
         }
 
@@ -241,14 +243,22 @@ namespace OpenNos.GameObject
         {
             if (IsHostile && Target == -1)
             {
-                Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s?.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapInstance == MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY }) < Monster.NoticeRange)?.Character;
+                Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s?.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapInstance == MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY }) < (NoticeRange == 0 ? Monster.NoticeRange : NoticeRange))?.Character;
                 if (character != null)
                 {
-                    Target = character.CharacterId;
-                    if (!Monster.NoAggresiveIcon)
+                    if (!OnNoticeEvents.Any() && LastEffect.AddSeconds(5) < DateTime.Now && MoveEvent == null)
                     {
-                        character.Session.SendPacket(GenerateEff(5000));
+                        Target = character.CharacterId;
+                        if (!Monster.NoAggresiveIcon)
+                        {
+                            character.Session.SendPacket(GenerateEff(5000));
+                        }
                     }
+                    OnNoticeEvents.ForEach(e =>
+                    {
+                        EventHelper.Instance.RunEvent(e, monster: this);
+                    });
+                    OnNoticeEvents.RemoveAll(s => s != null);
                 }
             }
         }
@@ -990,23 +1000,32 @@ namespace OpenNos.GameObject
             {
                 double time = (DateTime.Now - LastMove).TotalMilliseconds;
 
-                if (Path.Any(s => s != null)) // move back to initial position after following target
+                if (Path.Any()) // move back to initial position after following target
                 {
+
                     int timetowalk = 2000 / Monster.Speed;
                     if (time > timetowalk)
                     {
-                        int mapX = Path.ElementAt(0).X;
-                        int mapY = Path.ElementAt(0).Y;
-                        Path.RemoveAt(0);
-                        Observable.Timer(TimeSpan.FromMilliseconds(timetowalk))
-                        .Subscribe(
-                        x =>
-                        {
-                            MapX = (short)mapX;
-                            MapY = (short)mapY;
-                        });
+                        int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
+                        short mapX = Path.ElementAt(maxindex - 1).X;
+                        short mapY = Path.ElementAt(maxindex - 1).Y;
+                        double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Monster.Speed;
+                        LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
-                        LastMove = DateTime.Now;
+                        Observable.Timer(TimeSpan.FromMilliseconds(timetowalk))
+                                             .Subscribe(
+                                             x =>
+                                             {
+                                                 MapX = (short)mapX;
+                                                 MapY = (short)mapY;
+
+                                                 MoveEvent?.Events.ForEach(e =>
+                                                 {
+                                                     EventHelper.Instance.RunEvent(e, monster: this);
+                                                 });
+
+                                             });
+                        Path.RemoveRange(0, maxindex);
                         MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                         return;
                     }
