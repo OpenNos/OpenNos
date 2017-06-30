@@ -199,29 +199,30 @@ namespace OpenNos.GameObject.Helpers
 
                     case EventActionType.EFFECT:
                         short evt3 = (short)evt.Parameter;
-                        monster.LastEffect = DateTime.Now;
-                        evt.MapInstance.Broadcast(monster?.GenerateEff(evt3));
+                        if (monster!=null && (DateTime.Now - monster.LastEffect).TotalSeconds >= 5)
+                        {
+                            evt.MapInstance.Broadcast(monster.GenerateEff(evt3));
+                            monster.ShowEffect();
+                        }
                         break;
 
                     case EventActionType.CONTROLEMONSTERINRANGE:
-                        if (monster !=null)
+                        if (monster != null)
                         {
-                            Tuple<short, byte, List<EventContainer>> evnt = (Tuple<short, byte,List<EventContainer>>)evt.Parameter;
+                            Tuple<short, byte, List<EventContainer>> evnt = (Tuple<short, byte, List<EventContainer>>)evt.Parameter;
                             List<MapMonster> MapMonsters = evt.MapInstance.GetListMonsterInRange(monster.MapX, monster.MapY, evnt.Item2);
-                            if(evnt.Item1 != 0)
+                            if (evnt.Item1 != 0)
                             {
                                 MapMonsters.RemoveAll(s => s.MonsterVNum != evnt.Item1);
                             }
-                            MapMonsters.ForEach(s=> evnt.Item3.ForEach(e=>RunEvent(e, monster: s)));
+                            MapMonsters.ForEach(s => evnt.Item3.ForEach(e => RunEvent(e, monster: s)));
                         }
                         break;
 
                     case EventActionType.ONTARGET:
-                        if(monster.MoveEvent != null && monster.MoveEvent.InZone(monster.MapX,monster.MapY))
+                        if (monster.MoveEvent != null && monster.MoveEvent.InZone(monster.MapX, monster.MapY))
                         {
-                            monster.MoveEvent = null;
-                            monster.Path = null;
-                            ((List<EventContainer>)evt.Parameter).ForEach(s=>RunEvent(s,monster:monster)); 
+                            ((List<EventContainer>)evt.Parameter).ForEach(s => RunEvent(s, monster: monster));
                         }
                         break;
 
@@ -229,11 +230,14 @@ namespace OpenNos.GameObject.Helpers
                         ZoneEvent evt4 = (ZoneEvent)evt.Parameter;
                         if (monster != null)
                         {
+
+                            monster.FirstX = evt4.X;
+                            monster.FirstY = evt4.Y;
                             monster.MoveEvent = evt4;
                             monster.Path = BestFirstSearch.FindPath(new Node { X = monster.MapX, Y = monster.MapY }, new Node { X = evt4.X, Y = evt4.Y }, evt.MapInstance?.Map.Grid);
                         }
                         break;
-                       
+
                     case EventActionType.CLOCK:
                         evt.MapInstance.InstanceBag.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
                         evt.MapInstance.InstanceBag.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);

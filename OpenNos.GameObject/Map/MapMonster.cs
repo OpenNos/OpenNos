@@ -99,9 +99,9 @@ namespace OpenNos.GameObject
 
         public long Target { get; set; }
 
-        private short FirstX { get; set; }
+        public short FirstX { get; set; }
 
-        private short FirstY { get; set; }
+        public short FirstY { get; set; }
 
         #endregion
 
@@ -246,10 +246,10 @@ namespace OpenNos.GameObject
                 Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s?.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapInstance == MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY }) < (NoticeRange == 0 ? Monster.NoticeRange : NoticeRange))?.Character;
                 if (character != null)
                 {
-                    if (!OnNoticeEvents.Any() && LastEffect.AddSeconds(5) < DateTime.Now && MoveEvent == null)
+                    if (!OnNoticeEvents.Any() && MoveEvent == null)
                     {
                         Target = character.CharacterId;
-                        if (!Monster.NoAggresiveIcon)
+                        if (!Monster.NoAggresiveIcon && LastEffect.AddSeconds(5) < DateTime.Now)
                         {
                             character.Session.SendPacket(GenerateEff(5000));
                         }
@@ -285,8 +285,6 @@ namespace OpenNos.GameObject
         {
             if (IsMoving)
             {
-                short maxDistance = 22;
-                int distance = 0;
                 if (!Path.Any() && targetSession != null)
                 {
                     short xoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
@@ -302,25 +300,7 @@ namespace OpenNos.GameObject
                         RemoveTarget();
                     }
                 }
-                if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
-                {
-                    int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                    short mapX = Path.ElementAt(maxindex - 1).X;
-                    short mapY = Path.ElementAt(maxindex - 1).Y;
-                    double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Monster.Speed;
-                    MapInstance.Broadcast(new BroadcastPacket(null, $"mv 3 {MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
-                    LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
-
-                    Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000))).Subscribe(x =>
-                    {
-                        MapX = mapX;
-                        MapY = mapY;
-                    });
-                    distance = (int)Path.First().F;
-                    Path.RemoveRange(0, maxindex);
-                }
-
-                if (targetSession == null || MapId != targetSession.Character.MapInstance.Map.MapId || distance > maxDistance)
+                if (targetSession == null || MapId != targetSession.Character.MapInstance.Map.MapId)
                 {
                     RemoveTarget();
                 }
@@ -787,7 +767,7 @@ namespace OpenNos.GameObject
         {
             return $"mv 3 {MapMonsterId} {MapX} {MapY} {Monster.Speed}";
         }
-
+        
         /// <summary>
         /// Handle any kind of Monster interaction
         /// </summary>
@@ -796,18 +776,6 @@ namespace OpenNos.GameObject
             if (Monster == null)
             {
                 return;
-            }
-            if ((DateTime.Now - LastEffect).TotalSeconds >= 5)
-            {
-                LastEffect = DateTime.Now;
-                if (IsTarget)
-                {
-                    MapInstance.Broadcast(GenerateEff(824));
-                }
-                if (IsBonus)
-                {
-                    MapInstance.Broadcast(GenerateEff(826));
-                }
             }
 
             // handle hit queue
@@ -902,15 +870,10 @@ namespace OpenNos.GameObject
                     Respawn();
                 }
             }
-
             // normal movement
-            else if (Target == -1)
-            {
-                Move();
-            }
-
+            Move();
             // target following
-            else
+            if (Target != -1)
             {
                 if (MapInstance != null)
                 {
@@ -982,7 +945,22 @@ namespace OpenNos.GameObject
                 }
             }
         }
+        public void ShowEffect()
+        {
+            if ((DateTime.Now - LastEffect).TotalSeconds >= 5)
+            {
+                if (IsTarget)
+                {
 
+                    MapInstance.Broadcast(GenerateEff(824));
+                }
+                if (IsBonus)
+                {
+                    MapInstance.Broadcast(GenerateEff(826));
+                }
+                LastEffect = DateTime.Now;
+            }
+        }
         public string GenerateBoss()
         {
             return $"rboss 3 {MapMonsterId} {CurrentHp} {Monster.MaxHP}";
@@ -1000,7 +978,7 @@ namespace OpenNos.GameObject
             {
                 double time = (DateTime.Now - LastMove).TotalMilliseconds;
 
-                if (Path.Any()) // move back to initial position after following target
+                if (Path.Any())
                 {
 
                     int timetowalk = 2000 / Monster.Speed;
@@ -1023,14 +1001,17 @@ namespace OpenNos.GameObject
                                                  {
                                                      EventHelper.Instance.RunEvent(e, monster: this);
                                                  });
-
+                                                 if (MoveEvent != null && MoveEvent.InZone(MapX, MapY))
+                                                 {
+                                                    MoveEvent = null;
+                                                 }
                                              });
                         Path.RemoveRange(0, maxindex);
                         MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                         return;
                     }
                 }
-                else if (time > _movetime)
+                else if (time > _movetime && Target == -1)
                 {
                     short mapX = FirstX, mapY = FirstY;
                     if (MapInstance.Map?.GetFreePosition(ref mapX, ref mapY, (byte)ServerManager.Instance.RandomNumber(0, 2), (byte)_random.Next(0, 2)) ?? false)
