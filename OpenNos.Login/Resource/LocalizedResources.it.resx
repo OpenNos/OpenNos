@@ -183,4 +183,10 @@
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1} </value>
   </data>
+  <data name="RETRY_CONNECTION" xml:space="preserve">
+    <value>Impossibile connettersi al server Master! Verrà tentato un nuovo collegamento in 5 secondi...</value>
+  </data>
+  <data name="API_INITIALIZED" xml:space="preserve">
+    <value>La comunicazione al Server Master è stata effettuata e inizializzata.</value>
+  </data>
 </root>
