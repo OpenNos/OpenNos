@@ -1263,4 +1263,178 @@
   <data name="SP_POINTSADDEDBOTH" xml:space="preserve">
     <value>Hai ricevuto {0} punti SP base e {1} punti SP addizionali!</value>
   </data>
+  <data name="MUTED_PLURAL" xml:space="preserve">
+    <value>Sei stato mutato! Ragione: {0} Per: {1} minuti</value>
+  </data>
+  <data name="NO_HANDLER_GURI" xml:space="preserve">
+    <value>Questo guri non è gestito: {0}</value>
+  </data>
+  <data name="HORN_APPEAR" xml:space="preserve">
+    <value>La caccia al Corno oscuro è iniziata.</value>
+  </data>
+  <data name="HORN_DISAPEAR" xml:space="preserve">
+    <value>Il Corno Oscuro è scomparso.</value>
+  </data>
+  <data name="LOD_REQUIERE_LVL" xml:space="preserve">
+    <value>Devi essere almeno di livello 55 per entrare nella Terra dei Morti.</value>
+  </data>
+  <data name="LOD_CLOSED" xml:space="preserve">
+    <value>La Terra Dei Morti è chiusa.</value>
+  </data>
+  <data name="NEED_FAMILY" xml:space="preserve">
+    <value>Non puoi entrare nella Terra Dei Morti senza far parte di una famiglia!</value>
+  </data>
+  <data name="NOT_ENOUGH_SAVER" xml:space="preserve">
+    <value>Non hai abbastanza Fontana del Salvatore per rivivere.</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_WAVE" xml:space="preserve">
+    <value>L'orda di mostri si sta preparando ad arrivare.</value>
+  </data>
+  <data name="INSTANTBATTLE_SECONDS_REMAINING" xml:space="preserve">
+    <value>Il Combattimento Istantaneo finirà in {0} secondi.</value>
+  </data>
+  <data name="INSTANTBATTLE_SUCCEEDED" xml:space="preserve">
+    <value>Hai visto il Combattimento Istantaneo</value>
+  </data>
+  <data name="INSTANTBATTLE_QUESTION" xml:space="preserve">
+    <value>Vuoi entrare nel Combattimento Istantaneo ?</value>
+  </data>
+  <data name="INSTANTBATTLE_SECONDS" xml:space="preserve">
+    <value>Tra {0} secondi inizierà il Combattimento Istantaneo.</value>
+  </data>
+  <data name="INSTANTBATTLE_STARTED" xml:space="preserve">
+    <value>Il Combattimento Istantaneo è iniziato!</value>
+  </data>
+  <data name="MINILAND_VISITOR" xml:space="preserve">
+    <value>Visite Totali: {0}, Visite Giornaliere: {1}</value>
+  </data>
+  <data name="REPUT_INCREASE" xml:space="preserve">
+    <value>La Reputazione è aumentata.</value>
+  </data>
+  <data name="WIN_MONEY" xml:space="preserve">
+    <value>Oro: +{0}</value>
+  </data>
+  <data name="WIN_REPUT" xml:space="preserve">
+    <value>Reputazione: +{0}</value>
+  </data>
+  <data name="WIN_SP_POINT" xml:space="preserve">
+    <value>Punti SP: +{0}</value>
+  </data>
+  <data name="INSTANTBATTLE_MINUTES" xml:space="preserve">
+    <value>Il Combattimento Istantaneo inizierà tra {0} minuti.</value>
+  </data>
+  <data name="INSTANTBATTLE_MINUTES_REMAINING" xml:space="preserve">
+    <value>Il Combattimento Istantaneo finirà in {0} minuti.</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_APPEAR" xml:space="preserve">
+    <value>Stanno per apparire i mostri!</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_HERE" xml:space="preserve">
+    <value>Sono arrivati i mostri!</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_INCOMING" xml:space="preserve">
+    <value>I mostri stanno arrivando in massa!</value>
+  </data>
+  <data name="MINILAND_CLOSED_BY_FRIEND" xml:space="preserve">
+    <value>La Mini-Land è stata chiusa.</value>
+  </data>
+  <data name="MINILAND_INFO_CHANGED" xml:space="preserve">
+    <value>Informazioni Mini-Land cambiate.</value>
+  </data>
+  <data name="MINILAND_LOCK" xml:space="preserve">
+    <value>La Mini-Land è stata bloccata.</value>
+  </data>
+  <data name="MINILAND_NEED_LOCK" xml:space="preserve">
+    <value>Devi prima bloccare la Mini-Land per costruire.</value>
+  </data>
+  <data name="MINILAND_PRIVATE" xml:space="preserve">
+    <value>La Mini-Land adesso è pubblica.</value>
+  </data>
+  <data name="HERO_XPRATE_NOW" xml:space="preserve">
+    <value>Tasso Esperienza Eroe: </value>
+  </data>
+  <data name="HERO_LEVELUP" xml:space="preserve">
+    <value>Il tuo livello eroe è salito!</value>
+  </data>
+  <data name="HEROXP_RATE_CHANGED" xml:space="preserve">
+    <value>Il Tasso Esperienza Eroe è stato cambiato!</value>
+  </data>
+  <data name="NEW_NAME_PET" xml:space="preserve">
+    <value>Il nome del tuo animale è stato cambiato!</value>
+  </data>
+  <data name="PET_SUMMONABLE" xml:space="preserve">
+    <value>Puoi evocare il tuo NosMate in ogni momento</value>
+  </data>
+  <data name="PET_RELEASED" xml:space="preserve">
+    <value>Il tuo NosMate è stato liberato.</value>
+  </data>
+  <data name="PET_LEAVE_BEAD" xml:space="preserve">
+    <value>Il tuo NosMate è uscito dalla perla!</value>
+  </data>
+  <data name="PET_KICKED" xml:space="preserve">
+    <value>Il tuo NosMate è stato mandato nella tua Mini-Land.</value>
+  </data>
+  <data name="PET_CAN_PICK_UP" xml:space="preserve">
+    <value>Adesso, il tuo NosMate può far cadere gli oggetti.</value>
+  </data>
+  <data name="GET_PET_PLACES" xml:space="preserve">
+    <value>Adesso puoi avere più NosMates.</value>
+  </data>
+  <data name="ASK_RELEASE_PET" xml:space="preserve">
+    <value>Vuoi far uscire il tuo NosMate dalla perla?</value>
+  </data>
+  <data name="ASK_KICK_PET" xml:space="preserve">
+    <value>Vuoi mandare in MiniLand?</value>
+  </data>
+  <data name="MINILAND_PUBLIC" xml:space="preserve">
+    <value>La Mini-Land adesso è pubblica</value>
+  </data>
+  <data name="SUPPORT" xml:space="preserve">
+    <value>Support</value>
+  </data>
+  <data name="ALREADY_PET_IN_TEAM" xml:space="preserve">
+    <value>Il tuo NosMate è già in gruppo.</value>
+  </data>
+  <data name="PET_HIGHER_LEVEL" xml:space="preserve">
+    <value>Il tuo NosMate è di livello troppo alto per far parte del gruppo.</value>
+  </data>
+  <data name="PET_IN_TEAM_UNRELEASABLE" xml:space="preserve">
+    <value>Non puoi liberare il tuo NosMate se è in gruppo con te.</value>
+  </data>
+  <data name="NO_FAMILY_RIGHT" xml:space="preserve">
+    <value>Non disponi dei diritti necessari.</value>
+  </data>
+  <data name="NO_FAMILY_WAREHOUSE" xml:space="preserve">
+    <value>Nessun magazzino di famiglia trovato.</value>
+  </data>
+  <data name="YOU_GET_PET" xml:space="preserve">
+    <value>Hai ottenuto un NosMate chiamato: {0}.</value>
+  </data>
+  <data name="WARNING" xml:space="preserve">
+    <value>Sei stato avvertito: {0}</value>
+  </data>
+  <data name="WARNING_INFO" xml:space="preserve">
+    <value>Sei stato avvertito: {0} volte</value>
+  </data>
+  <data name="API_INITIALIZED" xml:space="preserve">
+    <value>Connessione al Master Server inizializzata.</value>
+  </data>
+  <data name="RETRY_CONNECTION" xml:space="preserve">
+    <value>Impossibile connettersi al Master Server! Nuovo tentativo in 5 secondi...</value>
+  </data>
+  <data name="ASK_ENTRY_IN_FIRST_ROOM" xml:space="preserve">
+    <value>Vuoi incominciare la missione?</value>
+  </data>
+  <data name="DIGNITY_LOST" xml:space="preserve">
+    <value>La tua dignità è stata diminuita! </value>
+  </data>
+  <data name="TS_TUTORIAL" xml:space="preserve">
+    <value>Tutorial Pietra-Spazio Temporale</value>
+  </data>
+  <data name="PET_STORED" xml:space="preserve">
+    <value>Il tuo NosMate è stato rinchiuso nella perla</value>
+  </data>
+  <data name="GOLD_TS_END" xml:space="preserve">
+    <value>Sei stato ricompensato per aver portato a termine una missione. Hai ricevuto: [{0} Oro]. E' possibile che riceva meno esperienza e oro perchè il tuo livello è troppo alto.</value>
+  </data>
 </root>
