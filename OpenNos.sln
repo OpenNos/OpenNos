@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.Login", "OpenNos.Login\OpenNos.Login.csproj", "{AB3A47F3-3B2A-484A-B768-7C6CF5C83386}"
 EndProject
@@ -714,6 +714,7 @@ Global
 		{9AA91BF5-88E7-4130-9F42-73AE206E2916}.Debug_PL|x86.ActiveCfg = Debug|Any CPU
 		{9AA91BF5-88E7-4130-9F42-73AE206E2916}.Debug_PL|x86.Build.0 = Debug|Any CPU
 		{9AA91BF5-88E7-4130-9F42-73AE206E2916}.Debug_TH|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AA91BF5-88E7-4130-9F42-73AE206E2916}.Debug_TH|Any CPU.Build.0 = Debug|Any CPU
 		{9AA91BF5-88E7-4130-9F42-73AE206E2916}.Debug_TH|x64.ActiveCfg = Debug|x64
 		{9AA91BF5-88E7-4130-9F42-73AE206E2916}.Debug_TH|x86.ActiveCfg = Debug|x86
 		{9AA91BF5-88E7-4130-9F42-73AE206E2916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -753,6 +754,7 @@ Global
 		{8FABDA5B-C873-4E32-A78F-08A9A4768595}.Debug_PL|x86.ActiveCfg = Debug|Any CPU
 		{8FABDA5B-C873-4E32-A78F-08A9A4768595}.Debug_PL|x86.Build.0 = Debug|Any CPU
 		{8FABDA5B-C873-4E32-A78F-08A9A4768595}.Debug_TH|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FABDA5B-C873-4E32-A78F-08A9A4768595}.Debug_TH|Any CPU.Build.0 = Debug|Any CPU
 		{8FABDA5B-C873-4E32-A78F-08A9A4768595}.Debug_TH|x64.ActiveCfg = Debug|x64
 		{8FABDA5B-C873-4E32-A78F-08A9A4768595}.Debug_TH|x86.ActiveCfg = Debug|x86
 		{8FABDA5B-C873-4E32-A78F-08A9A4768595}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
