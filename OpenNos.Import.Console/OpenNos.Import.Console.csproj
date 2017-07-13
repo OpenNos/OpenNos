@@ -56,8 +56,7 @@
     <OutputPath>bin\TH\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>on-logo-icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>OpenNos.Import.Console.Program</StartupObject>
@@ -175,7 +174,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalizedResources.pl.resx</DependentUpon>
     </Compile>
-  <Compile Include="Resource\LocalizedResources.th.Designer.cs">
+    <Compile Include="Resource\LocalizedResources.th.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalizedResources.th.resx</DependentUpon>
