@@ -1775,7 +1775,7 @@ namespace OpenNos.Handler
                 return;
             }
             Session.CurrentMapInstance = Session.Character.MapInstance;
-            if (ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType != "Connection") < 2)
+            if (ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType == "Connection") < 2)
             {
                 Session.SendPacket("scene 40");
             }
