@@ -1585,18 +1585,21 @@ namespace OpenNos.Handler
             }
         }
 
-        // TODO: REVERSE TO PACKETDEFINITION!
-        [Packet("pst")]
-        public void SendMail(string packet)
+        /// <summary>
+        /// say packet
+        /// </summary>
+        /// <param name="pstPacket"></param>
+        public void SendMail(PstPacket pstpacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
-            switch (packetsplit.Length)
+            Logger.Debug(Session.Character.GenerateIdentity(), pstpacket.ToString());
+            if (pstpacket != null)
             {
-                case 10:
-                    CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(packetsplit[7]);
+                if (pstpacket.Data != null)
+                {
+                    CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(pstpacket.Receiver);
                     if (Receiver != null)
                     {
+                        string[] datasplit = pstpacket.Data.Split(' ');
                         WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                         byte color = headWearable != null && headWearable.Item.IsColored ? (byte)headWearable.Design : (byte)Session.Character.HairColor;
                         MailDTO mailcopy = new MailDTO
@@ -1604,8 +1607,8 @@ namespace OpenNos.Handler
                             AttachmentAmount = 0,
                             IsOpened = false,
                             Date = DateTime.Now,
-                            Title = packetsplit[8],
-                            Message = packetsplit[9],
+                            Title = datasplit[0],
+                            Message = datasplit[1],
                             ReceiverId = Receiver.CharacterId,
                             SenderId = Session.Character.CharacterId,
                             IsSenderCopy = true,
@@ -1621,8 +1624,8 @@ namespace OpenNos.Handler
                             AttachmentAmount = 0,
                             IsOpened = false,
                             Date = DateTime.Now,
-                            Title = packetsplit[8],
-                            Message = packetsplit[9],
+                            Title = datasplit[0],
+                            Message = datasplit[1],
                             ReceiverId = Receiver.CharacterId,
                             SenderId = Session.Character.CharacterId,
                             IsSenderCopy = false,
@@ -1645,14 +1648,12 @@ namespace OpenNos.Handler
                     {
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                     }
-                    break;
-
-                case 5:
-                    int id;
-                    byte type;
-                    if (int.TryParse(packetsplit[4], out id) && byte.TryParse(packetsplit[3], out type))
+                }
+                if(!pstpacket.Unknow1.HasValue)
+                {
+                    if (int.TryParse(pstpacket.Id.ToString(), out int id) && byte.TryParse(pstpacket.Type.ToString(), out byte type))
                     {
-                        if (packetsplit[2] == "3")
+                        if (pstpacket.Argument == 3)
                         {
                             if (Session.Character.MailList.ContainsKey(id))
                             {
@@ -1665,7 +1666,7 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GeneratePostMessage(Session.Character.MailList[id], type));
                             }
                         }
-                        else if (packetsplit[2] == "2")
+                        else if (pstpacket.Argument == 2)
                         {
                             if (Session.Character.MailList.ContainsKey(id))
                             {
@@ -1683,7 +1684,7 @@ namespace OpenNos.Handler
                             }
                         }
                     }
-                    break;
+                }
             }
         }
 
