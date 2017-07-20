@@ -1586,7 +1586,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// say packet
+        /// pst packet
         /// </summary>
         /// <param name="pstPacket"></param>
         public void SendMail(PstPacket pstpacket)
