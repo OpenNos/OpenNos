@@ -7,9 +7,6 @@ namespace OpenNos.GameObject
     [PacketHeader("pst")]
     public class PstPacket : PacketDefinition
     {
-        //pst 1 2 0 0 0 Test Test Test
-        //pst 1 2 0 0 0 test TEstTest testTest
-
         #region Properties
 
         [PacketIndex(0)]
