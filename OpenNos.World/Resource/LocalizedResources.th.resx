@@ -209,7 +209,7 @@
     <value>ยินดีต้อนรับสู่ครอบครัวนอสเทล</value>
   </data>
   <data name="BN7" xml:space="preserve">
-    <value>Opennos^Team^:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^Martazza,^KrisYiu,^Uppermost</value>
+    <value>Opennos^Team^:^0Lucifer0,^chucktheripper,^Ciapa,^MasterDomino,^genyx,^Martazza,^KrisYiu,^Uppermost</value>
   </data>
   <data name="BN8" xml:space="preserve">
     <value>เร็ว^ๆ^นี้เตรียมพบกับอัพเดทครั้งยิ่งใหญ่!!^เจอกัน</value>
@@ -1076,5 +1076,77 @@
   </data>
   <data name="YOU_REFUSED" xml:space="preserve">
     <value>แลกเปลี่ยนเรียบร้อยแล้ว</value>
+  </data>
+  <data name="INSTANTBATTLE_SECONDS" xml:space="preserve">
+    <value> หลังจาก {0} วินาที Instant battle เริ่มขึ้นแล้ว</value>
+  </data>
+  <data name="INSTANTBATTLE_STARTED" xml:space="preserve">
+    <value>การต่อสู้ได้เริ่มขึ้นแล้ว</value>
+  </data>
+  <data name="INSTANTBATTLE_SECONDS_REMAINING" xml:space="preserve">
+    <value>เหลือเวลาอีก {0} วินาที</value>
+  </data>
+  <data name="WARNING_INFO" xml:space="preserve">
+    <value>คุณได้รับการเตือนทั้งหมด {0} ครั้ง</value>
+  </data>
+  <data name="INSTANTBATTLE_QUESTION" xml:space="preserve">
+    <value>จะเข้าร่วมการต่อสู้เดี๋ยวนี้?</value>
+  </data>
+  <data name="CHARACTER_FAMILY_LOGGED_IN" xml:space="preserve">
+    <value>{0}({1}) เข้าสู่เกม</value>
+  </data>
+  <data name="EFFECT_ACTIVATED" xml:space="preserve">
+    <value>คุณตกอยู่ในสถานะ {0}</value>
+  </data>
+  <data name="LOSE_REP" xml:space="preserve">
+    <value>คุณสูญเสียชื่อเสียง {0}</value>
+  </data>
+  <data name="LANGUAGE_REQUIRED" xml:space="preserve">
+    <value>อนุญาตให้ใช้เฉพาะภาษา {0} เท่านั้น</value>
+  </data>
+  <data name="MEMBER" xml:space="preserve">
+    <value>สมาชิก</value>
+  </data>
+  <data name="MANAGER" xml:space="preserve">
+    <value>ผู้ดูแล</value>
+  </data>
+  <data name="HEAD" xml:space="preserve">
+    <value>หัวหน้า</value>
+  </data>
+  <data name="FAMILY_INVITED" xml:space="preserve">
+    <value>คุณส่งคำชวนไปถึง {0}</value>
+  </data>
+  <data name="GOLD_DROPRATE_NOW" xml:space="preserve">
+    <value>อัตราการดรอปของเงิน</value>
+  </data>
+  <data name="WANT_TO_SAVE_POSITION" xml:space="preserve">
+    <value>คุณต้องการบันทึกจุดกลับหรือไม่</value>
+  </data>
+  <data name="DEMON" xml:space="preserve">
+    <value>Demon</value>
+  </data>
+  <data name="ANGEL" xml:space="preserve">
+    <value>Angel</value>
+  </data>
+  <data name="CREATE_FAMILY" xml:space="preserve">
+    <value>คุณต้องการสร้างครอบครัวหรือใหม่</value>
+  </data>
+  <data name="DISMISS_FAMILY" xml:space="preserve">
+    <value>คุณต้องการสลายครอบครัวหรือไม่</value>
+  </data>
+  <data name="FAMILY_NAME_ALREADY_USED" xml:space="preserve">
+    <value>ชื่อครอบครัวนี้ถูกใช้ไปแล้ว</value>
+  </data>
+  <data name="FAMILY_FOUNDED" xml:space="preserve">
+    <value>ครอบครัว {0} ได้ถูกกำเนิดขึ้นแล้ว</value>
+  </data>
+  <data name="FAMILY_JOINED" xml:space="preserve">
+    <value>คุณ {0} ได้เข้าร่วม Family เรียบร้อยแล้ว</value>
+  </data>
+  <data name="FAMILY_KICKED" xml:space="preserve">
+    <value>ไล่ออก</value>
+  </data>
+  <data name="ASSISTANT" xml:space="preserve">
+    <value>ผู้ช่วย</value>
   </data>
 </root>

@@ -16,7 +16,7 @@ namespace OpenNos.GameObject
         public int Argument { get; set; }
 
         [PacketIndex(2)]
-        public long User { get; set; }
+        public long? User { get; set; }
 
         [PacketIndex(3)]
         public int Data { get; set; }
