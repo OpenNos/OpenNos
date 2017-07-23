@@ -1986,7 +1986,7 @@ namespace OpenNos.GameObject
                             if (x < 4)
                             {
                                 double rndamount = ServerManager.Instance.RandomNumber() * random.NextDouble();
-                                if (rndamount <= (double)drop.DropChance * dropRate / 5000.000)
+                                if (rndamount <= (double)drop.DropChance * dropRate / 5000d)
                                 {
                                     x++;
                                     if (Session.CurrentMapInstance != null)
