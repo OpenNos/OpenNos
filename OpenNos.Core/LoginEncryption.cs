@@ -93,10 +93,10 @@ namespace OpenNos.Core
             try
             {
                 packet += " ";
-                byte[] tmp = Encoding.UTF8.GetBytes(packet);
+                byte[] tmp = Encoding.Default.GetBytes(packet);
                 for (int i = 0; i < packet.Length; i++)
                 {
-                    tmp[i] = Convert.ToByte(packet[i] + 15);
+                    tmp[i] = Convert.ToByte(tmp[i] + 15);
                 }
                 tmp[tmp.Length - 1] = 25;
                 return tmp;
