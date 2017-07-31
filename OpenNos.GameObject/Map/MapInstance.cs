@@ -70,6 +70,8 @@ namespace OpenNos.GameObject
             ScriptedInstances = new List<ScriptedInstance>();
             OnCharacterDiscoveringMapEvents = new List<Tuple<EventContainer, List<long>>>();
             OnMoveOnMapEvents = new List<EventContainer>();
+            OnAreaEntryEvents = new List<ZoneEvent>();
+            WaveEvents = new List<EventWave>();
             OnMapClean = new List<EventContainer>();
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _npcs = new ThreadSafeSortedList<long, MapNpc>();
@@ -146,6 +148,10 @@ namespace OpenNos.GameObject
         public List<EventContainer> OnMapClean { get; set; }
 
         public List<EventContainer> OnMoveOnMapEvents { get; set; }
+
+        public List<ZoneEvent> OnAreaEntryEvents { get; set; }
+
+        public List<EventWave> WaveEvents { get; set; }
 
         public List<Portal> Portals => _portals;
 
@@ -272,7 +278,7 @@ namespace OpenNos.GameObject
             Monsters.ForEach(s =>
             {
                 packets.Add(s.GenerateIn());
-                if(s.IsBoss)
+                if (s.IsBoss)
                 {
                     packets.Add(s.GenerateBoss());
                 }
@@ -493,6 +499,18 @@ namespace OpenNos.GameObject
         {
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
             {
+                WaveEvents.ForEach(s =>
+                {
+                    if (s.LastStart.AddSeconds(s.Delay) <= DateTime.Now)
+                    {
+                        if(s.Offset == 0)
+                        {
+                            s.Events.ForEach(e => EventHelper.Instance.RunEvent(e));
+                        }
+                        s.Offset = s.Offset > 0 ? (byte)(s.Offset - 1) : (byte)0;
+                        s.LastStart = DateTime.Now;
+                    }
+                });
                 try
                 {
                     if (Monsters.Count(s => s.IsAlive) == 0)
@@ -524,10 +542,9 @@ namespace OpenNos.GameObject
                 NpcMonster npcmonster = ServerManager.Instance.GetNpc(mon.VNum);
                 if (npcmonster != null)
                 {
-                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.Y, MapX = mon.SpawnCell.X, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents, IsTarget = mon.IsTarget, IsBonus = mon.IsBonus, IsBoss = mon.IsBoss };
+                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.Y, MapX = mon.SpawnCell.X, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents,OnNoticeEvents=mon.NoticingEvents, IsTarget = mon.IsTarget, IsBonus = mon.IsBonus, IsBoss = mon.IsBoss,NoticeRange = mon.NoticeRange };
                     monster.Initialize(this);
                     monster.IsHostile = mon.IsHostile;
-                    monster.Monster.BCards.ForEach(c => c.ApplyBCards(monster));
                     AddMonster(monster);
                     Broadcast(monster.GenerateIn());
                     ids.Add(monster.MapMonsterId);

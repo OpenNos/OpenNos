@@ -118,75 +118,69 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ALREADY_CONNECTED" xml:space="preserve">
-    <value>Il tuo account e' gia' connesso.</value>
+    <value>Account is already connected.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
-    <value>Questo account è stato bannato. Ragione: {0}, Fino al {1}. </value>
+    <value>You have been banned. Reason {0}, until {1}</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
-    <value>Il client ha interrotto la connessione.</value>
+    <value>Connection closed by Client.</value>
   </data>
   <data name="CLIENT_DISCONNECTED" xml:space="preserve">
-    <value>Connessione persa.</value>
+    <value>Connection closed.</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">
-    <value>Configurazioni caricate !</value>
+    <value>Config loaded!</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
-    <value>CONNESSIONE {0} Connesso -- sessione:{1}</value>
-  </data>
-  <data name="DATABASE_INITIALIZED" xml:space="preserve">
-    <value>Il database è stato avviato.</value>
-  </data>
-  <data name="DISCONNECT" xml:space="preserve">
-    <value>Un client è stato disconnesso! ClientId =</value>
-  </data>
-  <data name="FORCED_DISCONNECT" xml:space="preserve">
-    <value>Disconnessione forzata del client {0}, troppe connessioni.</value>
-  </data>
-  <data name="IDERROR" xml:space="preserve">
-    <value>L'ID o la password sono errati!</value>
-  </data>
-  <data name="MESSAGE_RECEIVED" xml:space="preserve">
-    <value>Il messaggio è stato ricevuto {0} sul client {1}</value>
-  </data>
-  <data name="MSG_SENT" xml:space="preserve">
-    <value>Il messaggio è stato inviato al client </value>
-  </data>
-  <data name="NEW_CONNECT" xml:space="preserve">
-    <value>Un nuovo client si è connesso. ClientId =</value>
-  </data>
-  <data name="NOTVALIDATE" xml:space="preserve">
-    <value>L'account non è attivo!</value>
-  </data>
-  <data name="PACKET_FAILURE" xml:space="preserve">
-    <value>Errore nel mandare il pacchetto {0} al client {1}, {2}.</value>
-  </data>
-  <data name="STARTED" xml:space="preserve">
-    <value>Server avviato con successo.</value>
-  </data>
-  <data name="TOO_BIG" xml:space="preserve">
-    <value>Il messaggio è troppo lungo ({0} bytes). La lunghezza massima consentità è di {1} bytes.</value>
-  </data>
-  <data name="CONNECTION_LOST" xml:space="preserve">
-    <value>Connessione al server persa..</value>
-  </data>
-  <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
-    <value>Il database non sembra aggiornato. Per favore considera di aggiornare il tuo database.</value>
+    <value>CONNECT {0} Connected -- SessionId: {1}</value>
   </data>
   <data name="CONNECTION_CLOSED" xml:space="preserve">
-    <value>Connessione chiusa</value>
+    <value>Connection closed.</value>
   </data>
-  <data name="MAINTENANCE" xml:space="preserve">
-    <value>Il server è in manutenzione fino alle {0}</value>
+  <data name="CONNECTION_LOST" xml:space="preserve">
+    <value>Connection to the server has been lost.</value>
   </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1} </value>
   </data>
-  <data name="RETRY_CONNECTION" xml:space="preserve">
-    <value>Impossibile connettersi al server Master! Verrà tentato un nuovo collegamento in 5 secondi...</value>
+  <data name="DATABASE_INITIALIZED" xml:space="preserve">
+    <value>Database has been initialized!</value>
   </data>
-  <data name="API_INITIALIZED" xml:space="preserve">
-    <value>La comunicazione al Server Master è stata effettuata e inizializzata.</value>
+  <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
+    <value>Database may not be up to date. Please consider updating your database.</value>
+  </data>
+  <data name="DISCONNECT" xml:space="preserve">
+    <value>Client disconnected! ClientId = </value>
+  </data>
+  <data name="FORCED_DISCONNECT" xml:space="preserve">
+    <value>Forced Disconnecting of client {0}, too much connections.</value>
+  </data>
+  <data name="IDERROR" xml:space="preserve">
+    <value>Wrong Id or Password!</value>
+  </data>
+  <data name="MAINTENANCE" xml:space="preserve">
+    <value>Server is currently under maintenance. Maintenance estimated time {0}</value>
+  </data>
+  <data name="MESSAGE_RECEIVED" xml:space="preserve">
+    <value>Message received {0} on client {1}</value>
+  </data>
+  <data name="MSG_SENT" xml:space="preserve">
+    <value>Message sent to client </value>
+  </data>
+  <data name="NEW_CONNECT" xml:space="preserve">
+    <value>New client connected. ClientId = </value>
+  </data>
+  <data name="NOTVALIDATE" xml:space="preserve">
+    <value>Account not validate!</value>
+  </data>
+  <data name="PACKET_FAILURE" xml:space="preserve">
+    <value>Failed to send packet {0} to client {1}, {2}.</value>
+  </data>
+  <data name="STARTED" xml:space="preserve">
+    <value>MasterServer started successfully.</value>
+  </data>
+  <data name="TOO_BIG" xml:space="preserve">
+    <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
 </root>

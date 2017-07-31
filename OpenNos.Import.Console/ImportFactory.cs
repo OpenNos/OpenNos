@@ -145,11 +145,9 @@ namespace OpenNos.Import.Console
                                     CardId = card.CardId,
                                     Type = Convert.ToByte(currentLine[2 + i * 6]),
                                     SubType = Convert.ToByte(currentLine[3 + i * 6]),
-                                  
-                                    Delay = Convert.ToByte(currentLine[5 + i * 6]),
+                                    ThirdData = Convert.ToByte(currentLine[5 + i * 6]),
                                     FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
                                     SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
-
                                 };
                                 bcards.Add(bcard);
                             }
@@ -163,13 +161,13 @@ namespace OpenNos.Import.Console
                             {
                                 bcard = new BCardDTO()
                                 {
-                                    IsDelayed = true,
+                                    CastType = 1,
                                     CardId = card.CardId,
                                     Type = byte.Parse(currentLine[2+i * 6]),
                                     SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
                                     FirstData = (short)(int.Parse(currentLine[5]) / 4),
                                     SecondData = (short)(int.Parse(currentLine[6]) / 4),
-                                    Delay = (short)(int.Parse(currentLine[7]) / 4),
+                                    ThirdData = (short)(int.Parse(currentLine[7]) / 4),
                                 };
                                 bcards.Add(bcard);
                             }
@@ -1169,7 +1167,28 @@ namespace OpenNos.Import.Console
                                     SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10),
                                     FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
                                     SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                    Delay = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                                    ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                                };
+                                monstercards.Add(itemCard);
+                            }
+                        }
+                    }
+                    else if (currentLine.Length > 1 && currentLine[1] == "BASIC")
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            byte type = (byte)(Int32.Parse(currentLine[2 + 5 * i]));
+                            if (type != 0)
+                            {
+                                BCardDTO itemCard = new BCardDTO
+                                {
+                                    NpcMonsterVNum = npc.NpcMonsterVNum,
+                                    Type = type,
+                                    SubType = (byte)((int.Parse(currentLine[6 + 5 * i])) * 10),
+                                    FirstData = (short)(int.Parse(currentLine[5 + 5])),
+                                    SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4), 
+                                    ThirdData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
+                                    CastType = 1
                                 };
                                 monstercards.Add(itemCard);
                             }
@@ -2196,7 +2215,7 @@ namespace OpenNos.Import.Console
                                 SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
                                 FirstData = (short)(int.Parse(currentLine[5]) / 4),
                                 SecondData = (short)(int.Parse(currentLine[6]) / 4),
-                                Delay = (short)(int.Parse(currentLine[7]) / 4),
+                                ThirdData = (short)(int.Parse(currentLine[7]) / 4),
                             };
                             skillCards.Add(itemCard);
                         }
@@ -3453,7 +3472,7 @@ namespace OpenNos.Import.Console
                                     SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1)),
                                     FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
                                     SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                    Delay = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                                    ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
                                 };
                                 itemCards.Add(itemCard);
                             }
