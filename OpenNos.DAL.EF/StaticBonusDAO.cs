@@ -60,7 +60,7 @@ namespace OpenNos.DAL.EF
                 {
                     long id = staticBonus.CharacterId;
                     StaticBonusType cardid = staticBonus.StaticBonusType;
-                    StaticBonus entity = context.StaticBonus.FirstOrDefault(c => c.StaticBonusType.Equals(cardid) && c.CharacterId == id);
+                    StaticBonus entity = context.StaticBonus.FirstOrDefault(c => c.StaticBonusType == cardid && c.CharacterId == id);
 
                     if (entity == null)
                     {

@@ -27,6 +27,8 @@ namespace OpenNos.GameObject
 
         private int _order;
 
+        private readonly object _syncObj = new object();
+
         public GroupType GroupType { get; set; }
 
         public ScriptedInstance Raid { get; set; }
@@ -86,8 +88,8 @@ namespace OpenNos.GameObject
         }
 
         public long? GetNextOrderedCharacterId(Character character)
-        {
-            lock (this)
+        { 
+            lock (_syncObj)
             {
                 _order++;
                 List<ClientSession> sessions = Characters.Where(s => Map.GetDistance(s.Character, character) < 50).ToList();

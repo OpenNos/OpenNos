@@ -346,6 +346,15 @@ namespace OpenNos.GameObject
                         evts.Add(new EventContainer(mapinstance, EventActionType.REGISTEREVENT, new Tuple<string, List<EventContainer>>(mapevent.Name, GenerateEvent(mapevent, mapinstance))));
                         break;
 
+                    case "OnAreaEntry":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SETAREAENTRY, new ZoneEvent() { X = positionX, Y = positionY, Range = byte.Parse(mapevent?.Attributes["Range"]?.Value), Events = GenerateEvent(mapevent, mapinstance) }));
+                        break;
+
+                    case "Wave":
+                        byte.TryParse(mapevent?.Attributes["Offset"]?.Value, out byte Offset);
+                        evts.Add(new EventContainer(mapinstance, EventActionType.REGISTERWAVE, new EventWave(byte.Parse(mapevent?.Attributes["Delay"]?.Value), GenerateEvent(mapevent, mapinstance), Offset)));
+                        break;
+
                     case "SetMonsterLockers":
                         evts.Add(new EventContainer(mapinstance, EventActionType.SETMONSTERLOCKERS, byte.Parse(mapevent?.Attributes["Value"]?.Value)));
                         break;
@@ -353,10 +362,22 @@ namespace OpenNos.GameObject
                     case "SetButtonLockers":
                         evts.Add(new EventContainer(mapinstance, EventActionType.SETBUTTONLOCKERS, byte.Parse(mapevent?.Attributes["Value"]?.Value)));
                         break;
-
+                    case "ControlMonsterInRange":
+                        short.TryParse(mapevent?.Attributes["VNum"]?.Value, out short vnum);
+                        evts.Add(new EventContainer(mapinstance, EventActionType.CONTROLEMONSTERINRANGE, new Tuple<short, byte, List<EventContainer>>(vnum, byte.Parse(mapevent?.Attributes["Range"]?.Value), GenerateEvent(mapevent, mapinstance))));
+                        //Tuple<short, byte, List<EventContainer>>
+                        break;
                     //child events
                     case "OnDeath":
                         evts.AddRange(GenerateEvent(mapevent, mapinstance));
+                        break;
+
+                    case "OnTarget":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.ONTARGET,  GenerateEvent(mapevent, mapinstance)));
+                        break;
+
+                    case "Effect":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.EFFECT, short.Parse(mapevent?.Attributes["Value"].Value)));
                         break;
 
                     case "SummonMonsters":
@@ -375,10 +396,32 @@ namespace OpenNos.GameObject
                             }
                         }
                         MonsterAmount++;
+                        List<EventContainer> notice = new List<EventContainer>();
+                        List<EventContainer> death = new List<EventContainer>();
+                        byte noticerange = 0;
+                        foreach (XmlNode var in mapevent.ChildNodes)
+                        {
+                            switch (var.Name)
+                            {
+                                case "OnDeath":
+                                    death.AddRange(GenerateEvent(var, mapinstance));
+                                    break;
+
+                                case "OnNoticing":
+                                    byte.TryParse(var?.Attributes["Range"]?.Value, out noticerange);
+                                    notice.AddRange(GenerateEvent(var, mapinstance));
+                                    break;
+
+                            }
+                        }
                         List<MonsterToSummon> lst = new List<MonsterToSummon>
                         {
-                            new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move,
-                            GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile, isBoss)
+                            new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, isTarget, isBonus, isHostile, isBoss)
+                            {
+                                DeathEvents = death,
+                                NoticingEvents = notice,
+                                NoticeRange = noticerange
+                            }
                         };
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, lst.AsEnumerable()));
                         break;
@@ -392,6 +435,12 @@ namespace OpenNos.GameObject
 
                     case "RefreshRaidGoals":
                         evts.Add(new EventContainer(mapinstance, EventActionType.REFRESHRAIDGOAL, null));
+                        break;
+
+                    case "Move":
+                        List<EventContainer> moveevents = new List<EventContainer>();
+                        moveevents.AddRange(GenerateEvent(mapevent, mapinstance));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.MOVE, new ZoneEvent() { X = positionX, Y = positionY, Events = moveevents }));
                         break;
 
                     case "SummonNpc":
@@ -463,11 +512,11 @@ namespace OpenNos.GameObject
                         break;
 
                     case "ThrowItem":
-                        short.TryParse(mapevent?.Attributes["VNum"]?.Value, out short vnum);
+                        short.TryParse(mapevent?.Attributes["VNum"]?.Value, out short vnum2);
                         byte.TryParse(mapevent?.Attributes["PackAmount"]?.Value, out byte packAmount);
                         int.TryParse(mapevent?.Attributes["MinAmount"]?.Value, out int minAmount);
                         int.TryParse(mapevent?.Attributes["MaxAmount"]?.Value, out int maxAmount);
-                        evts.Add(new EventContainer(mapinstance, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, vnum, packAmount == 0 ? (byte)1 : packAmount, minAmount == 0 ? 1 : minAmount, maxAmount == 0 ? 1 : maxAmount)));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, vnum2, packAmount == 0 ? (byte)1 : packAmount, minAmount == 0 ? 1 : minAmount, maxAmount == 0 ? 1 : maxAmount)));
                         break;
 
                     case "RemoveButtonLocker":

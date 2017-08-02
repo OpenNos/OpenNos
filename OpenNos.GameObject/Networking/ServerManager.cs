@@ -577,7 +577,6 @@ namespace OpenNos.GameObject
                 Parallel.ForEach(mapInstance.Monsters, mapMonster =>
                 {
                     mapMonster.MapInstance = mapInstance;
-                    mapMonster.Monster.BCards.ForEach(c => c.ApplyBCards(mapMonster));
                     mapInstance.AddMonster(mapMonster);
                 });
                 Parallel.ForEach(mapInstance.Npcs, mapNpc =>
@@ -1018,7 +1017,6 @@ namespace OpenNos.GameObject
                     Parallel.ForEach(newMap.Monsters, mapMonster =>
                     {
                         mapMonster.MapInstance = newMap;
-                        mapMonster.Monster.BCards.ForEach(c => c.ApplyBCards(mapMonster));
                         newMap.AddMonster(mapMonster);
                     });
                     monstercount += newMap.Monsters.Count;

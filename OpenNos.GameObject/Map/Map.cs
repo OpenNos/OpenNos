@@ -113,7 +113,7 @@ namespace OpenNos.GameObject
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
-                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, deathEvents, isBonus: isBonus, isHostile: isHostile, isBoss : isBoss));
+                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, isBonus: isBonus, isHostile: isHostile, isBoss: isBoss) {DeathEvents = deathEvents });
             }
             return SummonParameters;
         }

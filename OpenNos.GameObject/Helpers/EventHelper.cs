@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Event;
+using OpenNos.PathFinder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -106,7 +107,7 @@ namespace OpenNos.GameObject.Helpers
             return timeLeftUntilFirstRun;
         }
 
-        public void RunEvent(EventContainer evt, ClientSession session = null)
+        public void RunEvent(EventContainer evt, ClientSession session = null, MapMonster monster = null)
         {
             if (session != null)
             {
@@ -168,6 +169,14 @@ namespace OpenNos.GameObject.Helpers
                                 break;
                         }
                         break;
+                    case EventActionType.REGISTERWAVE:
+                        evt.MapInstance.WaveEvents.Add((EventWave)evt.Parameter);
+                        break;
+                    case EventActionType.SETAREAENTRY:
+                        ZoneEvent even2 = (ZoneEvent)evt.Parameter;
+                        evt.MapInstance.OnAreaEntryEvents.Add(even2);
+
+                        break;
                     case EventActionType.REMOVEMONSTERLOCKER:
                         EventContainer evt2 = (EventContainer)evt.Parameter;
                         evt.MapInstance.InstanceBag.MonsterLocker.Current--;
@@ -187,6 +196,48 @@ namespace OpenNos.GameObject.Helpers
                             evt.MapInstance.InstanceBag.UnlockEvents.RemoveAll(s => s != null);
                         }
                         break;
+
+                    case EventActionType.EFFECT:
+                        short evt3 = (short)evt.Parameter;
+                        if (monster!=null && (DateTime.Now - monster.LastEffect).TotalSeconds >= 5)
+                        {
+                            evt.MapInstance.Broadcast(monster.GenerateEff(evt3));
+                            monster.ShowEffect();
+                        }
+                        break;
+
+                    case EventActionType.CONTROLEMONSTERINRANGE:
+                        if (monster != null)
+                        {
+                            Tuple<short, byte, List<EventContainer>> evnt = (Tuple<short, byte, List<EventContainer>>)evt.Parameter;
+                            List<MapMonster> MapMonsters = evt.MapInstance.GetListMonsterInRange(monster.MapX, monster.MapY, evnt.Item2);
+                            if (evnt.Item1 != 0)
+                            {
+                                MapMonsters.RemoveAll(s => s.MonsterVNum != evnt.Item1);
+                            }
+                            MapMonsters.ForEach(s => evnt.Item3.ForEach(e => RunEvent(e, monster: s)));
+                        }
+                        break;
+
+                    case EventActionType.ONTARGET:
+                        if (monster.MoveEvent != null && monster.MoveEvent.InZone(monster.MapX, monster.MapY))
+                        {
+                            ((List<EventContainer>)evt.Parameter).ForEach(s => RunEvent(s, monster: monster));
+                        }
+                        break;
+
+                    case EventActionType.MOVE:
+                        ZoneEvent evt4 = (ZoneEvent)evt.Parameter;
+                        if (monster != null)
+                        {
+
+                            monster.FirstX = evt4.X;
+                            monster.FirstY = evt4.Y;
+                            monster.MoveEvent = evt4;
+                            monster.Path = BestFirstSearch.FindPath(new Node { X = monster.MapX, Y = monster.MapY }, new Node { X = evt4.X, Y = evt4.Y }, evt.MapInstance?.Map.Grid);
+                        }
+                        break;
+
                     case EventActionType.CLOCK:
                         evt.MapInstance.InstanceBag.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
                         evt.MapInstance.InstanceBag.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
@@ -241,14 +292,14 @@ namespace OpenNos.GameObject.Helpers
                                     {
                                         foreach (ClientSession sess in grp.Characters)
                                         {
-                                            foreach(Gift gift in grp?.Raid?.GiftItems)
+                                            foreach (Gift gift in grp?.Raid?.GiftItems)
                                             {
                                                 byte rare = 0;
                                                 if (gift.IsRandomRare)
                                                 {
                                                     rare = (byte)ServerManager.Instance.RandomNumber(0, 7);
                                                 }
-                                               //TODO add random rarity for some object
+                                                //TODO add random rarity for some object
                                                 sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
                                             }
                                         }
@@ -400,7 +451,7 @@ namespace OpenNos.GameObject.Helpers
                             Y = lastincharacter?.PositionY ?? 140
                         };
                         long hornTarget = lastincharacter?.CharacterId ?? -1;
-                        summonParameters.Add(new MonsterToSummon(Convert.ToInt16(evt.Parameter), hornSpawn, hornTarget, true, new List<EventContainer>()));
+                        summonParameters.Add(new MonsterToSummon(Convert.ToInt16(evt.Parameter), hornSpawn, hornTarget, true));
                         evt.MapInstance.SummonMonsters(summonParameters);
                         break;
 

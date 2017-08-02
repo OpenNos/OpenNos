@@ -45,6 +45,12 @@ namespace OpenNos.Domain
         TELEPORT,
         THROWITEMS,
         SETMONSTERLOCKERS,
-        SETBUTTONLOCKERS
+        SETBUTTONLOCKERS,
+        SETAREAENTRY,
+        REGISTERWAVE,
+        EFFECT,
+        MOVE,
+        ONTARGET,
+        CONTROLEMONSTERINRANGE
     }
 }
