@@ -1445,7 +1445,7 @@ namespace OpenNos.Handler
         /// <param name="sitpacket"></param>
         public void Rest(SitPacket sitpacket)
         {
-            sitpacket.Users.ForEach(u =>
+            sitpacket?.Users.ForEach(u =>
             {
                 if (u.UserType == 1)
                 {

@@ -52,6 +52,7 @@ namespace OpenNos.DAL.EF
 
         public int ThirdData { get; set; }
 
+        public bool IsLevelScaled { get; set; }
         #endregion
     }
 }
