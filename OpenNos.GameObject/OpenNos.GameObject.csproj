@@ -105,6 +105,8 @@
     <Compile Include="Buff\Buff.cs" />
     <Compile Include="Buff\BCard.cs" />
     <Compile Include="Buff\Card.cs" />
+    <Compile Include="Event\EventWave.cs" />
+    <Compile Include="Map\Zone.cs" />
     <Compile Include="Event\EventContainer.cs" />
     <Compile Include="Event\Schedule.cs" />
     <Compile Include="Helpers\EventHelper.cs" />

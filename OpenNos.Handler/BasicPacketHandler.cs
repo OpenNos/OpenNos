@@ -127,7 +127,7 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    if (!grp.IsLeader(Session))
+                    if (grp.IsLeader(Session))
                     {
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_MASTER"), 0));
                         return;
@@ -479,8 +479,8 @@ namespace OpenNos.Handler
                     if (Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && !ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
                     {
                         ServerManager.Instance.GroupList.Add(Session.Character.Group);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_REGISTERED")));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
                         ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {(string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"), Session.Character.Name))}", ReceiverType.AllExceptGroup);
                     }
                     break;
@@ -488,8 +488,8 @@ namespace OpenNos.Handler
                     if (Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
                     {
                         ServerManager.Instance.GroupList.Remove(Session.Character.Group);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(2));
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_UNREGISTERED")));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(2));
                     }
                     break;
                 case 3:
@@ -701,7 +701,7 @@ namespace OpenNos.Handler
                 targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
 
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), targetSession.Character.Name), 0));
-                if (Session.Character?.Group?.IsMemberOfGroup(pjoinPacket.CharacterId) == true)
+                if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
                 {
                     Session.Character.SetReturnPoint(targetSession.Character.Return.DefaultMapId, targetSession.Character.Return.DefaultX, targetSession.Character.Return.DefaultY);
                     targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
@@ -792,7 +792,7 @@ namespace OpenNos.Handler
         /// <param name="fInsPacket"></param>
         public void FriendAdd(FInsPacket fInsPacket)
         {
-            if (!Session.Character.IsFriendlistFull() || Session.Character.FriendRequestBlocked)
+            if (!Session.Character.IsFriendlistFull())
             {
                 long characterId = fInsPacket.CharacterId;
                 if (!Session.Character.IsFriendOfCharacter(characterId))
@@ -877,20 +877,23 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateBlinit());
         }
 
-        // TODO: REVERSE TO PACKETDEFINITION!
+        /// <summary>
+        ///  guri packet
+        /// </summary>
+        /// <param name="guriPacket"></param>
         public void Guri(GuriPacket guriPacket)
         {
             if (guriPacket != null)
             {
                 if (guriPacket.Type == 10 && guriPacket.Data >= 973 && guriPacket.Data <= 999 && !Session.Character.EmoticonsBlocked)
                 {
-                    if (guriPacket.User == Session.Character.CharacterId)
+                    if (Convert.ToInt64(guriPacket.User.Value) == Session.Character.CharacterId)
                     {
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(guriPacket.Data + 4099), ReceiverType.AllNoEmoBlocked);
                     }
-                    else if (int.TryParse(guriPacket.User.ToString(), out int mateTransportId))
+                    else
                     {
-                        Mate mate = Session.Character.Mates.Find(s => s.MateTransportId == mateTransportId);
+                        Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == Convert.ToInt32(guriPacket.User.Value));
                         if (mate != null)
                         {
                             Session.CurrentMapInstance?.Broadcast(Session, mate.GenerateEff(guriPacket.Data + 4099), ReceiverType.AllNoEmoBlocked);
@@ -899,12 +902,22 @@ namespace OpenNos.Handler
                 }
                 else if (guriPacket.Type == 300)
                 {
-                    if (guriPacket.Argument == 8023 && short.TryParse(guriPacket.User.ToString(), out short slot))
+                    if (guriPacket.Argument == 8023)
                     {
-                        ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
-                        if (box != null)
+                        if (Int16.TryParse(guriPacket.Data.ToString(), out short slot))
                         {
-                            box.Item.Use(Session, ref box, 1, new string[] { guriPacket.Data.ToString() });
+                            ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
+                            if (box != null)
+                            {
+                                if (guriPacket.Value.Length == 1)
+                                {
+                                    box.Item.Use(Session, ref box, 1, new string[] { guriPacket.Value });
+                                }
+                                else
+                                {
+                                    box.Item.Use(Session, ref box, 1);
+                                }
+                            }
                         }
                     }
                 }
@@ -928,10 +941,14 @@ namespace OpenNos.Handler
                     }
                     if (vnumToUse != -1)
                     {
-                        ClientSession session = ServerManager.Instance.GetSessionByCharacterId(guriPacket.User);
+                        if (!Int64.TryParse(guriPacket.User.Value.ToString(), out long charId))
+                        {
+                            return;
+                        }
+                        ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
                         if (session != null)
                         {
-                            if (Session.Character.IsFriendOfCharacter(guriPacket.User))
+                            if (Session.Character.IsFriendOfCharacter(charId))
                             {
                                 if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                                 {
@@ -965,60 +982,70 @@ namespace OpenNos.Handler
                 }
                 else if (guriPacket.Type == 400)
                 {
-                    if (!int.TryParse(guriPacket.User.ToString(), out int mapNpcId) || !Session.HasCurrentMapInstance)
+                    if (guriPacket.User.HasValue)
                     {
-                        return;
-                    }
-                    MapNpc npc = Session.CurrentMapInstance.Npcs.Find(n => n.MapNpcId.Equals(mapNpcId));
-                    if (npc != null)
-                    {
-                        NpcMonster mapobject = ServerManager.Instance.GetNpc(npc.NpcVNum);
-
-                        int RateDrop = ServerManager.Instance.DropRate;
-                        int delay = (int)Math.Round((3 + (mapobject.RespawnTime / 1000d)) * Session.Character.TimesUsed);
-                        delay = delay > 11 ? 8 : delay;
-                        if (Session.Character.LastMapObject.AddSeconds(delay) < DateTime.Now)
+                        if (!Int16.TryParse(guriPacket.User.Value.ToString(), out short MapNpcId))
                         {
-                            if (mapobject.Drops.Any(s => s.MonsterVNum != null) && mapobject.VNumRequired > 10 && Session.Character.Inventory.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
+                            return;
+                        }
+                        if (!Session.HasCurrentMapInstance)
+                        {
+                            return;
+                        }
+                        MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
+                        if (npc != null)
+                        {
+                            NpcMonster mapobject = ServerManager.Instance.GetNpc(npc.NpcVNum);
+
+                            int RateDrop = ServerManager.Instance.DropRate;
+                            int delay = (int)Math.Round((3 + mapobject.RespawnTime / 1000d) * Session.Character.TimesUsed);
+                            delay = delay > 11 ? 8 : delay;
+                            if (Session.Character.LastMapObject.AddSeconds(delay) < DateTime.Now)
                             {
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
-                                return;
-                            }
-                            Random random = new Random();
-                            double randomAmount = ServerManager.Instance.RandomNumber() * random.NextDouble();
-                            DropDTO drop = mapobject.Drops.Find(s => s.MonsterVNum == npc.NpcVNum);
-                            if (drop != null)
-                            {
-                                int dropChance = drop.DropChance;
-                                if (randomAmount <= (double)dropChance * RateDrop / 5000.000)
+                                if (mapobject.Drops.Any(s => s.MonsterVNum != null))
                                 {
-                                    short vnum = drop.ItemVNum;
-                                    ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(vnum).FirstOrDefault();
-                                    Session.Character.LastMapObject = DateTime.Now;
-                                    Session.Character.TimesUsed++;
-                                    if (Session.Character.TimesUsed >= 4)
+                                    if (mapobject.VNumRequired > 10 && Session.Character.Inventory.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
                                     {
-                                        Session.Character.TimesUsed = 0;
+                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
+                                        return;
                                     }
-                                    if (newInv != null)
+                                }
+                                Random random = new Random();
+                                double randomAmount = ServerManager.Instance.RandomNumber() * random.NextDouble();
+                                DropDTO drop = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum);
+                                if (drop != null)
+                                {
+                                    int dropChance = drop.DropChance;
+                                    if (randomAmount <= (double)dropChance * RateDrop / 5000.000)
                                     {
-                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
-                                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 11));
+                                        short vnum = drop.ItemVNum;
+                                        ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(vnum).FirstOrDefault();
+                                        Session.Character.LastMapObject = DateTime.Now;
+                                        Session.Character.TimesUsed++;
+                                        if (Session.Character.TimesUsed >= 4)
+                                        {
+                                            Session.Character.TimesUsed = 0;
+                                        }
+                                        if (newInv != null)
+                                        {
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
+                                            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 11));
+                                        }
+                                        else
+                                        {
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                                        }
                                     }
                                     else
                                     {
-                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TRY_FAILED"), 0));
                                     }
                                 }
-                                else
-                                {
-                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TRY_FAILED"), 0));
-                                }
                             }
-                        }
-                        else
-                        {
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"), (int)(Session.Character.LastMapObject.AddSeconds(delay) - DateTime.Now).TotalSeconds), 0));
+                            else
+                            {
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"), (int)(Session.Character.LastMapObject.AddSeconds(delay) - DateTime.Now).TotalSeconds), 0));
+                            }
                         }
                     }
                 }
@@ -1026,20 +1053,28 @@ namespace OpenNos.Handler
                 {
                     if (guriPacket.Value != null)
                     {
-                        // TODO: MAP TELEPORTER
+                        // MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n =>
+                        // n.MapNpcId.Equals(Convert.ToInt16(guriPacket.Data)); NpcMonster mapObject
+                        // = ServerManager.Instance.GetNpc(npc.NpcVNum); teleport free
                     }
                 }
                 else if (guriPacket.Type == 750)
                 {
-                    const short baseVnum = 1623;
-                    if (short.TryParse(guriPacket.Argument.ToString(), out short faction) && Session.Character.Inventory.CountItem(baseVnum + faction) > 0)
+                    if (!guriPacket.User.HasValue)
                     {
-                        Session.Character.Faction = faction;
-                        Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
-                        Session.SendPacket("scr 0 0 0 0 0 0 0");
-                        Session.SendPacket(Session.Character.GenerateFaction());
-                        Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+                        const short baseVnum = 1623;
+                        if (Int16.TryParse(guriPacket.Argument.ToString(), out short faction))
+                        {
+                            if (Session.Character.Inventory.CountItem(baseVnum + faction) > 0)
+                            {
+                                Session.Character.Faction = faction;
+                                Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
+                                Session.SendPacket("scr 0 0 0 0 0 0 0");
+                                Session.SendPacket(Session.Character.GenerateFaction());
+                                Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+                            }
+                        }
                     }
                 }
                 else if (guriPacket.Type == 2)
@@ -1052,7 +1087,7 @@ namespace OpenNos.Handler
                     const int petnameVNum = 2157;
                     if (guriPacket.Argument == 1)
                     {
-                        Mate mate = Session.Character.Mates.Find(s => s.MateTransportId == guriPacket.Data);
+                        Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == guriPacket.Data);
                         if (mate != null)
                         {
                             mate.Name = guriPacket.Value;
@@ -1073,7 +1108,9 @@ namespace OpenNos.Handler
                         if (presentationVNum != -1)
                         {
                             string message = string.Empty;
-                            string[] valuesplit = guriPacket.Value?.Split(' ');
+
+                            // message = $" ";
+                            string[] valuesplit = guriPacket.Value.Split(' ');
                             for (int i = 0; i < valuesplit.Length; i++)
                             {
                                 message += valuesplit[i] + "^";
@@ -1092,42 +1129,44 @@ namespace OpenNos.Handler
                     }
 
                     // Speaker
-                    if (guriPacket.Argument == 3 && Session.Character.Inventory.CountItem(speakerVNum) > 0)
+                    if (guriPacket.Argument == 3)
                     {
-                        string message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
-                        string[] valuesplit = guriPacket.Value?.Split(' ');
-                        if (valuesplit == null)
+                        if (Session.Character.Inventory.CountItem(speakerVNum) > 0)
                         {
-                            return;
-                        }
-                        for (int i = 0; i < valuesplit.Length; i++)
-                        {
-                            message += valuesplit[i] + " ";
-                        }
-                        if (message.Length > 120)
-                        {
-                            message = message.Substring(0, 120);
-                        }
+                            string message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
+                            string[] valuesplit = guriPacket.Value.Split(' ');
+                            for (int i = 0; i < valuesplit.Length; i++)
+                            {
+                                message += valuesplit[i] + " ";
+                            }
+                            if (message.Length > 120)
+                            {
+                                message = message.Substring(0, 120);
+                            }
 
-                        message = message.Trim();
+                            message = message.Trim();
 
-                        if (Session.Character.IsMuted())
-                        {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SPEAKER_CANT_BE_USED"), 10));
-                            return;
+                            if (Session.Character.IsMuted())
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SPEAKER_CANT_BE_USED"), 10));
+                                return;
+                            }
+                            Session.Character.Inventory.RemoveItemAmount(speakerVNum);
+                            ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                         }
-                        Session.Character.Inventory.RemoveItemAmount(speakerVNum);
-                        ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }
                 }
                 else if (guriPacket.Type == 199 && guriPacket.Argument == 1)
                 {
-                    if (!Session.Character.IsFriendOfCharacter(guriPacket.User))
+                    if (Int64.TryParse(guriPacket.User.Value.ToString(), out long charId))
                     {
-                        Session.SendPacket(Language.Instance.GetMessageFromKey("CHARACTER_NOT_IN_FRIENDLIST"));
-                        return;
+                        if (!Session.Character.IsFriendOfCharacter(charId))
+                        {
+                            Session.SendPacket(Language.Instance.GetMessageFromKey("CHARACTER_NOT_IN_FRIENDLIST"));
+                            return;
+                        }
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 4, $"#guri^199^2^{guriPacket.User.Value}"));
                     }
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 4, $"#guri^199^2^{guriPacket.User}"));
                 }
                 else if (guriPacket.Type == 201)
                 {
@@ -1143,7 +1182,7 @@ namespace OpenNos.Handler
                 }
                 else if (guriPacket.Type == 208 && guriPacket.Argument == 0)
                 {
-                    if (short.TryParse(guriPacket.Value, out short mountSlot) && short.TryParse(guriPacket.User.ToString(), out short pearlSlot))
+                    if (short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) && short.TryParse(guriPacket.Value, out short mountSlot))
                     {
                         ItemInstance mount = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(mountSlot, InventoryType.Main);
                         BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
@@ -1156,7 +1195,7 @@ namespace OpenNos.Handler
                 }
                 else if (guriPacket.Type == 209 && guriPacket.Argument == 0)
                 {
-                    if (short.TryParse(guriPacket.Value, out short mountSlot) && short.TryParse(guriPacket.User.ToString(), out short pearlSlot))
+                    if (short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) && short.TryParse(guriPacket.Value, out short mountSlot))
                     {
                         WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(mountSlot, InventoryType.Equipment);
                         BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
@@ -1233,7 +1272,6 @@ namespace OpenNos.Handler
                 }
             }
         }
-
 
         /// <summary>
         /// hero packet
@@ -1407,7 +1445,7 @@ namespace OpenNos.Handler
         /// <param name="sitpacket"></param>
         public void Rest(SitPacket sitpacket)
         {
-            sitpacket.Users?.ForEach(u =>
+            sitpacket.Users.ForEach(u =>
             {
                 if (u.UserType == 1)
                 {
@@ -1547,99 +1585,109 @@ namespace OpenNos.Handler
             }
         }
 
-        // TODO: REVERSE TO PACKETDEFINITION!
-        [Packet("pst")]
-        public void SendMail(PstPacket pstPacket)
+        /// <summary>
+        /// pst packet
+        /// </summary>
+        /// <param name="pstPacket"></param>
+        public void SendMail(PstPacket pstpacket)
         {
-            if (pstPacket.Data != null)
+            Logger.Debug(Session.Character.GenerateIdentity(), pstpacket.ToString());
+            if (pstpacket != null)
             {
-                CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(pstPacket.Receiver);
-                if (Receiver != null)
+                if (pstpacket.Data != null)
                 {
-                    string[] datasplit = pstPacket.Data.Split(' ');
-                    WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
-                    byte color = headWearable?.Item.IsColored == true ? (byte)headWearable.Design : (byte)Session.Character.HairColor;
-                    MailDTO mailcopy = new MailDTO
+                    CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(pstpacket.Receiver);
+                    if (Receiver != null)
                     {
-                        AttachmentAmount = 0,
-                        IsOpened = false,
-                        Date = DateTime.Now,
-                        Title = datasplit[0],
-                        Message = datasplit[1],
-                        ReceiverId = Receiver.CharacterId,
-                        SenderId = Session.Character.CharacterId,
-                        IsSenderCopy = true,
-                        SenderClass = Session.Character.Class,
-                        SenderGender = Session.Character.Gender,
-                        SenderHairColor = Enum.IsDefined(typeof(HairColorType), color) ? (HairColorType)color : 0,
-                        SenderHairStyle = Session.Character.HairStyle,
-                        EqPacket = Session.Character.GenerateEqListForPacket(),
-                        SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)(Session.Character.Morph > short.MaxValue ? 0 : Session.Character.Morph)
-                    };
-                    MailDTO mail = new MailDTO
-                    {
-                        AttachmentAmount = 0,
-                        IsOpened = false,
-                        Date = DateTime.Now,
-                        Title = datasplit[0],
-                        Message = datasplit[1],
-                        ReceiverId = Receiver.CharacterId,
-                        SenderId = Session.Character.CharacterId,
-                        IsSenderCopy = false,
-                        SenderClass = Session.Character.Class,
-                        SenderGender = Session.Character.Gender,
-                        SenderHairColor = Enum.IsDefined(typeof(HairColorType), color) ? (HairColorType)color : 0,
-                        SenderHairStyle = Session.Character.HairStyle,
-                        EqPacket = Session.Character.GenerateEqListForPacket(),
-                        SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)(Session.Character.Morph > short.MaxValue ? 0 : Session.Character.Morph)
-                    };
-
-                    DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
-                    DAOFactory.MailDAO.InsertOrUpdate(ref mail);
-
-                    Session.Character.MailList.Add((Session.Character.MailList.Count > 0 ? Session.Character.MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mailcopy);
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
-                    Session.SendPacket(Session.Character.GeneratePost(mailcopy, 2));
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-                }
-            }
-            else if (int.TryParse(pstPacket.Id.ToString(), out int id) && byte.TryParse(pstPacket.Type.ToString(), out byte type))
-            {
-                if (pstPacket.Argument == 3)
-                {
-                    if (Session.Character.MailList.ContainsKey(id))
-                    {
-                        if (!Session.Character.MailList[id].IsOpened)
+                        string[] datasplit = pstpacket.Data.Split(' ');
+                        WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+                        byte color = headWearable != null && headWearable.Item.IsColored ? (byte)headWearable.Design : (byte)Session.Character.HairColor;
+                        MailDTO mailcopy = new MailDTO
                         {
-                            Session.Character.MailList[id].IsOpened = true;
-                            MailDTO mailupdate = Session.Character.MailList[id];
-                            DAOFactory.MailDAO.InsertOrUpdate(ref mailupdate);
-                        }
-                        Session.SendPacket(Session.Character.GeneratePostMessage(Session.Character.MailList[id], type));
+                            AttachmentAmount = 0,
+                            IsOpened = false,
+                            Date = DateTime.Now,
+                            Title = datasplit[0],
+                            Message = datasplit[1],
+                            ReceiverId = Receiver.CharacterId,
+                            SenderId = Session.Character.CharacterId,
+                            IsSenderCopy = true,
+                            SenderClass = Session.Character.Class,
+                            SenderGender = Session.Character.Gender,
+                            SenderHairColor = Enum.IsDefined(typeof(HairColorType), color) ? (HairColorType)color : 0,
+                            SenderHairStyle = Session.Character.HairStyle,
+                            EqPacket = Session.Character.GenerateEqListForPacket(),
+                            SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)(Session.Character.Morph > short.MaxValue ? 0 : Session.Character.Morph)
+                        };
+                        MailDTO mail = new MailDTO
+                        {
+                            AttachmentAmount = 0,
+                            IsOpened = false,
+                            Date = DateTime.Now,
+                            Title = datasplit[0],
+                            Message = datasplit[1],
+                            ReceiverId = Receiver.CharacterId,
+                            SenderId = Session.Character.CharacterId,
+                            IsSenderCopy = false,
+                            SenderClass = Session.Character.Class,
+                            SenderGender = Session.Character.Gender,
+                            SenderHairColor = Enum.IsDefined(typeof(HairColorType), color) ? (HairColorType)color : 0,
+                            SenderHairStyle = Session.Character.HairStyle,
+                            EqPacket = Session.Character.GenerateEqListForPacket(),
+                            SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)(Session.Character.Morph > short.MaxValue ? 0 : Session.Character.Morph)
+                        };
+
+                        DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
+                        DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+
+                        Session.Character.MailList.Add((Session.Character.MailList.Any() ? Session.Character.MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mailcopy);
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
+                        Session.SendPacket(Session.Character.GeneratePost(mailcopy, 2));
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                     }
                 }
-                else if (pstPacket.Argument == 2)
+                if(!pstpacket.Unknow1.HasValue)
                 {
-                    if (Session.Character.MailList.ContainsKey(id))
+                    if (int.TryParse(pstpacket.Id.ToString(), out int id) && byte.TryParse(pstpacket.Type.ToString(), out byte type))
                     {
-                        MailDTO mail = Session.Character.MailList[id];
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAIL_DELETED"), 11));
-                        Session.SendPacket($"post 2 {type} {id}");
-                        if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
+                        if (pstpacket.Argument == 3)
                         {
-                            DAOFactory.MailDAO.DeleteById(mail.MailId);
+                            if (Session.Character.MailList.ContainsKey(id))
+                            {
+                                if (!Session.Character.MailList[id].IsOpened)
+                                {
+                                    Session.Character.MailList[id].IsOpened = true;
+                                    MailDTO mailupdate = Session.Character.MailList[id];
+                                    DAOFactory.MailDAO.InsertOrUpdate(ref mailupdate);
+                                }
+                                Session.SendPacket(Session.Character.GeneratePostMessage(Session.Character.MailList[id], type));
+                            }
                         }
-                        if (Session.Character.MailList.ContainsKey(id))
+                        else if (pstpacket.Argument == 2)
                         {
-                            Session.Character.MailList.Remove(id);
+                            if (Session.Character.MailList.ContainsKey(id))
+                            {
+                                MailDTO mail = Session.Character.MailList[id];
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAIL_DELETED"), 11));
+                                Session.SendPacket($"post 2 {type} {id}");
+                                if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
+                                {
+                                    DAOFactory.MailDAO.DeleteById(mail.MailId);
+                                }
+                                if (Session.Character.MailList.ContainsKey(id))
+                                {
+                                    Session.Character.MailList.Remove(id);
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+
         /// <summary>
         /// qset packet
         /// </summary>
@@ -1899,6 +1947,12 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;
 
+                    Session.CurrentMapInstance?.OnAreaEntryEvents?.Where(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY)).ToList().ForEach(e =>
+                    {
+                        e.Events.ForEach(evt => EventHelper.Instance.RunEvent(evt));
+                    });
+                    Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY));
+
                     Session.CurrentMapInstance?.OnMoveOnMapEvents?.ForEach(e =>
                     {
                         EventHelper.Instance.RunEvent(e);
@@ -1940,28 +1994,26 @@ namespace OpenNos.Handler
 
                 Session.SendPacket(Session.Character.GenerateSpk(message, 5));
                 CharacterDTO receiver = DAOFactory.CharacterDAO.LoadByName(characterName);
-                int? sentChannelId = null;
+                if (receiver.CharacterId == Session.Character.CharacterId)
+                {
+                    return;
+                }
                 if (receiver != null)
                 {
-                    if (receiver.CharacterId == Session.Character.CharacterId)
-                    {
-                        return;
-                    }
                     if (Session.Character.IsBlockedByCharacter(receiver.CharacterId))
                     {
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
                         return;
                     }
-                    sentChannelId = CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
-                    {
-                        DestinationCharacterId = receiver.CharacterId,
-                        SourceCharacterId = Session.Character.CharacterId,
-                        SourceWorldId = ServerManager.Instance.WorldId,
-                        Message = Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5),
-                        Type = packetsplit[0] == "GM" ? MessageType.WhisperGM : MessageType.Whisper
-                    });
                 }
-
+                int? sentChannelId = CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                {
+                    DestinationCharacterId = receiver.CharacterId,
+                    SourceCharacterId = Session.Character.CharacterId,
+                    SourceWorldId = ServerManager.Instance.WorldId,
+                    Message = Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5),
+                    Type = packetsplit[0] == "GM" ? MessageType.WhisperGM : MessageType.Whisper
+                });
                 if (sentChannelId == null)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));

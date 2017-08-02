@@ -14,6 +14,8 @@ namespace OpenNos.Data
 
         public int SecondData { get; set; }
 
+        public int ThirdData { get; set; }
+
         public short? CardId { get; set; }
 
         public short? ItemVNum { get; set; }
@@ -22,11 +24,7 @@ namespace OpenNos.Data
 
         public short? NpcMonsterVNum { get; set; }
 
-        public bool IsDelayed { get; set; }
-
-        public int ThirdData { get; set; }
-
-        public bool IsLevelScaled { get; set; }
+        public byte CastType { get; set; }
 
     }
 }

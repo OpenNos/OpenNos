@@ -240,4 +240,13 @@
   <data name="RESPAWNTYPE_PARSED" xml:space="preserve">
     <value>RespawnType sincronizzati</value>
   </data>
+  <data name="PARSE_CARDS" xml:space="preserve">
+    <value>Vuoi sincronizzare gli Effetti?</value>
+  </data>
+  <data name="CARDS_PARSED" xml:space="preserve">
+    <value>{0} Effetti Sincronizzati</value>
+  </data>
+  <data name="TIMESPACES_PARSED" xml:space="preserve">
+    <value>{0} Pietre-spazio Temporali sincronizzate!</value>
+  </data>
 </root>
