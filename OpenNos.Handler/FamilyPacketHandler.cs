@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
@@ -231,7 +232,6 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
                 string msg = familyChatPacket.Message;
@@ -240,7 +240,11 @@ namespace OpenNos.Handler
                 {
                     ccmsg = $"[GM {Session.Character.Name}]:{msg}";
                 }
-
+                if (Session.Account.Authority == AuthorityType.Moderator)
+                {
+                    ccmsg = $"[Support {Session.Character.Name}]:{msg}";
+                }
+                
                 CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
                 {
                     DestinationCharacterId = Session.Character.Family.FamilyId,
@@ -249,27 +253,31 @@ namespace OpenNos.Handler
                     Message = ccmsg,
                     Type = MessageType.FamilyChat
                 });
-                List<ClientSession> tmp = ServerManager.Instance.Sessions.ToList();
-                foreach (ClientSession s in tmp)
+                Parallel.ForEach(ServerManager.Instance.Sessions.ToList(), session =>
                 {
-                    if (s.HasSelectedCharacter && s.Character.Family != null && Session.Character.Family != null && s.Character.Family?.FamilyId == Session.Character.Family?.FamilyId)
+                    if (session.HasSelectedCharacter && session.Character.Family != null && Session.Character.Family != null && session.Character.Family?.FamilyId == Session.Character.Family?.FamilyId)
                     {
-                        if (Session.HasCurrentMapInstance && s.HasCurrentMapInstance && Session.CurrentMapInstance == s.CurrentMapInstance && !Session.Character.InvisibleGm)
+                        if (Session.HasCurrentMapInstance && session.HasCurrentMapInstance && Session.CurrentMapInstance == session.CurrentMapInstance)
                         {
-                            s.SendPacket(Session.Character.GenerateSay(msg, 6));
+                            if (Session.Account.Authority != AuthorityType.Moderator && !Session.Character.InvisibleGm)
+                            {
+                                session.SendPacket(Session.Character.GenerateSay(msg, 6));
+                            }
+                            else
+                            {
+                                session.SendPacket(Session.Character.GenerateSay(ccmsg, 6));
+                            }
                         }
                         else
                         {
-                            string prefix = $"[{Session.Character.Name}]:";
-                            if (Session.Account.Authority == AuthorityType.GameMaster)
-                            {
-                                prefix = $"[GM {Session.Character.Name}]:";
-                            }
-                            s.SendPacket(Session.Character.GenerateSay(prefix + msg, 6));
+                            session.SendPacket(Session.Character.GenerateSay(ccmsg, 6));
                         }
-                        s.SendPacket(Session.Character.GenerateSpk(msg, 1));
+                        if (!Session.Character.InvisibleGm)
+                        {
+                            session.SendPacket(Session.Character.GenerateSpk(msg, 1));
+                        }
                     }
-                }
+                });
             }
         }
 

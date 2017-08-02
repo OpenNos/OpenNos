@@ -50,7 +50,7 @@ namespace OpenNos.DAL.EF
 
         public bool IsDelayed { get; set; }
 
-        public short Delay { get; set; }
+        public int ThirdData { get; set; }
 
         #endregion
     }

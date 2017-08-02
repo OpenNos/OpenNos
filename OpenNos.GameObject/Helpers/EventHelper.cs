@@ -170,7 +170,10 @@ namespace OpenNos.GameObject.Helpers
                         break;
                     case EventActionType.REMOVEMONSTERLOCKER:
                         EventContainer evt2 = (EventContainer)evt.Parameter;
-                        evt.MapInstance.InstanceBag.MonsterLocker.Current--;
+                        if (evt.MapInstance.InstanceBag.MonsterLocker.Current > 0)
+                        {
+                            evt.MapInstance.InstanceBag.MonsterLocker.Current--;
+                        }
                         if (evt.MapInstance.InstanceBag.MonsterLocker.Current == 0 && evt.MapInstance.InstanceBag.ButtonLocker.Current == 0)
                         {
                             evt.MapInstance.InstanceBag.UnlockEvents.ForEach(s => RunEvent(s));
@@ -180,7 +183,10 @@ namespace OpenNos.GameObject.Helpers
 
                     case EventActionType.REMOVEBUTTONLOCKER:
                         evt2 = (EventContainer)evt.Parameter;
-                        evt.MapInstance.InstanceBag.ButtonLocker.Current--;
+                        if (evt.MapInstance.InstanceBag.ButtonLocker.Current > 0)
+                        {
+                            evt.MapInstance.InstanceBag.ButtonLocker.Current--;
+                        }
                         if (evt.MapInstance.InstanceBag.MonsterLocker.Current == 0 && evt.MapInstance.InstanceBag.ButtonLocker.Current == 0)
                         {
                             evt.MapInstance.InstanceBag.UnlockEvents.ForEach(s => RunEvent(s));
@@ -241,14 +247,14 @@ namespace OpenNos.GameObject.Helpers
                                     {
                                         foreach (ClientSession sess in grp.Characters)
                                         {
-                                            foreach(Gift gift in grp?.Raid?.GiftItems)
+                                            foreach (Gift gift in grp?.Raid?.GiftItems)
                                             {
                                                 byte rare = 0;
                                                 if (gift.IsRandomRare)
                                                 {
                                                     rare = (byte)ServerManager.Instance.RandomNumber(0, 7);
                                                 }
-                                               //TODO add random rarity for some object
+                                                //TODO add random rarity for some object
                                                 sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
                                             }
                                         }

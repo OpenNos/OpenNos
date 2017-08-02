@@ -409,12 +409,11 @@ namespace OpenNos.GameObject
                     {
                         session.Character.CloseShop();
                     }
-                    LeaveMap(session.Character.CharacterId);
-
-                    session.Character.IsChangingMapInstance = true;
 
                     session.CurrentMapInstance.RemoveMonstersTarget(session.Character.CharacterId);
                     session.CurrentMapInstance.UnregisterSession(session.Character.CharacterId);
+                    LeaveMap(session.Character.CharacterId);
+                    session.Character.IsChangingMapInstance = true;
 
                     // cleanup sending queue to avoid sending uneccessary packets to it
                     session.ClearLowPriorityQueue();
@@ -559,9 +558,7 @@ namespace OpenNos.GameObject
 
         public void FamilyRefresh(long FamilyId)
         {
-            InFamilyRefreshMode = true;
             CommunicationServiceClient.Instance.UpdateFamily(ServerGroup, FamilyId);
-            SpinWait.SpinUntil(() => !InFamilyRefreshMode);
         }
 
         public MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
@@ -1285,7 +1282,6 @@ namespace OpenNos.GameObject
                         foreach (ClientSession session in groupMembers)
                         {
                             session.SendPacket(session.Character.GeneratePinit());
-                            session.Character.Group.Characters.ForEach(s => session.SendPacket(s.Character.GenerateStat()));
                             session.SendPackets(session.Character.GeneratePst());
                         }
                     }
@@ -1423,6 +1419,8 @@ namespace OpenNos.GameObject
                 RemoveItemProcess();
             });
 
+         
+
             CommunicationServiceClient.Instance.SessionKickedEvent += OnSessionKicked;
             CommunicationServiceClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
             CommunicationServiceClient.Instance.FamilyRefresh += OnFamilyRefresh;
@@ -1516,7 +1514,7 @@ namespace OpenNos.GameObject
             try
             {
                 Mails = DAOFactory.MailDAO.LoadAll().ToList();
-                Parallel.ForEach(Sessions.Where(c => c.IsConnected), session => session.Character?.RefreshMail()); // TODO: TEST!
+                Parallel.ForEach(Sessions.Where(c => c.IsConnected), session => session.Character?.RefreshMail());
             }
             catch (Exception e)
             {

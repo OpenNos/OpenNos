@@ -260,8 +260,8 @@ namespace OpenNos.GameObject
                         monster.CurrentHp -= damage;
 
                         MapInstance.Broadcast(npcMonsterSkill != null
-                            ? $"su 2 {MapNpcId} 3 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} {monster.CurrentHp / monster.Monster.MaxHP * 100} {damage} 0 0"
-                            : $"su 2 {MapNpcId} 3 {Target} 0 {Npc.BasicCooldown} 11 {Npc.BasicSkill} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} {monster.CurrentHp / monster.Monster.MaxHP * 100} {damage} 0 0");
+                            ? $"su 2 {MapNpcId} 3 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} {(int)((double)monster.CurrentHp / monster.Monster.MaxHP * 100)} {damage} 0 0"
+                            : $"su 2 {MapNpcId} 3 {Target} 0 {Npc.BasicCooldown} 11 {Npc.BasicSkill} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} {(int)((double)monster.CurrentHp / monster.Monster.MaxHP * 100)} {damage} 0 0");
 
                         LastEffect = DateTime.Now;
                         if (monster.CurrentHp < 1)
@@ -292,6 +292,7 @@ namespace OpenNos.GameObject
                         if (DateTime.Now > LastMove && Npc.Speed > 0 && Path.Any())
                         {
                             int maxindex = Path.Count > Npc.Speed / 2 && Npc.Speed > 1 ? Npc.Speed / 2 : Path.Count;
+                            maxindex = maxindex < 1 ? 1 : maxindex;
                             short mapX = (short)Path.ElementAt(maxindex - 1).X;
                             short mapY = (short)Path.ElementAt(maxindex - 1).Y;
                             double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Npc.Speed;
@@ -306,7 +307,7 @@ namespace OpenNos.GameObject
                                     MapY = mapY;
                                 });
 
-                            Path.RemoveRange(0, maxindex);
+                            Path.RemoveRange(0, maxindex > Path.Count ? Path.Count : maxindex);
                         }
                         if (Target != -1 && (MapId != monster.MapId || distance > maxDistance))
                         {

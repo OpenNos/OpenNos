@@ -24,7 +24,9 @@ namespace OpenNos.Data
 
         public bool IsDelayed { get; set; }
 
-        public short Delay { get; set; }
+        public int ThirdData { get; set; }
+
+        public bool IsLevelScaled { get; set; }
 
     }
 }

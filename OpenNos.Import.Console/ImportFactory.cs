@@ -140,14 +140,15 @@ namespace OpenNos.Import.Console
                         {
                             if (currentLine[2 + i * 6] != "-1" && currentLine[2 + i * 6] != "0")
                             {
+                                int first = Convert.ToInt32(currentLine[6 + i * 6]);
                                 bcard = new BCardDTO()
                                 {
                                     CardId = card.CardId,
                                     Type = Convert.ToByte(currentLine[2 + i * 6]),
-                                    SubType = Convert.ToByte(currentLine[3 + i * 6]),
-                                  
-                                    Delay = Convert.ToByte(currentLine[5 + i * 6]),
-                                    FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
+                                    SubType = (byte)((Convert.ToByte(currentLine[3 + i * 6]) + 1)),
+                                    ThirdData = Convert.ToByte(currentLine[5 + i * 6]),
+                                    FirstData = first / 4,
+                                    IsLevelScaled = Convert.ToBoolean(first % 4),
                                     SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
 
                                 };
@@ -161,15 +162,17 @@ namespace OpenNos.Import.Console
                         {
                             if (currentLine[2 + i * 6] != "0" && currentLine[2 + i * 6] != "-1")
                             {
+                                int first = Convert.ToInt32(currentLine[5 + i * 6]);
                                 bcard = new BCardDTO()
                                 {
                                     IsDelayed = true,
                                     CardId = card.CardId,
-                                    Type = byte.Parse(currentLine[2+i * 6]),
-                                    SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
-                                    FirstData = (short)(int.Parse(currentLine[5]) / 4),
-                                    SecondData = (short)(int.Parse(currentLine[6]) / 4),
-                                    Delay = (short)(int.Parse(currentLine[7]) / 4),
+                                    Type = byte.Parse(currentLine[2 + i * 6]),
+                                    SubType = (byte)((Convert.ToByte(currentLine[3 + i * 6]) + 1)),
+                                    FirstData = (short)(first / 4),
+                                    SecondData = (short)(int.Parse(currentLine[6 + i * 6]) / 4),
+                                    ThirdData = (short)(int.Parse(currentLine[7 + i * 6]) / 4),
+                                    IsLevelScaled = Convert.ToBoolean(first % 4),
                                 };
                                 bcards.Add(bcard);
                             }
@@ -208,7 +211,7 @@ namespace OpenNos.Import.Console
 
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("mv") && o[1].Equals("2")))
             {
-                if (long.Parse(currentPacket[2]) >= 20000)
+                if (long.Parse(currentPacket[2]) > 20000)
                 {
                     continue;
                 }
@@ -220,7 +223,7 @@ namespace OpenNos.Import.Console
 
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("eff") && o[1].Equals("2")))
             {
-                if (long.Parse(currentPacket[2]) >= 20000)
+                if (long.Parse(currentPacket[2]) > 20000)
                 {
                     continue;
                 }
@@ -250,7 +253,7 @@ namespace OpenNos.Import.Console
                     {
                         continue;
                     }
-                    npctest.MapNpcId = short.Parse(currentPacket[3]);
+                    npctest.MapNpcId = int.Parse(currentPacket[3]);
                     if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
                     {
                         npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
@@ -324,11 +327,7 @@ namespace OpenNos.Import.Console
 
             foreach (string[] linesave in _packetList.Where(o => o[0].Equals("at")))
             {
-                if (linesave.Length <= 7 || linesave[0] != "at")
-                {
-                    continue;
-                }
-                if (dictionaryMusic.ContainsKey(int.Parse(linesave[2])))
+                if (linesave.Length <= 7 || dictionaryMusic.ContainsKey(int.Parse(linesave[2])))
                 {
                     continue;
                 }
@@ -1166,10 +1165,10 @@ namespace OpenNos.Import.Console
                                 {
                                     NpcMonsterVNum = npc.NpcMonsterVNum,
                                     Type = type,
-                                    SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10),
-                                    FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
+                                    SubType = (byte)int.Parse(currentLine[6 + 5 * i]),
+                                    FirstData = (short)(int.Parse(currentLine[5 + 5 * i])),
                                     SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                    Delay = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                                    ThirdData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
                                 };
                                 monstercards.Add(itemCard);
                             }
@@ -1606,20 +1605,7 @@ namespace OpenNos.Import.Console
                 IsDisabled = false
             };
             DAOFactory.PortalDAO.Insert(minilandPortal);
-
-            PortalDTO weddingPortal = new PortalDTO
-            {
-                SourceMapId = 2586,
-                SourceX = 34,
-                SourceY = 54,
-                DestinationMapId = 145,
-                Type = -1,
-                DestinationX = 61,
-                DestinationY = 165,
-                IsDisabled = false
-            };
-            DAOFactory.PortalDAO.Insert(weddingPortal);
-
+            
             PortalDTO glacerusCavernPortal = new PortalDTO
             {
                 SourceMapId = 2587,
@@ -2187,16 +2173,16 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
                     {
                         int type = Int32.Parse(currentLine[3]);
-                        if (type != 0 && type!=-1)
+                        if (type != 0 && type != -1)
                         {
                             BCardDTO itemCard = new BCardDTO
                             {
                                 SkillVNum = skill.SkillVNum,
-                                Type =(byte)type,
-                                SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
+                                Type = (byte)type,
+                                SubType = (byte)((int.Parse(currentLine[4]) + 1)),
                                 FirstData = (short)(int.Parse(currentLine[5]) / 4),
                                 SecondData = (short)(int.Parse(currentLine[6]) / 4),
-                                Delay = (short)(int.Parse(currentLine[7]) / 4),
+                                ThirdData = (short)(int.Parse(currentLine[7]) / 4),
                             };
                             skillCards.Add(itemCard);
                         }
@@ -2319,7 +2305,7 @@ namespace OpenNos.Import.Console
                 }
                 else if (currentPacket[0] == "gp")
                 {
-                    if (sbyte.Parse(currentPacket[4])==(byte)PortalType.Raid)
+                    if (sbyte.Parse(currentPacket[4]) == (byte)PortalType.Raid)
                     {
                         ScriptedInstanceDTO ts = new ScriptedInstanceDTO()
                         {
@@ -3453,7 +3439,7 @@ namespace OpenNos.Import.Console
                                     SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1)),
                                     FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
                                     SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                    Delay = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                                    ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
                                 };
                                 itemCards.Add(itemCard);
                             }

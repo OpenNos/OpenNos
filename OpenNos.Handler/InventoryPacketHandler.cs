@@ -79,6 +79,10 @@ namespace OpenNos.Handler
         /// <param name="depositPacket"></param>
         public void Deposit(DepositPacket depositPacket)
         {
+            if (depositPacket.Inventory == InventoryType.Bazaar || depositPacket.Inventory == InventoryType.FamilyWareHouse || depositPacket.Inventory == InventoryType.Miniland)
+            {
+                return;
+            }
             ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(depositPacket.Slot, depositPacket.Inventory);
             ItemInstance itemdest = Session.Character.Inventory.LoadBySlotAndType(depositPacket.NewSlot, depositPacket.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse);
 
@@ -396,7 +400,7 @@ namespace OpenNos.Handler
                                     int backpack = targetSession.Character.HaveBackpack() ? 1 : 0;
                                     long maxGold = ServerManager.Instance.MaxGold;
 
-                                    if (targetExchange == null)
+                                    if (targetExchange == null || Session.Character.ExchangeInfo == null)
                                     {
                                         return;
                                     }
@@ -676,7 +680,7 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), mvePacket.ToString());
             lock (Session.Character.Inventory)
             {
-                if(mvePacket.Slot.Equals(mvePacket.DestinationSlot) && mvePacket.InventoryType.Equals(mvePacket.DestinationInventoryType))
+                if (mvePacket.Slot.Equals(mvePacket.DestinationSlot) && mvePacket.InventoryType.Equals(mvePacket.DestinationInventoryType))
                 {
                     return;
                 }
@@ -710,7 +714,7 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), mviPacket.ToString());
             lock (Session.Character.Inventory)
             {
-                if(mviPacket.Amount == 0)
+                if (mviPacket.Amount == 0)
                 {
                     return;
                 }
@@ -889,12 +893,12 @@ namespace OpenNos.Handler
         /// <param name="reposPacket"></param>
         public void Repos(ReposPacket reposPacket)
         {
-            if(reposPacket.OldSlot.Equals(reposPacket.NewSlot))
+            if (reposPacket.OldSlot.Equals(reposPacket.NewSlot))
             {
                 return;
             }
 
-            if(reposPacket.Amount == 0)
+            if (reposPacket.Amount == 0)
             {
                 return;
             }
@@ -1851,6 +1855,7 @@ namespace OpenNos.Handler
                 bufftodisable.Add(BuffType.Good);
                 bufftodisable.Add(BuffType.Neutral);
                 Session.Character.DisableBuffs(bufftodisable);
+                Session.Character.EquipmentBCards.RemoveAll(s => s.ItemVNum.Equals(vnum));
                 Logger.Debug(Session.Character.GenerateIdentity(), vnum.ToString());
                 Session.Character.UseSp = false;
                 Session.Character.LoadSpeed();

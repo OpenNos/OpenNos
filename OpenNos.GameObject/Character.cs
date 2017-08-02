@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
     public class Character : CharacterDTO
     {
         #region Members
-        
+
         private Random _random;
         private byte _speed;
 
@@ -533,7 +533,7 @@ namespace OpenNos.GameObject
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(CurrentMinigame));
                     LastEffect = DateTime.Now;
                 }
-              
+
                 if (LastEffect.AddSeconds(5) <= DateTime.Now)
                 {
                     if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
@@ -900,12 +900,12 @@ namespace OpenNos.GameObject
 
         public string GenerateCInfo()
         {
-            return $"c_info {(Authority == AuthorityType.Moderator ? "[Support]" + Name : Name)} - -1 {(Family != null ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {Family?.FamilyLevel ?? 0} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
+            return $"c_info {(Authority == AuthorityType.Moderator && !Undercover ? "[Support]" + Name : Name)} - -1 {(Family != null && !Undercover ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {Family?.FamilyLevel ?? 0} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
 
         public string GenerateCMap()
         {
-            return $"c_map 0 {MapInstance.Map.MapId} {(MapInstance.MapInstanceType!=MapInstanceType.BaseMapInstance?1:0)}";
+            return $"c_map 0 {MapInstance.Map.MapId} {(MapInstance.MapInstanceType != MapInstanceType.BaseMapInstance ? 1 : 0)}";
         }
 
         public string GenerateCMode()
@@ -1942,7 +1942,7 @@ namespace OpenNos.GameObject
                 }
                 fairy = Inventory.LoadBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
             }
-            return $"in 1 {(Authority == AuthorityType.Moderator ? "[Support]" + Name : Name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (Group?.GroupId ?? -1) : -1)} {(fairy != null ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {Family?.FamilyId ?? -1} {Family?.Name ?? "-"} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
+            return $"in 1 {(Authority == AuthorityType.Moderator && !Undercover ? "[Support]" + Name : Name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (Group?.GroupId ?? -1) : -1)} {(fairy != null && !Undercover ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(Family?.FamilyId != null && !Undercover ? Family?.FamilyId : -1)} {(Family?.Name != null && !Undercover ? Family?.Name : "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator && !Undercover ? 500 : Compliment)} {Size} {HeroLevel}";
         }
 
         public string GenerateInvisible()
@@ -4878,7 +4878,7 @@ namespace OpenNos.GameObject
 
             return xp;
         }
-
+ 
         private int HealthHPLoad()
         {
             if (IsSitting)
@@ -4929,7 +4929,7 @@ namespace OpenNos.GameObject
             {
                 case 0:
                     result = $"raid 0";
-                    Group?.Characters?.ForEach(s=> { result += $" {s.Character?.CharacterId}"; });
+                    Group?.Characters?.ForEach(s => { result += $" {s.Character?.CharacterId}"; });
                     break;
                 case 2:
                     result = $"raid 2 {(Exit ? "-1" : $"{CharacterId}")}";
@@ -4997,6 +4997,10 @@ namespace OpenNos.GameObject
 
         public void AddBuff(Buff indicator)
         {
+            if (indicator?.Card == null)
+            {
+                return;
+            }
             Buff.RemoveAll(s => s.Card.CardId.Equals(indicator.Card.CardId));
             Buff.Add(indicator);
             indicator.RemainingTime = indicator.Card.Duration;
@@ -5041,7 +5045,10 @@ namespace OpenNos.GameObject
                         Session.Character.GenerateSay(
                             string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
                 }
-                Buff.Remove(indicator);
+                if (Buff.Contains(indicator))
+                {
+                    Buff.RemoveAll(s => s.Card.CardId == id);
+                }
                 if (indicator.Card.BCards.Any(s => s.Type == (byte)BCardType.CardType.Move))
                 {
                     LastSpeedChange = DateTime.Now;
@@ -5075,7 +5082,14 @@ namespace OpenNos.GameObject
             foreach (BCard entry in EquipmentBCards.Where(
                 s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10))))
             {
-                value1 += entry.FirstData;
+                if (entry.IsLevelScaled)
+                {
+                    value1 += entry.FirstData * Level;
+                }
+                else
+                {
+                    value1 += entry.FirstData;
+                }
                 value2 += entry.SecondData;
             }
 
@@ -5098,7 +5112,14 @@ namespace OpenNos.GameObject
                              (!s.IsDelayed || (s.IsDelayed &&
                                                buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
                     {
-                        value1 += entry.FirstData;
+                        if (entry.IsLevelScaled)
+                        {
+                            value1 += entry.FirstData * buff.Level;
+                        }
+                        else
+                        {
+                            value1 += entry.FirstData;
+                        }
                         value2 += entry.SecondData;
                     }
                 }

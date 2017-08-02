@@ -346,9 +346,8 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-
+            MSManager.Instance.ConnectedAccounts.RemoveAll(a => a != null && a.ConnectedWorld?.Id.Equals(worldId) == true);
             MSManager.Instance.WorldServers.RemoveAll(w => w.Id.Equals(worldId));
-            MSManager.Instance.ConnectedAccounts.RemoveAll(a => a.ConnectedWorld.Id.Equals(worldId));
         }
 
         public void UpdateBazaar(string worldGroup, long bazaarItemId)

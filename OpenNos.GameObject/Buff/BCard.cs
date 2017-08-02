@@ -78,7 +78,7 @@ namespace OpenNos.GameObject
                         }
                         switch (SubType)
                         {
-                            case 20:
+                            case 2:
                                 EventHelper.Instance.RunEvent(new EventContainer((session as MapMonster).MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                 break;
                             default:

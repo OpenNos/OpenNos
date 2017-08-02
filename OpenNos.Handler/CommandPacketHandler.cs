@@ -689,7 +689,7 @@ namespace OpenNos.Handler
         /// <param name="characterEditPacket"></param>
         public void CharacterEdit(CharacterEditPacket characterEditPacket)
         {
-            Logger.Debug("ChannelInfo Command", Session.Character.GenerateIdentity());
+            Logger.Debug("CharacterEdit Command", Session.Character.GenerateIdentity());
             if (characterEditPacket != null)
             {
                 if (characterEditPacket.Property != null && !string.IsNullOrEmpty(characterEditPacket.Data))

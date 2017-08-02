@@ -74,10 +74,12 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), mutliTargetListPacket.ToString());
             if (mutliTargetListPacket.TargetsAmount > 0 && mutliTargetListPacket.TargetsAmount == mutliTargetListPacket.Targets.Count)
             {
+                List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
+                CharacterSkill ski = null;
+
                 foreach (MultiTargetListSubPacket subpacket in mutliTargetListPacket.Targets)
                 {
-                    List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
-                    CharacterSkill ski = skills?.FirstOrDefault(s => s.Skill.CastId == subpacket.SkillCastId - 1);
+                    skills?.FirstOrDefault(s => s.Skill.CastId == subpacket.SkillCastId - 1);
                     if (ski != null && ski.CanBeUsed() && Session.HasCurrentMapInstance)
                     {
                         MapMonster mon = Session.CurrentMapInstance.GetMonster(subpacket.TargetId);
@@ -92,6 +94,10 @@ namespace OpenNos.Handler
                             Session.SendPacket($"sr {subpacket.SkillCastId - 1}");
                         });
                     }
+                }
+                if (ski != null)
+                {
+                    ski.LastUse = DateTime.Now;
                 }
             }
         }
@@ -214,12 +220,9 @@ namespace OpenNos.Handler
                     return;
                 }
                 Logger.Debug(Session.Character.GenerateIdentity(), useAOESkillPacket.ToString());
-                if (Session.Character.CanFight)
+                if (Session.Character.CanFight && Session.Character.Hp > 0)
                 {
-                    if (Session.Character.Hp > 0)
-                    {
-                        ZoneHit(useAOESkillPacket.CastId, useAOESkillPacket.MapX, useAOESkillPacket.MapY);
-                    }
+                    ZoneHit(useAOESkillPacket.CastId, useAOESkillPacket.MapX, useAOESkillPacket.MapY);
                 }
             }
         }
@@ -278,7 +281,7 @@ namespace OpenNos.Handler
                         bufftodisable.Add(BuffType.Bad);
                         bufftodisable.Add(BuffType.Good);
                         bufftodisable.Add(BuffType.Neutral);
-                        Session.Character.DisableBuffs(bufftodisable);
+                        target.Character.DisableBuffs(bufftodisable);
                         target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         target.SendPacket(target.Character.GenerateSay(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 11));
@@ -482,7 +485,7 @@ namespace OpenNos.Handler
                         Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
                         Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100} 0 -1 {ski.Skill.SkillType - 1}");
                         ClientSession target = ServerManager.Instance.GetSessionByCharacterId(targetId) ?? Session;
-                        ski.Skill.BCards.ForEach(s=>s.ApplyBCards(target.Character));
+                        ski.Skill.BCards.ForEach(s => s.ApplyBCards(target.Character));
                     }
                     else if (ski.Skill.TargetType == 1 && ski.Skill.HitType != 1)
                     {
@@ -510,8 +513,8 @@ namespace OpenNos.Handler
                                     ski.Skill.BCards.ForEach(s => s.ApplyBCards(Session.Character));
                                 });
                                 break;
-                                
-                                
+
+
                         }
                     }
                     else if (ski.Skill.TargetType == 0 && Session.HasCurrentMapInstance) // monster target
@@ -540,7 +543,6 @@ namespace OpenNos.Handler
                                     Session.Character.Skills.GetAllItems().Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
 
                                     // Generate scp
-                                    ski.LastUse = DateTime.Now;
                                     if ((DateTime.Now - ski.LastUse).TotalSeconds > 3)
                                     {
                                         ski.Hit = 0;
@@ -550,6 +552,7 @@ namespace OpenNos.Handler
                                         ski.Hit++;
                                     }
 
+                                    ski.LastUse = DateTime.Now;
                                     if (ski.Skill.CastEffect != 0)
                                     {
                                         Thread.Sleep(ski.Skill.CastTime * 100);
@@ -841,7 +844,7 @@ namespace OpenNos.Handler
                                     Session.Character.Skills.GetAllItems().Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
 
                                     // Generate scp
-                                    ski.LastUse = DateTime.Now;
+
                                     if ((DateTime.Now - ski.LastUse).TotalSeconds > 3)
                                     {
                                         ski.Hit = 0;
@@ -850,7 +853,7 @@ namespace OpenNos.Handler
                                     {
                                         ski.Hit++;
                                     }
-
+                                    ski.LastUse = DateTime.Now;
                                     if (ski.Skill.CastEffect != 0)
                                     {
                                         Thread.Sleep(ski.Skill.CastTime * 100);

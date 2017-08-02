@@ -295,6 +295,10 @@ namespace OpenNos.GameObject
                 if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
                 {
                     int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
+                    if (Path[maxindex - 1] == null)
+                    {
+                        return;
+                    }
                     short mapX = Path.ElementAt(maxindex - 1).X;
                     short mapY = Path.ElementAt(maxindex - 1).Y;
                     double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Monster.Speed;
@@ -307,7 +311,7 @@ namespace OpenNos.GameObject
                         MapY = mapY;
                     });
                     distance = (int)Path.First().F;
-                    Path.RemoveRange(0, maxindex);
+                    Path.RemoveRange(0, maxindex > Path.Count ? Path.Count : maxindex);
                 }
 
                 if (targetSession == null || MapId != targetSession.Character.MapInstance.Map.MapId || distance > maxDistance)
@@ -799,7 +803,10 @@ namespace OpenNos.GameObject
                     MapInstance.Broadcast(GenerateEff(826));
                 }
             }
-
+            if (IsBoss)
+            {
+                MapInstance.Broadcast(GenerateBoss());
+            }
             // handle hit queue
             while (HitQueue.TryDequeue(out HitRequest hitRequest))
             {

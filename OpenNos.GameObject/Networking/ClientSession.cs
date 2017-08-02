@@ -165,7 +165,7 @@ namespace OpenNos.GameObject
 
         public void Destroy()
         {
-            // unregister from WCF events
+            // unregister from events
             CommunicationServiceClient.Instance.CharacterConnectedEvent -= OnOtherCharacterConnected;
             CommunicationServiceClient.Instance.CharacterDisconnectedEvent -= OnOtherCharacterDisconnected;
 
@@ -176,7 +176,7 @@ namespace OpenNos.GameObject
                 if (Character.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance || Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                 {
                     Character.MapInstance.InstanceBag.DeadList.Add(Character.CharacterId);
-                    if(Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    if (Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                     {
                         Character?.Group?.Characters.ForEach(s =>
                         {
@@ -185,8 +185,10 @@ namespace OpenNos.GameObject
                         });
                     }
                 }
-                ServerManager.Instance.RemoveMapInstance(Character.Miniland.MapInstanceId);
-
+                if (Character?.Miniland != null)
+                {
+                    ServerManager.Instance.RemoveMapInstance(Character.Miniland.MapInstanceId);
+                }
                 // TODO Check why ExchangeInfo.TargetCharacterId is null Character.CloseTrade();
                 // disconnect client
                 CommunicationServiceClient.Instance.DisconnectCharacter(ServerManager.Instance.WorldId, Character.CharacterId);
@@ -291,7 +293,7 @@ namespace OpenNos.GameObject
         {
             Character = character;
 
-            // register WCF events
+            // register events
             CommunicationServiceClient.Instance.CharacterConnectedEvent += OnOtherCharacterConnected;
             CommunicationServiceClient.Instance.CharacterDisconnectedEvent += OnOtherCharacterDisconnected;
 

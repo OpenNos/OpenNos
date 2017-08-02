@@ -78,7 +78,7 @@ namespace OpenNos.GameObject
                     ItemInstance raidSeal = session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
 
-                    ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj => obj.VNum == raidSeal.ItemVNum)).GetClone();
+                    ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj => obj.VNum == raidSeal.ItemVNum))?.GetClone();
                     if (raid != null)
                     {
                         Group group = new Group(GroupType.Team);
