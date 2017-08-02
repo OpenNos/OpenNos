@@ -1399,4 +1399,7 @@ Veux-tu le porter ?</value>
   <data name="TS_TUTORIAL" xml:space="preserve">
     <value>Espace-temps tutoriel</value>
   </data>
+  <data name="GIFT_SENT" xml:space="preserve">
+    <value>Cadeau envoyé.</value>
+  </data>
 </root>

@@ -1426,4 +1426,7 @@
   <data name="WARNING_INFO" xml:space="preserve">
     <value>You've been warned: {0} times.</value>
   </data>
+  <data name="GIFT_SENT" xml:space="preserve">
+    <value>Gift has been sent!</value>
+  </data>
 </root>
