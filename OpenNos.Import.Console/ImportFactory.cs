@@ -1184,7 +1184,7 @@ namespace OpenNos.Import.Console
                                 {
                                     NpcMonsterVNum = npc.NpcMonsterVNum,
                                     Type = type,
-                                    SubType = (byte)((int.Parse(currentLine[6 + 5 * i])) * 10),
+                                    SubType = (byte)int.Parse(currentLine[6 + 5 * i]),
                                     FirstData = (short)(int.Parse(currentLine[5 + 5])),
                                     SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4), 
                                     ThirdData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
