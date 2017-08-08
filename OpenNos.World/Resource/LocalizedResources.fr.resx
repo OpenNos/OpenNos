@@ -1424,7 +1424,7 @@ Veux-tu le porter ?</value>
     <value>Tu perds l'effet : {0} !</value>
   </data>
   <data name="ITEM_BOUND_TO" xml:space="preserve">
-    <value>{1} a ramassé {0} x {2}</value>
+    <value>(Groupe) Priorité à :  {1}  : {0} x {2}</value>
   </data>
   <data name="MARRIAGE_ACCEPT" xml:space="preserve">
     <value>T'as demande de mariage a été acceptée !</value>
@@ -1475,7 +1475,7 @@ Veux-tu le porter ?</value>
     <value>Votre équipe a bien été supprimée de la liste des raids</value>
   </data>
   <data name="RETRY_CONNECTION" xml:space="preserve">
-    <value>Impossible de se connecte à  Master Server ! Réssayez dans 5 secondes ...</value>
+    <value>Impossible de se connecter à  Master Server ! Réssayez dans 5 secondes ...</value>
   </data>
   <data name="SEARCH_TEAM_MEMBERS" xml:space="preserve">
     <value>{0} recherche des membres pour le raid {1} !</value>
