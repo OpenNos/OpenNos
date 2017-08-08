@@ -330,6 +330,25 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                case 135:
+                    if (!ServerManager.Instance.StartedEvents.Contains(EventType.TALENTARENA))
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ARENA_NOT_OPEN"), 10));
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateBsInfo(0, 3, 300, Session.Character.TicketLeft));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_ARENA_TEAM"), 10));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ARENA_TICKET_LEFT"), Session.Character.TicketLeft), 10));
+                        ServerManager.Instance.ArenaTeam.Add(new ArenaMember()
+                        {
+                            ArenaType = EventType.TALENTARENA,
+                            CharacterId = Session.Character.CharacterId,
+                            GroupId = null
+                        });
+                    }
+                    break;
+
                 case 150:
                     if (npc != null)
                     {
@@ -359,7 +378,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 301:
-                        tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                    tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                     if (tp != null)
                     {
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);

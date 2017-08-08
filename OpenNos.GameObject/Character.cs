@@ -392,7 +392,8 @@ namespace OpenNos.GameObject
 
         public int WareHouseSize { get; set; }
 
-        public int WaterResistance { get; private set; }
+        public int WaterResistance { get;  set; }
+        public byte TicketLeft { get; set; }
 
         #endregion
 
@@ -499,6 +500,11 @@ namespace OpenNos.GameObject
             {
                 Session.CurrentMapInstance?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
             }
+        }
+
+        public string GenerateBsInfo(byte type, int param, int time, byte ticketleft)
+        {
+            return $"bsinfo {type} {param} {time} {ticketleft}";
         }
 
         public void ChangeSex()

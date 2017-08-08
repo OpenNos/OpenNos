@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Event.ARENA;
 using OpenNos.PathFinder;
 using System;
 using System.Collections.Generic;
@@ -87,7 +88,9 @@ namespace OpenNos.GameObject.Helpers
                         case EventType.INSTANTBATTLE:
                             InstantBattle.GenerateInstantBattle();
                             break;
-
+                        case EventType.TALENTARENA:
+                            ArenaEvent.GenerateTalentArena();
+                            break;
                         case EventType.LODDH:
                             LOD.GenerateLod(35);
                             break;
