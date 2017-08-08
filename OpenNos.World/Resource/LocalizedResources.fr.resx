@@ -1507,4 +1507,13 @@ Veux-tu le porter ?</value>
   <data name="WARNING_INFO" xml:space="preserve">
     <value>Tu as été avertis : {0} fois</value>
   </data>
+  <data name="ASK_CHANGE_FACTION" xml:space="preserve">
+    <value>Veux-tu vraiment changer ton attribut ?</value>
+  </data>
+  <data name="ASK_CHANGE_FACTION1" xml:space="preserve">
+    <value>Veux-tu vraiment acquérir le pouvoir de l'ange ?</value>
+  </data>
+  <data name="ASK_CHANGE_FACTION2" xml:space="preserve">
+    <value>Veux-tu vraiment acquérir le pouvoir du démon ?</value>
+  </data>
 </root>
