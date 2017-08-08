@@ -16,9 +16,11 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.PathFinder;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -113,7 +115,7 @@ namespace OpenNos.GameObject
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
-                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, isBonus: isBonus, isHostile: isHostile, isBoss: isBoss) {DeathEvents = deathEvents });
+                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, isBonus: isBonus, isHostile: isHostile, isBoss: isBoss) { DeathEvents = deathEvents });
             }
             return SummonParameters;
         }
@@ -131,17 +133,15 @@ namespace OpenNos.GameObject
 
         public MapCell GetRandomPosition()
         {
-            List<MapCell> cells = new List<MapCell>();
-            for (short y = 0; y <= YLength; y++)
+            ConcurrentBag<MapCell> cells = new ConcurrentBag<MapCell>();
+            Parallel.For(0, YLength, y => Parallel.For(0, XLength, x =>
             {
-                for (short x = 0; x <= XLength; x++)
+                if (!IsBlockedZone(x, y))
                 {
-                    if (!IsBlockedZone(x, y))
-                    {
-                        cells.Add(new MapCell { X = x, Y = y });
-                    }
+                    cells.Add(new MapCell { X = (short)x, Y = (short)y });
                 }
-            }
+            }));
+            
             return cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
         }
 
