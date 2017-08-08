@@ -1399,7 +1399,112 @@ Veux-tu le porter ?</value>
   <data name="TS_TUTORIAL" xml:space="preserve">
     <value>Espace-temps tutoriel</value>
   </data>
-  <data name="GIFT_SENT" xml:space="preserve">
-    <value>Cadeau envoyé.</value>
+  <data name="ACCEPTED_SHARE" xml:space="preserve">
+    <value>Tu as changé le point de retour de {0} !</value>
+  </data>
+  <data name="ALREADY_MARRIED" xml:space="preserve">
+    <value>Tu ne peux pas te marier de nouveau car tu es déjà en couple !</value>
+  </data>
+  <data name="API_INITIALIZED" xml:space="preserve">
+    <value>La communication avec MasterServer s'est correctement effectuée.</value>
+  </data>
+  <data name="BUY_ITEM_VALID" xml:space="preserve">
+    <value>Tu as acheté {1} de {0}</value>
+  </data>
+  <data name="CARDS_LOADED" xml:space="preserve">
+    <value>{0} Cartes chargées.</value>
+  </data>
+  <data name="DIVORCED" xml:space="preserve">
+    <value>Tu es dès à présent divorcé.</value>
+  </data>
+  <data name="DROPPED_ITEM" xml:space="preserve">
+    <value>Tu as reçu {0} x {1}</value>
+  </data>
+  <data name="EFFECT_TERMINATED" xml:space="preserve">
+    <value>Tu perds l'effet : {0} !</value>
+  </data>
+  <data name="ITEM_BOUND_TO" xml:space="preserve">
+    <value>{1} a ramassé {0} x {2}</value>
+  </data>
+  <data name="MARRIAGE_ACCEPT" xml:space="preserve">
+    <value>T'as demande de mariage a été acceptée !</value>
+  </data>
+  <data name="MARRIAGE_ACCEPT_SHOUT" xml:space="preserve">
+    <value>Félicitations ! {0} a accepté dans la demande en mariage de  {1} !</value>
+  </data>
+  <data name="MARRIAGE_REJECTED" xml:space="preserve">
+    <value>Votre demande de mariage a été refusée</value>
+  </data>
+  <data name="MARRIAGE_REJECT_SHOUT" xml:space="preserve">
+    <value>{0} a rejeté la demande en mariage de {1} ! </value>
+  </data>
+  <data name="MARRY_REQUEST" xml:space="preserve">
+    <value>{0} Vous a demandé en mariage. Voulez-vous accepter ?</value>
+  </data>
+  <data name="NOT_FRIEND" xml:space="preserve">
+    <value>Vous n'êtes pas amis.</value>
+  </data>
+  <data name="RAID_DISOLVED" xml:space="preserve">
+    <value>L'équipe du raid a été dissoute !</value>
+  </data>
+  <data name="RAID_JOIN" xml:space="preserve">
+    <value>{0} a rejoint l'équipe du Raid.</value>
+  </data>
+  <data name="RAID_LEFT" xml:space="preserve">
+    <value>Tu as quitté l'équipe du Raid.</value>
+  </data>
+  <data name="RAID_LEVEL_INCORRECT" xml:space="preserve">
+    <value>Ton niveau ne correspond pas avec le niveau requis pour ce raid, par conséquant tu ne recevras aucune récompense !</value>
+  </data>
+  <data name="RAID_MEMBER_DEAD" xml:space="preserve">
+    <value>Le membre de l'équipe : {0} est mort !</value>
+  </data>
+  <data name="RAID_REGISTERED" xml:space="preserve">
+    <value>L'équipe de Raid a été enregistrée dans la liste</value>
+  </data>
+  <data name="RAID_START" xml:space="preserve">
+    <value>Le Raid a commencé !</value>
+  </data>
+  <data name="RAID_SUCCEED" xml:space="preserve">
+    <value>[Équipe de {1}] L'équipe de raid  {0} a mené à bien sa mission.</value>
+  </data>
+  <data name="RAID_TEAM_NOT_READY" xml:space="preserve">
+    <value>L'équipe n'est pas encore prête !</value>
+  </data>
+  <data name="RAID_UNREGISTERED" xml:space="preserve">
+    <value>Votre équipe a bien été supprimée de la liste des raids</value>
+  </data>
+  <data name="RETRY_CONNECTION" xml:space="preserve">
+    <value>Impossible de se connecte à  Master Server ! Réssayez dans 5 secondes ...</value>
+  </data>
+  <data name="SEARCH_TEAM_MEMBERS" xml:space="preserve">
+    <value>{0} recherche des membres pour le raid {1} !</value>
+  </data>
+  <data name="SHIP_MINUTE" xml:space="preserve">
+    <value>Le bateau partira dans 1 minute</value>
+  </data>
+  <data name="SHIP_MINUTES" xml:space="preserve">
+    <value>Le bateau partira dans {0} minutes.</value>
+  </data>
+  <data name="SHIP_NOTARRIVED" xml:space="preserve">
+    <value>Le bateau n'est pas encore revenu</value>
+  </data>
+  <data name="SHIP_SECONDS" xml:space="preserve">
+    <value>Le bateau va larguer les amarres dans  {0} secondes.</value>
+  </data>
+  <data name="SHIP_SETOFF" xml:space="preserve">
+    <value>C'est parti ! Larguez les amarres ! </value>
+  </data>
+  <data name="SUPPORT" xml:space="preserve">
+    <value>Supporteur</value>
+  </data>
+  <data name="UNDER_EFFECT" xml:space="preserve">
+    <value>Tu subis l'effet :  {0} !</value>
+  </data>
+  <data name="WARNING" xml:space="preserve">
+    <value>Tu as été avertis pour : {0}</value>
+  </data>
+  <data name="WARNING_INFO" xml:space="preserve">
+    <value>Tu as été avertis : {0} fois</value>
   </data>
 </root>
