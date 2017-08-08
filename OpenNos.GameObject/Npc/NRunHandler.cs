@@ -337,14 +337,14 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateBsInfo(0, 3, 300, Session.Character.TicketLeft));
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_ARENA_TEAM"), 10));
                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ARENA_TICKET_LEFT"), Session.Character.TicketLeft), 10));
                         ServerManager.Instance.ArenaTeam.Add(new ArenaMember()
                         {
                             ArenaType = EventType.TALENTARENA,
                             CharacterId = Session.Character.CharacterId,
-                            GroupId = null
+                            GroupId = null,
+                            Time = 0
                         });
                     }
                     break;

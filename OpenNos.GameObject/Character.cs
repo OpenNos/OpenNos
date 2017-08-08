@@ -502,9 +502,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateBsInfo(byte type, int param, int time, byte ticketleft)
+        public string GenerateBsInfo(byte type, int arenaeventtype, int time, byte titletype)
         {
-            return $"bsinfo {type} {param} {time} {ticketleft}";
+            return $"bsinfo {type} {arenaeventtype} {time} {titletype}";
         }
 
         public void ChangeSex()
