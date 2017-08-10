@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     BazaarItem BazaarItem = context.BazaarItem.FirstOrDefault(c => c.BazaarItemId.Equals(bazaarItemId));
 
@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     long bazaarItemId = bazaarItem.BazaarItemId;
                     BazaarItem entity = context.BazaarItem.FirstOrDefault(c => c.BazaarItemId.Equals(bazaarItemId));
@@ -81,7 +81,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<BazaarItemDTO> LoadAll()
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (BazaarItem bazaarItem in context.BazaarItem)
                 {
@@ -94,7 +94,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<BazaarItemDTO>(context.BazaarItem.FirstOrDefault(i => i.BazaarItemId.Equals(bazaarItemId)));
                 }
@@ -110,7 +110,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     foreach (BazaarItem entity in context.BazaarItem.Where(e => DbFunctions.AddDays(DbFunctions.AddHours(e.DateStart, e.Duration), e.MedalUsed ? 30 : 7) < DateTime.Now))
                     {

@@ -144,7 +144,7 @@ namespace OpenNos.GameObject
         public void UnregisterSession(long characterId)
         {
             // Get client from client list, if not in list do not continue
-            var session = _sessions[characterId];
+            ClientSession session = _sessions[characterId];
             if (session == null)
             {
                 return;

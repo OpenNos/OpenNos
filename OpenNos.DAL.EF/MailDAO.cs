@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Mail mail = context.Mail.First(i => i.MailId.Equals(mailId));
 
@@ -56,7 +56,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     long mailId = mail.MailId;
                     Mail entity = context.Mail.FirstOrDefault(c => c.MailId.Equals(mailId));
@@ -81,7 +81,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<MailDTO> LoadAll()
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (Mail mail in context.Mail)
                 {
@@ -94,7 +94,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<MailDTO>(context.Mail.FirstOrDefault(i => i.MailId.Equals(mailId)));
                 }

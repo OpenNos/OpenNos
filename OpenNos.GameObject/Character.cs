@@ -4192,7 +4192,7 @@ namespace OpenNos.GameObject
                         }
 
                         // remove all which are saved but not in our current enumerable
-                        foreach (var inventoryToDeleteId in currentlySavedInventoryIds.Except(inventories.Select(i => i.Id)))
+                        foreach (Guid inventoryToDeleteId in currentlySavedInventoryIds.Except(inventories.Select(i => i.Id)))
                         {
                             try
                             {
@@ -4549,7 +4549,7 @@ namespace OpenNos.GameObject
 
             if (Inventory != null)
             {
-                foreach (var suit in Enum.GetValues(typeof(EquipmentType)))
+                foreach (object suit in Enum.GetValues(typeof(EquipmentType)))
                 {
                     WearableInstance item = Inventory.LoadBySlotAndType<WearableInstance>((byte)suit, InventoryType.Wear);
                     if (item != null && item.DurabilityPoint > 0)

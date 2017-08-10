@@ -21,7 +21,7 @@ namespace OpenNos.DAL.EF
 
         public virtual void InitializeMapper()
         {
-            var config = new MapperConfiguration(cfg =>
+            MapperConfiguration config = new MapperConfiguration(cfg =>
             {
                 foreach (KeyValuePair<Type, Type> entry in _mappings)
                 {

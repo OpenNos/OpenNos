@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     StaticBonus bon = context.StaticBonus.FirstOrDefault(c => c.StaticBonusType == (StaticBonusType)bonusToDelete && c.CharacterId == characterId);
 
@@ -56,7 +56,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     long id = staticBonus.CharacterId;
                     StaticBonusType cardid = staticBonus.StaticBonusType;
@@ -81,7 +81,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<StaticBonusDTO> LoadByCharacterId(long characterId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (StaticBonus entity in context.StaticBonus.Where(i => i.CharacterId == characterId && i.DateEnd > DateTime.Now))
                 {
@@ -94,7 +94,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<StaticBonusDTO>(context.RespawnMapType.FirstOrDefault(s => s.RespawnMapTypeId.Equals(sbId)));
                 }

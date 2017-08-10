@@ -19,6 +19,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
@@ -28,7 +29,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<ItemDTO> FindByName(string name)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 if (string.IsNullOrEmpty(name))
                 {
@@ -51,7 +52,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (ItemDTO Item in items)
@@ -73,7 +74,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Item entity = _mapper.Map<Item>(item);
                     context.Item.Add(entity);
@@ -90,7 +91,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<ItemDTO> LoadAll()
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (Item item in context.Item)
                 {
@@ -103,7 +104,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<ItemDTO>(context.Item.FirstOrDefault(i => i.VNum.Equals(ItemVnum)));
                 }

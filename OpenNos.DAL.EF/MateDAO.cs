@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Mate mate = context.Mate.FirstOrDefault(c => c.MateId.Equals(id));
                     if (mate != null)
@@ -56,7 +56,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     long MateId = mate.MateId;
                     Mate entity = context.Mate.FirstOrDefault(c => c.MateId.Equals(MateId));
@@ -80,7 +80,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<MateDTO> LoadByCharacterId(long characterId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (Mate mate in context.Mate.Where(s => s.CharacterId == characterId))
                 {

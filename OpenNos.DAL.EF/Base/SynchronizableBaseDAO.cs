@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF
 
         public virtual DeleteResult Delete(Guid id)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id == id);
                 if (entity != null)
@@ -36,7 +36,7 @@ namespace OpenNos.DAL.EF
             try
             {
                 IList<TDTO> results = new List<TDTO>();
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     foreach (TDTO dto in dtos)
                     {
@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return InsertOrUpdate(context, dto);
                 }
@@ -71,7 +71,7 @@ namespace OpenNos.DAL.EF
 
         public TDTO LoadById(Guid id)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 return _mapper.Map<TDTO>(context.Set<TEntity>().FirstOrDefault(i => i.Id.Equals(id)));
             }

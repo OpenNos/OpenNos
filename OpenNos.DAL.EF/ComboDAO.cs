@@ -19,6 +19,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
@@ -30,7 +31,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (ComboDTO combo in combos)
@@ -52,7 +53,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Combo entity = _mapper.Map<Combo>(combo);
                     context.Combo.Add(entity);
@@ -69,7 +70,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<ComboDTO> LoadAll()
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (Combo combo in context.Combo)
                 {
@@ -82,7 +83,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<ComboDTO>(context.Combo.FirstOrDefault(s => s.SkillVNum.Equals(comboId)));
                 }
@@ -96,7 +97,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<ComboDTO> LoadBySkillVnum(short skillVNum)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (Combo combo in context.Combo.Where(c => c.SkillVNum == skillVNum))
                 {
@@ -107,7 +108,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<ComboDTO> LoadByVNumHitAndEffect(short skillVNum, short hit, short effect)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (Combo combo in context.Combo.Where(s => s.SkillVNum == skillVNum && s.Hit == hit && s.Effect == effect))
                 {

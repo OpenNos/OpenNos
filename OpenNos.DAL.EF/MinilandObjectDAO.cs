@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     MinilandObject item = context.MinilandObject.First(i => i.MinilandObjectId.Equals(id));
 
@@ -56,7 +56,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     long id = obj.MinilandObjectId;
                     MinilandObject entity = context.MinilandObject.FirstOrDefault(c => c.MinilandObjectId.Equals(id));
@@ -81,7 +81,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<MinilandObjectDTO> LoadByCharacterId(long characterId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (MinilandObject obj in context.MinilandObject.Where(s => s.CharacterId == characterId))
                 {

@@ -19,6 +19,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
@@ -30,7 +31,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Teleporter entity = _mapper.Map<Teleporter>(teleporter);
                     context.Teleporter.Add(entity);
@@ -47,7 +48,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<TeleporterDTO> LoadAll()
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (Teleporter entity in context.Teleporter)
                 {
@@ -60,7 +61,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<TeleporterDTO>(context.Teleporter.FirstOrDefault(i => i.TeleporterId.Equals(teleporterId)));
                 }
@@ -74,7 +75,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<TeleporterDTO> LoadFromNpc(int npcId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (Teleporter entity in context.Teleporter.Where(c => c.MapNpcId.Equals(npcId)))
                 {

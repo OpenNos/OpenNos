@@ -19,6 +19,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
@@ -30,7 +31,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return context.GeneralLog.Any(gl => gl.LogId == id);
                 }
@@ -46,7 +47,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     GeneralLog entity = _mapper.Map<GeneralLog>(generallog);
                     context.GeneralLog.Add(entity);
@@ -63,7 +64,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<GeneralLogDTO> LoadAll()
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (GeneralLog generalLog in context.GeneralLog)
                 {
@@ -74,7 +75,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<GeneralLogDTO> LoadByAccount(long? accountId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (GeneralLog GeneralLog in context.GeneralLog.Where(s => s.AccountId == accountId))
                 {
@@ -85,7 +86,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<GeneralLogDTO> LoadByLogType(string logType, long? characterId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (GeneralLog log in context.GeneralLog.Where(c => c.LogType.Equals(logType) && c.CharacterId == characterId))
                 {
@@ -98,7 +99,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     foreach (GeneralLog log in context.GeneralLog.Where(c => c.CharacterId == characterId))
                     {
@@ -117,7 +118,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     GeneralLog log = new GeneralLog
                     {

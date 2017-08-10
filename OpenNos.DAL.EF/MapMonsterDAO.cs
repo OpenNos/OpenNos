@@ -20,6 +20,7 @@ using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
@@ -31,7 +32,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     MapMonster monster = context.MapMonster.First(i => i.MapMonsterId.Equals(mapMonsterId));
 
@@ -53,7 +54,7 @@ namespace OpenNos.DAL.EF
 
         public bool DoesMonsterExist(int mapMonsterId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 return context.MapMonster.Any(i => i.MapMonsterId.Equals(mapMonsterId));
             }
@@ -63,7 +64,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (MapMonsterDTO monster in monsters)
@@ -85,7 +86,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     MapMonster entity = _mapper.Map<MapMonster>(mapMonster);
                     context.MapMonster.Add(entity);
@@ -104,7 +105,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(mapMonsterId)));
                 }
@@ -118,7 +119,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<MapMonsterDTO> LoadFromMap(short mapId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (MapMonster MapMonsterobject in context.MapMonster.Where(c => c.MapId.Equals(mapId)))
                 {

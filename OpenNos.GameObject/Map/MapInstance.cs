@@ -316,7 +316,7 @@ namespace OpenNos.GameObject
 
         public void LoadMonsters()
         {
-            var partitioner = Partitioner.Create(DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<MapMonsterDTO> partitioner = Partitioner.Create(DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
             Parallel.ForEach(partitioner, monster =>
             {
                 MapMonster mapMonster = monster as MapMonster;
@@ -329,7 +329,7 @@ namespace OpenNos.GameObject
 
         public void LoadNpcs()
         {
-            var partitioner = Partitioner.Create(DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<MapNpcDTO> partitioner = Partitioner.Create(DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
             Parallel.ForEach(partitioner, npc =>
             {
                 MapNpc mapNpc = npc as MapNpc;
@@ -342,7 +342,7 @@ namespace OpenNos.GameObject
 
         public void LoadPortals()
         {
-            var partitioner = Partitioner.Create(DAOFactory.PortalDAO.LoadByMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<PortalDTO> partitioner = Partitioner.Create(DAOFactory.PortalDAO.LoadByMap(Map.MapId), EnumerablePartitionerOptions.None);
             ThreadSafeSortedList<int, Portal> _portalList = new ThreadSafeSortedList<int, Portal>();
             Parallel.ForEach(partitioner, portal =>
             {

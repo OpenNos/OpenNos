@@ -237,7 +237,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         public IScsMessage SendMessageAndWaitForResponse(IScsMessage message, int timeoutMilliseconds, byte priority)
         {
             // Create a waiting message record and add to list
-            var waitingMessage = new WaitingMessage();
+            WaitingMessage waitingMessage = new WaitingMessage();
             lock (_syncObj)
             {
                 _waitingMessages[message.MessageId] = waitingMessage;
@@ -298,7 +298,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             // disconnected and can not receive messages anymore.
             lock (_syncObj)
             {
-                foreach (var waitingMessage in _waitingMessages.Values)
+                foreach (WaitingMessage waitingMessage in _waitingMessages.Values)
                 {
                     waitingMessage.State = WaitingMessageStates.Cancelled;
                     waitingMessage.WaitEvent.Set();

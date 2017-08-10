@@ -145,7 +145,7 @@ namespace OpenNos.Handler
                 }
                 if (skillinfo.SkillVNum < 200)
                 {
-                    foreach (var skill in Session.Character.Skills.GetAllItems())
+                    foreach (CharacterSkill skill in Session.Character.Skills.GetAllItems())
                     {
                         if (skillinfo.CastId == skill.Skill.CastId && skill.Skill.SkillVNum < 200)
                         {

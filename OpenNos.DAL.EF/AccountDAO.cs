@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Account account = context.Account.FirstOrDefault(c => c.AccountId.Equals(accountId));
 
@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     long accountId = account.AccountId;
                     Account entity = context.Account.FirstOrDefault(c => c.AccountId.Equals(accountId));
@@ -82,7 +82,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Account account = context.Account.FirstOrDefault(a => a.AccountId.Equals(accountId));
                     if (account != null)
@@ -102,7 +102,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Account account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
                     if (account != null)
@@ -122,7 +122,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     GeneralLog log = new GeneralLog
                     {

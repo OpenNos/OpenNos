@@ -323,7 +323,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
             try
             {
-                var lastMinute = DateTime.Now.AddMinutes(-1);
+                DateTime lastMinute = DateTime.Now.AddMinutes(-1);
                 if (_communicationChannel.LastReceivedMessageTime > lastMinute || _communicationChannel.LastSentMessageTime > lastMinute)
                 {
                     return;

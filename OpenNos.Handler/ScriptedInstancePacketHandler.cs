@@ -71,8 +71,8 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateGold());
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GOLD_TS_END"), si.Gold), 10));
 
-                    var rand = new Random().Next(si.DrawItems.Count);
-                    var repay = "repay ";
+                    int rand = new Random().Next(si.DrawItems.Count);
+                    string repay = "repay ";
                     Session.Character.GiftAdd(si.DrawItems[rand].VNum, si.DrawItems[rand].Amount);
 
                     for (int i = 0; i < 3; i++)
@@ -117,7 +117,7 @@ namespace OpenNos.Handler
                 {
                     timespace.LoadScript(MapInstanceType.TimeSpaceInstance);
                     if (timespace.FirstMap == null) return;
-                    foreach (var i in timespace.RequieredItems)
+                    foreach (Gift i in timespace.RequieredItems)
                     {
                         if (Session.Character.Inventory.CountItem(i.VNum) < i.Amount)
                         {

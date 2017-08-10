@@ -34,7 +34,7 @@ namespace OpenNos.Core.Threading
         public ThreadedBase(long milliseconds, Action<TValue> triggeredMethod)
         {
             _action = triggeredMethod;
-            var cancellationTokenSource = new CancellationTokenSource();
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
             // this will cost a lot of resource _task =
             // Repeat.Interval(TimeSpan.FromMilliseconds(milliseconds), () =>

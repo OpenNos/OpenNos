@@ -95,7 +95,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
                 _connectionListener.Stop();
             }
 
-            foreach (var client in Clients.GetAllItems())
+            foreach (IScsServerClient client in Clients.GetAllItems())
             {
                 client.Disconnect();
             }
@@ -133,7 +133,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// <param name="e">Event arguments</param>
         private void Client_Disconnected(object sender, EventArgs e)
         {
-            var client = (IScsServerClient)sender;
+            IScsServerClient client = (IScsServerClient)sender;
             Clients.Remove(client.ClientId);
             OnClientDisconnected(client);
         }
@@ -145,7 +145,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// <param name="e">Event arguments</param>
         private void ConnectionListener_CommunicationChannelConnected(object sender, CommunicationChannelEventArgs e)
         {
-            var client = new NetworkClient(e.Channel)
+            NetworkClient client = new NetworkClient(e.Channel)
             {
                 ClientId = ScsServerManager.GetClientId(),
                 WireProtocol = WireProtocolFactory.CreateWireProtocol()

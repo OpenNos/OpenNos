@@ -19,6 +19,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
@@ -29,7 +30,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     RollGeneratedItem entity = _mapper.Map<RollGeneratedItem>(item);
                     context.RollGeneratedItem.Add(entity);
@@ -46,7 +47,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<RollGeneratedItemDTO> LoadAll()
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (RollGeneratedItem item in context.RollGeneratedItem)
                 {
@@ -59,7 +60,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<RollGeneratedItemDTO>(context.RollGeneratedItem.FirstOrDefault(i => i.RollGeneratedItemId.Equals(id)));
                 }
@@ -73,7 +74,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<RollGeneratedItemDTO> LoadByItemVNum(short vnum)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (RollGeneratedItem item in context.RollGeneratedItem.Where(s => s.OriginalItemVNum == vnum))
                 {

@@ -230,7 +230,7 @@ namespace OpenNos.Core
                 Lock.EnterWriteLock();
                 try
                 {
-                    var list = new List<TV>(Items.Values);
+                    List<TV> list = new List<TV>(Items.Values);
                     Items.Clear();
                     return list;
                 }

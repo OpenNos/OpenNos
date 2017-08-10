@@ -110,7 +110,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                 throw new ArgumentNullException(nameof(service));
             }
 
-            var type = typeof(TServiceInterface);
+            Type type = typeof(TServiceInterface);
             if (_serviceObjects[type.Name] != null)
             {
                 throw new Exception("Service '" + type.Name + "' is already added before.");
@@ -199,10 +199,10 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         private void Client_MessageReceived(object sender, MessageEventArgs e)
         {
             // Get RequestReplyMessenger object (sender of event) to get client
-            var requestReplyMessenger = (RequestReplyMessenger<IScsServerClient>)sender;
+            RequestReplyMessenger<IScsServerClient> requestReplyMessenger = (RequestReplyMessenger<IScsServerClient>)sender;
 
             // Cast message to ScsRemoteInvokeMessage and check it
-            var invokeMessage = e.Message as ScsRemoteInvokeMessage;
+            ScsRemoteInvokeMessage invokeMessage = e.Message as ScsRemoteInvokeMessage;
             if (invokeMessage == null)
             {
                 return;
@@ -211,7 +211,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             try
             {
                 // Get client object
-                var client = _serviceClients[requestReplyMessenger.Messenger.ClientId];
+                IScsServiceClient client = _serviceClients[requestReplyMessenger.Messenger.ClientId];
                 if (client == null)
                 {
                     requestReplyMessenger.Messenger.Disconnect();
@@ -219,7 +219,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                 }
 
                 // Get service object
-                var serviceObject = _serviceObjects[invokeMessage.ServiceClassName];
+                ServiceObject serviceObject = _serviceObjects[invokeMessage.ServiceClassName];
                 if (serviceObject == null)
                 {
                     SendInvokeResponse(requestReplyMessenger, invokeMessage, null, new ScsRemoteException("There is no service with name '" + invokeMessage.ServiceClassName + "'"));
@@ -248,7 +248,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                 }
                 catch (TargetInvocationException ex)
                 {
-                    var innerEx = ex.InnerException;
+                    Exception innerEx = ex.InnerException;
                     if (innerEx != null)
                     {
                         SendInvokeResponse(requestReplyMessenger, invokeMessage, null, new ScsRemoteException(innerEx.Message + Environment.NewLine + "Service Version: " + serviceObject.ServiceAttribute.Version, innerEx));
@@ -271,7 +271,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// <param name="client"></param>
         private void OnClientConnected(IScsServiceClient client)
         {
-            var handler = ClientConnected;
+            EventHandler<ServiceClientEventArgs> handler = ClientConnected;
             handler?.Invoke(this, new ServiceClientEventArgs(client));
         }
 
@@ -281,7 +281,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// <param name="client"></param>
         private void OnClientDisconnected(IScsServiceClient client)
         {
-            var handler = ClientDisconnected;
+            EventHandler<ServiceClientEventArgs> handler = ClientDisconnected;
             handler?.Invoke(this, new ServiceClientEventArgs(client));
         }
 
@@ -292,11 +292,11 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// <param name="e">Event arguments</param>
         private void ScsServer_ClientConnected(object sender, ServerClientEventArgs e)
         {
-            var requestReplyMessenger = new RequestReplyMessenger<IScsServerClient>(e.Client);
+            RequestReplyMessenger<IScsServerClient> requestReplyMessenger = new RequestReplyMessenger<IScsServerClient>(e.Client);
             requestReplyMessenger.MessageReceived += Client_MessageReceived;
             requestReplyMessenger.Start();
 
-            var serviceClient = ScsServiceClientFactory.CreateServiceClient(e.Client, requestReplyMessenger);
+            IScsServiceClient serviceClient = ScsServiceClientFactory.CreateServiceClient(e.Client, requestReplyMessenger);
             _serviceClients[serviceClient.ClientId] = serviceClient;
             OnClientConnected(serviceClient);
         }
@@ -308,7 +308,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// <param name="e">Event arguments</param>
         private void ScsServer_ClientDisconnected(object sender, ServerClientEventArgs e)
         {
-            var serviceClient = _serviceClients[e.Client.ClientId];
+            IScsServiceClient serviceClient = _serviceClients[e.Client.ClientId];
             if (serviceClient == null)
             {
                 return;
@@ -348,7 +348,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             public ServiceObject(Type serviceInterfaceType, ScsService service)
             {
                 Service = service;
-                var classAttributes = serviceInterfaceType.GetCustomAttributes(typeof(ScsServiceAttribute), true);
+                object[] classAttributes = serviceInterfaceType.GetCustomAttributes(typeof(ScsServiceAttribute), true);
                 if (classAttributes.Length <= 0)
                 {
                     throw new Exception("Service interface (" + serviceInterfaceType.Name + ") must has ScsService attribute.");
@@ -356,7 +356,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
                 ServiceAttribute = classAttributes[0] as ScsServiceAttribute;
                 _methods = new SortedList<string, MethodInfo>();
-                foreach (var methodInfo in serviceInterfaceType.GetMethods())
+                foreach (MethodInfo methodInfo in serviceInterfaceType.GetMethods())
                 {
                     _methods.Add(methodInfo.Name, methodInfo);
                 }
@@ -395,7 +395,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                 }
 
                 // Get method
-                var method = _methods[methodName];
+                MethodInfo method = _methods[methodName];
 
                 // Invoke method and return invoke result
                 return method.Invoke(Service, parameters);

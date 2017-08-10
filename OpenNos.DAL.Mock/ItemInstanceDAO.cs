@@ -42,7 +42,7 @@ namespace OpenNos.DAL.Mock
         public void InitializeMapper(Type baseType)
         {
             _baseType = baseType;
-            var config = new MapperConfiguration(cfg =>
+            MapperConfiguration config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap(baseType, typeof(ItemInstanceDTO));
                 cfg.CreateMap(typeof(ItemInstanceDTO), typeof(ItemInstanceDTO)).As(baseType);

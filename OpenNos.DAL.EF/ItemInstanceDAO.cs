@@ -59,7 +59,7 @@ namespace OpenNos.DAL.EF
         public void InitializeMapper(Type baseType)
         {
             _baseType = baseType;
-            var config = new MapperConfiguration(cfg =>
+            MapperConfiguration config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap(baseType, typeof(ItemInstance))
                     .ForMember("Item", opts => opts.Ignore());
@@ -87,9 +87,9 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<ItemInstanceDTO> LoadByCharacterId(long characterId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                foreach (var itemInstance in context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)))
+                foreach (ItemInstance itemInstance in context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)))
                 {
                     yield return _mapper.Map<ItemInstanceDTO>(itemInstance);
                 }
@@ -100,7 +100,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     byte inventoryType = (byte)type;
                     byte equipmentType = (byte)slot;
@@ -117,10 +117,10 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<ItemInstanceDTO> LoadByType(long characterId, InventoryType type)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 byte inventoryType = (byte)type;
-                foreach (var itemInstance in context.ItemInstance.Where(i => i.CharacterId == characterId && i.Type == inventoryType))
+                foreach (ItemInstance itemInstance in context.ItemInstance.Where(i => i.CharacterId == characterId && i.Type == inventoryType))
                 {
                     yield return _mapper.Map<ItemInstanceDTO>(itemInstance);
                 }
@@ -131,7 +131,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)).Select(i => i.Id).ToList();
                 }
@@ -163,7 +163,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                var entity = context.ItemInstance.FirstOrDefault(c => c.Id == itemInstance.Id);
+                ItemInstance entity = context.ItemInstance.FirstOrDefault(c => c.Id == itemInstance.Id);
 
                 itemInstance = entity == null ? Insert(itemInstance, context) : Update(entity, itemInstance, context);
 
@@ -180,7 +180,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                var entity = _mapper.Map<ItemInstance>(dto);
+                ItemInstance entity = _mapper.Map<ItemInstance>(dto);
                 KeyValuePair<Type, Type> targetMapping = _mappings.FirstOrDefault(k => k.Key.Equals(dto.GetType()));
                 if (targetMapping.Key != null)
                 {

@@ -30,7 +30,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<NpcMonsterDTO> FindByName(string name)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (NpcMonster npcMonster in context.NpcMonster.Where(s => s.Name.Contains(name)))
                 {
@@ -43,7 +43,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (NpcMonsterDTO Item in npcs)
@@ -65,7 +65,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     NpcMonster entity = _mapper.Map<NpcMonster>(npc);
                     context.NpcMonster.Add(entity);
@@ -84,7 +84,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     short npcMonsterVNum = npcMonster.NpcMonsterVNum;
                     NpcMonster entity = context.NpcMonster.FirstOrDefault(c => c.NpcMonsterVNum.Equals(npcMonsterVNum));
@@ -108,7 +108,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<NpcMonsterDTO> LoadAll()
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (NpcMonster NpcMonster in context.NpcMonster)
                 {
@@ -121,7 +121,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<NpcMonsterDTO>(context.NpcMonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(vnum)));
                 }

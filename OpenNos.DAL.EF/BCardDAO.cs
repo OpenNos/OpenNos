@@ -19,6 +19,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
@@ -30,7 +31,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     BCard entity = _mapper.Map<BCard>(cardObject);
                     context.BCard.Add(entity);
@@ -49,7 +50,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (BCardDTO card in cards)
@@ -69,7 +70,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<BCardDTO> LoadAll()
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (BCard card in context.BCard)
                 {
@@ -80,7 +81,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<BCardDTO> LoadByCardId(short cardId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (BCard card in context.BCard.Where(s=>s.CardId == cardId))
                 {
@@ -91,7 +92,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<BCardDTO> LoadByItemVNum(short Vnum)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (BCard card in context.BCard.Where(s => s.ItemVNum == Vnum))
                 {
@@ -102,7 +103,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<BCardDTO> LoadBySkillVNum(short Vnum)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (BCard card in context.BCard.Where(s => s.SkillVNum == Vnum))
                 {
@@ -113,7 +114,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<BCardDTO> LoadByNpcMonsterVNum(short Vnum)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (BCard card in context.BCard.Where(s => s.NpcMonsterVNum == Vnum))
                 {
@@ -126,7 +127,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<BCardDTO>(context.BCard.FirstOrDefault(s => s.BCardId.Equals(cardId)));
                 }

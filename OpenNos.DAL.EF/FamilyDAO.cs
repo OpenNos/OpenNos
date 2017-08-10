@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Family Fam = context.Family.FirstOrDefault(c => c.FamilyId == familyId);
 
@@ -56,7 +56,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     long AccountId = family.FamilyId;
                     Family entity = context.Family.FirstOrDefault(c => c.FamilyId.Equals(AccountId));
@@ -80,7 +80,7 @@ namespace OpenNos.DAL.EF
 
         public IEnumerable<FamilyDTO> LoadAll()
         {
-            using (var context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 foreach (Family entity in context.Family)
                 {
@@ -93,7 +93,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     FamilyCharacter familyCharacter = context.FamilyCharacter.FirstOrDefault(fc => fc.Character.CharacterId.Equals(characterId));
                     if (familyCharacter != null)
@@ -117,7 +117,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Family family = context.Family.FirstOrDefault(a => a.FamilyId.Equals(familyId));
                     if (family != null)
@@ -137,7 +137,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Family family = context.Family.FirstOrDefault(a => a.Name.Equals(name));
                     if (family != null)

@@ -731,7 +731,7 @@ namespace OpenNos.GameObject.Helpers
             // Load SpData
             _heroXpData = new double[256];
             _heroXpData[0] = 949560;
-            for (var i = 1; i < _heroXpData.Length; i++)
+            for (int i = 1; i < _heroXpData.Length; i++)
             {
                 _heroXpData[i] = Convert.ToInt64(_heroXpData[i - 1] * 1.08);
             }

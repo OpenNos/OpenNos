@@ -26,24 +26,24 @@ namespace OpenNos.Core
 
         public static T BuildDelegate<T>(MethodInfo method, params object[] missingParamValues)
         {
-            var queueMissingParams = new Queue<object>(missingParamValues);
+            Queue<object> queueMissingParams = new Queue<object>(missingParamValues);
 
-            var dgtMi = typeof(T).GetMethod("Invoke");
-            var dgtParams = dgtMi.GetParameters();
+            MethodInfo dgtMi = typeof(T).GetMethod("Invoke");
+            ParameterInfo[] dgtParams = dgtMi.GetParameters();
 
-            var paramsOfDelegate = dgtParams
+            ParameterExpression[] paramsOfDelegate = dgtParams
                 .Select(tp => Expression.Parameter(tp.ParameterType, tp.Name))
                 .ToArray();
 
-            var methodParams = method.GetParameters();
+            ParameterInfo[] methodParams = method.GetParameters();
 
             if (method.IsStatic)
             {
-                var paramsToPass = methodParams
+                Expression[] paramsToPass = methodParams
                     .Select((p, i) => CreateParam(paramsOfDelegate, i, p, queueMissingParams))
                     .ToArray();
 
-                var expr = Expression.Lambda<T>(
+                Expression<T> expr = Expression.Lambda<T>(
                     Expression.Call(method, paramsToPass),
                     paramsOfDelegate);
 
@@ -51,13 +51,13 @@ namespace OpenNos.Core
             }
             else
             {
-                var paramThis = Expression.Convert(paramsOfDelegate[0], method.DeclaringType);
+                UnaryExpression paramThis = Expression.Convert(paramsOfDelegate[0], method.DeclaringType);
 
-                var paramsToPass = methodParams
+                Expression[] paramsToPass = methodParams
                     .Select((p, i) => CreateParam(paramsOfDelegate, i + 1, p, queueMissingParams))
                     .ToArray();
 
-                var expr = Expression.Lambda<T>(
+                Expression<T> expr = Expression.Lambda<T>(
                     Expression.Call(paramThis, method, paramsToPass),
                     paramsOfDelegate);
 

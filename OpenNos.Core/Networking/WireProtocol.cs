@@ -59,7 +59,7 @@ namespace OpenNos.Core
             _receiveMemoryStream.Write(receivedBytes, 0, receivedBytes.Length);
 
             // Create a list to collect messages
-            var messages = new List<IScsMessage>();
+            List<IScsMessage> messages = new List<IScsMessage>();
 
             // Read all available messages and add to messages collection
             while (ReadSingleMessage(messages))
@@ -118,9 +118,9 @@ namespace OpenNos.Core
         /// </exception>
         private static byte[] ReadByteArray(Stream stream, short length)
         {
-            var buffer = new byte[length];
+            byte[] buffer = new byte[length];
 
-            var read = stream.Read(buffer, 0, length);
+            int read = stream.Read(buffer, 0, length);
             if (read <= 0)
             {
                 throw new EndOfStreamException("Can not read from stream! Input stream is closed.");
@@ -160,13 +160,13 @@ namespace OpenNos.Core
             }
 
             // Read bytes of serialized message and deserialize it
-            var serializedMessageBytes = ReadByteArray(_receiveMemoryStream, frameLength);
+            byte[] serializedMessageBytes = ReadByteArray(_receiveMemoryStream, frameLength);
             messages.Add(new ScsRawDataMessage(serializedMessageBytes));
 
             // Read remaining bytes to an array
             if (_receiveMemoryStream.Length > frameLength)
             {
-                var remainingBytes = ReadByteArray(_receiveMemoryStream, (short)(_receiveMemoryStream.Length - frameLength));
+                byte[] remainingBytes = ReadByteArray(_receiveMemoryStream, (short)(_receiveMemoryStream.Length - frameLength));
 
                 // Re-create the receive memory stream and write remaining bytes
                 _receiveMemoryStream = new MemoryStream();

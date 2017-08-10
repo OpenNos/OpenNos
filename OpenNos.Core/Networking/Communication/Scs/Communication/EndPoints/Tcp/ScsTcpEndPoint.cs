@@ -59,7 +59,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp
         /// <returns>Created ScsTcpEndpoint object</returns>
         public ScsTcpEndPoint(string address)
         {
-            var splittedAddress = address.Trim().Split(':');
+            string[] splittedAddress = address.Trim().Split(':');
             IpAddress = splittedAddress[0].Trim();
             TcpPort = Convert.ToInt32(splittedAddress[1].Trim());
         }

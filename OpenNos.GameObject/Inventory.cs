@@ -340,7 +340,7 @@ namespace OpenNos.GameObject
         public bool EnoughPlace(List<ItemInstance> itemInstances, int backPack)
         {
             Dictionary<InventoryType, int> place = new Dictionary<InventoryType, int>();
-            foreach (var itemgroup in itemInstances.GroupBy(s => s.ItemVNum))
+            foreach (IGrouping<short, ItemInstance> itemgroup in itemInstances.GroupBy(s => s.ItemVNum))
             {
                 InventoryType type = itemgroup.FirstOrDefault().Type;
                 List<ItemInstance> listitem = GetAllItems().Where(i => i.Type == type).ToList();
@@ -461,7 +461,7 @@ namespace OpenNos.GameObject
         /// <param name="wear"></param>
         public ItemInstance MoveInInventory(short sourceSlot, InventoryType sourceType, InventoryType targetType, short? targetSlot = null, bool wear = true)
         {
-            var sourceInstance = LoadBySlotAndType(sourceSlot, sourceType);
+            ItemInstance sourceInstance = LoadBySlotAndType(sourceSlot, sourceType);
 
             if (sourceInstance == null && wear)
             {
@@ -475,7 +475,7 @@ namespace OpenNos.GameObject
                     if (wear)
                     {
                         // swap
-                        var targetInstance = LoadBySlotAndType(targetSlot.Value, targetType);
+                        ItemInstance targetInstance = LoadBySlotAndType(targetSlot.Value, targetType);
 
                         sourceInstance.Slot = targetSlot.Value;
                         sourceInstance.Type = targetType;

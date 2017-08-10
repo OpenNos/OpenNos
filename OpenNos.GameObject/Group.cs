@@ -70,7 +70,7 @@ namespace OpenNos.GameObject
         public List<string> GeneratePst(ClientSession player)
         {
             List<string> str = new List<string>();
-            var i = 0;
+            int i = 0;
             foreach (ClientSession session in Characters)
             {
                 if (session == player)
