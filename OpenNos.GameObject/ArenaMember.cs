@@ -9,7 +9,7 @@ namespace OpenNos.GameObject
 {
     public class ArenaMember
     {
-        public double CharacterId { get; set; }
+        public ClientSession Session { get; set; }
         public double? GroupId { get; set; }
         public EventType ArenaType { get; set; }
         public int Time { get; internal set; }

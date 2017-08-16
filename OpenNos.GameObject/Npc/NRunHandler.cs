@@ -339,10 +339,10 @@ namespace OpenNos.GameObject
                     {
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_ARENA_TEAM"), 10));
                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ARENA_TICKET_LEFT"), Session.Character.TicketLeft), 10));
-                        ServerManager.Instance.ArenaTeam.Add(new ArenaMember()
+                        ServerManager.Instance.ArenaMembers.Add(new ArenaMember()
                         {
                             ArenaType = EventType.TALENTARENA,
-                            CharacterId = Session.Character.CharacterId,
+                            Session = Session,
                             GroupId = null,
                             Time = 0
                         });
