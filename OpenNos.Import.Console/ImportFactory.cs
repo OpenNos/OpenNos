@@ -2634,6 +2634,12 @@ namespace OpenNos.Import.Console
                                 item.WaitDelay = 3000;
                                 break;
 
+                            case 5997:
+                                item.Morph = 3679;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
                             case 9054:
                                 item.Morph = 2368;
                                 item.Speed = 20;
@@ -2762,6 +2768,12 @@ namespace OpenNos.Import.Console
 
                             case 9094:
                                 item.Morph = 2942;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9115:
+                                item.Morph = 3679;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
