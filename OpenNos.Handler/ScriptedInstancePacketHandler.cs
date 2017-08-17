@@ -42,7 +42,7 @@ namespace OpenNos.Handler
                             return;
                         }
                     }
-                    Session.Character.LeaveArena();
+                    Session.Character.LeaveTalentArena();
                     break;
             }
         }

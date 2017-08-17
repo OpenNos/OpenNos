@@ -5138,7 +5138,7 @@ namespace OpenNos.GameObject
             return new[] { value1, value2 };
         }
 
-        public void LeaveArena()
+        public void LeaveTalentArena()
         {
             ArenaMember memb = ServerManager.Instance.ArenaMembers.FirstOrDefault(s => s.Session == Session);
             if(memb !=null)

@@ -195,7 +195,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
-                Session.Character.LeaveArena();
+                Session.Character.LeaveTalentArena();
                 Session.SendPacket("eff_ob -1 -1 0 4269");
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
                 Task.Factory.StartNew(async () =>
@@ -410,7 +410,7 @@ namespace OpenNos.GameObject
                     {
                         session.Character.CloseShop();
                     }
-                    session.Character.LeaveArena();
+                    session.Character.LeaveTalentArena();
                     session.CurrentMapInstance.RemoveMonstersTarget(session.Character.CharacterId);
                     session.CurrentMapInstance.UnregisterSession(session.Character.CharacterId);
                     LeaveMap(session.Character.CharacterId);
