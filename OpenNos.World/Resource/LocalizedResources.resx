@@ -1429,4 +1429,25 @@
   <data name="GIFT_SENT" xml:space="preserve">
     <value>Gift has been sent!</value>
   </data>
+  <data name="ARENA_NOT_OPEN" xml:space="preserve">
+    <value>Arena talent is open at 18:00 - 22:00</value>
+  </data>
+  <data name="ARENA_TEAM_FOUND" xml:space="preserve">
+    <value>Participants found</value>
+  </data>
+  <data name="ARENA_TICKET_LEFT" xml:space="preserve">
+    <value>remaining participation(s) {0}</value>
+  </data>
+  <data name="NO_TEAM_ARENA" xml:space="preserve">
+    <value>No participants found</value>
+  </data>
+  <data name="RETRY_SEARCH_ARENA_TEAM" xml:space="preserve">
+    <value>Retry to make the team.</value>
+  </data>
+  <data name="SEARCH_ARENA_TEAM" xml:space="preserve">
+    <value>Searching for a team</value>
+  </data>
+  <data name="SEARCH_RIVAL_ARENA_TEAM" xml:space="preserve">
+    <value>Searching opposing team</value>
+  </data>
 </root>

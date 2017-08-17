@@ -1516,4 +1516,25 @@ Veux-tu le porter ?</value>
   <data name="ASK_CHANGE_FACTION2" xml:space="preserve">
     <value>Veux-tu vraiment acquérir le pouvoir du démon ?</value>
   </data>
+  <data name="ARENA_NOT_OPEN" xml:space="preserve">
+    <value>L'arène des talents est ouverte de 18:00 à 22:00</value>
+  </data>
+  <data name="ARENA_TEAM_FOUND" xml:space="preserve">
+    <value>Participants trouvés</value>
+  </data>
+  <data name="ARENA_TICKET_LEFT" xml:space="preserve">
+    <value>Il te reste {0} inscription(s) possible.</value>
+  </data>
+  <data name="NO_TEAM_ARENA" xml:space="preserve">
+    <value>Aucun participant trouvé.</value>
+  </data>
+  <data name="RETRY_SEARCH_ARENA_TEAM" xml:space="preserve">
+    <value>Essaie à nouveau de former l'équipe.</value>
+  </data>
+  <data name="SEARCH_ARENA_TEAM" xml:space="preserve">
+    <value>Chercher une équipe inscrite</value>
+  </data>
+  <data name="SEARCH_RIVAL_ARENA_TEAM" xml:space="preserve">
+    <value>Chercher l'équipe adverse</value>
+  </data>
 </root>
