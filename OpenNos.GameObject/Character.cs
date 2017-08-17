@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
 
         public List<Buff> Buff { get; internal set; }
 
-        public bool CanFight => !IsSitting && ExchangeInfo == null;    
+        public bool CanFight => !IsSitting && ExchangeInfo == null;
 
         public List<CharacterRelationDTO> CharacterRelations
         {
@@ -392,7 +392,7 @@ namespace OpenNos.GameObject
 
         public int WareHouseSize { get; set; }
 
-        public int WaterResistance { get;  set; }
+        public int WaterResistance { get; set; }
         public byte TicketLeft { get; set; }
 
         #endregion
@@ -4888,7 +4888,7 @@ namespace OpenNos.GameObject
 
             return xp;
         }
- 
+
         private int HealthHPLoad()
         {
             if (IsSitting)
@@ -5136,6 +5136,29 @@ namespace OpenNos.GameObject
             }
 
             return new[] { value1, value2 };
+        }
+
+        public void LeaveArena()
+        {
+            ArenaMember memb = ServerManager.Instance.ArenaMembers.FirstOrDefault(s => s.Session == Session);
+            if(memb !=null)
+            {
+                if (memb.GroupId != null)
+                {
+                    ServerManager.Instance.ArenaMembers.Where(s => s.GroupId == memb.GroupId).ToList().ForEach(s =>
+                    {
+                        if (ServerManager.Instance.ArenaMembers.Where(g => g.GroupId == memb.GroupId).Count() == 2)
+                        {
+                            s.GroupId = null;
+                        }
+                        s.Time = 300;
+                        s.Session.SendPacket(s.Session.Character.GenerateBsInfo(1, 2, s.Time, 5));
+                        s.Session.SendPacket(s.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_ARENA_TEAM"), 10));
+                    });
+                }
+                ServerManager.Instance.ArenaMembers.Remove(memb);
+            }
+            Session.SendPacket(Session.Character.GenerateBsInfo(2, 2, 0, 0));
         }
 
         #endregion

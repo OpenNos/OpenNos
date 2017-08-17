@@ -21,6 +21,7 @@ namespace OpenNos.Domain
         LodInstance,
         TimeSpaceInstance,
         RaidInstance,
-        FamilyRaidInstance
+        FamilyRaidInstance,
+        TalentArenaMapInstance
     }
 }

@@ -195,7 +195,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
-
+                Session.Character.LeaveArena();
                 Session.SendPacket("eff_ob -1 -1 0 4269");
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
                 Task.Factory.StartNew(async () =>
@@ -410,7 +410,7 @@ namespace OpenNos.GameObject
                     {
                         session.Character.CloseShop();
                     }
-
+                    session.Character.LeaveArena();
                     session.CurrentMapInstance.RemoveMonstersTarget(session.Character.CharacterId);
                     session.CurrentMapInstance.UnregisterSession(session.Character.CharacterId);
                     LeaveMap(session.Character.CharacterId);
@@ -527,7 +527,7 @@ namespace OpenNos.GameObject
                     {
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
                     }
-
+                
                     session.Character.IsChangingMapInstance = false;
                     session.SendPacket(session.Character.GenerateMinimapPosition());
                     session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>

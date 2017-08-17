@@ -28,6 +28,24 @@ namespace OpenNos.Handler
 
         #region Methods
 
+        public void ButtonCancel(BscPacket packet)
+        {
+            switch (packet.Type)
+            {
+                case 2:
+                    ArenaMember arenamember = ServerManager.Instance.ArenaMembers.FirstOrDefault(s => s.Session == Session);
+                    if (arenamember?.GroupId != null)
+                    {
+                        if (packet.Option != 1)
+                        {
+                            Session.SendPacket($"qna #bsc^2^1 {Language.Instance.GetMessageFromKey("ARENA_PENALTY_NOTICE")}");
+                            return;
+                        }
+                    }
+                    Session.Character.LeaveArena();
+                    break;
+            }
+        }
         /// <summary>
         /// RSelPacket packet
         /// </summary>

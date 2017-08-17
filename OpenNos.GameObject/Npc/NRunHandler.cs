@@ -337,7 +337,6 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_ARENA_TEAM"), 10));
                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ARENA_TICKET_LEFT"), Session.Character.TicketLeft), 10));
                         ServerManager.Instance.ArenaMembers.Add(new ArenaMember()
                         {

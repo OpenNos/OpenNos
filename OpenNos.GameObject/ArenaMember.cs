@@ -12,6 +12,6 @@ namespace OpenNos.GameObject
         public ClientSession Session { get; set; }
         public double? GroupId { get; set; }
         public EventType ArenaType { get; set; }
-        public int Time { get; internal set; }
+        public int Time { get;  set; }
     }
 }
