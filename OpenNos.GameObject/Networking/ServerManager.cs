@@ -167,7 +167,7 @@ namespace OpenNos.GameObject
         public List<ScriptedInstance> Raids { get; set; }
 
         public List<Group> GroupList { get; set; } = new List<Group>();
-        public List<ArenaMember> ArenaTeam { get; set; } = new List<ArenaMember>();
+        public List<ArenaMember> ArenaMembers { get; set; } = new List<ArenaMember>();
 
         #endregion
 
