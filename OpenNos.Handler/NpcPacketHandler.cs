@@ -677,7 +677,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                if (Session.Character.MinilandObjects.Any(s => s.ItemInstanceId == inv.Id))
+                if (Session.Character.MapInstance.MapDesignObjects.Any(s => s.ItemInstanceId == inv.Id))
                 {
                     return;
                 }

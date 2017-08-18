@@ -50,7 +50,6 @@ namespace OpenNos.GameObject
             TradeRequests = new List<long>();
             FriendRequestCharacters = new List<long>();
             StaticBonusList = new List<StaticBonusDTO>();
-            MinilandObjects = new List<MinilandObject>();
             Mates = new List<Mate>();
             EquipmentBCards = new List<BCard>();
         }
@@ -243,8 +242,6 @@ namespace OpenNos.GameObject
         public int MinHit { get; set; }
 
         public MapInstance Miniland { get; private set; }
-
-        public List<MinilandObject> MinilandObjects { get; set; }
 
         public int Morph { get; set; }
 
@@ -2182,32 +2179,20 @@ namespace OpenNos.GameObject
                 Miniland = ServerManager.Instance.GenerateMapInstance(20001, MapInstanceType.NormalInstance, new InstanceBag());
                 foreach (MinilandObjectDTO obj in DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId))
                 {
-                    MinilandObject mapobj = (MinilandObject)obj;
+                    MapDesignObject mapobj = (MapDesignObject)obj;
                     if (mapobj.ItemInstanceId != null)
                     {
                         ItemInstance item = Inventory.LoadByItemInstance<ItemInstance>((Guid)mapobj.ItemInstanceId);
                         if (item != null)
                         {
                             mapobj.ItemInstance = item;
-                            MinilandObjects.Add(mapobj);
+                            Miniland.MapDesignObjects.Add(mapobj);
                         }
                     }
                 }
             }
         }
-
-        public string GenerateMinilandObjectForFriends()
-        {
-            string mlobjstring = "mltobj";
-            int i = 0;
-            foreach (MinilandObject mp in MinilandObjects)
-            {
-                mlobjstring += $" {mp.ItemInstance.ItemVNum}.{i}.{mp.MapX}.{mp.MapY}";
-                i++;
-            }
-            return mlobjstring;
-        }
-
+        
         public string GenerateMinilandPoint()
         {
             return $"mlpt {MinilandPoint} 100";
@@ -2235,7 +2220,7 @@ namespace OpenNos.GameObject
             return $"mlinfobr 3800 {Name} {GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day)} {GeneralLogs.Count(s => s.LogData == "Miniland")} 25 {MinilandMessage.Replace(' ', '^')}";
         }
 
-        public string GenerateMloMg(MinilandObject mlobj, MinigamePacket packet)
+        public string GenerateMloMg(MapDesignObject mlobj, MinigamePacket packet)
         {
             return $"mlo_mg {packet.MinigameVNum} {MinilandPoint} 0 0 {mlobj.ItemInstance.DurabilityPoint} {mlobj.ItemInstance.Item.MinilandObjectPoint}";
         }
@@ -3646,11 +3631,6 @@ namespace OpenNos.GameObject
             return new List<string>();
         }
 
-        public IEnumerable<string> GetMinilandEffects()
-        {
-            return MinilandObjects.Select(mp => mp.GenerateMinilandEffect(false)).ToList();
-        }
-
         public string GetMinilandObjectList()
         {
             string mlobjstring = "mlobjlst";
@@ -3660,7 +3640,7 @@ namespace OpenNos.GameObject
                 {
                     WareHouseSize = item.Item.MinilandObjectPoint;
                 }
-                MinilandObject mp = MinilandObjects.FirstOrDefault(s => s.ItemInstanceId == item.Id);
+                MapDesignObject mp = Session.Character.MapInstance.MapDesignObjects.FirstOrDefault(s => s.ItemInstanceId == item.Id);
                 bool used = mp != null;
                 mlobjstring += $" {item.Slot}.{(used ? 1 : 0)}.{(used ? mp.MapX : 0)}.{(used ? mp.MapY : 0)}.{(item.Item.Width != 0 ? item.Item.Width : 1) }.{(item.Item.Height != 0 ? item.Item.Height : 1) }.{(used ? mp.ItemInstance.DurabilityPoint : 0)}.100.0.1";
             }
@@ -4186,7 +4166,7 @@ namespace OpenNos.GameObject
                         }
 
                         IEnumerable<MinilandObjectDTO> currentlySavedMinilandObjectEntries = DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId).ToList();
-                        foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(MinilandObjects))
+                        foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Miniland.MapDesignObjects))
                         {
                             DAOFactory.MinilandObjectDAO.DeleteById(mobjToDelete.MinilandObjectId);
                         }
@@ -4253,7 +4233,7 @@ namespace OpenNos.GameObject
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
                 }
 
-                IEnumerable<MinilandObjectDTO> minilandobjectEntriesToInsertOrUpdate = MinilandObjects.ToList();
+                IEnumerable<MinilandObjectDTO> minilandobjectEntriesToInsertOrUpdate = Miniland.MapDesignObjects.ToList();
 
                 foreach (MinilandObjectDTO mobjEntry in minilandobjectEntriesToInsertOrUpdate)
                 {
@@ -5152,7 +5132,7 @@ namespace OpenNos.GameObject
                             s.GroupId = null;
                         }
                         s.Time = 300;
-                        s.Session.SendPacket(s.Session.Character.GenerateBsInfo(1, 2, s.Time, 5));
+                        s.Session.SendPacket(s.Session.Character.GenerateBsInfo(1, 2, s.Time, 8));
                         s.Session.SendPacket(s.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_ARENA_TEAM"), 10));
                     });
                 }

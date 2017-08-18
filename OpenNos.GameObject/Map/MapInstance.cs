@@ -95,6 +95,8 @@ namespace OpenNos.GameObject
 
         public int DropRate { get; set; }
 
+        public List<MapDesignObject> MapDesignObjects = new List<MapDesignObject>();
+
         public InstanceBag InstanceBag { get; set; }
 
         public bool IsDancing { get; set; }
@@ -357,6 +359,23 @@ namespace OpenNos.GameObject
         {
             Broadcast("mapclear");
             GetMapItems().ForEach(s => Broadcast(s));
+        }
+
+        public string GenerateMapDesignObjects()
+        {
+            string mlobjstring = "mltobj";
+            int i = 0;
+            foreach (MapDesignObject mp in MapDesignObjects)
+            {
+                mlobjstring += $" {mp.ItemInstance.ItemVNum}.{i}.{mp.MapX}.{mp.MapY}";
+                i++;
+            }
+            return mlobjstring;
+        }
+
+        public IEnumerable<string> GetMapDesignObjectEffects()
+        {
+            return MapDesignObjects.Select(mp => mp.GenerateEffect(false)).ToList();
         }
 
         public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)

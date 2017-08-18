@@ -74,7 +74,7 @@ namespace OpenNos.Handler
         public void MinigamePlay(MinigamePacket packet)
         {
             ClientSession client = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Miniland == Session.Character.MapInstance);
-            MinilandObject mlobj = client?.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstance.ItemVNum == packet.MinigameVNum);
+            MapDesignObject mlobj = Session.CurrentMapInstance?.MapDesignObjects.FirstOrDefault(s => s.ItemInstance.ItemVNum == packet.MinigameVNum);
             if (mlobj != null)
             {
                 bool full = false;
@@ -283,11 +283,11 @@ namespace OpenNos.Handler
             ItemInstance minilandobject = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Slot, InventoryType.Miniland);
             if (minilandobject != null)
             {
-                if (Session.Character.MinilandObjects.All(s => s.ItemInstanceId != minilandobject.Id))
+                if (Session.Character.MapInstance.MapDesignObjects.All(s => s.ItemInstanceId != minilandobject.Id))
                 {
                     if (Session.Character.MinilandState == MinilandState.LOCK)
                     {
-                        MinilandObject minilandobj = new MinilandObject
+                        MapDesignObject minilandobj = new MapDesignObject
                         {
                             CharacterId = Session.Character.CharacterId,
                             ItemInstance = minilandobject,
@@ -321,7 +321,7 @@ namespace OpenNos.Handler
                                     break;
                             }
 
-                            MinilandObject min = Session.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstance.Item.ItemType == ItemType.House && s.ItemInstance.Item.ItemSubType == minilandobject.Item.ItemSubType);
+                            MapDesignObject min = Session.Character.MapInstance.MapDesignObjects.FirstOrDefault(s => s.ItemInstance.Item.ItemType == ItemType.House && s.ItemInstance.Item.ItemSubType == minilandobject.Item.ItemSubType);
                             if (min != null)
                             {
                                 MinilandRemoveObject(new RmvobjPacket { Slot = min.ItemInstance.Slot });
@@ -332,10 +332,10 @@ namespace OpenNos.Handler
                         {
                             Session.Character.WareHouseSize = minilandobject.Item.MinilandObjectPoint;
                         }
-                        Session.Character.MinilandObjects.Add(minilandobj);
-                        Session.SendPacket(minilandobj.GenerateMinilandEffect(false));
+                        Session.Character.MapInstance.MapDesignObjects.Add(minilandobj);
+                        Session.SendPacket(minilandobj.GenerateEffect(false));
                         Session.SendPacket(Session.Character.GenerateMinilandPoint());
-                        Session.SendPacket(minilandobj.GenerateMinilandObject(false));
+                        Session.SendPacket(minilandobj.GenerateMapDesignObject(false));
                     }
                     else
                     {
@@ -401,17 +401,17 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.MinilandState == MinilandState.LOCK)
                 {
-                    MinilandObject minilandObject = Session.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
+                    MapDesignObject minilandObject = Session.Character.MapInstance.MapDesignObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
                     if (minilandObject != null)
                     {
                         if (minilandobject.Item.IsMinilandObject)
                         {
                             Session.Character.WareHouseSize = 0;
                         }
-                        Session.Character.MinilandObjects.Remove(minilandObject);
-                        Session.SendPacket(minilandObject.GenerateMinilandEffect(true));
+                        Session.Character.MapInstance.MapDesignObjects.Remove(minilandObject);
+                        Session.SendPacket(minilandObject.GenerateEffect(true));
                         Session.SendPacket(Session.Character.GenerateMinilandPoint());
-                        Session.SendPacket(minilandObject.GenerateMinilandObject(true));
+                        Session.SendPacket(minilandObject.GenerateMapDesignObject(true));
                     }
                 }
                 else
@@ -431,7 +431,7 @@ namespace OpenNos.Handler
             ItemInstance minilandObjectItem = client?.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Slot, InventoryType.Miniland);
             if (minilandObjectItem != null)
             {
-                MinilandObject minilandObject = client.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstanceId == minilandObjectItem.Id);
+                MapDesignObject minilandObject = client.Character.MapInstance.MapDesignObjects.FirstOrDefault(s => s.ItemInstanceId == minilandObjectItem.Id);
                 if (minilandObject != null)
                 {
                     if (!minilandObjectItem.Item.IsMinilandObject)
