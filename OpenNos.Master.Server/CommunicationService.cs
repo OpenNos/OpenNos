@@ -89,7 +89,7 @@ namespace OpenNos.Master.Server
             //Multiple WorldGroups not yet supported by DAOFactory
             long accountId = DAOFactory.CharacterDAO.LoadById(characterId)?.AccountId ?? 0;
 
-            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId) && a.ConnectedWorld.Id.Equals(worldId));
+            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId) && (a.ConnectedWorld?.Id.Equals(worldId) == true));
             if (account != null)
             {
                 account.CharacterId = characterId;
