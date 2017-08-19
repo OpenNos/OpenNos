@@ -19,6 +19,7 @@ using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ClientPackets;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -614,7 +615,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
                                     Session.SendPacket(Session.Character.GenerateSpPoint());
                                 }
-                                Session.CurrentMapInstance.DroppedList.Remove(getPacket.TransportId);
+                                Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId,out MapItem value);
                                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                             }
                             else
@@ -625,7 +626,7 @@ namespace OpenNos.Handler
                                     ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
                                     if (inv != null)
                                     {
-                                        Session.CurrentMapInstance.DroppedList.Remove(getPacket.TransportId);
+                                        Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                                         if (getPacket.PickerType == 2)
                                         {
@@ -663,7 +664,7 @@ namespace OpenNos.Handler
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                             }
                             Session.SendPacket(Session.Character.GenerateGold());
-                            Session.CurrentMapInstance.DroppedList.Remove(getPacket.TransportId);
+                            Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                         }
                     }
@@ -764,7 +765,7 @@ namespace OpenNos.Handler
                 {
                     if (putPacket.Amount > 0 && putPacket.Amount < 100)
                     {
-                        if (Session.Character.MapInstance.DroppedList.GetAllItems().Count < 200 && Session.HasCurrentMapInstance)
+                        if (Session.Character.MapInstance.DroppedList.Count < 200 && Session.HasCurrentMapInstance)
                         {
                             MapItem droppedItem = Session.CurrentMapInstance.PutItem(putPacket.InventoryType, putPacket.Slot, putPacket.Amount, ref invitem, Session);
                             if (droppedItem == null)
@@ -1437,7 +1438,7 @@ namespace OpenNos.Handler
             }
             else if (!Session.Character.IsSitting)
             {
-                if (Session.Character.Skills.GetAllItems().Any(s => !s.CanBeUsed()))
+                if (Session.Character.Skills.Any(s => !s.Value.CanBeUsed()))
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
                     return;
@@ -1757,7 +1758,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateStatChar());
-                Session.Character.SkillsSp = new ThreadSafeSortedList<int, CharacterSkill>();
+                Session.Character.SkillsSp = new ConcurrentDictionary<int, CharacterSkill>();
                 Parallel.ForEach(ServerManager.Instance.GetAllSkill(), skill =>
                 {
                     if (skill.Class == Session.Character.Morph + 31 && sp.SpLevel >= skill.LevelMinimum)
@@ -1864,7 +1865,7 @@ namespace OpenNos.Handler
                 Session.Character.SpCooldown = 30;
                 if (Session.Character?.SkillsSp != null)
                 {
-                    foreach (CharacterSkill ski in Session.Character.SkillsSp.GetAllItems().Where(s => !s.CanBeUsed()))
+                    foreach (CharacterSkill ski in Session.Character.SkillsSp.Where(s => !s.Value.CanBeUsed()).Select(s=>s.Value))
                     {
                         short time = ski.Skill.Cooldown;
                         double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;

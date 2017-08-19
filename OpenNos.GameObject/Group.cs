@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using OpenNos.GameObject.Helpers;
+using System.Collections.Concurrent;
 
 namespace OpenNos.GameObject
 {
@@ -39,7 +40,7 @@ namespace OpenNos.GameObject
 
         public Group(GroupType type)
         {
-            Characters = new ThreadSafeGenericList<ClientSession>();
+            Characters = new ConcurrentBag<ClientSession>();
             GroupId = ServerManager.Instance.GetNextGroupId();
             _order = 0;
             GroupType = type;
@@ -57,7 +58,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public ThreadSafeGenericList<ClientSession> Characters { get; }
+        public ConcurrentBag<ClientSession> Characters { get; }
 
         public long GroupId { get; set; }
 
@@ -121,7 +122,7 @@ namespace OpenNos.GameObject
         {
             string result = string.Empty;
             result = $"rdlst{((GroupType == GroupType.GiantTeam) ? "f" : "")} {Raid.LevelMinimum} {Raid.LevelMaximum} 0";
-            Characters.ForEach(session => result += $" {session.Character.Level}.{(session.Character.UseSp || session.Character.IsVehicled ? session.Character.Morph : -1)}.{(short)session.Character.Class}.{Raid?.FirstMap?.InstanceBag.DeadList.Count(s=>s==session.Character.CharacterId) ?? 0}.{session.Character.Name}.{(short)session.Character.Gender}.{session.Character.CharacterId}.{session.Character.HeroLevel}");
+            Characters.ToList().ForEach(session => result += $" {session.Character.Level}.{(session.Character.UseSp || session.Character.IsVehicled ? session.Character.Morph : -1)}.{(short)session.Character.Class}.{Raid?.FirstMap?.InstanceBag.DeadList.Count(s=>s==session.Character.CharacterId) ?? 0}.{session.Character.Name}.{(short)session.Character.Gender}.{session.Character.CharacterId}.{session.Character.HeroLevel}");
 
             return result;
         }
@@ -146,7 +147,7 @@ namespace OpenNos.GameObject
             session.Character.Group = null;
             if (IsLeader(session) && GroupType != GroupType.Group && Characters.Count > 1)
             {
-                Characters.ForEach(s=> s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TEAM_LEADER_CHANGE"), Characters.ElementAt(0).Character?.Name), 0)));
+                Characters.ToList().ForEach(s=> s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TEAM_LEADER_CHANGE"), Characters.ElementAt(0).Character?.Name), 0)));
             }
             Characters.RemoveAll(s => s?.Character.CharacterId == session.Character.CharacterId);
         }

@@ -22,6 +22,7 @@ using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 using OpenNos.PathFinder;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -344,9 +345,9 @@ namespace OpenNos.GameObject
 
         public int Size { get; set; } = 10;
 
-        public ThreadSafeSortedList<int, CharacterSkill> Skills { get; private set; }
+        public ConcurrentDictionary<int, CharacterSkill> Skills { get; private set; }
 
-        public ThreadSafeSortedList<int, CharacterSkill> SkillsSp { get; set; }
+        public ConcurrentDictionary<int, CharacterSkill> SkillsSp { get; set; }
 
         public int SnackAmount { get; set; }
 
@@ -462,11 +463,11 @@ namespace OpenNos.GameObject
             Session.CurrentMapInstance?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
             Session.CurrentMapInstance?.Broadcast(GenerateEff(6), PositionX, PositionY);
             Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
-            foreach (CharacterSkill skill in Skills.GetAllItems())
+            foreach (CharacterSkill skill in Skills.Select(s=>s.Value))
             {
                 if (skill.SkillVNum >= 200)
                 {
-                    Skills.Remove(skill.SkillVNum);
+                    Skills.TryRemove(skill.SkillVNum, out CharacterSkill value);
                 }
             }
 
@@ -614,7 +615,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Group != null)
                             {
-                                Session.Character.Group.Characters.ForEach(s => ServerManager.Instance.GetSessionByCharacterId(s.Character.CharacterId)?.SendPacket(Session.Character.GenerateStat()));
+                                Session.Character.Group.Characters.ToList().ForEach(s => ServerManager.Instance.GetSessionByCharacterId(s.Character.CharacterId)?.SendPacket(Session.Character.GenerateStat()));
                             }
                             else
                             {
@@ -687,7 +688,7 @@ namespace OpenNos.GameObject
                                     SpCooldown = 30;
                                     if (SkillsSp != null)
                                     {
-                                        foreach (CharacterSkill ski in SkillsSp.GetAllItems().Where(s => !s.CanBeUsed()))
+                                        foreach (CharacterSkill ski in SkillsSp.Where(s => !s.Value.CanBeUsed()).Select(s=>s.Value))
                                         {
                                             short time = ski.Skill.Cooldown;
                                             double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
@@ -848,7 +849,7 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            foreach (ItemInstance item in Inventory.GetAllItems())
+            foreach (ItemInstance item in Inventory.Select(s => s.Value))
             {
                 if (item.IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                 {
@@ -1866,7 +1867,7 @@ namespace OpenNos.GameObject
         public string GenerateFStashAll()
         {
             string stash = $"f_stash_all {Family.WarehouseSize}";
-            foreach (ItemInstance item in Family.Warehouse.GetAllItems())
+            foreach (ItemInstance item in Family.Warehouse.Select(s => s.Value))
             {
                 stash += $" {item.GenerateStashPacket()}";
             }
@@ -2016,12 +2017,12 @@ namespace OpenNos.GameObject
                                                     dropOwner = group.GetNextOrderedCharacterId(this);
                                                     if (dropOwner.HasValue)
                                                     {
-                                                        group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop.Amount), 10)));
+                                                        group.Characters.ToList().ForEach(s => s.SendPacket(s.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop.Amount), 10)));
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.Instance.GetItem(drop.ItemVNum).Name, drop.Amount), 10)));
+                                                    group.Characters.ToList().ForEach(s => s.SendPacket(s.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.Instance.GetItem(drop.ItemVNum).Name, drop.Amount), 10)));
                                                 }
                                             }
 
@@ -2091,12 +2092,12 @@ namespace OpenNos.GameObject
 
                                             if (dropOwner.HasValue)
                                             {
-                                                group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop2.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop2.Amount), 10)));
+                                                group.Characters.ToList().ForEach(s => s.SendPacket(s.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop2.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop2.Amount), 10)));
                                             }
                                         }
                                         else
                                         {
-                                            group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.Instance.GetItem(drop2.ItemVNum).Name, drop2.Amount), 10)));
+                                            group.Characters.ToList().ForEach(s => s.SendPacket(s.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.Instance.GetItem(drop2.ItemVNum).Name, drop2.Amount), 10)));
                                         }
                                     }
 
@@ -2340,7 +2341,7 @@ namespace OpenNos.GameObject
         public string GeneratePStashAll()
         {
             string stash = $"pstash_all {(StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)}";
-            return Inventory.GetAllItems().Where(s => s.Type == InventoryType.PetWarehouse).Aggregate(stash, (current, item) => current + $" {item.GenerateStashPacket()}");
+            return Inventory.Select(s => s.Value).Where(s => s.Type == InventoryType.PetWarehouse).Aggregate(stash, (current, item) => current + $" {item.GenerateStashPacket()}");
         }
 
         public int GeneratePVPDamage(Character target, Skill skill, ref int hitmode)
@@ -3168,7 +3169,7 @@ namespace OpenNos.GameObject
 
         public string GenerateSki()
         {
-            List<CharacterSkill> characterSkills = UseSp ? SkillsSp.GetAllItems() : Skills.GetAllItems();
+            IEnumerable<CharacterSkill> characterSkills = UseSp ? SkillsSp.Select(s=>s.Value) : Skills.Select(s => s.Value);
             string skibase = string.Empty;
             if (!UseSp)
             {
@@ -3204,7 +3205,7 @@ namespace OpenNos.GameObject
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
             if (Inventory != null)
             {
-                foreach (ItemInstance inv in Inventory.GetAllItems())
+                foreach (ItemInstance inv in Inventory.Select(s=>s.Value))
                 {
                     EquipmentBCards.AddRange(inv.Item.BCards);
                     switch (inv.Type)
@@ -3268,7 +3269,7 @@ namespace OpenNos.GameObject
         public string GenerateStashAll()
         {
             string stash = $"stash_all {WareHouseSize}";
-            foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.Warehouse))
+            foreach (ItemInstance item in Inventory.Where(s => s.Value.Type == InventoryType.Warehouse).Select(s => s.Value))
             {
                 stash += $" {item.GenerateStashPacket()}";
             }
@@ -3548,7 +3549,7 @@ namespace OpenNos.GameObject
         {
             int cpmax = (Class > 0 ? 40 : 0) + JobLevel * 2;
             int cpused = 0;
-            foreach (CharacterSkill ski in Skills.GetAllItems())
+            foreach (CharacterSkill ski in Skills.Select(s=>s.Value))
             {
                 cpused += ski.Skill.CPCost;
             }
@@ -3634,7 +3635,7 @@ namespace OpenNos.GameObject
         public string GetMinilandObjectList()
         {
             string mlobjstring = "mlobjlst";
-            foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.Miniland).OrderBy(s => s.Slot))
+            foreach (ItemInstance item in Inventory.Where(s => s.Value.Type == InventoryType.Miniland).OrderBy(s => s.Value.Slot).Select(s=>s.Value))
             {
                 if (item.Item.IsMinilandObject)
                 {
@@ -3880,7 +3881,7 @@ namespace OpenNos.GameObject
                     Skill skinfo = ServerManager.Instance.GetSkill((short)i);
                     if (skinfo.Class == 0 && JobLevel >= skinfo.LevelMinimum)
                     {
-                        if (Skills.GetAllItems().All(s => s.SkillVNum != i))
+                        if (Skills.All(s => s.Value.SkillVNum != i))
                         {
                             NewSkill = 1;
                             Skills[i] = new CharacterSkill { SkillVNum = (short)i, CharacterId = CharacterId };
@@ -3904,7 +3905,7 @@ namespace OpenNos.GameObject
                 specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
             }
             byte SkillSpCount = (byte)SkillsSp.Count;
-            SkillsSp = new ThreadSafeSortedList<int, CharacterSkill>();
+            SkillsSp = new ConcurrentDictionary<int, CharacterSkill>();
             foreach (Skill ski in ServerManager.Instance.GetAllSkill())
             {
                 if (specialist != null && ski.Class == Morph + 31 && specialist.SpLevel >= ski.LevelMinimum)
@@ -3956,7 +3957,7 @@ namespace OpenNos.GameObject
 
         public void LoadSkills()
         {
-            Skills = new ThreadSafeSortedList<int, CharacterSkill>();
+            Skills = new ConcurrentDictionary<int, CharacterSkill>();
             IEnumerable<CharacterSkillDTO> characterskillDTO = DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId).ToList();
             foreach (CharacterSkillDTO characterskill in characterskillDTO.OrderBy(s => s.SkillVNum))
             {
@@ -4157,7 +4158,7 @@ namespace OpenNos.GameObject
                     lock (Inventory)
                     {
                         // load and concat inventory with equipment
-                        List<ItemInstance> inventories = Inventory.GetAllItems();
+                        IEnumerable<ItemInstance> inventories = Inventory.Select(s=>s.Value);
                         IEnumerable<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
                         IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
                         foreach (CharacterDTO characteraccount in characters.Where(s => s.CharacterId != CharacterId))
@@ -4197,12 +4198,12 @@ namespace OpenNos.GameObject
                 {
                     IEnumerable<Guid> currentlySavedCharacterSkills = DAOFactory.CharacterSkillDAO.LoadKeysByCharacterId(CharacterId).ToList();
 
-                    foreach (Guid characterSkillToDeleteId in currentlySavedCharacterSkills.Except(Skills.GetAllItems().Select(s => s.Id)))
+                    foreach (Guid characterSkillToDeleteId in currentlySavedCharacterSkills.Except(Skills.Select(s => s.Value.Id)))
                     {
                         DAOFactory.CharacterSkillDAO.Delete(characterSkillToDeleteId);
                     }
 
-                    foreach (CharacterSkill characterSkill in Skills.GetAllItems())
+                    foreach (CharacterSkill characterSkill in Skills.Select(s=>s.Value))
                     {
                         DAOFactory.CharacterSkillDAO.InsertOrUpdate(characterSkill);
                     }
@@ -4729,7 +4730,7 @@ namespace OpenNos.GameObject
                             specialist.XP = 0;
                         }
                         LearnSPSkill();
-                        Skills.GetAllItems().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
+                        Skills.Select(s=>s.Value).ToList().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
                         Session.SendPacket(GenerateSki());
                         Session.SendPackets(GenerateQuicklist());
 
@@ -4919,7 +4920,7 @@ namespace OpenNos.GameObject
             {
                 case 0:
                     result = $"raid 0";
-                    Group?.Characters?.ForEach(s => { result += $" {s.Character?.CharacterId}"; });
+                    Group?.Characters?.ToList().ForEach(s => { result += $" {s.Character?.CharacterId}"; });
                     break;
                 case 2:
                     result = $"raid 2 {(Exit ? "-1" : $"{CharacterId}")}";
@@ -4929,7 +4930,7 @@ namespace OpenNos.GameObject
                     break;
                 case 3:
                     result = $"raid 3";
-                    Group?.Characters?.ForEach(s => { result += $" {s.Character?.CharacterId}.{Math.Ceiling(s.Character.Hp / s.Character.HPLoad() * 100)}.{Math.Ceiling(s.Character.Mp / s.Character.MPLoad() * 100)}"; });
+                    Group?.Characters?.ToList().ForEach(s => { result += $" {s.Character?.CharacterId}.{Math.Ceiling(s.Character.Hp / s.Character.HPLoad() * 100)}.{Math.Ceiling(s.Character.Mp / s.Character.MPLoad() * 100)}"; });
                     break;
                 case 4:
                     result = $"raid 4";

@@ -35,9 +35,9 @@ namespace OpenNos.GameObject
 
         private readonly List<int> _mapNpcIds;
 
-        private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
+        private readonly ConcurrentDictionary<long, MapMonster> _monsters;
 
-        private readonly ThreadSafeSortedList<long, MapNpc> _npcs;
+        private readonly ConcurrentDictionary<long, MapNpc> _npcs;
 
         private readonly List<Portal> _portals;
 
@@ -73,11 +73,11 @@ namespace OpenNos.GameObject
             OnAreaEntryEvents = new List<ZoneEvent>();
             WaveEvents = new List<EventWave>();
             OnMapClean = new List<EventContainer>();
-            _monsters = new ThreadSafeSortedList<long, MapMonster>();
-            _npcs = new ThreadSafeSortedList<long, MapNpc>();
+            _monsters = new ConcurrentDictionary<long, MapMonster>();
+            _npcs = new ConcurrentDictionary<long, MapNpc>();
             _mapMonsterIds = new List<int>();
             _mapNpcIds = new List<int>();
-            DroppedList = new ThreadSafeSortedList<long, MapItem>();
+            DroppedList = new ConcurrentDictionary<long, MapItem>();
             _portals = new List<Portal>();
             UserShops = new Dictionary<long, MapShop>();
             StartLife();
@@ -91,7 +91,7 @@ namespace OpenNos.GameObject
 
         public Clock Clock { get; set; }
 
-        public ThreadSafeSortedList<long, MapItem> DroppedList { get; }
+        public ConcurrentDictionary<long, MapItem> DroppedList { get; }
 
         public int DropRate { get; set; }
 
@@ -141,9 +141,9 @@ namespace OpenNos.GameObject
 
         public MapInstanceType MapInstanceType { get; set; }
 
-        public List<MapMonster> Monsters => _monsters.GetAllItems();
+        public List<MapMonster> Monsters => _monsters.Select(s=>s.Value).ToList();
 
-        public List<MapNpc> Npcs => _npcs.GetAllItems();
+        public List<MapNpc> Npcs => _npcs.Select(s=>s.Value).ToList();
 
         public List<Tuple<EventContainer, List<long>>> OnCharacterDiscoveringMapEvents { get; set; }
 
@@ -263,7 +263,7 @@ namespace OpenNos.GameObject
 
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
-            return _monsters.GetAllItems().Where(s => s.IsAlive && s.IsInRange(mapX, mapY, distance)).ToList();
+            return _monsters.Select(s=>s.Value).Where(s => s.IsAlive && s.IsInRange(mapX, mapY, distance)).ToList();
         }
 
         public List<string> GetMapItems()
@@ -287,7 +287,7 @@ namespace OpenNos.GameObject
             });
             Npcs.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateNPCShopOnMap());
-            Parallel.ForEach(DroppedList.GetAllItems(), session => packets.Add(session.GenerateIn()));
+            Parallel.ForEach(DroppedList.Select(s=>s.Value), session => packets.Add(session.GenerateIn()));
 
             Buttons.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateUserShops());
@@ -345,14 +345,14 @@ namespace OpenNos.GameObject
         public void LoadPortals()
         {
             OrderablePartitioner<PortalDTO> partitioner = Partitioner.Create(DAOFactory.PortalDAO.LoadByMap(Map.MapId), EnumerablePartitionerOptions.None);
-            ThreadSafeSortedList<int, Portal> _portalList = new ThreadSafeSortedList<int, Portal>();
+            ConcurrentDictionary<int, Portal> _portalList = new ConcurrentDictionary<int, Portal>();
             Parallel.ForEach(partitioner, portal =>
             {
                 Portal portal2 = portal as Portal;
                 portal2.SourceMapInstanceId = MapInstanceId;
                 _portalList[portal2.PortalId] = portal2;
             });
-            _portals.AddRange(_portalList.GetAllItems());
+            _portals.AddRange(_portalList.Select(s=>s.Value));
         }
 
         public void MapClear()
@@ -428,12 +428,12 @@ namespace OpenNos.GameObject
             // take the data from list to remove it without having enumeration problems (ToList)
             try
             {
-                List<MapItem> dropsToRemove = DroppedList.GetAllItems().Where(dl => dl.CreatedDate.AddMinutes(3) < DateTime.Now).ToList();
+                List<MapItem> dropsToRemove = DroppedList.Select(s => s.Value).Where(dl => dl.CreatedDate.AddMinutes(3) < DateTime.Now).ToList();
 
                 Parallel.ForEach(dropsToRemove, drop =>
                 {
                     Broadcast(drop.GenerateOut(drop.TransportId));
-                    DroppedList.Remove(drop.TransportId);
+                    DroppedList.TryRemove(drop.TransportId, out MapItem value);
                 });
             }
             catch (Exception e)
@@ -444,7 +444,7 @@ namespace OpenNos.GameObject
 
         public void RemoveMonster(MapMonster monsterToRemove)
         {
-            _monsters.Remove(monsterToRemove.MapMonsterId);
+            _monsters.TryRemove(monsterToRemove.MapMonsterId,out MapMonster value);
         }
 
         public void SpawnButton(MapButton parameter)
@@ -455,7 +455,7 @@ namespace OpenNos.GameObject
 
         public void DespawnMonster(int monsterVnum)
         {
-            Parallel.ForEach(_monsters.GetAllItems().Where(s => s.MonsterVNum == monsterVnum), monster =>
+            Parallel.ForEach(_monsters.Select(s => s.Value).Where(s => s.MonsterVNum == monsterVnum), monster =>
             {
                 monster.IsAlive = false;
                 monster.LastMove = DateTime.Now;
@@ -593,7 +593,7 @@ namespace OpenNos.GameObject
             return ids;
         }
 
-        protected override void Dispose(bool disposing)
+        protected void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -601,8 +601,6 @@ namespace OpenNos.GameObject
                 {
                     ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
                 }
-                _monsters.Dispose();
-                _npcs.Dispose();
             }
         }
 

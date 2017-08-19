@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace OpenNos.GameObject
         /// <summary>
         /// List of all connected clients.
         /// </summary>
-        private readonly ThreadSafeSortedList<long, ClientSession> _sessions;
+        private readonly ConcurrentDictionary<long, ClientSession> _sessions;
 
         private bool _disposed;
 
@@ -40,7 +41,7 @@ namespace OpenNos.GameObject
         protected BroadcastableBase()
         {
             LastUnregister = DateTime.Now.AddMinutes(-1);
-            _sessions = new ThreadSafeSortedList<long, ClientSession>();
+            _sessions = new ConcurrentDictionary<long, ClientSession>();
         }
 
         #endregion
@@ -51,7 +52,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return _sessions.GetAllItems().Where(s => s.HasSelectedCharacter && !s.IsDisposing && s.IsConnected);
+                return _sessions.Select(s => s.Value).Where(s => s.HasSelectedCharacter && !s.IsDisposing && s.IsConnected);
             }
         }
 
@@ -114,7 +115,6 @@ namespace OpenNos.GameObject
         {
             if (!_disposed)
             {
-                Dispose(true);
                 GC.SuppressFinalize(this);
                 _disposed = true;
             }
@@ -143,27 +143,14 @@ namespace OpenNos.GameObject
 
         public void UnregisterSession(long characterId)
         {
-            // Get client from client list, if not in list do not continue
-            ClientSession session = _sessions[characterId];
-            if (session == null)
-            {
-                return;
-            }
-
             // Remove client from online clients list
-            _sessions.Remove(characterId);
-            if (session.HasCurrentMapInstance && _sessions.Count == 0)
+            if (_sessions.TryRemove(characterId, out ClientSession session))
             {
-                session.CurrentMapInstance.IsSleeping = true;
-            }
-            LastUnregister = DateTime.Now;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _sessions.Dispose();
+                if (session.HasCurrentMapInstance && _sessions.Count == 0)
+                {
+                    session.CurrentMapInstance.IsSleeping = true;
+                }
+                LastUnregister = DateTime.Now;
             }
         }
 

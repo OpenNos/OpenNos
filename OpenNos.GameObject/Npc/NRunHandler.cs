@@ -53,7 +53,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (Session.Character.Inventory.GetAllItems().All(i => i.Type != InventoryType.Wear))
+                    if (Session.Character.Inventory.All(i => i.Value.Type != InventoryType.Wear))
                     {
                         Session.Character.Inventory.AddNewToInventory((short)(4 + packet.Type * 14), type: InventoryType.Wear);
                         Session.Character.Inventory.AddNewToInventory((short)(81 + packet.Type * 13), type: InventoryType.Wear);

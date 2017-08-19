@@ -15,6 +15,8 @@
 using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
+using System.Collections.Concurrent;
+using System.Linq;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Server
 {
@@ -39,7 +41,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// </summary>
         protected ScsServerBase()
         {
-            Clients = new ThreadSafeSortedList<long, IScsServerClient>();
+            Clients = new ConcurrentDictionary<long, IScsServerClient>();
             WireProtocolFactory = WireProtocolManager.GetDefaultWireProtocolFactory();
         }
 
@@ -64,7 +66,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// <summary>
         /// A collection of clients that are connected to the server.
         /// </summary>
-        public ThreadSafeSortedList<long, IScsServerClient> Clients { get; private set; }
+        public ConcurrentDictionary<long, IScsServerClient> Clients { get; private set; }
 
         /// <summary>
         /// Gets/sets wire protocol that is used while reading and writing messages.
@@ -95,7 +97,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
                 _connectionListener.Stop();
             }
 
-            foreach (IScsServerClient client in Clients.GetAllItems())
+            foreach (IScsServerClient client in Clients.Select(s=>s.Value))
             {
                 client.Disconnect();
             }
@@ -134,7 +136,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         private void Client_Disconnected(object sender, EventArgs e)
         {
             IScsServerClient client = (IScsServerClient)sender;
-            Clients.Remove(client.ClientId);
+            Clients.TryRemove(client.ClientId,out IScsServerClient value);
             OnClientDisconnected(client);
         }
 

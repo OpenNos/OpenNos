@@ -145,11 +145,11 @@ namespace OpenNos.Handler
                 }
                 if (skillinfo.SkillVNum < 200)
                 {
-                    foreach (CharacterSkill skill in Session.Character.Skills.GetAllItems())
+                    foreach (CharacterSkill skill in Session.Character.Skills.Select(s => s.Value))
                     {
                         if (skillinfo.CastId == skill.Skill.CastId && skill.Skill.SkillVNum < 200)
                         {
-                            Session.Character.Skills.Remove(skill.SkillVNum);
+                            Session.Character.Skills.TryRemove(skill.SkillVNum,out CharacterSkill value);
                         }
                     }
                 }
@@ -163,10 +163,10 @@ namespace OpenNos.Handler
 
                     if (skillinfo.UpgradeSkill != 0)
                     {
-                        CharacterSkill oldupgrade = Session.Character.Skills.GetAllItems().FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
+                        CharacterSkill oldupgrade = Session.Character.Skills.Select(s => s.Value).FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
                         if (oldupgrade != null)
                         {
-                            Session.Character.Skills.Remove(oldupgrade.SkillVNum);
+                            Session.Character.Skills.TryRemove(oldupgrade.SkillVNum, out CharacterSkill value);
                         }
                     }
                 }
@@ -511,7 +511,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.JobLevel = changeJobLevelPacket.JobLevel;
                     Session.Character.JobLevelXp = 0;
-                    Session.Character.Skills.ClearAll();
+                    Session.Character.Skills.Clear();
                     Session.SendPacket(Session.Character.GenerateLev());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
@@ -647,7 +647,7 @@ namespace OpenNos.Handler
                         Session.Character.LearnSPSkill();
                         Session.SendPacket(Session.Character.GenerateSki());
                         Session.SendPackets(Session.Character.GenerateQuicklist());
-                        Session.Character.Skills.GetAllItems().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
+                        Session.Character.Skills.ToList().ForEach(s => s.Value.LastUse = DateTime.Now.AddDays(-1));
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), Session.Character.PositionX, Session.Character.PositionY);
@@ -769,7 +769,7 @@ namespace OpenNos.Handler
             Logger.Debug("ClearInventory Command", Session.Character.GenerateIdentity());
             if (clearInventoryPacket != null && clearInventoryPacket.InventoryType != InventoryType.Wear)
             {
-                Parallel.ForEach(Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType), inv =>
+                Parallel.ForEach(Session.Character.Inventory.Select(s => s.Value).Where(s => s.Type == clearInventoryPacket.InventoryType), inv =>
                 {
                     Session.Character.Inventory.DeleteById(inv.Id);
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(inv.Type, inv.Slot));

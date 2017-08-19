@@ -59,7 +59,7 @@ namespace OpenNos.Handler
             else if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
             {
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
-                Session.Character.Group?.Characters.ForEach(
+                Session.Character.Group?.Characters.ToList().ForEach(
                 session =>
                 {
                     session.SendPacket(session.Character.Group.GenerateRdlst());
@@ -190,7 +190,7 @@ namespace OpenNos.Handler
                     });
 
                     Session.Character.Group.Raid.FirstMap.InstanceBag.Lives = (short)Session.Character.Group.CharacterCount;
-                    Session.Character.Group.Characters.ForEach(
+                    Session.Character.Group.Characters.ToList().ForEach(
                     session =>
                     {
                         ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Group.Raid.FirstMap.MapInstanceId, session.Character.Group.Raid.StartX, session.Character.Group.Raid.StartY);

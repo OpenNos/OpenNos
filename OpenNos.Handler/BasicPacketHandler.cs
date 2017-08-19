@@ -389,7 +389,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateRaid(1, true));
                     Session.SendPacket(Session.Character.GenerateRaid(2, true));
 
-                    grp.Characters.ForEach(s =>
+                    grp.Characters.ToList().ForEach(s =>
                     {
                         s.SendPacket(grp.GenerateRdlst());
                         s.SendPacket(grp.GeneraterRaidmbf());
@@ -412,7 +412,7 @@ namespace OpenNos.Handler
                         chartokick.SendPacket(chartokick.Character.GenerateRaid(1, true));
                         chartokick.SendPacket(chartokick.Character.GenerateRaid(2, true));
                         grp.LeaveGroup(chartokick);
-                        grp.Characters.ForEach(s =>
+                        grp.Characters.ToList().ForEach(s =>
                         {
                             s.SendPacket(grp.GenerateRdlst());
                             s.SendPacket(s.Character.GenerateRaid(0, false));
@@ -430,7 +430,7 @@ namespace OpenNos.Handler
                         grp = Session.Character.Group;
 
                         ClientSession[] grpmembers = new ClientSession[40];
-                        grp.Characters.CopyTo(grpmembers);
+                        grp.Characters.ToList().CopyTo(grpmembers);
                         foreach (ClientSession targetSession in grpmembers)
                         {
                             if (targetSession != null)
@@ -442,7 +442,7 @@ namespace OpenNos.Handler
                             }
                         }
                         ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                        ServerManager.Instance.GroupsThreadSafe.Remove(grp.GroupId);
+                        ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId, out Group value);
                     }
 
                     break;
@@ -651,7 +651,7 @@ namespace OpenNos.Handler
 
                             currentGroup.JoinGroup(Session);
                             Session.SendPacket(Session.Character.GenerateRaid(1, false));
-                            currentGroup.Characters.ForEach(s =>
+                            currentGroup.Characters.ToList().ForEach(s =>
                             {
                                 s.SendPacket(currentGroup.GenerateRdlst());
                                 s.SendPacket(s.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("JOIN_TEAM"), Session.Character.Name), 10));

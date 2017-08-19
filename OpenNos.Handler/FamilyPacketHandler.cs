@@ -177,7 +177,7 @@ namespace OpenNos.Handler
                     SourceWorldId = ServerManager.Instance.WorldId,
                     Message = "fhis_stc",
                     Type = MessageType.Family
-                }); Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
+                }); Session.Character.Group.Characters.ToList().ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
             }
         }
 
@@ -497,7 +497,7 @@ namespace OpenNos.Handler
                     FamilyCharacterDTO chara = targetSession.Character.FamilyCharacter;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
 
-                    Session.Character.Family.Warehouse.GetAllItems().ForEach(s => { s.CharacterId = targetSession.Character.CharacterId; DAOFactory.IteminstanceDAO.InsertOrUpdate(s); });
+                    Session.Character.Family.Warehouse.ToList().ForEach(s => { s.Value.CharacterId = targetSession.Character.CharacterId; DAOFactory.IteminstanceDAO.InsertOrUpdate(s.Value); });
                     Session.Character.FamilyCharacter.Authority = FamilyAuthority.Assistant;
                     FamilyCharacterDTO chara2 = Session.Character.FamilyCharacter;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara2);

@@ -17,6 +17,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
 using OpenNos.Core.Networking.Communication.Scs.Server;
 using OpenNos.Core.Networking.Communication.ScsServices.Communication.Messages;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -39,14 +40,14 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// Key: Client's unique Id.
         /// Value: Reference to the client.
         /// </summary>
-        private readonly ThreadSafeSortedList<long, IScsServiceClient> _serviceClients;
+        private readonly ConcurrentDictionary<long, IScsServiceClient> _serviceClients;
 
         /// <summary>
         /// User service objects that is used to invoke incoming method invocation requests.
         /// Key: Service interface type's name.
         /// Value: Service object.
         /// </summary>
-        private readonly ThreadSafeSortedList<string, ServiceObject> _serviceObjects;
+        private readonly ConcurrentDictionary<string, ServiceObject> _serviceObjects;
 
         private bool _disposed;
 
@@ -66,8 +67,8 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             _scsServer = scsServer ?? throw new ArgumentNullException(nameof(scsServer));
             _scsServer.ClientConnected += ScsServer_ClientConnected;
             _scsServer.ClientDisconnected += ScsServer_ClientDisconnected;
-            _serviceObjects = new ThreadSafeSortedList<string, ServiceObject>();
-            _serviceClients = new ThreadSafeSortedList<long, IScsServiceClient>();
+            _serviceObjects = new ConcurrentDictionary<string, ServiceObject>();
+            _serviceClients = new ConcurrentDictionary<long, IScsServiceClient>();
         }
 
         #endregion
@@ -123,7 +124,6 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         {
             if (!_disposed)
             {
-                Dispose(true);
                 GC.SuppressFinalize(this);
                 _disposed = true;
             }
@@ -138,7 +138,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         public bool RemoveService<TServiceInterface>()
             where TServiceInterface : class
         {
-            return _serviceObjects.Remove(typeof(TServiceInterface).Name);
+            return _serviceObjects.TryRemove(typeof(TServiceInterface).Name, out ServiceObject value);
         }
 
         /// <summary>
@@ -155,15 +155,6 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         public void Stop()
         {
             _scsServer.Stop();
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _serviceClients.Dispose();
-                _serviceObjects.Dispose();
-            }
         }
 
         /// <summary>
@@ -314,7 +305,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                 return;
             }
             e.Client.Disconnect();
-            _serviceClients.Remove(e.Client.ClientId);
+            _serviceClients.TryRemove(e.Client.ClientId, out IScsServiceClient value);
             OnClientDisconnected(serviceClient);
         }
 

@@ -99,9 +99,8 @@
     <Compile Include="Handling\IPacketHandler.cs" />
     <Compile Include="Networking\NetworkClient.cs" />
     <Compile Include="Serializing\PacketAliasAttribute.cs" />
+    <Compile Include="Threading\BlockingCollectionExtensions.cs" />
     <Compile Include="Threading\ConcurrentQueueExtensions.cs" />
-    <Compile Include="Threading\ThreadSafeGenericList.cs" />
-    <Compile Include="Threading\ThreadSafeSortedList.cs" />
     <Compile Include="DelegateBuilder.cs" />
     <Compile Include="LoginEncryption.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\IScsServiceClient.cs" />

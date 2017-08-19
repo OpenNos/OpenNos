@@ -319,7 +319,7 @@ namespace OpenNos.GameObject.Helpers
                                         {
 
                                             ClientSession[] grpmembers = new ClientSession[40];
-                                            grp.Characters.CopyTo(grpmembers);
+                                            grp.Characters.ToList().CopyTo(grpmembers);
                                             foreach (ClientSession targetSession in grpmembers)
                                             {
                                                 if (targetSession != null)
@@ -336,7 +336,7 @@ namespace OpenNos.GameObject.Helpers
                                                 }
                                             }
                                             ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                                            ServerManager.Instance.GroupsThreadSafe.Remove(grp.GroupId);
+                                            ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId,out Group value);
                                             evt.MapInstance.Dispose();
                                         });
                                 }

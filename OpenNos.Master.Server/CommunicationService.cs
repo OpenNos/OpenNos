@@ -60,7 +60,6 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-
             MSManager.Instance.ConnectedAccounts.Clear();
             MSManager.Instance.WorldServers.Clear();
         }
@@ -243,7 +242,7 @@ namespace OpenNos.Master.Server
                 }
                 lastGroup = world.WorldGroup;
                 
-                int currentlyConnectedAccounts = MSManager.Instance.ConnectedAccounts.CountLinq(a => a.ConnectedWorld?.WorldGroup == world.WorldGroup);
+                int currentlyConnectedAccounts = MSManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.WorldGroup == world.WorldGroup);
                 int channelcolor = (int)Math.Round(((double)currentlyConnectedAccounts / world.AccountLimit) * 20) + 1;
 
                 channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:{channelcolor}:{worldCount}.{world.ChannelId}.{world.WorldGroup} ";
@@ -277,7 +276,7 @@ namespace OpenNos.Master.Server
                     int groupsessions = 0;
                     foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(s)))
                     {
-                        int sessions = MSManager.Instance.ConnectedAccounts.CountLinq(a => a.ConnectedWorld?.Id.Equals(world.Id) == true);
+                        int sessions = MSManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.Id.Equals(world.Id) == true);
                         result.Add($"Channel {world.ChannelId}: {sessions} Sessions");
                         groupsessions += sessions;
                     }
@@ -346,7 +345,7 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-            MSManager.Instance.ConnectedAccounts.RemoveAll(a => a != null && a.ConnectedWorld?.Id.Equals(worldId) == true);
+            MSManager.Instance.ConnectedAccounts.RemoveAll(a => a != null && (a.ConnectedWorld?.Id.Equals(worldId)) == true);
             MSManager.Instance.WorldServers.RemoveAll(w => w.Id.Equals(worldId));
         }
 
@@ -431,7 +430,7 @@ namespace OpenNos.Master.Server
             AccountConnection[] tmp = new AccountConnection[MSManager.Instance.ConnectedAccounts.Count + 20];
             lock (MSManager.Instance.ConnectedAccounts)
             {
-                MSManager.Instance.ConnectedAccounts.CopyTo(tmp);
+                MSManager.Instance.ConnectedAccounts.ToList().CopyTo(tmp);
             }
             foreach (AccountConnection account in tmp.Where(a => a != null && a.LastPulse.AddMinutes(5) <= DateTime.Now))
             {

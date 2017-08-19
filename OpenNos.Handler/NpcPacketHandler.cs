@@ -142,14 +142,14 @@ namespace OpenNos.Handler
                                     return;
                                 }
 
-                                if (Session.Character.Skills.GetAllItems().Any(s=>s.LastUse.AddMilliseconds(s.Skill.Cooldown *100) > DateTime.Now))
+                                if (Session.Character.Skills.Any(s=>s.Value.LastUse.AddMilliseconds(s.Value.Skill.Cooldown *100) > DateTime.Now))
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_NEED_COOLDOWN"), 0));
                                     return;
                                 }
 
                                 Skill skillinfo = ServerManager.Instance.GetSkill(buyPacket.Slot);
-                                if (Session.Character.Skills.GetAllItems().Any(s => s.SkillVNum == buyPacket.Slot) || skillinfo == null)
+                                if (Session.Character.Skills.Any(s => s.Value.SkillVNum == buyPacket.Slot) || skillinfo == null)
                                 {
                                     return;
                                 }
@@ -202,11 +202,11 @@ namespace OpenNos.Handler
                                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                                             return;
                                         }
-                                        foreach (CharacterSkill skill in Session.Character.Skills.GetAllItems())
+                                        foreach (CharacterSkill skill in Session.Character.Skills.Select(s=>s.Value))
                                         {
                                             if (skillinfo.CastId == skill.Skill.CastId && skill.Skill.SkillVNum < 200)
                                             {
-                                                Session.Character.Skills.Remove(skill.SkillVNum);
+                                                Session.Character.Skills.TryRemove(skill.SkillVNum, out CharacterSkill value);
                                             }
                                         }
                                     }
@@ -224,10 +224,10 @@ namespace OpenNos.Handler
                                         }
                                         if (skillinfo.UpgradeSkill != 0)
                                         {
-                                            CharacterSkill oldupgrade = Session.Character.Skills.GetAllItems().FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
+                                            CharacterSkill oldupgrade = Session.Character.Skills.FirstOrDefault(s => s.Value.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Value.Skill.UpgradeType == skillinfo.UpgradeType && s.Value.Skill.UpgradeSkill != 0).Value;
                                             if (oldupgrade != null)
                                             {
-                                                Session.Character.Skills.Remove(oldupgrade.SkillVNum);
+                                                Session.Character.Skills.TryRemove(oldupgrade.SkillVNum, out CharacterSkill value);
                                             }
                                         }
                                     }
@@ -711,15 +711,15 @@ namespace OpenNos.Handler
                 Session.Character.Gold -= skill.Skill.Price;
                 Session.SendPacket(Session.Character.GenerateGold());
 
-                foreach (CharacterSkill loadedSkill in Session.Character.Skills.GetAllItems())
+                foreach (CharacterSkill loadedSkill in Session.Character.Skills.Select(s=>s.Value))
                 {
                     if (skill.Skill.SkillVNum == loadedSkill.Skill.UpgradeSkill)
                     {
-                        Session.Character.Skills.Remove(loadedSkill.SkillVNum);
+                        Session.Character.Skills.TryRemove(loadedSkill.SkillVNum, out CharacterSkill characterSkill);
                     }
                 }
 
-                Session.Character.Skills.Remove(skill.SkillVNum);
+                Session.Character.Skills.TryRemove(skill.SkillVNum, out CharacterSkill CharacterSkill);
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());
                 Session.SendPacket(Session.Character.GenerateLev());
@@ -933,7 +933,7 @@ namespace OpenNos.Handler
             else
             {
                 // remove equipment
-                shopOwnerSession.Character.Inventory.Remove(shopitem.ItemInstance.Id);
+                shopOwnerSession.Character.Inventory.TryRemove(shopitem.ItemInstance.Id, out ItemInstance value);
 
                 // send empty slot to owners inventory
                 shopOwnerSession.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(shopitem.ItemInstance.Type, shopitem.ItemInstance.Slot));

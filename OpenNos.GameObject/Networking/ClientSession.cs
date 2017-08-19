@@ -178,7 +178,7 @@ namespace OpenNos.GameObject
                     Character.MapInstance.InstanceBag.DeadList.Add(Character.CharacterId);
                     if (Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                     {
-                        Character?.Group?.Characters.ForEach(s =>
+                        Character?.Group?.Characters.ToList().ForEach(s =>
                         {
                             s.SendPacket(s.Character.Group.GeneraterRaidmbf());
                             s.SendPacket(s.Character.Group.GenerateRdlst());

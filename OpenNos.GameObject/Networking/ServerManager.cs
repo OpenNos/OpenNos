@@ -59,25 +59,25 @@ namespace OpenNos.GameObject
 
         private List<DropDTO> _generalDrops;
 
-        public ThreadSafeSortedList<long, Group> GroupsThreadSafe;
+        public ConcurrentDictionary<long, Group> GroupsThreadSafe;
 
         private long _lastGroupId;
 
-        private ThreadSafeSortedList<short, List<MapNpc>> _mapNpcs;
+        private ConcurrentDictionary<short, List<MapNpc>> _mapNpcs;
 
-        private ThreadSafeSortedList<short, List<DropDTO>> _monsterDrops;
+        private ConcurrentDictionary<short, List<DropDTO>> _monsterDrops;
 
-        private ThreadSafeSortedList<short, List<NpcMonsterSkill>> _monsterSkills;
+        private ConcurrentDictionary<short, List<NpcMonsterSkill>> _monsterSkills;
 
-        private ThreadSafeSortedList<int, List<Recipe>> _recipes;
+        private ConcurrentDictionary<int, List<Recipe>> _recipes;
 
-        private ThreadSafeSortedList<int, List<ShopItemDTO>> _shopItems;
+        private ConcurrentDictionary<int, List<ShopItemDTO>> _shopItems;
 
-        private ThreadSafeSortedList<int, Shop> _shops;
+        private ConcurrentDictionary<int, Shop> _shops;
 
-        private ThreadSafeSortedList<int, List<ShopSkillDTO>> _shopSkills;
+        private ConcurrentDictionary<int, List<ShopSkillDTO>> _shopSkills;
 
-        private ThreadSafeSortedList<int, List<TeleporterDTO>> _teleporters;
+        private ConcurrentDictionary<int, List<TeleporterDTO>> _teleporters;
 
         private bool inRelationRefreshMode;
 
@@ -118,7 +118,7 @@ namespace OpenNos.GameObject
 
         public int GoldRate { get; set; }
 
-        public List<Group> Groups => GroupsThreadSafe.GetAllItems();
+        public List<Group> Groups => GroupsThreadSafe.Select(s=>s.Value).ToList();
 
         public int HeroicStartLevel { get; set; }
 
@@ -316,7 +316,7 @@ namespace OpenNos.GameObject
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), Session.Character.Name)));
 
                             Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
-                            Session.Character.Group?.Characters.ForEach(
+                            Session.Character.Group?.Characters.ToList().ForEach(
                             session =>
                             {
                                 session.SendPacket(session.Character.Group.GeneraterRaidmbf());
@@ -333,7 +333,7 @@ namespace OpenNos.GameObject
                             Group grp = Session.Character.Group;
                             if (grp != null)
                             {
-                                grp.Characters.ForEach(s =>
+                                grp.Characters.ToList().ForEach(s =>
                                 {
                                     s.SendPacket(s.Character.Group.GeneraterRaidmbf());
                                     s.SendPacket(s.Character.Group.GenerateRdlst());
@@ -541,7 +541,7 @@ namespace OpenNos.GameObject
                         }
                     });
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
                     session.Character.IsChangingMapInstance = false;
@@ -553,7 +553,6 @@ namespace OpenNos.GameObject
         {
             if (!_disposed)
             {
-                Dispose(true);
                 GC.SuppressFinalize(this);
                 _disposed = true;
             }
@@ -732,7 +731,7 @@ namespace OpenNos.GameObject
                     else
                     {
                         ClientSession[] grpmembers = new ClientSession[40];
-                        grp.Characters.CopyTo(grpmembers);
+                        grp.Characters.ToList().CopyTo(grpmembers);
                         foreach (ClientSession targetSession in grpmembers)
                         {
                             if (targetSession != null)
@@ -745,7 +744,7 @@ namespace OpenNos.GameObject
                             }
                         }
                         GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                        GroupsThreadSafe.Remove(grp.GroupId);
+                        GroupsThreadSafe.TryRemove(grp.GroupId,out Group value);
                     }
                     session.Character.Group = null;
                 }
@@ -771,7 +770,7 @@ namespace OpenNos.GameObject
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
 
             OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DAOFactory.ItemDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
-            ThreadSafeSortedList<short, Item> _item = new ThreadSafeSortedList<short, Item>();
+            ConcurrentDictionary<short, Item> _item = new ConcurrentDictionary<short, Item>();
             Parallel.ForEach(itemPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 4 }, itemDTO =>
             {
                 switch (itemDTO.ItemType)
@@ -873,11 +872,11 @@ namespace OpenNos.GameObject
                         break;
                 }
             });
-            _items.AddRange(_item.GetAllItems());
+            _items.AddRange(_item.Select(s=>s.Value));
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_LOADED"), _items.Count));
 
             // intialize monsterdrops
-            _monsterDrops = new ThreadSafeSortedList<short, List<DropDTO>>();
+            _monsterDrops = new ConcurrentDictionary<short, List<DropDTO>>();
             Parallel.ForEach(DAOFactory.DropDAO.LoadAll().GroupBy(d => d.MonsterVNum), monsterDropGrouping =>
             {
                 if (monsterDropGrouping.Key.HasValue)
@@ -889,73 +888,73 @@ namespace OpenNos.GameObject
                     _generalDrops = monsterDropGrouping.ToList();
                 }
             });
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("DROPS_LOADED"), _monsterDrops.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("DROPS_LOADED"), _monsterDrops.Sum(i => i.Value.Count)));
 
             // initialize monsterskills
-            _monsterSkills = new ThreadSafeSortedList<short, List<NpcMonsterSkill>>();
+            _monsterSkills = new ConcurrentDictionary<short, List<NpcMonsterSkill>>();
             Parallel.ForEach(DAOFactory.NpcMonsterSkillDAO.LoadAll().GroupBy(n => n.NpcMonsterVNum), monsterSkillGrouping =>
             {
                 _monsterSkills[monsterSkillGrouping.Key] = monsterSkillGrouping.Select(n => n as NpcMonsterSkill).ToList();
             });
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.Sum(i => i.Value.Count)));
 
             // initialize Families
             LoadBazaar();
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED"), _monsterSkills.Sum(i => i.Value.Count)));
 
             // initialize npcmonsters
-            ThreadSafeSortedList<short, NpcMonster> _npcMonsters = new ThreadSafeSortedList<short, NpcMonster>();
+            ConcurrentDictionary<short, NpcMonster> _npcMonsters = new ConcurrentDictionary<short, NpcMonster>();
             Parallel.ForEach(DAOFactory.NpcMonsterDAO.LoadAll(), npcMonster =>
             {
                 _npcMonsters[npcMonster.NpcMonsterVNum] = npcMonster as NpcMonster;
                 _npcMonsters[npcMonster.NpcMonsterVNum].BCards = new List<BCard>();
                 DAOFactory.BCardDAO.LoadByNpcMonsterVNum(npcMonster.NpcMonsterVNum).ToList().ForEach(s => _npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard)s));
             });
-            _npcs.AddRange(_npcMonsters.GetAllItems());
+            _npcs.AddRange(_npcMonsters.Select(s=>s.Value));
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count));
 
             // intialize recipes
-            _recipes = new ThreadSafeSortedList<int, List<Recipe>>();
+            _recipes = new ConcurrentDictionary<int, List<Recipe>>();
             Parallel.ForEach(DAOFactory.RecipeDAO.LoadAll().GroupBy(r => r.MapNpcId), recipeGrouping =>
             {
                 _recipes[recipeGrouping.Key] = recipeGrouping.Select(r => r as Recipe).ToList();
             });
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), _recipes.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), _recipes.Sum(i => i.Value.Count)));
 
             // initialize shopitems
-            _shopItems = new ThreadSafeSortedList<int, List<ShopItemDTO>>();
+            _shopItems = new ConcurrentDictionary<int, List<ShopItemDTO>>();
             Parallel.ForEach(DAOFactory.ShopItemDAO.LoadAll().GroupBy(s => s.ShopId), shopItemGrouping =>
             {
                 _shopItems[shopItemGrouping.Key] = shopItemGrouping.ToList();
             });
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_LOADED"), _shopItems.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_LOADED"), _shopItems.Sum(i => i.Value.Count)));
 
             // initialize shopskills
-            _shopSkills = new ThreadSafeSortedList<int, List<ShopSkillDTO>>();
+            _shopSkills = new ConcurrentDictionary<int, List<ShopSkillDTO>>();
             Parallel.ForEach(DAOFactory.ShopSkillDAO.LoadAll().GroupBy(s => s.ShopId), shopSkillGrouping =>
             {
                 _shopSkills[shopSkillGrouping.Key] = shopSkillGrouping.ToList();
             });
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_LOADED"), _shopSkills.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_LOADED"), _shopSkills.Sum(i => i.Value.Count)));
 
             // initialize shops
-            _shops = new ThreadSafeSortedList<int, Shop>();
+            _shops = new ConcurrentDictionary<int, Shop>();
             Parallel.ForEach(DAOFactory.ShopDAO.LoadAll(), shopGrouping =>
             {
                 _shops[shopGrouping.MapNpcId] = (Shop)shopGrouping;
             });
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_LOADED"), _shops.GetAllItems().Count));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_LOADED"), _shops.Count));
 
             // initialize teleporters
-            _teleporters = new ThreadSafeSortedList<int, List<TeleporterDTO>>();
+            _teleporters = new ConcurrentDictionary<int, List<TeleporterDTO>>();
             Parallel.ForEach(DAOFactory.TeleporterDAO.LoadAll().GroupBy(t => t.MapNpcId), teleporterGrouping =>
             {
                 _teleporters[teleporterGrouping.Key] = teleporterGrouping.Select(t => t).ToList();
             });
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_LOADED"), _teleporters.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_LOADED"), _teleporters.Sum(i => i.Value.Count)));
 
             // initialize skills
-            ThreadSafeSortedList<short, Skill> _skill = new ThreadSafeSortedList<short, Skill>();
+            ConcurrentDictionary<short, Skill> _skill = new ConcurrentDictionary<short, Skill>();
             Parallel.ForEach(DAOFactory.SkillDAO.LoadAll(), skill =>
             {
                 Skill skillObj = skill as Skill;
@@ -964,7 +963,7 @@ namespace OpenNos.GameObject
                 DAOFactory.BCardDAO.LoadBySkillVNum(skillObj.SkillVNum).ToList().ForEach(o => skillObj.BCards.Add((BCard)o));
                 _skill[skillObj.SkillVNum] = skillObj as Skill;
             });
-            _skills.AddRange(_skill.GetAllItems());
+            _skills.AddRange(_skill.Select(s=>s.Value));
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
 
             // initialize buffs
@@ -981,19 +980,19 @@ namespace OpenNos.GameObject
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), _skills.Count));
 
             // intialize mapnpcs
-            _mapNpcs = new ThreadSafeSortedList<short, List<MapNpc>>();
+            _mapNpcs = new ConcurrentDictionary<short, List<MapNpc>>();
             Parallel.ForEach(DAOFactory.MapNpcDAO.LoadAll().GroupBy(t => t.MapId), mapNpcGrouping =>
             {
                 _mapNpcs[mapNpcGrouping.Key] = mapNpcGrouping.Select(t => t as MapNpc).ToList();
             });
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPNPCS_LOADED"), _mapNpcs.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPNPCS_LOADED"), _mapNpcs.Sum(i => i.Value.Count)));
 
             try
             {
                 int i = 0;
                 int monstercount = 0;
                 OrderablePartitioner<MapDTO> mapPartitioner = Partitioner.Create(DAOFactory.MapDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
-                ThreadSafeSortedList<short, Map> _mapList = new ThreadSafeSortedList<short, Map>();
+                ConcurrentDictionary<short, Map> _mapList = new ConcurrentDictionary<short, Map>();
                 Parallel.ForEach(mapPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 8 }, map =>
                 {
                     Guid guid = Guid.NewGuid();
@@ -1022,7 +1021,7 @@ namespace OpenNos.GameObject
                     monstercount += newMap.Monsters.Count;
                     i++;
                 });
-                _maps.AddRange(_mapList.GetAllItems());
+                _maps.AddRange(_mapList.Select(s=>s.Value));
                 if (i != 0)
                 {
                     Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_LOADED"), i));
@@ -1274,7 +1273,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    ThreadSafeGenericList<ClientSession> groupMembers = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters;
+                    ConcurrentBag<ClientSession> groupMembers = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters;
                     if (groupMembers != null)
                     {
                         foreach (ClientSession session in groupMembers)
@@ -1326,22 +1325,6 @@ namespace OpenNos.GameObject
             Instance.TaskShutdown = null;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _monsterDrops.Dispose();
-                GroupsThreadSafe.Dispose();
-                _monsterSkills.Dispose();
-                _shopSkills.Dispose();
-                _shopItems.Dispose();
-                _shops.Dispose();
-                _recipes.Dispose();
-                _mapNpcs.Dispose();
-                _teleporters.Dispose();
-            }
-        }
-
         // Server
         private void BotProcess()
         {
@@ -1381,7 +1364,7 @@ namespace OpenNos.GameObject
 
         private void LaunchEvents()
         {
-            GroupsThreadSafe = new ThreadSafeSortedList<long, Group>();
+            GroupsThreadSafe = new ConcurrentDictionary<long, Group>();
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
             {
@@ -1452,7 +1435,7 @@ namespace OpenNos.GameObject
         {
             // TODO: Parallelization of family load
             FamilyList = new List<Family>();
-            ThreadSafeSortedList<long, Family> _family = new ThreadSafeSortedList<long, Family>();
+            ConcurrentDictionary<long, Family> _family = new ConcurrentDictionary<long, Family>();
             Parallel.ForEach(DAOFactory.FamilyDAO.LoadAll(), familyDTO =>
             {
                 Family family = (Family)familyDTO;
@@ -1474,7 +1457,7 @@ namespace OpenNos.GameObject
                 family.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(family.FamilyId).ToList();
                 _family[family.FamilyId] = family;
             });
-            FamilyList.AddRange(_family.GetAllItems());
+            FamilyList.AddRange(_family.Select(s=>s.Value));
         }
 
         private void LoadScriptedInstances()
