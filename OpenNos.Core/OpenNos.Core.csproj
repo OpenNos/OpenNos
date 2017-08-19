@@ -95,12 +95,14 @@
     <Compile Include="Application.cs" />
     <Compile Include="Extension.cs" />
     <Compile Include="Handling\HandlerMethodReference.cs" />
+    <Compile Include="Networking\Communication\Scs\Threading\SequentialItemProcessor.cs" />
+    <Compile Include="Networking\Communication\Scs\Threading\Timer.cs" />
     <Compile Include="Networking\INetworkClient.cs" />
     <Compile Include="Handling\IPacketHandler.cs" />
     <Compile Include="Networking\NetworkClient.cs" />
     <Compile Include="Serializing\PacketAliasAttribute.cs" />
-    <Compile Include="Threading\BlockingCollectionExtensions.cs" />
-    <Compile Include="Threading\ConcurrentQueueExtensions.cs" />
+    <Compile Include="Extensions\BlockingCollectionExtensions.cs" />
+    <Compile Include="Extensions\ConcurrentQueueExtensions.cs" />
     <Compile Include="DelegateBuilder.cs" />
     <Compile Include="LoginEncryption.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\IScsServiceClient.cs" />
@@ -175,9 +177,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializing\PacketIndexAttribute.cs" />
     <Compile Include="SessionFactory.cs" />
-    <Compile Include="Threading\SequentialItemProcessor.cs" />
-    <Compile Include="Threading\ThreadedBase.cs" />
-    <Compile Include="Threading\Timer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

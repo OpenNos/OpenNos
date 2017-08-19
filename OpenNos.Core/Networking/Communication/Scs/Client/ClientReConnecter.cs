@@ -13,7 +13,7 @@
  */
 
 using OpenNos.Core.Networking.Communication.Scs.Communication;
-using OpenNos.Core.Threading;
+using OpenNos.Core.Networking.Communication.Scs.Threading;
 using System;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Client

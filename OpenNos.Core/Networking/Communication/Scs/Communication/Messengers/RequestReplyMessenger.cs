@@ -14,7 +14,7 @@
 
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
-using OpenNos.Core.Threading;
+using OpenNos.Core.Networking.Communication.Scs.Threading;
 using System;
 using System.Collections.Generic;
 using System.Threading;
