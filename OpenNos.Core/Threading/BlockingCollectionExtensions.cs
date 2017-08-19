@@ -18,10 +18,10 @@ namespace OpenNos.Core
             }
         }
 
-        public static ConcurrentBag<T> Except<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate)
+        public static ConcurrentBag<T> Where<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate)
         {
             var Temp = new ConcurrentBag<T>();
-            queue.Except(predicate).ToList().ForEach(Line =>
+            queue.Where(predicate).ToList().ForEach(Line =>
             {
                 Temp.Add(Line);
             });

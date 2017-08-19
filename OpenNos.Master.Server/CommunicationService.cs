@@ -109,7 +109,7 @@ namespace OpenNos.Master.Server
                 return;
             }
 
-            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Except(c => c.AccountId.Equals(accountId));
+            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(c => !c.AccountId.Equals(accountId));
         }
 
         public void DisconnectCharacter(Guid worldId, long characterId)
@@ -178,11 +178,11 @@ namespace OpenNos.Master.Server
             }
             if (accountId.HasValue)
             {
-                MSManager.Instance.ConnectedAccounts= MSManager.Instance.ConnectedAccounts.Except(s => s.AccountId.Equals(accountId.Value));
+                MSManager.Instance.ConnectedAccounts= MSManager.Instance.ConnectedAccounts.Where(s => !s.AccountId.Equals(accountId.Value));
             }
             else if (sessionId.HasValue)
             {
-                MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Except(s => s.SessionId.Equals(sessionId.Value));
+                MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(s =>!s.SessionId.Equals(sessionId.Value));
             }
         }
 
@@ -209,7 +209,7 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Except(a => a.AccountId.Equals(accountId));
+            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(a => !a.AccountId.Equals(accountId));
             MSManager.Instance.ConnectedAccounts.Add(new AccountConnection(accountId, sessionId));
         }
 
@@ -345,7 +345,7 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-            MSManager.Instance.ConnectedAccounts= MSManager.Instance.ConnectedAccounts.Except(a => a != null && (a.ConnectedWorld?.Id.Equals(worldId)) == true);
+            MSManager.Instance.ConnectedAccounts= MSManager.Instance.ConnectedAccounts.Where(a => a == null || (a.ConnectedWorld?.Id.Equals(worldId)) != true);
             MSManager.Instance.WorldServers.RemoveAll(w => w.Id.Equals(worldId));
         }
 
