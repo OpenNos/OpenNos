@@ -133,67 +133,68 @@ namespace OpenNos.GameObject.Event.ARENA
                                                       byte timer = 60;
                                                       o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaM(3, timer));
                                                       string groups = string.Empty;
-                                                      Observable.Timer(TimeSpan.FromSeconds(0)).Subscribe(start =>
-                                                      {
-                                                          for (int x = 0; x < timer*2 ; x++)
-                                                          {
-                                                              bool resettap = false;
-                                                              map.MapDesignObjects.ForEach(e =>
-                                                                  {
-                                                                      if (e.ItemInstance.Design >= 4433 && e.ItemInstance.Design <= 4435)
-                                                                      {
-                                                                          Character chara = map.GetCharactersInRange(e.MapX, e.MapY, 0).FirstOrDefault();
-                                                                          if (chara != null)
-                                                                          {
-                                                                              resettap = true;
-                                                                              ArenaTeamMember teammember = arenateam.FirstOrDefault(at => at.Session == chara.Session);
-                                                                              if (teammember != null && !arenateam.Any(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
-                                                                              {
-                                                                                  if (teammember.Order != null)
-                                                                                  {
-                                                                                      MapDesignObject obj = map.MapDesignObjects.FirstOrDefault(mapobj => mapobj.ItemInstance.ItemVNum == e.ItemInstance.ItemVNum && e.MapX == (teammember.ArenaTeamType == ArenaTeamType.ERENIA ? 120 : 19));
-                                                                                      if (obj != null)
-                                                                                      {
-                                                                                          obj.ItemInstance.Design = obj.ItemInstance.ItemVNum;
-                                                                                      }
-                                                                                  }
-                                                                                  teammember.Order = (byte)(e.ItemInstance.ItemVNum - 4433);
-                                                                              }
-                                                                          }
-                                                                      }
-                                                                      else if (e.ItemInstance.Design == 4436)
-                                                                      {
-                                                                          if (!map.GetCharactersInRange(e.MapX, e.MapY, 0).Any())
-                                                                          {
-                                                                              resettap = true;
-                                                                              ArenaTeamMember teammember = arenateam.FirstOrDefault(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS));
-                                                                              if (teammember != null)
-                                                                              {
-                                                                                  teammember.Order = null;
-                                                                              }
-                                                                          }
-                                                                      }
-                                                                      if (!arenateam.Any(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
-                                                                      {
-                                                                          if (e.ItemInstance.Design == 4436)
-                                                                          {
-                                                                              e.ItemInstance.Design = e.ItemInstance.ItemVNum;
-                                                                              map.Broadcast(e.GenerateEffect(false));
-                                                                          }
-                                                                      }
-                                                                      else if (e.ItemInstance.Design != 4436)
-                                                                      {
-                                                                          e.ItemInstance.Design = 4436;
-                                                                          map.Broadcast(e.GenerateEffect(false));
-                                                                      }
-                                                                  });
 
-                                                              if (resettap)
-                                                              {
-                                                                  arenateam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, arenateam, arenauser.ArenaTeamType, false)); });
-                                                              }
-                                                              Thread.Sleep(500);
-                                                          }
+                                                      Observable.Interval(TimeSpan.FromMilliseconds(timer * 100)).Subscribe(start2 =>
+                                                        {
+                                                            bool resettap = false;
+                                                            map.MapDesignObjects.ForEach(e =>
+                                                                {
+                                                                    if (e.ItemInstance.Design >= 4433 && e.ItemInstance.Design <= 4435)
+                                                                    {
+                                                                        Character chara = map.GetCharactersInRange(e.MapX, e.MapY, 0).FirstOrDefault();
+                                                                        if (chara != null)
+                                                                        {
+                                                                            resettap = true;
+                                                                            ArenaTeamMember teammember = arenateam.FirstOrDefault(at => at.Session == chara.Session);
+                                                                            if (teammember != null && !arenateam.Any(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
+                                                                            {
+                                                                                if (teammember.Order != null)
+                                                                                {
+                                                                                    MapDesignObject obj = map.MapDesignObjects.FirstOrDefault(mapobj => mapobj.ItemInstance.ItemVNum == e.ItemInstance.ItemVNum && e.MapX == (teammember.ArenaTeamType == ArenaTeamType.ERENIA ? 120 : 19));
+                                                                                    if (obj != null)
+                                                                                    {
+                                                                                        obj.ItemInstance.Design = obj.ItemInstance.ItemVNum;
+                                                                                    }
+                                                                                }
+                                                                                teammember.Order = (byte)(e.ItemInstance.ItemVNum - 4433);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else if (e.ItemInstance.Design == 4436)
+                                                                    {
+                                                                        if (!map.GetCharactersInRange(e.MapX, e.MapY, 0).Any())
+                                                                        {
+                                                                            resettap = true;
+                                                                            ArenaTeamMember teammember = arenateam.FirstOrDefault(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS));
+                                                                            if (teammember != null)
+                                                                            {
+                                                                                teammember.Order = null;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    if (!arenateam.Any(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
+                                                                    {
+                                                                        if (e.ItemInstance.Design == 4436)
+                                                                        {
+                                                                            e.ItemInstance.Design = e.ItemInstance.ItemVNum;
+                                                                            map.Broadcast(e.GenerateEffect(false));
+                                                                        }
+                                                                    }
+                                                                    else if (e.ItemInstance.Design != 4436)
+                                                                    {
+                                                                        e.ItemInstance.Design = 4436;
+                                                                        map.Broadcast(e.GenerateEffect(false));
+                                                                    }
+                                                                });
+
+                                                            if (resettap)
+                                                            {
+                                                                arenateam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, arenateam, arenauser.ArenaTeamType, false)); });
+                                                            }
+                                                        });
+
+                                                      Observable.Timer(TimeSpan.FromSeconds(timer)).Subscribe(start =>
+                                                      {
                                                           arenateam.ToList().ForEach(arenauser =>
                                                           {
                                                               if (arenauser.Order == null)
