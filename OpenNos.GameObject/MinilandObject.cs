@@ -26,7 +26,7 @@ namespace OpenNos.GameObject
 
         public string GenerateEffect(bool removed)
         {
-            return $"eff_g  {ItemInstance.Item?.EffectValue ?? ItemInstance.ItemVNum} {MapX.ToString("00")}{MapY.ToString("00")} {MapX} {MapY} {(removed ? 1 : 0)}";
+            return $"eff_g  {ItemInstance.Item?.EffectValue ?? ItemInstance.Design} {MapX.ToString("00")}{MapY.ToString("00")} {MapX} {MapY} {(removed ? 1 : 0)}";
         }
 
         public string GenerateMapDesignObject(bool deleted)

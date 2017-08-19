@@ -83,6 +83,10 @@ namespace OpenNos.GameObject
                 Id = effectid
             };
         }
+        public string GenerateSay(string message, int type)
+        {
+            return $"say 2 {MapNpcId} 2 {message}";
+        }
 
         public string GenerateIn()
         {

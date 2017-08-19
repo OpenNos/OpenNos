@@ -333,7 +333,7 @@ namespace OpenNos.GameObject
                 case 135:
                     if (!ServerManager.Instance.StartedEvents.Contains(EventType.TALENTARENA))
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ARENA_NOT_OPEN"), 10));
+                        Session.SendPacket(npc?.GenerateSay(Language.Instance.GetMessageFromKey("ARENA_NOT_OPEN"), 10));
                     }
                     else
                     {
