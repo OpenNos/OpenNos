@@ -102,6 +102,7 @@ namespace OpenNos.GameObject
         public short FirstX { get; set; }
 
         public short FirstY { get; set; }
+        public IDisposable Life { get; private set; }
 
         #endregion
 
@@ -204,7 +205,7 @@ namespace OpenNos.GameObject
 
         public void StartLife()
         {
-            Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+          Life =  Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {
                 try
                 {
@@ -762,6 +763,7 @@ namespace OpenNos.GameObject
 
             return totalDamage;
         }
+        
 
         private string GenerateMv3()
         {

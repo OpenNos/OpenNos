@@ -16,23 +16,21 @@ namespace OpenNos.GameObject.Event.ARENA
     {
         internal static void GenerateTalentArena()
         {
-            Observable.Timer(TimeSpan.FromMinutes(0)).Subscribe(X =>
+            double groupid = 0;
+            int seconds = 0;
+            IDisposable obs = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(start2 =>
             {
-                double groupid = 0;
-                int seconds = 0;
-                while (seconds < 60 * 60 * 7)
-                {
-                    ServerManager.Instance.ArenaMembers.Where(s => s.ArenaType == EventType.TALENTARENA).ToList().ForEach(s =>
+                ServerManager.Instance.ArenaMembers.Where(s => s.ArenaType == EventType.TALENTARENA).ToList().ForEach(s =>
                       {
                           s.Time -= 1;
                           List<double> groupids = new List<double>();
                           ServerManager.Instance.ArenaMembers.Where(o => o.GroupId != null).ToList().ForEach(o =>
-                          {
-                              if (ServerManager.Instance.ArenaMembers.Count(g => g.GroupId == o.GroupId) == 3)
                               {
-                                  groupids.Add((double)o.GroupId);
-                              }
-                          });
+                                  if (ServerManager.Instance.ArenaMembers.Count(g => g.GroupId == o.GroupId) == 3)
+                                  {
+                                      groupids.Add((double)o.GroupId);
+                                  }
+                              });
 
                           if (s.Time > 0)
                           {
@@ -50,25 +48,25 @@ namespace OpenNos.GameObject.Event.ARENA
                                       }
                                       s.GroupId = member.GroupId;
                                       ServerManager.Instance.ArenaMembers.Where(e => e.ArenaType == EventType.TALENTARENA && e.GroupId == member.GroupId).ToList().ForEach(o =>
-                                      {
-                                          o.Session.SendPacket(o.Session.Character.GenerateBsInfo(1, 2, -1, 6));
-                                          o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ARENA_TEAM_FOUND"), 10));
-                                          Observable.Timer(TimeSpan.FromSeconds(1)).Subscribe(time =>
                                           {
-                                              s.Time = 300;
-                                              if (ServerManager.Instance.ArenaMembers.Count(g => g.GroupId == s.GroupId) < 3)
+                                              o.Session.SendPacket(o.Session.Character.GenerateBsInfo(1, 2, -1, 6));
+                                              o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ARENA_TEAM_FOUND"), 10));
+                                              Observable.Timer(TimeSpan.FromSeconds(1)).Subscribe(time =>
                                               {
+                                                  s.Time = 300;
+                                                  if (ServerManager.Instance.ArenaMembers.Count(g => g.GroupId == s.GroupId) < 3)
+                                                  {
 
-                                                  o.Session.SendPacket(o.Session.Character.GenerateBsInfo(0, 2, s.Time, 8));
-                                                  o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_ARENA_TEAM"), 10));
-                                              }
-                                              else
-                                              {
-                                                  o.Session.SendPacket(o.Session.Character.GenerateBsInfo(0, 2, s.Time, 1));
-                                                  o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_RIVAL_ARENA_TEAM"), 10));
-                                              }
+                                                      o.Session.SendPacket(o.Session.Character.GenerateBsInfo(0, 2, s.Time, 8));
+                                                      o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_ARENA_TEAM"), 10));
+                                                  }
+                                                  else
+                                                  {
+                                                      o.Session.SendPacket(o.Session.Character.GenerateBsInfo(0, 2, s.Time, 1));
+                                                      o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_RIVAL_ARENA_TEAM"), 10));
+                                                  }
+                                              });
                                           });
-                                      });
                                   }
                               }
                               else
@@ -95,126 +93,125 @@ namespace OpenNos.GameObject.Event.ARENA
                                           }
                                           ConcurrentBag<ArenaTeamMember> arenateam = new ConcurrentBag<ArenaTeamMember>();
                                           arenamembers.ToList().ForEach(o =>
-                                          {
-                                              o.Session.SendPacket(o.Session.Character.GenerateBsInfo(0, 2, s.Time, 2));
-                                              o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RIVAL_ARENA_TEAM_FOUND"), 10));
-
-                                              Observable.Timer(TimeSpan.FromSeconds(1)).Subscribe(time =>
                                               {
-                                                  o.Session.SendPacket("ta_close");
-                                                  Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(time2 =>
-                                                  {
-                                                      int i = Array.IndexOf(arenamembers, o) + 1;
-                                                      ServerManager.Instance.ChangeMapInstance(o.Session.Character.CharacterId, map.MapInstanceId, o.GroupId == member.GroupId ? 125 : 14, (o.GroupId == member.GroupId ? 37 : 38) + (i % 3) * 2);
-                                                      o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA_TIME"), 0));
-                                                      o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA"), 10));
-                                                      o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA"), 0));
-                                                      if (o.GroupId == s.GroupId)
-                                                      {
-                                                          o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ZENAS"), 10));
-                                                          arenateam.Add(new ArenaTeamMember(o.Session, ArenaTeamType.ZENAS, null));
-                                                          Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(effect =>
-                                                          {
-                                                              map.Broadcast(o.Session.Character.GenerateEff(3013));
-                                                          });
-                                                      }
-                                                      else
-                                                      {
-                                                          o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ERENIA"), 10));
-                                                          arenateam.Add(new ArenaTeamMember(o.Session, ArenaTeamType.ERENIA, null));
-                                                          Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(effect =>
-                                                          {
-                                                              map.Broadcast(o.Session.Character.GenerateEff(3012));
-                                                          });
-                                                      }
-                                                      o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaM(0, 0));
-                                                      o.Session.SendPacket("ta_sv 0");
-                                                      o.Session.SendPacket("ta_st 0");
-                                                      byte timer = 60;
-                                                      o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaM(3, timer));
-                                                      string groups = string.Empty;
+                                                  o.Session.SendPacket(o.Session.Character.GenerateBsInfo(0, 2, s.Time, 2));
+                                                  o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RIVAL_ARENA_TEAM_FOUND"), 10));
 
-                                                      Observable.Interval(TimeSpan.FromMilliseconds(timer * 100)).Subscribe(start2 =>
-                                                        {
-                                                            bool resettap = false;
-                                                            map.MapDesignObjects.ForEach(e =>
-                                                                {
-                                                                    if (e.ItemInstance.Design >= 4433 && e.ItemInstance.Design <= 4435)
+                                                  Observable.Timer(TimeSpan.FromSeconds(1)).Subscribe(time =>
+                                                  {
+                                                      o.Session.SendPacket("ta_close");
+                                                      Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(time2 =>
+                                                      {
+                                                          int i = Array.IndexOf(arenamembers, o) + 1;
+                                                          ServerManager.Instance.ChangeMapInstance(o.Session.Character.CharacterId, map.MapInstanceId, o.GroupId == member.GroupId ? 125 : 14, (o.GroupId == member.GroupId ? 37 : 38) + (i % 3) * 2);
+                                                          o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA_TIME"), 0));
+                                                          o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA"), 10));
+                                                          o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA"), 0));
+                                                          if (o.GroupId == s.GroupId)
+                                                          {
+                                                              o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ZENAS"), 10));
+                                                              arenateam.Add(new ArenaTeamMember(o.Session, ArenaTeamType.ZENAS, null));
+                                                          }
+                                                          else
+                                                          {
+                                                              o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ERENIA"), 10));
+                                                              arenateam.Add(new ArenaTeamMember(o.Session, ArenaTeamType.ERENIA, null));
+                                                          }
+                                                          o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaM(0, 0));
+                                                          o.Session.SendPacket("ta_sv 0");
+                                                          o.Session.SendPacket("ta_st 0");
+                                                          byte timer = 60;
+                                                          o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaM(3, timer));
+                                                          o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, arenateam, default(ArenaTeamType), false));
+                                                          string groups = string.Empty;
+                                                          IDisposable obs3 = Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(effect =>
+                                                          {
+                                                              arenateam.ToList().ForEach(eff => o.Session.SendPacket(eff.Session.Character.GenerateEff(eff.ArenaTeamType == ArenaTeamType.ERENIA ? 3013 : 3012)));
+                                                          });
+
+                                                          IDisposable obs2 = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(start3 =>
+                                                            {
+                                                                bool resettap = false;
+                                                                map.MapDesignObjects.ForEach(e =>
                                                                     {
-                                                                        Character chara = map.GetCharactersInRange(e.MapX, e.MapY, 0).FirstOrDefault();
-                                                                        if (chara != null)
+                                                                        if (e.ItemInstance.Design >= 4433 && e.ItemInstance.Design <= 4435)
                                                                         {
-                                                                            resettap = true;
-                                                                            ArenaTeamMember teammember = arenateam.FirstOrDefault(at => at.Session == chara.Session);
-                                                                            if (teammember != null && !arenateam.Any(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
+                                                                            Character chara = map.GetCharactersInRange(e.MapX, e.MapY, 0).FirstOrDefault();
+                                                                            if (chara != null)
                                                                             {
-                                                                                if (teammember.Order != null)
+                                                                                resettap = true;
+                                                                                ArenaTeamMember teammember = arenateam.FirstOrDefault(at => at.Session == chara.Session);
+                                                                                if (teammember != null && !arenateam.Any(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
                                                                                 {
-                                                                                    MapDesignObject obj = map.MapDesignObjects.FirstOrDefault(mapobj => mapobj.ItemInstance.ItemVNum == e.ItemInstance.ItemVNum && e.MapX == (teammember.ArenaTeamType == ArenaTeamType.ERENIA ? 120 : 19));
-                                                                                    if (obj != null)
+                                                                                    if (teammember.Order != null)
                                                                                     {
-                                                                                        obj.ItemInstance.Design = obj.ItemInstance.ItemVNum;
+                                                                                        MapDesignObject obj = map.MapDesignObjects.FirstOrDefault(mapobj => mapobj.ItemInstance.ItemVNum == e.ItemInstance.ItemVNum && e.MapX == (teammember.ArenaTeamType == ArenaTeamType.ERENIA ? 120 : 19));
+                                                                                        if (obj != null)
+                                                                                        {
+                                                                                            obj.ItemInstance.Design = obj.ItemInstance.ItemVNum;
+                                                                                        }
                                                                                     }
+                                                                                    teammember.Order = (byte)(e.ItemInstance.ItemVNum - 4433);
                                                                                 }
-                                                                                teammember.Order = (byte)(e.ItemInstance.ItemVNum - 4433);
                                                                             }
                                                                         }
-                                                                    }
-                                                                    else if (e.ItemInstance.Design == 4436)
-                                                                    {
-                                                                        if (!map.GetCharactersInRange(e.MapX, e.MapY, 0).Any())
+                                                                        else if (e.ItemInstance.Design == 4436)
                                                                         {
-                                                                            resettap = true;
-                                                                            ArenaTeamMember teammember = arenateam.FirstOrDefault(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS));
-                                                                            if (teammember != null)
+                                                                            if (!map.GetCharactersInRange(e.MapX, e.MapY, 0).Any())
                                                                             {
-                                                                                teammember.Order = null;
+                                                                                resettap = true;
+                                                                                ArenaTeamMember teammember = arenateam.FirstOrDefault(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS));
+                                                                                if (teammember != null)
+                                                                                {
+                                                                                    teammember.Order = null;
+                                                                                }
                                                                             }
                                                                         }
-                                                                    }
-                                                                    if (!arenateam.Any(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
-                                                                    {
-                                                                        if (e.ItemInstance.Design == 4436)
+                                                                        if (!arenateam.Any(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
                                                                         {
-                                                                            e.ItemInstance.Design = e.ItemInstance.ItemVNum;
+                                                                            if (e.ItemInstance.Design == 4436)
+                                                                            {
+                                                                                e.ItemInstance.Design = e.ItemInstance.ItemVNum;
+                                                                                map.Broadcast(e.GenerateEffect(false));
+                                                                            }
+                                                                        }
+                                                                        else if (e.ItemInstance.Design != 4436)
+                                                                        {
+                                                                            e.ItemInstance.Design = 4436;
                                                                             map.Broadcast(e.GenerateEffect(false));
                                                                         }
-                                                                    }
-                                                                    else if (e.ItemInstance.Design != 4436)
-                                                                    {
-                                                                        e.ItemInstance.Design = 4436;
-                                                                        map.Broadcast(e.GenerateEffect(false));
-                                                                    }
-                                                                });
+                                                                    });
 
-                                                            if (resettap)
-                                                            {
-                                                                arenateam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, arenateam, arenauser.ArenaTeamType, false)); });
-                                                            }
-                                                        });
+                                                                if (resettap)
+                                                                {
+                                                                    arenateam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, arenateam, arenauser.ArenaTeamType, false)); });
+                                                                }
+                                                            });
 
-                                                      Observable.Timer(TimeSpan.FromSeconds(timer)).Subscribe(start =>
-                                                      {
-                                                          arenateam.ToList().ForEach(arenauser =>
+                                                          Observable.Timer(TimeSpan.FromSeconds(timer)).Subscribe(start =>
                                                           {
-                                                              if (arenauser.Order == null)
+                                                              obs2.Dispose();
+                                                              arenateam.ToList().ForEach(arenauser =>
                                                               {
-                                                                  for (byte x = 0; x < 3; x++)
+                                                                  if (arenauser.Order == null)
                                                                   {
-                                                                      if (!arenateam.Any(at => at.ArenaTeamType == arenauser.ArenaTeamType && at.Order == x))
+                                                                      for (byte x = 0; x < 3; x++)
                                                                       {
-                                                                          arenauser.Order = x;
+                                                                          if (!arenateam.Any(at => at.ArenaTeamType == arenauser.ArenaTeamType && at.Order == x))
+                                                                          {
+                                                                              arenauser.Order = x;
+                                                                          }
                                                                       }
                                                                   }
-                                                              }
-                                                              arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, arenateam, arenauser.ArenaTeamType, true));
+                                                                  arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, arenateam, arenauser.ArenaTeamType, true));
+                                                              });
+                                                              map.MapDesignObjects.ToArray().ToList().ForEach(md => map.Broadcast(md.GenerateEffect(true)));
+                                                              map.MapDesignObjects.RemoveAll(md => true);
+                                                              obs3.Dispose();
                                                           });
-                                                          map.MapDesignObjects.ToArray().ToList().ForEach(md => map.Broadcast(md.GenerateEffect(true)));
-                                                          map.MapDesignObjects.RemoveAll(md => true);
                                                       });
                                                   });
                                               });
-                                          });
                                           ServerManager.Instance.ArenaMembers.RemoveAll(o => o.GroupId == member.GroupId || o.GroupId == s.GroupId);
                                       }
                                   }
@@ -237,11 +234,11 @@ namespace OpenNos.GameObject.Event.ARENA
                               {
                                   s.Session.SendPacket(s.Session.Character.GenerateBsInfo(1, 2, -1, 4));
                                   Observable.Timer(TimeSpan.FromSeconds(1)).Subscribe(time =>
-                              {
-                                  s.Time = 300;
-                                  s.Session.SendPacket(s.Session.Character.GenerateBsInfo(1, 2, s.Time, 8));
-                                  s.Session.SendPacket(s.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RETRY_SEARCH_ARENA_TEAM"), 10));
-                              });
+                                  {
+                                      s.Time = 300;
+                                      s.Session.SendPacket(s.Session.Character.GenerateBsInfo(1, 2, s.Time, 8));
+                                      s.Session.SendPacket(s.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RETRY_SEARCH_ARENA_TEAM"), 10));
+                                  });
                               }
                               else
                               {
@@ -251,13 +248,13 @@ namespace OpenNos.GameObject.Event.ARENA
                               }
                           }
                       });
-
-                    seconds++;
-                    Thread.Sleep(1000);
-                }
+                seconds++;
+            });
+            Observable.Timer(TimeSpan.FromHours(7)).Subscribe(start2 =>
+            {
                 ServerManager.Instance.StartedEvents.Remove(EventType.TALENTARENA);
+                obs.Dispose();
             });
         }
-
     }
 }

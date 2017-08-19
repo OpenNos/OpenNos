@@ -392,6 +392,7 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; set; }
         public byte TicketLeft { get; set; }
+        public IDisposable Life { get; set; }
 
         #endregion
 
@@ -878,6 +879,7 @@ namespace OpenNos.GameObject
             GroupSentRequestCharacterIds.Clear();
             FamilyInviteCharacters.Clear();
             FriendRequestCharacters.Clear();
+            Session.Character.Life.Dispose();
         }
 
         public string GenerateAct()

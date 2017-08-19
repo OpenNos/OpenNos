@@ -69,6 +69,7 @@ namespace OpenNos.GameObject
         public long Target { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
+        public IDisposable Life { get; private set; }
 
         #endregion
 
@@ -151,7 +152,7 @@ namespace OpenNos.GameObject
 
         internal void StartLife()
         {
-            Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+            Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {
                 Started = true;
                 try
@@ -336,6 +337,7 @@ namespace OpenNos.GameObject
                 Path = BestFirstSearch.FindPath(new Node { X = MapX, Y = MapY }, new Node { X = FirstX, Y = FirstY }, MapInstance.Map.Grid);
             }
         }
+        
 
         #endregion
     }

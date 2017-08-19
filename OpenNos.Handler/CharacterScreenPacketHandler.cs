@@ -343,7 +343,7 @@ namespace OpenNos.Handler
                             mate.Monster = ServerManager.Instance.GetNpc(s.NpcMonsterVNum);
                             Session.Character.Mates.Add(mate);
                         });
-                        Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
+                        Session.Character.Life = Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
                         {
                             Session.Character.CharacterLife();
                         });

@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
-    public class InstanceBag
+    public class InstanceBag : IDisposable
     {
         #region Instantiation
 
@@ -58,6 +58,11 @@ namespace OpenNos.GameObject
         public Locker MonsterLocker { get;  set; }
         public Locker ButtonLocker { get;  set; }
         public List<EventContainer> UnlockEvents { get;  set; }
+
+        public void Dispose()
+        {
+            Clock.Dispose();
+        }
 
         #endregion
 
