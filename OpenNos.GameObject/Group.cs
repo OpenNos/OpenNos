@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public ConcurrentBag<ClientSession> Characters { get; }
+        public ConcurrentBag<ClientSession> Characters { get; set; }
 
         public long GroupId { get; set; }
 
@@ -149,7 +149,7 @@ namespace OpenNos.GameObject
             {
                 Characters.ToList().ForEach(s=> s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TEAM_LEADER_CHANGE"), Characters.ElementAt(0).Character?.Name), 0)));
             }
-            Characters.RemoveAll(s => s?.Character.CharacterId == session.Character.CharacterId);
+            Characters = Characters.Except(s => s?.Character.CharacterId == session.Character.CharacterId);
         }
 
         public bool IsLeader(ClientSession session)
