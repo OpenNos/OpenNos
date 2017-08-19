@@ -20,8 +20,8 @@ namespace OpenNos.Core
 
         public static ConcurrentBag<T> Where<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate)
         {
-            var Temp = new ConcurrentBag<T>();
-            queue.Where(predicate).ToList().ForEach(Line =>
+            ConcurrentBag<T> Temp = new ConcurrentBag<T>();
+            queue.ToList().Where(predicate).ToList().ForEach(Line =>
             {
                 Temp.Add(Line);
             });
