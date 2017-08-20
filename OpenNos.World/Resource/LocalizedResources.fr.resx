@@ -1558,4 +1558,22 @@ Veux-tu le porter ?</value>
   <data name="ZENAS" xml:space="preserve">
     <value>Tu fais partie de l'équipe Zénas.</value>
   </data>
+  <data name="CELLONING_FAILED" xml:space="preserve">
+    <value>Le cellon a disparu, car tu n'as pas réussi à ajouter des options.</value>
+  </data>
+  <data name="CELLONING_SUCCESS" xml:space="preserve">
+    <value>Options ajoutées.</value>
+  </data>
+  <data name="CELLON_LEVEL_TOO_HIGH" xml:space="preserve">
+    <value>Le niveau de ce cellon est trop élevé pour être utilisé sur ce objet.</value>
+  </data>
+  <data name="NOT_ENOUGH_GOLD" xml:space="preserve">
+    <value>Tu n'as pas assez d'or !</value>
+  </data>
+  <data name="SHELL_IDENTIFIED" xml:space="preserve">
+    <value>Les options sont identifiées.</value>
+  </data>
+  <data name="TOO_MUCH_CELLON" xml:space="preserve">
+    <value>Il y a trop de cellons !</value>
+  </data>
 </root>
