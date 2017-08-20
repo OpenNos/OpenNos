@@ -415,7 +415,10 @@ namespace OpenNos.GameObject
                     session.CurrentMapInstance.UnregisterSession(session.Character.CharacterId);
                     LeaveMap(session.Character.CharacterId);
                     session.Character.IsChangingMapInstance = true;
-
+                    if(session.Character.IsSitting)
+                    {
+                        session.Character.IsSitting = false;
+                    }
                     // cleanup sending queue to avoid sending uneccessary packets to it
                     session.ClearLowPriorityQueue();
 

@@ -337,14 +337,17 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ARENA_TICKET_LEFT"), Session.Character.TicketLeft), 10));
-                        ServerManager.Instance.ArenaMembers.Add(new ArenaMember()
+                        if (!ServerManager.Instance.ArenaMembers.Any(s => s.Session == Session))
                         {
-                            ArenaType = EventType.TALENTARENA,
-                            Session = Session,
-                            GroupId = null,
-                            Time = 0
-                        });
+                            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ARENA_TICKET_LEFT"), Session.Character.TicketLeft), 10));
+                            ServerManager.Instance.ArenaMembers.Add(new ArenaMember()
+                            {
+                                ArenaType = EventType.TALENTARENA,
+                                Session = Session,
+                                GroupId = null,
+                                Time = 0
+                            });
+                        }
                     }
                     break;
 

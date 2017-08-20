@@ -55,6 +55,7 @@ namespace OpenNos.GameObject.Helpers
         {
             return $"dlg {dialog}";
         }
+
         public string GenerateTaP(byte tatype, ConcurrentBag<ArenaTeamMember> arenateam2, ArenaTeamType type, bool showOponent)
         {
             List<ArenaTeamMember> arenateam = arenateam2.OrderBy(s => s.ArenaTeamType).ToList();
@@ -64,7 +65,7 @@ namespace OpenNos.GameObject.Helpers
                 ArenaTeamMember arenamembers = arenateam.FirstOrDefault(s => (i < 3 ? s.ArenaTeamType == type : s.ArenaTeamType != type) && s.Order == i % 3);
                 if (arenamembers != null && (i > 2 ? showOponent : true))
                 {
-                    groups += $"1.{arenamembers.Session.Character.CharacterId}.{(byte)arenamembers.Session.Character.Class}.{(byte)arenamembers.Session.Character.Gender}.{(byte)arenamembers.Session.Character.Morph} ";
+                    groups += $"{(arenamembers.Dead ? 0 : 1)}.{arenamembers.Session.Character.CharacterId}.{(byte)arenamembers.Session.Character.Class}.{(byte)arenamembers.Session.Character.Gender}.{(byte)arenamembers.Session.Character.Morph} ";
                 }
                 else
                 {
@@ -72,7 +73,7 @@ namespace OpenNos.GameObject.Helpers
                 }
             }
 
-            return $"ta_p {tatype} 2 5 5 {groups.TrimEnd(' ')}";
+            return $"ta_p {tatype} {(byte)type} 5 5 {groups.TrimEnd(' ')}";
         }
 
         public string GenerateFrank(byte type)
@@ -443,6 +444,11 @@ namespace OpenNos.GameObject.Helpers
             }
 
             return $"rc_blist {packet.Index} {itembazar} ";
+        }
+
+        public string GenerateTaF(byte victoriousteam )
+        {
+            return $"ta_f 0 {victoriousteam} 2 2 0 2 3 1 2";
         }
 
         public string GenerateTaM(int type, int timer)

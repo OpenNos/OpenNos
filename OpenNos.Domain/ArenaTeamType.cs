@@ -14,9 +14,9 @@
 
 namespace OpenNos.Domain
 {
-    public enum ArenaTeamType
+    public enum ArenaTeamType : byte
     {
-        ZENAS,
-        ERENIA
+        ZENAS = 1,
+        ERENIA = 2
     }
 }
