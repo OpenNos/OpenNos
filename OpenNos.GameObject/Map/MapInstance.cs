@@ -359,7 +359,7 @@ namespace OpenNos.GameObject
         public void MapClear()
         {
             Broadcast("mapclear");
-            GetMapItems().ForEach(s => Broadcast(s));
+            GetMapItems().ForEach(Broadcast);
         }
 
         public string GenerateMapDesignObjects()
@@ -415,8 +415,11 @@ namespace OpenNos.GameObject
                     ItemInstance newItemInstance = inv.DeepCopy();
                     newItemInstance.Id = random2;
                     newItemInstance.Amount = amount;
-                    droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance);
-
+                    droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance)
+                    {
+                        EquipmentOptions = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(inv.Id).ToList()
+                    };
+                    DAOFactory.EquipmentOptionDAO.Delete(inv.Id);
                     DroppedList[droppedItem.TransportId] = droppedItem;
                     inv.Amount -= amount;
                 }

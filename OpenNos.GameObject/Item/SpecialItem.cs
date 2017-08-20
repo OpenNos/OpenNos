@@ -40,6 +40,10 @@ namespace OpenNos.GameObject
 
             switch (Effect)
             {
+                case 0:
+                    if (VNum == 1429)
+                        session.SendPacket("guri 18 0");
+                    break;
                 // sp point potions
                 case 150:
                 case 151:

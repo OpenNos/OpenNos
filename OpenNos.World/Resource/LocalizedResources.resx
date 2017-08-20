@@ -1450,4 +1450,7 @@
   <data name="SEARCH_RIVAL_ARENA_TEAM" xml:space="preserve">
     <value>Searching opposing team</value>
   </data>
+  <data name="WORLD_SERVER_CONSOLE_TITLE" xml:space="preserve">
+    <value>WORLD SERVER - ID : {0} | Players : {1}</value>
+  </data>
 </root>

@@ -183,31 +183,28 @@ namespace OpenNos.GameObject
 
         public void AskPVPRevive(long characterId)
         {
-            ClientSession Session = GetSessionByCharacterId(characterId);
-            if (Session != null && Session.HasSelectedCharacter)
+            ClientSession session = GetSessionByCharacterId(characterId);
+            if (session != null && session.HasSelectedCharacter)
             {
-                if (Session.Character.IsVehicled)
+                if (session.Character.IsVehicled)
                 {
-                    Session.Character.RemoveVehicle();
+                    session.Character.RemoveVehicle();
                 }
-                List<BuffType> bufftodisable = new List<BuffType>();
-                bufftodisable.Add(BuffType.Bad);
-                bufftodisable.Add(BuffType.Good);
-                bufftodisable.Add(BuffType.Neutral);
-                Session.Character.DisableBuffs(bufftodisable);
-                Session.SendPacket(Session.Character.GenerateStat());
-                Session.SendPacket(Session.Character.GenerateCond());
-                Session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
-                Session.Character.LeaveTalentArena();
-                Session.SendPacket("eff_ob -1 -1 0 4269");
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
+                List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
+                session.Character.DisableBuffs(bufftodisable);
+                session.SendPacket(session.Character.GenerateStat());
+                session.SendPacket(session.Character.GenerateCond());
+                session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
+                session.Character.LeaveTalentArena();
+                session.SendPacket("eff_ob -1 -1 0 4269");
+                session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
                 Task.Factory.StartNew(async () =>
                 {
                     bool revive = true;
                     for (int i = 1; i <= 30; i++)
                     {
                         await Task.Delay(1000);
-                        if (Session.Character.Hp > 0)
+                        if (session.Character.Hp > 0)
                         {
                             revive = false;
                             break;
@@ -215,7 +212,7 @@ namespace OpenNos.GameObject
                     }
                     if (revive)
                     {
-                        Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                        Instance.ReviveFirstPosition(session.Character.CharacterId);
                     }
                 });
             }
@@ -231,10 +228,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.RemoveVehicle();
                 }
-                List<BuffType> bufftodisable = new List<BuffType>();
-                bufftodisable.Add(BuffType.Bad);
-                bufftodisable.Add(BuffType.Good);
-                bufftodisable.Add(BuffType.Neutral);
+                List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
                 Session.Character.DisableBuffs(bufftodisable);
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
@@ -384,21 +378,21 @@ namespace OpenNos.GameObject
             SpinWait.SpinUntil(() => !InBazaarRefreshMode);
         }
 
-        public void ChangeMap(long id, short? MapId = null, short? mapX = null, short? mapY = null)
+        public void ChangeMap(long id, short? mapId = null, short? mapX = null, short? mapY = null)
         {
             ClientSession session = GetSessionByCharacterId(id);
             if (session?.Character != null)
             {
-                if (MapId != null)
+                if (mapId != null)
                 {
-                    session.Character.MapInstanceId = GetBaseMapInstanceIdByMapId((short)MapId);
+                    session.Character.MapInstanceId = GetBaseMapInstanceIdByMapId((short)mapId);
                 }
                 ChangeMapInstance(id, session.Character.MapInstanceId, mapX, mapY);
             }
         }
 
         // Both partly
-        public void ChangeMapInstance(long id, Guid MapInstanceId, int? mapX = null, int? mapY = null)
+        public void ChangeMapInstance(long id, Guid mapInstanceId, int? mapX = null, int? mapY = null)
         {
             ClientSession session = GetSessionByCharacterId(id);
             if (session?.Character != null && !session.Character.IsChangingMapInstance)
@@ -425,7 +419,7 @@ namespace OpenNos.GameObject
                     // cleanup sending queue to avoid sending uneccessary packets to it
                     session.ClearLowPriorityQueue();
 
-                    session.Character.MapInstanceId = MapInstanceId;
+                    session.Character.MapInstanceId = mapInstanceId;
                     if (session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                     {
                         session.Character.MapId = session.Character.MapInstance.Map.MapId;
@@ -555,7 +549,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public override sealed void Dispose()
+        public sealed override void Dispose()
         {
             if (!_disposed)
             {
@@ -564,35 +558,32 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void FamilyRefresh(long FamilyId)
+        public void FamilyRefresh(long familyId)
         {
-            CommunicationServiceClient.Instance.UpdateFamily(ServerGroup, FamilyId);
+            CommunicationServiceClient.Instance.UpdateFamily(ServerGroup, familyId);
         }
 
         public MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
         {
             Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
-            if (map != null)
+            if (map == null) return null;
+            Guid guid = Guid.NewGuid();
+            MapInstance mapInstance = new MapInstance(map, guid, false, type, mapclock);
+            mapInstance.LoadMonsters();
+            mapInstance.LoadNpcs();
+            mapInstance.LoadPortals();
+            Parallel.ForEach(mapInstance.Monsters, mapMonster =>
             {
-                Guid guid = Guid.NewGuid();
-                MapInstance mapInstance = new MapInstance(map, guid, false, type, mapclock);
-                mapInstance.LoadMonsters();
-                mapInstance.LoadNpcs();
-                mapInstance.LoadPortals();
-                Parallel.ForEach(mapInstance.Monsters, mapMonster =>
-                {
-                    mapMonster.MapInstance = mapInstance;
-                    mapInstance.AddMonster(mapMonster);
-                });
-                Parallel.ForEach(mapInstance.Npcs, mapNpc =>
-                {
-                    mapNpc.MapInstance = mapInstance;
-                    mapInstance.AddNPC(mapNpc);
-                });
-                _mapinstances.TryAdd(guid, mapInstance);
-                return mapInstance;
-            }
-            return null;
+                mapMonster.MapInstance = mapInstance;
+                mapInstance.AddMonster(mapMonster);
+            });
+            Parallel.ForEach(mapInstance.Npcs, mapNpc =>
+            {
+                mapNpc.MapInstance = mapInstance;
+                mapInstance.AddNPC(mapNpc);
+            });
+            _mapinstances.TryAdd(guid, mapInstance);
+            return mapInstance;
         }
 
         public IEnumerable<Skill> GetAllSkill()

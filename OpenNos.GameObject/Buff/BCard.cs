@@ -36,7 +36,8 @@ namespace OpenNos.GameObject
                     {
                         if (ServerManager.Instance.RandomNumber() < FirstData)
                         {
-                            (session as Character).AddBuff(new Buff(SecondData, (session as Character).Level));
+                            Character character = session as Character;
+                            character?.AddBuff(new Buff(SecondData, character.Level));
                         }
                     }
                     else if (session.GetType() == typeof(MapMonster))
@@ -53,8 +54,10 @@ namespace OpenNos.GameObject
                 case BCardType.CardType.Move:
                     if (session.GetType() == typeof(Character))
                     {
-                        (session as Character).LastSpeedChange = DateTime.Now;
-                        (session as Character).Session.SendPacket((session as Character).GenerateCond());
+                        Character character = session as Character;
+                        if (character != null) character.LastSpeedChange = DateTime.Now;
+                        Character o = session as Character;
+                        o?.Session.SendPacket(o.GenerateCond());
                     }
                     break;
 
@@ -67,8 +70,11 @@ namespace OpenNos.GameObject
                         List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
                         for (int i = 0; i < FirstData; i++)
                         {
-                            short x = (short)(ServerManager.Instance.RandomNumber(-3, 3) + (session as MapMonster).MapX);
-                            short y = (short)(ServerManager.Instance.RandomNumber(-3, 3) + (session as MapMonster).MapY);
+                            MapMonster monster = session as MapMonster;
+                            if (monster == null) continue;
+                            short x = (short)(ServerManager.Instance.RandomNumber(-3, 3) + monster.MapX);
+                            MapMonster mapMonster = monster;
+                            short y = (short)(ServerManager.Instance.RandomNumber(-3, 3) + mapMonster.MapY);
                             summonParameters.Add(new MonsterToSummon((short)SecondData, new MapCell() { X = x, Y = y }, -1, true));
                         }
                         int rnd = ServerManager.Instance.RandomNumber();
@@ -77,12 +83,15 @@ namespace OpenNos.GameObject
                             switch (SubType)
                             {
                                 case 2:
-                                    EventHelper.Instance.RunEvent(new EventContainer((session as MapMonster).MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
+                                    MapMonster monster = session as MapMonster;
+                                    if (monster != null)
+                                        EventHelper.Instance.RunEvent(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     break;
                                 default:
-                                    if (!(session as MapMonster).OnDeathEvents.Any(s => s.EventActionType == EventActionType.SPAWNMONSTERS))
+                                    MapMonster mapMonster = session as MapMonster;
+                                    if (mapMonster != null && mapMonster.OnDeathEvents.All(s => s.EventActionType != EventActionType.SPAWNMONSTERS))
                                     {
-                                        (session as MapMonster).OnDeathEvents.Add(new EventContainer((session as MapMonster).MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
+                                        ((MapMonster) session).OnDeathEvents.Add(new EventContainer(((MapMonster) session).MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     }
                                     break;
                             }

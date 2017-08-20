@@ -12,29 +12,20 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using OpenNos.DAL.EF.DB;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.Mock
 {
-    public class CellonOptionDAO : SynchronizableBaseDAO<CellonOption, CellonOptionDTO>, ICellonOptionDAO
+    public class EquipmentOptionDAO : SynchronizableBaseDAO<EquipmentOptionDTO>, IEquipmentOptionDAO
     {
         #region Methods
 
-        public IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(Guid wearableInstanceId)
+        public IEnumerable<EquipmentOptionDTO> GetOptionsByWearableInstanceId(Guid inventoryitemId)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                foreach (CellonOption cellonOptionobject in context.CellonOption.Where(i => i.WearableInstanceId.Equals(wearableInstanceId)))
-                {
-                    yield return _mapper.Map<CellonOptionDTO>(cellonOptionobject);
-                }
-            }
+            throw new NotImplementedException();
         }
 
         #endregion

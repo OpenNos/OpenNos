@@ -75,14 +75,15 @@ namespace OpenNos.Master.Server
                     RegisterMappings();
 
                     // configure Services and Service Host
-                    IScsServiceApplication _server = ScsServiceBuilder.CreateService(new ScsTcpEndPoint(ipAddress, port));
+                    IScsServiceApplication server = ScsServiceBuilder.CreateService(new ScsTcpEndPoint(ipAddress, port));
 
-                    _server.AddService<ICommunicationService, CommunicationService>(new CommunicationService());
-                    _server.ClientConnected += OnClientConnected;
-                    _server.ClientDisconnected += OnClientDisconnected;
+                    server.AddService<ICommunicationService, CommunicationService>(new CommunicationService());
+                    server.ClientConnected += OnClientConnected;
+                    server.ClientDisconnected += OnClientDisconnected;
 
-                    _server.Start();
+                    server.Start();
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
+                    Console.Title = $"MASTER SERVER - Channels :{MSManager.Instance.WorldServers.Count} - Players : {MSManager.Instance.ConnectedAccounts.Count}";
                 }
                 catch (Exception ex)
                 {
@@ -118,7 +119,7 @@ namespace OpenNos.Master.Server
 
             // entities
             DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
-            DAOFactory.CellonOptionDAO.RegisterMapping(typeof(CellonOptionDTO)).InitializeMapper();
+            DAOFactory.EquipmentOptionDAO.RegisterMapping(typeof(EquipmentOptionDTO)).InitializeMapper();
             DAOFactory.CharacterDAO.RegisterMapping(typeof(Character)).InitializeMapper();
             DAOFactory.CharacterRelationDAO.RegisterMapping(typeof(CharacterRelationDTO)).InitializeMapper();
             DAOFactory.CharacterSkillDAO.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();

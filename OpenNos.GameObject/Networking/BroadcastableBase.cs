@@ -139,19 +139,19 @@ namespace OpenNos.GameObject
             {
                 session.CurrentMapInstance.IsSleeping = false;
             }
+            Console.Title = $"WORLD SERVER - ID : {ServerManager.Instance.ChannelId} | Players : {_sessions.Count}";
         }
 
         public void UnregisterSession(long characterId)
         {
             // Remove client from online clients list
-            if (_sessions.TryRemove(characterId, out ClientSession session))
+            if (!_sessions.TryRemove(characterId, out ClientSession session)) return;
+            if (session.HasCurrentMapInstance && _sessions.Count == 0)
             {
-                if (session.HasCurrentMapInstance && _sessions.Count == 0)
-                {
-                    session.CurrentMapInstance.IsSleeping = true;
-                }
-                LastUnregister = DateTime.Now;
+                session.CurrentMapInstance.IsSleeping = true;
             }
+            LastUnregister = DateTime.Now;
+            Console.Title = $"WORLD SERVER - ID : {ServerManager.Instance.ChannelId} | Players : {_sessions.Count}";
         }
 
         private void SpreadBroadcastpacket(BroadcastPacket sentPacket)

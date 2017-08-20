@@ -25,7 +25,7 @@ namespace OpenNos.DAL.EF
 
         public byte? Cellon { get; set; }
 
-        public virtual ICollection<CellonOption> CellonOption { get; set; }
+        public virtual ICollection<EquipmentOption> CellonOption { get; set; }
 
         public Guid? CellonOptionId { get; set; }
 

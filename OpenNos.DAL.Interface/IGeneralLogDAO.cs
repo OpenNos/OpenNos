@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IGeneralLogDAO : IMappingBaseDAO
+    public interface IGeneralLogDao : IMappingBaseDAO
     {
         #region Methods
 
@@ -29,9 +29,9 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<GeneralLogDTO> LoadByAccount(long? accountId);
 
-        IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, long? CharacterId);
+        IEnumerable<GeneralLogDTO> LoadByLogType(string logType, long? characterId);
 
-        void SetCharIdNull(long? CharacterId);
+        void SetCharIdNull(long? characterId);
 
         void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData);
 

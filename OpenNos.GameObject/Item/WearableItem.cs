@@ -34,25 +34,25 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
         {
             switch (Effect)
             {
                 default:
                     bool delay = false;
-                    if (Option == 255)
+                    if (option == 255)
                     {
                         delay = true;
-                        Option = 0;
+                        option = 0;
                     }
                     Mate mate = null;
-                    if (Option != 0)
+                    if (option != 0)
                     {
-                        mate = session.Character.Mates.FirstOrDefault(s => s.MateType == MateType.Partner && s.PetId == Option - 1);
+                        mate = session.Character.Mates.FirstOrDefault(s => s.MateType == MateType.Partner && s.PetId == option - 1);
                     }
                     short slot = inv.Slot;
                     InventoryType equipment = InventoryType.Wear;
-                    switch (Option)
+                    switch (option)
                     {
                         case 1:
                             equipment = InventoryType.FirstPartnerInventory;
@@ -72,6 +72,11 @@ namespace OpenNos.GameObject
                     if (inv == null)
                     {
                         return;
+                    }
+                    // APPLY SHELL ON EQUIPMENT
+                    if (itemToWearType == (InventoryType)6)
+                    {
+
                     }
                     if (ItemValidTime > 0 && inv.IsBound)
                     {
@@ -98,7 +103,7 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    if (Option == 0)
+                    if (option == 0)
                     {
                         if (EquipmentSlot == EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown && session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Specialist) != null)
                         {
@@ -106,13 +111,9 @@ namespace OpenNos.GameObject
                             return;
                         }
 
-                        if (ItemType != ItemType.Weapon
-                            && ItemType != ItemType.Armor
-                            && ItemType != ItemType.Fashion
-                            && ItemType != ItemType.Jewelery
-                            && ItemType != ItemType.Specialist
-                            || LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) || Sex != 0 && Sex != (byte)session.Character.Gender + 1
-                            || ItemType != ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves && ((Class >> (byte)session.Character.Class) & 1) != 1)
+                        if (ItemType != ItemType.Weapon && ItemType != ItemType.Armor && ItemType != ItemType.Fashion && ItemType != ItemType.Jewelery && ItemType != ItemType.Specialist ||
+                            LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) || Sex != 0 && Sex != (byte) session.Character.Gender + 1
+                            || ItemType != ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves && ((Class >> (byte) session.Character.Class) & 1) != 1)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                             return;
@@ -143,9 +144,7 @@ namespace OpenNos.GameObject
                     }
                     else if (mate != null)
                     {
-                        if ((EquipmentSlot != EquipmentType.Gloves
-                             && EquipmentSlot != EquipmentType.Boots)
-                            || LevelMinimum > mate.Level)
+                        if (EquipmentSlot != EquipmentType.Gloves && EquipmentSlot != EquipmentType.Boots || LevelMinimum > mate.Level)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                             return;
@@ -169,7 +168,7 @@ namespace OpenNos.GameObject
                     }
                     session.Character.EquipmentBCards.AddRange(inv.Item.BCards);
 
-                    if (Option == 0)
+                    if (option == 0)
                     {
                         session.SendPacket(session.Character.GenerateStatChar());
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateEq());

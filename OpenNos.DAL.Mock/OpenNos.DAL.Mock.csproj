@@ -75,7 +75,7 @@
     <Compile Include="BazaarItemDAO.cs" />
     <Compile Include="BCardDAO.cs" />
     <Compile Include="CardDAO.cs" />
-    <Compile Include="CellonOptionDAO.cs" />
+    <Compile Include="EquipmentOptionDAO.cs" />
     <Compile Include="CharacterDAO.cs" />
     <Compile Include="CharacterRelationDAO.cs" />
     <Compile Include="CharacterSkillDAO.cs" />

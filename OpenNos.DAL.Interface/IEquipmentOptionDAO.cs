@@ -18,11 +18,11 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface ICellonOptionDAO : ISynchronizableBaseDAO<CellonOptionDTO>
+    public interface IEquipmentOptionDAO : ISynchronizableBaseDAO<EquipmentOptionDTO>
     {
         #region Methods
 
-        IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(Guid inventoryitemId);
+        IEnumerable<EquipmentOptionDTO> GetOptionsByWearableInstanceId(Guid inventoryitemId);
 
         #endregion
     }

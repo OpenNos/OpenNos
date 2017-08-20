@@ -2252,6 +2252,9 @@ namespace OpenNos.GameObject
 
         public string GeneratePairy()
         {
+            // FAIRY BUFF CARD ID
+            bool isBuffed = Buff.Any(b => b.Card.CardId == 131);
+            
             WearableInstance fairy = null;
             if (Inventory != null)
             {
@@ -2259,15 +2262,12 @@ namespace OpenNos.GameObject
             }
             ElementRate = 0;
             Element = 0;
-            if (fairy != null)
-            {
-                ElementRate += fairy.ElementRate + fairy.Item.ElementRate;
-                Element = fairy.Item.Element;
-            }
+            if (fairy == null)
+                return $"pairy 1 {CharacterId} 0 0 0 0";
+            ElementRate += fairy.ElementRate + fairy.Item.ElementRate + (isBuffed ? 30 : 0);
+            Element = fairy.Item.Element;
 
-            return fairy != null
-                ? $"pairy 1 {CharacterId} 4 {fairy.Item.Element} {fairy.ElementRate + fairy.Item.ElementRate} {fairy.Item.Morph}"
-                : $"pairy 1 {CharacterId} 0 0 0 0";
+            return $"pairy 1 {CharacterId} 4 {fairy.Item.Element} {fairy.ElementRate + fairy.Item.ElementRate} {fairy.Item.Morph + (isBuffed ? 5 : 0)}";
         }
 
         public string GenerateParcel(MailDTO mail)
@@ -2280,15 +2280,8 @@ namespace OpenNos.GameObject
             if (!isLeaveGroup && Group != null)
             {
                 string str = $"pidx {Group.GroupId}";
-                string result = str;
-                foreach (ClientSession s in Group.Characters)
-                {
-                    if (s.Character != null)
-                    {
-                        result = result + $" {(Group.IsMemberOfGroup(CharacterId) ? 1 : 0)}.{s.Character.CharacterId} ";
-                    }
-                }
-                return result;
+                return Enumerable.Where(Group.Characters, s => s.Character != null)
+                    .Aggregate(str, (current, s) => current + $" {(Group.IsMemberOfGroup(CharacterId) ? 1 : 0)}.{s.Character.CharacterId} ");
             }
             return $"pidx -1 1.{CharacterId}";
         }
@@ -2307,13 +2300,11 @@ namespace OpenNos.GameObject
                     str += $" 2|{mate.MateTransportId}|{(mate.MateType == MateType.Partner ? "0" : "1")}|{mate.Level}|{mate.Name.Replace(' ', '^')}|-1|{mate.Monster.NpcMonsterVNum}|0";
                 }
             }
-            if (grp != null)
+            if (grp == null) return $"pinit {i}{str}";
+            foreach (ClientSession groupSessionForId in grp.Characters)
             {
-                foreach (ClientSession groupSessionForId in grp.Characters)
-                {
-                    i++;
-                    str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{(byte)groupSessionForId.Character.Gender}|{(byte)groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
-                }
+                i++;
+                str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{(byte)groupSessionForId.Character.Gender}|{(byte)groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
             }
             return $"pinit {i}{str}";
         }
@@ -3051,7 +3042,7 @@ namespace OpenNos.GameObject
                     {
                         if ((bz.Item as WearableInstance) != null)
                         {
-                            info = (bz.Item as WearableInstance).GenerateEInfo().Replace(' ', '^').Replace("e_info^", "");
+                            info = ((WearableInstance) bz.Item).GenerateEInfo().Replace(' ', '^').Replace("e_info^", "");
                         }
                     }
 
@@ -3173,19 +3164,16 @@ namespace OpenNos.GameObject
         {
             IEnumerable<CharacterSkill> characterSkills = UseSp ? SkillsSp.Select(s=>s.Value) : Skills.Select(s => s.Value);
             string skibase = string.Empty;
+            IEnumerable<CharacterSkill> enumerable = characterSkills as IList<CharacterSkill> ?? characterSkills.ToList();
             if (!UseSp)
             {
                 skibase = $"{200 + 20 * (byte)Class} {201 + 20 * (byte)Class}";
             }
-            else if (characterSkills.Any())
+            else if (enumerable.Any())
             {
-                skibase = $"{characterSkills.ElementAt(0).SkillVNum} {characterSkills.ElementAt(0).SkillVNum}";
+                skibase = $"{enumerable.ElementAt(0).SkillVNum} {enumerable.ElementAt(0).SkillVNum}";
             }
-            string generatedSkills = string.Empty;
-            foreach (CharacterSkill ski in characterSkills)
-            {
-                generatedSkills += $" {ski.SkillVNum}";
-            }
+            string generatedSkills = enumerable.Aggregate(string.Empty, (current, ski) => current + $" {ski.SkillVNum}");
 
             return $"ski {skibase}{generatedSkills}";
         }

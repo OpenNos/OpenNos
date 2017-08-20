@@ -23,7 +23,7 @@ using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
-    public class GeneralLogDAO : MappingBaseDAO<GeneralLog, GeneralLogDTO>, IGeneralLogDAO
+    public class GeneralLogDAO : MappingBaseDAO<GeneralLog, GeneralLogDTO>, IGeneralLogDao
     {
         #region Methods
 

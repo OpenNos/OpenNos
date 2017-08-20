@@ -43,7 +43,7 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<BCard> BCard { get; set; }
 
-        public virtual DbSet<CellonOption> CellonOption { get; set; }
+        public virtual DbSet<EquipmentOption> EquipmentOption { get; set; }
 
         public virtual DbSet<Character> Character { get; set; }
 
@@ -68,6 +68,8 @@ namespace OpenNos.DAL.EF.DB
         public virtual DbSet<Item> Item { get; set; }
 
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
+
+        public virtual DbSet<LogChat> LogChat { get; set; }
 
         public virtual DbSet<Mail> Mail { get; set; }
 

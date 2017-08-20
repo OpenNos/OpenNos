@@ -30,6 +30,8 @@ namespace OpenNos.Data
 
         public string FamilyMessage { get; set; }
 
+        public byte FamilyFaction { get; set; }
+
         public FamilyAuthorityType ManagerAuthorityType { get; set; }
 
         public bool ManagerCanGetHistory { get; set; }

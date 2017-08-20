@@ -25,6 +25,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using OpenNos.Master.Library.Data;
 
 namespace OpenNos.GameObject
 {

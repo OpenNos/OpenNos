@@ -45,13 +45,9 @@ namespace OpenNos.Master.Server
                 return false;
             }
 
-            if (authKey == ConfigurationManager.AppSettings["MasterAuthKey"])
-            {
-                MSManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
-                return true;
-            }
-
-            return false;
+            if (authKey != ConfigurationManager.AppSettings["MasterAuthKey"]) return false;
+            MSManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
+            return true;
         }
 
         public void Cleanup()
@@ -76,7 +72,7 @@ namespace OpenNos.Master.Server
             {
                 account.ConnectedWorld = MSManager.Instance.WorldServers.FirstOrDefault(w => w.Id.Equals(worldId));
             }
-            return account.ConnectedWorld == null ? false : true;
+            return account?.ConnectedWorld != null;
         }
 
         public bool ConnectCharacter(Guid worldId, long characterId)
@@ -89,17 +85,15 @@ namespace OpenNos.Master.Server
             //Multiple WorldGroups not yet supported by DAOFactory
             long accountId = DAOFactory.CharacterDAO.LoadById(characterId)?.AccountId ?? 0;
 
-            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId) && (a.ConnectedWorld?.Id.Equals(worldId) == true));
-            if (account != null)
+            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId) && a.ConnectedWorld?.Id.Equals(worldId) == true);
+            if (account == null) return false;
+            account.CharacterId = characterId;
+            foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(account.ConnectedWorld.WorldGroup)))
             {
-                account.CharacterId = characterId;
-                foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(account.ConnectedWorld.WorldGroup)))
-                {
-                    world.ServiceClient.GetClientProxy<ICommunicationClient>().CharacterConnected(characterId);
-                }
-                return true;
+                world.ServiceClient.GetClientProxy<ICommunicationClient>().CharacterConnected(characterId);
             }
-            return false;
+            Console.Title = $"MASTER SERVER - Channels :{MSManager.Instance.WorldServers.Count} - Players : {MSManager.Instance.ConnectedAccounts.Count(s => s.CharacterId != 0)}";
+            return true;
         }
 
         public void DisconnectAccount(long accountId)
@@ -127,6 +121,7 @@ namespace OpenNos.Master.Server
                 }
                 account.CharacterId = 0;
                 account.ConnectedWorld = null;
+                Console.Title = $"MASTER SERVER - Channels :{MSManager.Instance.WorldServers.Count} - Players : {MSManager.Instance.ConnectedAccounts.Count(s => s.CharacterId != 0)}";
             }
         }
 
