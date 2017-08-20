@@ -1916,12 +1916,6 @@ namespace OpenNos.Handler
             {
                 ItemInstance item2 = item.DeepCopy();
                 item2.Id = Guid.NewGuid();
-                IEnumerable<EquipmentOptionDTO> options = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id);
-                foreach (EquipmentOptionDTO i in options)
-                {
-                    i.WearableInstanceId = item2.Id;
-                    DAOFactory.EquipmentOptionDAO.InsertOrUpdate(i);
-                }
                 List<ItemInstance> inv = targetSession.Character.Inventory.AddToInventory(item2);
                 if (!inv.Any())
                 {

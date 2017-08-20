@@ -36,17 +36,20 @@ namespace OpenNos.GameObject
         public WearableInstance()
         {
             _random = new Random();
+            EquipmentOptions = new List<EquipmentOptionDTO>();
         }
 
         public WearableInstance(Guid id)
         {
             Id = id;
             _random = new Random();
+            EquipmentOptions = new List<EquipmentOptionDTO>();
         }
 
         public WearableInstance(short vNum, byte amount) : base(vNum, amount)
         {
             _random = new Random();
+            EquipmentOptions = new List<EquipmentOptionDTO>();
         }
 
         #endregion
@@ -237,7 +240,7 @@ namespace OpenNos.GameObject
                     }
 
                 case ItemType.Shell:
-                    return $"e_info 9 {ItemVNum} {Upgrade} {Rare} {Item.Price} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Level % 13}.{option.Type % 51}.{option.Value}")}";
+                    return $"e_info 9 {ItemVNum} {Upgrade} {Rare} {Item.Price} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {(option.Level > 12 ? option.Level - 12 : option.Level)}.{(option.Type > 50 ? option.Type - 50 : option.Type)}.{option.Value}")}";
             }
             return string.Empty;
         }
