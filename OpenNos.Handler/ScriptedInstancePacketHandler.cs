@@ -185,7 +185,10 @@ namespace OpenNos.Handler
                 if (treqPacket.StartPress == 1 || treqPacket.RecordPress == 1)
                 {
                     timespace.LoadScript(MapInstanceType.TimeSpaceInstance);
-                    if (timespace.FirstMap == null) return;
+                    if (timespace.FirstMap == null)
+                    {
+                        return;
+                    }
                     foreach (Gift i in timespace.RequieredItems)
                     {
                         if (Session.Character.Inventory.CountItem(i.VNum) < i.Amount)
@@ -229,7 +232,10 @@ namespace OpenNos.Handler
                     {
                         Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
                     }
-                    if (Session.Character.Group.Raid.FirstMap == null) return;
+                    if (Session.Character.Group.Raid.FirstMap == null)
+                    {
+                        return;
+                    }
                     Session.Character.Group.Raid.FirstMap.InstanceBag.Lock = true;
 
                     Session.Character.Group.Characters.Where(s => s.CurrentMapInstance != Session.CurrentMapInstance).ToList().ForEach(

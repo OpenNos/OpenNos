@@ -145,7 +145,10 @@ namespace OpenNos.GameObject
         public void UnregisterSession(long characterId)
         {
             // Remove client from online clients list
-            if (!_sessions.TryRemove(characterId, out ClientSession session)) return;
+            if (!_sessions.TryRemove(characterId, out ClientSession session))
+            {
+                return;
+            }
             if (session.HasCurrentMapInstance && _sessions.Count == 0)
             {
                 session.CurrentMapInstance.IsSleeping = true;

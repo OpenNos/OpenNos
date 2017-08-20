@@ -537,7 +537,10 @@ namespace OpenNos.Handler
                             string rece = $"m_list 3 {rec.Amount}";
                             foreach (RecipeItemDTO ite in rec.Items)
                             {
-                                if (ite.Amount > 0) rece = rece + $" {ite.ItemVNum} {ite.Amount}";
+                                if (ite.Amount > 0)
+                                {
+                                    rece = rece + $" {ite.ItemVNum} {ite.Amount}";
+                                }
                             }
                             rece += " -1";
                             Session.SendPacket(rece);

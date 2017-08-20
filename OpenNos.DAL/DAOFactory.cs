@@ -195,7 +195,10 @@ namespace OpenNos.DAL
         {
             get
             {
-                if (_equipmentOptionDAO != null) return _equipmentOptionDAO;
+                if (_equipmentOptionDAO != null)
+                {
+                    return _equipmentOptionDAO;
+                }
                 if (_useMock)
                 {
                     _equipmentOptionDAO = new EquipmentOptionDAO();

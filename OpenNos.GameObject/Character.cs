@@ -1307,7 +1307,9 @@ namespace OpenNos.GameObject
             if (skill.Type == 1)
             {
                 if (Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) < 4)
+                {
                     baseDamage = (int)(baseDamage * 0.85);
+                }
             }
 
             #endregion
@@ -1486,7 +1488,9 @@ namespace OpenNos.GameObject
                     {
                         double multiplier = mainCritHit / 100D;
                         if (multiplier > 3)
+                        {
                             multiplier = 3;
+                        }
                         baseDamage += (int)(baseDamage * multiplier);
                         hitmode = 3;
                     }
@@ -1494,7 +1498,9 @@ namespace OpenNos.GameObject
                     {
                         double multiplier = mainCritHit / 100D;
                         if (multiplier > 3)
+                        {
                             multiplier = 3;
+                        }
                         baseDamage += (int)(baseDamage * multiplier);
                         hitmode = 3;
                     }
@@ -1677,10 +1683,16 @@ namespace OpenNos.GameObject
 
             for (short i = 0; i < 16; i++)
             {
-                if (Inventory == null) continue;
+                if (Inventory == null)
+                {
+                    continue;
+                }
                 ItemInstance item = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear) ??
                                     Inventory.LoadBySlotAndType<SpecialistInstance>(i, InventoryType.Wear);
-                if (item == null) continue;
+                if (item == null)
+                {
+                    continue;
+                }
                 switch (item.Item.EquipmentSlot)
                 {
                     case EquipmentType.Armor:
@@ -1806,8 +1818,14 @@ namespace OpenNos.GameObject
 
         public void GenerateFamilyXp(int FXP)
         {
-            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockFExp && s.DateEnd > DateTime.Now)) return;
-            if (Family == null || FamilyCharacter == null) return;
+            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockFExp && s.DateEnd > DateTime.Now))
+            {
+                return;
+            }
+            if (Family == null || FamilyCharacter == null)
+            {
+                return;
+            }
             FamilyCharacterDTO famchar = FamilyCharacter;
             FamilyDTO fam = Family;
             fam.FamilyExperience += FXP;
@@ -1891,7 +1909,10 @@ namespace OpenNos.GameObject
 
         public string GenerateGInfo()
         {
-            if (Family == null) return string.Empty;
+            if (Family == null)
+            {
+                return string.Empty;
+            }
             try
             {
                 FamilyCharacter familyCharacter = Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
@@ -1964,10 +1985,16 @@ namespace OpenNos.GameObject
                 }
 
                 // end owner set
-                if (!Session.HasCurrentMapInstance) return;
+                if (!Session.HasCurrentMapInstance)
+                {
+                    return;
+                }
 
                 List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMapInstance.Map.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || s.MapTypeId == null).ToList();
-                if (monsterToAttack.Monster.MonsterType == MonsterType.Special) return;
+                if (monsterToAttack.Monster.MonsterType == MonsterType.Special)
+                {
+                    return;
+                }
 
                 #region item drop
 
@@ -1975,17 +2002,29 @@ namespace OpenNos.GameObject
                 int x = 0;
                 foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
                 {
-                    if (x >= 4) continue;
+                    if (x >= 4)
+                    {
+                        continue;
+                    }
                     double rndamount = ServerManager.Instance.RandomNumber() * random.NextDouble();
-                    if (!(rndamount <= (double) drop.DropChance * dropRate / 5000d)) continue;
+                    if (!(rndamount <= (double) drop.DropChance * dropRate / 5000d))
+                    {
+                        continue;
+                    }
                     x++;
-                    if (Session.CurrentMapInstance == null) continue;
+                    if (Session.CurrentMapInstance == null)
+                    {
+                        continue;
+                    }
                     if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                     {
                         List<long> alreadyGifted = new List<long>();
                         foreach (long charId in monsterToAttack.DamageList.Keys)
                         {
-                            if (alreadyGifted.Contains(charId)) continue;
+                            if (alreadyGifted.Contains(charId))
+                            {
+                                continue;
+                            }
                             ClientSession giftsession = ServerManager.Instance.GetSessionByCharacterId(charId);
                             giftsession?.Character.GiftAdd(drop.ItemVNum, (byte) drop.Amount);
                             alreadyGifted.Add(charId);
@@ -2050,7 +2089,10 @@ namespace OpenNos.GameObject
                             List<long> alreadyGifted = new List<long>();
                             foreach (long charId in monsterToAttack.DamageList.Keys)
                             {
-                                if (alreadyGifted.Contains(charId)) continue;
+                                if (alreadyGifted.Contains(charId))
+                                {
+                                    continue;
+                                }
                                 ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
                                 if (session != null)
                                 {
@@ -2109,7 +2151,10 @@ namespace OpenNos.GameObject
 
                 #region exp
 
-                if (Hp <= 0) return;
+                if (Hp <= 0)
+                {
+                    return;
+                }
                 Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
                 if (grp != null)
                 {
@@ -2161,14 +2206,23 @@ namespace OpenNos.GameObject
 
         public void GenerateMiniland()
         {
-            if (Miniland != null) return;
+            if (Miniland != null)
+            {
+                return;
+            }
             Miniland = ServerManager.Instance.GenerateMapInstance(20001, MapInstanceType.NormalInstance, new InstanceBag());
             foreach (MinilandObjectDTO obj in DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId))
             {
                 MapDesignObject mapobj = (MapDesignObject) obj;
-                if (mapobj.ItemInstanceId == null) continue;
+                if (mapobj.ItemInstanceId == null)
+                {
+                    continue;
+                }
                 ItemInstance item = Inventory.LoadByItemInstance<ItemInstance>((Guid) mapobj.ItemInstanceId);
-                if (item == null) continue;
+                if (item == null)
+                {
+                    continue;
+                }
                 mapobj.ItemInstance = item;
                 Miniland.MapDesignObjects.Add(mapobj);
             }
@@ -2241,7 +2295,9 @@ namespace OpenNos.GameObject
             ElementRate = 0;
             Element = 0;
             if (fairy == null)
+            {
                 return $"pairy 1 {CharacterId} 0 0 0 0";
+            }
             ElementRate += fairy.ElementRate + fairy.Item.ElementRate + (isBuffed ? 30 : 0);
             Element = fairy.Item.Element;
 
@@ -2255,7 +2311,10 @@ namespace OpenNos.GameObject
 
         public string GeneratePidx(bool isLeaveGroup = false)
         {
-            if (isLeaveGroup || Group == null) return $"pidx -1 1.{CharacterId}";
+            if (isLeaveGroup || Group == null)
+            {
+                return $"pidx -1 1.{CharacterId}";
+            }
             string str = $"pidx {Group.GroupId}";
             return Enumerable.Where(Group.Characters, s => s.Character != null)
                 .Aggregate(str, (current, s) => current + $" {(Group.IsMemberOfGroup(CharacterId) ? 1 : 0)}.{s.Character.CharacterId} ");
@@ -2275,7 +2334,10 @@ namespace OpenNos.GameObject
                     str += $" 2|{mate.MateTransportId}|{(mate.MateType == MateType.Partner ? "0" : "1")}|{mate.Level}|{mate.Name.Replace(' ', '^')}|-1|{mate.Monster.NpcMonsterVNum}|0";
                 }
             }
-            if (grp == null) return $"pinit {i}{str}";
+            if (grp == null)
+            {
+                return $"pinit {i}{str}";
+            }
             foreach (ClientSession groupSessionForId in grp.Characters)
             {
                 i++;
@@ -2748,7 +2810,9 @@ namespace OpenNos.GameObject
             if (skill.Type == 1)
             {
                 if (Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = target.PositionX, Y = target.PositionY }) < 4)
+                {
                     baseDamage = (int)(baseDamage * 0.85);
+                }
             }
 
             #endregion
@@ -2939,7 +3003,9 @@ namespace OpenNos.GameObject
                     {
                         double multiplier = mainCritHit / 100D;
                         if (multiplier > 3)
+                        {
                             multiplier = 3;
+                        }
                         baseDamage += (int)(baseDamage * multiplier);
                         hitmode = 3;
                     }
@@ -2947,7 +3013,9 @@ namespace OpenNos.GameObject
                     {
                         double multiplier = mainCritHit / 100D;
                         if (multiplier > 3)
+                        {
                             multiplier = 3;
+                        }
                         baseDamage += (int)(baseDamage * multiplier);
                         hitmode = 3;
                     }
@@ -3343,31 +3411,57 @@ namespace OpenNos.GameObject
 
                     int p = 0;
                     if (point <= 10)
+                    {
                         p = point * 5;
+                    }
                     else if (point <= 20)
+                    {
                         p = 50 + (point - 10) * 6;
+                    }
                     else if (point <= 30)
+                    {
                         p = 110 + (point - 20) * 7;
+                    }
                     else if (point <= 40)
+                    {
                         p = 180 + (point - 30) * 8;
+                    }
                     else if (point <= 50)
+                    {
                         p = 260 + (point - 40) * 9;
+                    }
                     else if (point <= 60)
+                    {
                         p = 350 + (point - 50) * 10;
+                    }
                     else if (point <= 70)
+                    {
                         p = 450 + (point - 60) * 11;
+                    }
                     else if (point <= 80)
+                    {
                         p = 560 + (point - 70) * 13;
+                    }
                     else if (point <= 90)
+                    {
                         p = 690 + (point - 80) * 14;
+                    }
                     else if (point <= 94)
+                    {
                         p = 830 + (point - 90) * 15;
+                    }
                     else if (point <= 95)
+                    {
                         p = 890 + 16;
+                    }
                     else if (point <= 97)
+                    {
                         p = 906 + (point - 95) * 17;
+                    }
                     else if (point <= 100)
+                    {
                         p = 940 + (point - 97) * 20;
+                    }
                     MaxHit += p;
                     MinHit += p;
                     MaxDistance += p;
@@ -3376,25 +3470,45 @@ namespace OpenNos.GameObject
                     point = CharacterHelper.SlPoint(specialist.SlDefence, 1);
                     p = 0;
                     if (point <= 10)
+                    {
                         p = point;
+                    }
                     else if (point <= 20)
+                    {
                         p = 10 + (point - 10) * 2;
+                    }
                     else if (point <= 30)
+                    {
                         p = 30 + (point - 20) * 3;
+                    }
                     else if (point <= 40)
+                    {
                         p = 60 + (point - 30) * 4;
+                    }
                     else if (point <= 50)
+                    {
                         p = 100 + (point - 40) * 5;
+                    }
                     else if (point <= 60)
+                    {
                         p = 150 + (point - 50) * 6;
+                    }
                     else if (point <= 70)
+                    {
                         p = 210 + (point - 60) * 7;
+                    }
                     else if (point <= 80)
+                    {
                         p = 280 + (point - 70) * 8;
+                    }
                     else if (point <= 90)
+                    {
                         p = 360 + (point - 80) * 9;
+                    }
                     else if (point <= 100)
+                    {
                         p = 450 + (point - 90) * 10;
+                    }
                     Defence += p;
                     MagicalDefence += p;
                     DistanceDefence += p;
@@ -3644,31 +3758,106 @@ namespace OpenNos.GameObject
                         return 32;
                 }
             }
-            if (Reput <= 50) return 1;
-            if (Reput <= 150) return 2;
-            if (Reput <= 250) return 3;
-            if (Reput <= 500) return 4;
-            if (Reput <= 750) return 5;
-            if (Reput <= 1000) return 6;
-            if (Reput <= 2250) return 7;
-            if (Reput <= 3500) return 8;
-            if (Reput <= 5000) return 9;
-            if (Reput <= 9500) return 10;
-            if (Reput <= 19000) return 11;
-            if (Reput <= 25000) return 12;
-            if (Reput <= 40000) return 13;
-            if (Reput <= 60000) return 14;
-            if (Reput <= 85000) return 15;
-            if (Reput <= 115000) return 16;
-            if (Reput <= 150000) return 17;
-            if (Reput <= 190000) return 18;
-            if (Reput <= 235000) return 19;
-            if (Reput <= 285000) return 20;
-            if (Reput <= 350000) return 21;
-            if (Reput <= 500000) return 22;
-            if (Reput <= 1500000) return 23;
-            if (Reput <= 2500000) return 24;
-            if (Reput <= 3750000) return 25;
+            if (Reput <= 50)
+            {
+                return 1;
+            }
+            if (Reput <= 150)
+            {
+                return 2;
+            }
+            if (Reput <= 250)
+            {
+                return 3;
+            }
+            if (Reput <= 500)
+            {
+                return 4;
+            }
+            if (Reput <= 750)
+            {
+                return 5;
+            }
+            if (Reput <= 1000)
+            {
+                return 6;
+            }
+            if (Reput <= 2250)
+            {
+                return 7;
+            }
+            if (Reput <= 3500)
+            {
+                return 8;
+            }
+            if (Reput <= 5000)
+            {
+                return 9;
+            }
+            if (Reput <= 9500)
+            {
+                return 10;
+            }
+            if (Reput <= 19000)
+            {
+                return 11;
+            }
+            if (Reput <= 25000)
+            {
+                return 12;
+            }
+            if (Reput <= 40000)
+            {
+                return 13;
+            }
+            if (Reput <= 60000)
+            {
+                return 14;
+            }
+            if (Reput <= 85000)
+            {
+                return 15;
+            }
+            if (Reput <= 115000)
+            {
+                return 16;
+            }
+            if (Reput <= 150000)
+            {
+                return 17;
+            }
+            if (Reput <= 190000)
+            {
+                return 18;
+            }
+            if (Reput <= 235000)
+            {
+                return 19;
+            }
+            if (Reput <= 285000)
+            {
+                return 20;
+            }
+            if (Reput <= 350000)
+            {
+                return 21;
+            }
+            if (Reput <= 500000)
+            {
+                return 22;
+            }
+            if (Reput <= 1500000)
+            {
+                return 23;
+            }
+            if (Reput <= 2500000)
+            {
+                return 24;
+            }
+            if (Reput <= 3750000)
+            {
+                return 25;
+            }
             return Reput <= 5000000 ? 26 : 27;
         }
 
@@ -3809,7 +3998,10 @@ namespace OpenNos.GameObject
             {
                 Character character = (Character)characterDto;
                 i++;
-                if (character.CharacterId != CharacterId) continue;
+                if (character.CharacterId != CharacterId)
+                {
+                    continue;
+                }
                 switch (i)
                 {
                     case 1:
@@ -3833,7 +4025,10 @@ namespace OpenNos.GameObject
 
         public void LearnAdventurerSkill()
         {
-            if (Class != 0) return;
+            if (Class != 0)
+            {
+                return;
+            }
             byte newSkill = 0;
             for (int i = 200; i <= 210; i++)
             {
@@ -3862,7 +4057,10 @@ namespace OpenNos.GameObject
                     Session.SendPackets(GenerateQuicklist());
                 }
             }
-            if (newSkill <= 0) return;
+            if (newSkill <= 0)
+            {
+                return;
+            }
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
             Session.SendPacket(GenerateSki());
             Session.SendPackets(GenerateQuicklist());
@@ -4741,7 +4939,9 @@ namespace OpenNos.GameObject
         private int GetGold(MapMonster mapMonster)
         {
             if (MapId == 2006 || MapId == 150)
+            {
                 return 0;
+            }
             int lowBaseGold = ServerManager.Instance.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
             int actMultiplier = Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
             if (Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) == true)

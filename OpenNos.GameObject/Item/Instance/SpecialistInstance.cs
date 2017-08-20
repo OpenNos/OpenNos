@@ -155,7 +155,9 @@ namespace OpenNos.GameObject
                 if (skillsSp.Count >= i + 1)
                 {
                     if (skillsSp[i].SkillVNum <= firstskillvnum + 10)
+                    {
                         skill += $"{skillsSp[i].SkillVNum}.";
+                    }
                 }
             }
 

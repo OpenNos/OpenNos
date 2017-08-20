@@ -45,7 +45,10 @@ namespace OpenNos.Master.Server
                 return false;
             }
 
-            if (authKey != ConfigurationManager.AppSettings["MasterAuthKey"]) return false;
+            if (authKey != ConfigurationManager.AppSettings["MasterAuthKey"])
+            {
+                return false;
+            }
             MSManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
             return true;
         }
@@ -86,7 +89,10 @@ namespace OpenNos.Master.Server
             long accountId = DAOFactory.CharacterDAO.LoadById(characterId)?.AccountId ?? 0;
 
             AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId) && a.ConnectedWorld?.Id.Equals(worldId) == true);
-            if (account == null) return false;
+            if (account == null)
+            {
+                return false;
+            }
             account.CharacterId = characterId;
             foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(account.ConnectedWorld.WorldGroup)))
             {

@@ -210,7 +210,10 @@ namespace OpenNos.GameObject
                     return $"e_info 8 {ItemVNum}";
 
                 case ItemType.Box:
-                    if (GetType() != typeof(BoxInstance)) return $"e_info 7 {ItemVNum} 0";
+                    if (GetType() != typeof(BoxInstance))
+                    {
+                        return $"e_info 7 {ItemVNum} 0";
+                    }
                     BoxInstance specialist = (BoxInstance)this;
 
                     // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl

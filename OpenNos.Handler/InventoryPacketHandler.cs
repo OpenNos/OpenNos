@@ -189,7 +189,10 @@ namespace OpenNos.Handler
                     inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(equipmentInfoPacket.Slot, InventoryType.Costume);
                     break;
             }
-            if (inventory?.Item == null) return;
+            if (inventory?.Item == null)
+            {
+                return;
+            }
             if (inventory.IsEmpty || isNPCShopItem)
             {
                 Session.SendPacket(inventory.GenerateEInfo());
@@ -1552,7 +1555,7 @@ namespace OpenNos.Handler
                             }
                             if (cellon.Item.Effect == 100)
                             {
-                                if (inventory.Item.MaxCellonLvl < cellon.Item.EffectValue)
+                                if (cellon.Item.EffectValue > inventory.Item.MaxCellonLvl)
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLON_LEVEL_TOO_HIGH"), 0));
                                     return;
@@ -1939,7 +1942,10 @@ namespace OpenNos.Handler
         /// <param name="vnum"></param>
         private void RemoveSP(short vnum)
         {
-            if (Session == null || !Session.HasSession) return;
+            if (Session == null || !Session.HasSession)
+            {
+                return;
+            }
             if (Session.Character.IsVehicled)
             {
                 return;
