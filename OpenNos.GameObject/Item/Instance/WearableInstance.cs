@@ -81,6 +81,8 @@ namespace OpenNos.GameObject
 
         public short DistanceDefenceDodge { get; set; }
 
+        public List<EquipmentOptionDTO> EquipmentOptions { get; set; }
+
         public short ElementRate { get; set; }
 
         public byte FireElement { get; set; }
@@ -133,7 +135,6 @@ namespace OpenNos.GameObject
             switch (itemType)
             {
                 case ItemType.Weapon:
-                    List<EquipmentOptionDTO> options = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(Id).OrderBy(s => s.Level).ToList();
                     switch (equipmentslot)
                     {
                         case EquipmentType.MainWeapon:
@@ -141,37 +142,35 @@ namespace OpenNos.GameObject
                             {
                                 case 4:
                                     return
-                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
                                 case 8:
                                     return
-                                        $"e_info 5 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 5 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
 
                                 default:
                                     return
-                                        $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
                             }
                         case EquipmentType.SecondaryWeapon:
                             switch (classe)
                             {
                                 case 1:
                                     return
-                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
 
                                 case 2:
                                     return
-                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
 
                                 default:
                                     return
-                                        $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
                             }
                     }
                     break;
 
                 case ItemType.Armor:
-                    List<EquipmentOptionDTO> optionsArmor = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(Id).OrderBy(s => s.Level).ToList();
-                    return
-                        $"e_info 2 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.CloseDefence + CloseDefence} {Item.DistanceDefence + DistanceDefence} {Item.MagicDefence + MagicDefence} {Item.DefenceDodge + DefenceDodge} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {optionsArmor.Count}{optionsArmor.Aggregate(string.Empty, (current, option) => current + $" {option.Level % 13}.{option.Type % 51}.{option.Value}")}";
+                    return $"e_info 2 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.CloseDefence + CloseDefence} {Item.DistanceDefence + DistanceDefence} {Item.MagicDefence + MagicDefence} {Item.DefenceDodge + DefenceDodge} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Level % 13}.{option.Type % 51}.{option.Value}")}";
 
                 case ItemType.Fashion:
                     switch (equipmentslot)
@@ -198,9 +197,8 @@ namespace OpenNos.GameObject
                         case EquipmentType.Necklace:
                         case EquipmentType.Bracelet:
                         case EquipmentType.Ring:
-                            List<EquipmentOptionDTO> cellons = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(Id).ToList();
                             return
-                                $"e_info 4 {ItemVNum} {Item.LevelMinimum} {Item.MaxCellonLvl} {Item.MaxCellon} {cellons.Count} {Item.Price}{cellons.Aggregate(string.Empty, (current, option) => current + $" {option.Type} {option.Level} {option.Value}")}";
+                                $"e_info 4 {ItemVNum} {Item.LevelMinimum} {Item.MaxCellonLvl} {Item.MaxCellon} {EquipmentOptions.Count} {Item.Price}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type} {option.Level} {option.Value}")}";
 
                         default:
                             return $"e_info 4 {ItemVNum} {Item.LevelMinimum} {Item.MaxCellonLvl} {Item.MaxCellon} {Cellon} {Item.Price}";
@@ -239,8 +237,7 @@ namespace OpenNos.GameObject
                     }
 
                 case ItemType.Shell:
-                    List<EquipmentOptionDTO> shellOptions = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(Id).OrderBy(s => s.Level).ToList();
-                    return $"e_info 9 {ItemVNum} {Upgrade} {Rare} {Item.Price} {shellOptions.Count}{shellOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Level % 13}.{option.Type % 51}.{option.Value}")}";
+                    return $"e_info 9 {ItemVNum} {Upgrade} {Rare} {Item.Price} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Level % 13}.{option.Type % 51}.{option.Value}")}";
             }
             return string.Empty;
         }
