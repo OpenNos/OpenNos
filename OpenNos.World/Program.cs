@@ -25,10 +25,12 @@ using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using OpenNos.World.Resource;
 
 namespace OpenNos.World
 {
@@ -73,7 +75,7 @@ namespace OpenNos.World
 
             Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}dev";
             int port = Convert.ToInt32(ConfigurationManager.AppSettings["WorldPort"]);
-            string text = $"WORLD SERVER v{fileVersionInfo.ProductVersion}dev - by OpenNos Team";
+            string text = $"WORLD SERVER v{fileVersionInfo.ProductVersion}dev - OpenNos";
             int offset = Console.WindowWidth / 2 + text.Length / 2;
             string separator = new string('=', Console.WindowWidth);
             Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
@@ -136,6 +138,7 @@ namespace OpenNos.World
             if (newChannelId.HasValue)
             {
                 ServerManager.Instance.ChannelId = newChannelId.Value;
+                Console.Title = string.Format(LocalizedResources.WORLD_SERVER_CONSOLE_TITLE, newChannelId.Value, ServerManager.Instance.Sessions.Count());
             }
             else
             {
@@ -168,7 +171,7 @@ namespace OpenNos.World
 
             // entities
             DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
-            DAOFactory.CellonOptionDAO.RegisterMapping(typeof(CellonOptionDTO)).InitializeMapper();
+            DAOFactory.EquipmentOptionDAO.RegisterMapping(typeof(EquipmentOptionDTO)).InitializeMapper();
             DAOFactory.CharacterDAO.RegisterMapping(typeof(Character)).InitializeMapper();
             DAOFactory.CharacterRelationDAO.RegisterMapping(typeof(CharacterRelationDTO)).InitializeMapper();
             DAOFactory.CharacterSkillDAO.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();

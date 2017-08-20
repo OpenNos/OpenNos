@@ -70,6 +70,7 @@
     <Compile Include="BazaarListType.cs" />
     <Compile Include="TalentArenaOptionType.cs" />
     <Compile Include="BuffType.cs" />
+    <Compile Include="CellonType.cs" />
     <Compile Include="EventActionType.cs" />
     <Compile Include="ArenaTeamType.cs" />
     <Compile Include="EventType.cs" />

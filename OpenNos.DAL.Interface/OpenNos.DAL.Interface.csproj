@@ -79,10 +79,11 @@
     <Compile Include="IFamilyCharacterDAO.cs" />
     <Compile Include="IFamilyDAO.cs" />
     <Compile Include="IFamilyLogDAO.cs" />
-    <Compile Include="ICellonOptionDAO.cs" />
+    <Compile Include="IEquipmentOptionDAO.cs" />
     <Compile Include="ICharacterRelationDAO.cs" />
     <Compile Include="IComboDAO.cs" />
     <Compile Include="IDropDAO.cs" />
+    <Compile Include="ILogChatDAO.cs" />
     <Compile Include="IMateDAO.cs" />
     <Compile Include="IMinilandObjectDAO.cs" />
     <Compile Include="IMappingBaseDAO.cs" />

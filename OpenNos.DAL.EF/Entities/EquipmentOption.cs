@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify
@@ -12,21 +12,25 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OpenNos.DAL.Mock
+namespace OpenNos.DAL.EF
 {
-    public class CellonOptionDAO : SynchronizableBaseDAO<CellonOptionDTO>, ICellonOptionDAO
+    public class EquipmentOption : SynchronizableBaseEntity
     {
-        #region Methods
+        #region Properties
 
-        public IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(Guid inventoryitemId)
-        {
-            throw new NotImplementedException();
-        }
+        public byte Level { get; set; }
+
+        public byte Type { get; set; }
+
+        public int Value { get; set; }
+
+        [ForeignKey(nameof(WearableInstanceId))]
+        public virtual WearableInstance WearableInstance { get; set; }
+
+        public Guid WearableInstanceId { get; set; }
 
         #endregion
     }

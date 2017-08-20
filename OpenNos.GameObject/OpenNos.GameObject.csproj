@@ -189,6 +189,8 @@
     <Compile Include="Buff\Card.cs" />
     <Compile Include="Event\ARENA\ArenaEvent.cs" />
     <Compile Include="Event\EventWave.cs" />
+    <Compile Include="Helpers\CellonGeneratorHelper.cs" />
+    <Compile Include="Helpers\ShellGeneratorHelper.cs" />
     <Compile Include="Map\Zone.cs" />
     <Compile Include="Event\EventContainer.cs" />
     <Compile Include="Event\Schedule.cs" />

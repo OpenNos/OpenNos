@@ -25,6 +25,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using OpenNos.Data;
+using OpenNos.DAL;
 
 namespace OpenNos.Handler
 {
@@ -615,7 +617,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
                                     Session.SendPacket(Session.Character.GenerateSpPoint());
                                 }
-                                Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId,out MapItem value);
+                                Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                             }
                             else
@@ -626,6 +628,14 @@ namespace OpenNos.Handler
                                     ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
                                     if (inv != null)
                                     {
+                                        if (mapItem.EquipmentOptions != null)
+                                        {
+                                            foreach (EquipmentOptionDTO i in mapItem.EquipmentOptions)
+                                            {
+                                                i.WearableInstanceId = inv.Id;
+                                                DAOFactory.EquipmentOptionDAO.InsertOrUpdate(i);
+                                            }
+                                        }
                                         Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                                         if (getPacket.PickerType == 2)
@@ -1530,6 +1540,92 @@ namespace OpenNos.Handler
                     }
                     break;
 
+                case 3:
+                    inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
+                    if (inventory != null && upgradePacket.Slot2 != null && upgradePacket.InventoryType2 != null)
+                    {
+                        if (upgradePacket.CellonSlot != null && upgradePacket.CellonInventoryType != null)
+                        {
+                            ItemInstance cellon = Session.Character.Inventory.LoadBySlotAndType(upgradePacket.CellonSlot.Value, upgradePacket.CellonInventoryType.Value);
+                            if (cellon == null)
+                            {
+                                // ERROR IN PACKET
+                                return;
+                            }
+                            if (cellon.Item.Effect == 100)
+                            {
+                                if (inventory.Item.MaxCellonLvl < cellon.Item.EffectValue)
+                                {
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLON_LEVEL_TOO_HIGH"), 0));
+                                    return;
+                                }
+                                if (inventory.Item.MaxCellon <=
+                                    DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(inventory.Id).Count())
+                                {
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_MUCH_CELLON"), 0));
+                                    return;
+                                }
+                                int gold;
+                                switch (cellon.Item.EffectValue)
+                                {
+                                    case 1:
+                                        gold = 700;
+                                        break;
+                                    case 2:
+                                        gold = 1400;
+                                        break;
+                                    case 3:
+                                        gold = 3000;
+                                        break;
+                                    case 4:
+                                        gold = 5000;
+                                        break;
+                                    case 5:
+                                        gold = 10000;
+                                        break;
+                                    case 6:
+                                        gold = 20000;
+                                        break;
+                                    case 7:
+                                        gold = 32000;
+                                        break;
+                                    case 8:
+                                        gold = 58000;
+                                        break;
+                                    case 9:
+                                        gold = 95000;
+                                        break;
+                                    default:
+                                        return;
+                                }
+                                if (Session.Character.Gold < gold)
+                                {
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_GOLD"), 0));
+                                    return;
+                                }
+                                // REMOVE ITEMS TO USE
+                                Session.Character.Gold -= gold;
+                                Session.Character.Inventory.DeleteById(cellon.Id);
+
+                                // GENERATE OPTION
+                                EquipmentOptionDTO option = CellonGeneratorHelper.GenerateOption(cellon.Item.EffectValue);
+
+                                // FAIL DELETE JEWEL
+                                if (option == null || DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(inventory.Id).Any(s => s.Type == option.Type))
+                                {
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLONING_FAILED"), 0));
+                                    Session.Character.Inventory.DeleteById(inventory.Id);
+                                    return;
+                                }
+
+                                // SUCCESS
+                                option.WearableInstanceId = inventory.Id;
+                                DAOFactory.EquipmentOptionDAO.InsertOrUpdate(option);
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLONING_SUCCESS"), 0));
+                            }
+                        }
+                    }
+                    break;
                 case 7:
                     inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                     if (inventory != null)
@@ -1796,7 +1892,7 @@ namespace OpenNos.Handler
         /// </summary>
         /// <param name="sourceSession"></param>
         /// <param name="targetSession"></param>
-        private void Exchange(ClientSession sourceSession, ClientSession targetSession)
+        private static void Exchange(ClientSession sourceSession, ClientSession targetSession)
         {
             if (sourceSession?.Character.ExchangeInfo == null)
             {
@@ -1822,6 +1918,12 @@ namespace OpenNos.Handler
             {
                 ItemInstance item2 = item.DeepCopy();
                 item2.Id = Guid.NewGuid();
+                IEnumerable<EquipmentOptionDTO> options = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id);
+                foreach (EquipmentOptionDTO i in options)
+                {
+                    i.WearableInstanceId = item2.Id;
+                    DAOFactory.EquipmentOptionDAO.InsertOrUpdate(i);
+                }
                 List<ItemInstance> inv = targetSession.Character.Inventory.AddToInventory(item2);
                 if (!inv.Any())
                 {
@@ -1845,50 +1947,45 @@ namespace OpenNos.Handler
         /// <param name="vnum"></param>
         private void RemoveSP(short vnum)
         {
-            if (Session != null && Session.HasSession)
+            if (Session == null || !Session.HasSession) return;
+            if (Session.Character.IsVehicled)
             {
-                if (Session.Character.IsVehicled)
-                {
-                    return;
-                }
-                List<BuffType> bufftodisable = new List<BuffType>();
-                bufftodisable.Add(BuffType.Bad);
-                bufftodisable.Add(BuffType.Good);
-                bufftodisable.Add(BuffType.Neutral);
-                Session.Character.DisableBuffs(bufftodisable);
-                Session.Character.EquipmentBCards.RemoveAll(s => s.ItemVNum.Equals(vnum));
-                Logger.Debug(Session.Character.GenerateIdentity(), vnum.ToString());
-                Session.Character.UseSp = false;
-                Session.Character.LoadSpeed();
-                Session.SendPacket(Session.Character.GenerateCond());
-                Session.SendPacket(Session.Character.GenerateLev());
-                Session.Character.SpCooldown = 30;
-                if (Session.Character?.SkillsSp != null)
-                {
-                    foreach (CharacterSkill ski in Session.Character.SkillsSp.Where(s => !s.Value.CanBeUsed()).Select(s=>s.Value))
-                    {
-                        short time = ski.Skill.Cooldown;
-                        double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
-                        temp /= 1000;
-                        Session.Character.SpCooldown = temp > Session.Character.SpCooldown ? (int)temp : Session.Character.SpCooldown;
-                    }
-                }
-                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
-                Session.SendPacket($"sd {Session.Character.SpCooldown}");
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
-                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
-
-                // ms_c
-                Session.SendPacket(Session.Character.GenerateSki());
-                Session.SendPackets(Session.Character.GenerateQuicklist());
-                Session.SendPacket(Session.Character.GenerateStat());
-                Session.SendPacket(Session.Character.GenerateStatChar());
-                Observable.Timer(TimeSpan.FromMilliseconds(Session.Character.SpCooldown * 1000)).Subscribe(o =>
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
-                    Session.SendPacket("sd 0");
-                });
+                return;
             }
+            List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
+            Session.Character.DisableBuffs(bufftodisable);
+            Session.Character.EquipmentBCards.RemoveAll(s => s.ItemVNum.Equals(vnum));
+            Logger.Debug(Session.Character.GenerateIdentity(), vnum.ToString());
+            Session.Character.UseSp = false;
+            Session.Character.LoadSpeed();
+            Session.SendPacket(Session.Character.GenerateCond());
+            Session.SendPacket(Session.Character.GenerateLev());
+            Session.Character.SpCooldown = 30;
+            if (Session.Character?.SkillsSp != null)
+            {
+                foreach (CharacterSkill ski in Session.Character.SkillsSp.Where(s => !s.Value.CanBeUsed()).Select(s=>s.Value))
+                {
+                    short time = ski.Skill.Cooldown;
+                    double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
+                    temp /= 1000;
+                    Session.Character.SpCooldown = temp > Session.Character.SpCooldown ? (int)temp : Session.Character.SpCooldown;
+                }
+            }
+            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
+            Session.SendPacket($"sd {Session.Character.SpCooldown}");
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
+            Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
+
+            // ms_c
+            Session.SendPacket(Session.Character.GenerateSki());
+            Session.SendPackets(Session.Character.GenerateQuicklist());
+            Session.SendPacket(Session.Character.GenerateStat());
+            Session.SendPacket(Session.Character.GenerateStatChar());
+            Observable.Timer(TimeSpan.FromMilliseconds(Session.Character.SpCooldown * 1000)).Subscribe(o =>
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
+                Session.SendPacket("sd 0");
+            });
         }
 
         #endregion

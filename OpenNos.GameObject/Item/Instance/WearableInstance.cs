@@ -17,6 +17,9 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using OpenNos.DAL;
 
 namespace OpenNos.GameObject
 {
@@ -102,6 +105,8 @@ namespace OpenNos.GameObject
 
         public short MP { get; set; }
 
+        public byte? ShellRarity { get; set; }
+
         public byte WaterElement { get; set; }
 
         public short WaterResistance { get; set; }
@@ -128,36 +133,45 @@ namespace OpenNos.GameObject
             switch (itemType)
             {
                 case ItemType.Weapon:
+                    List<EquipmentOptionDTO> options = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(Id).OrderBy(s => s.Level).ToList();
                     switch (equipmentslot)
                     {
                         case EquipmentType.MainWeapon:
                             switch (classe)
                             {
                                 case 4:
-                                    return $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0"; // -1 = {ShellEffectValue} {FirstShell}...
+                                    return
+                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
                                 case 8:
-                                    return $"e_info 5 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0";
+                                    return
+                                        $"e_info 5 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
 
                                 default:
-                                    return $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0";
+                                    return
+                                        $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
                             }
                         case EquipmentType.SecondaryWeapon:
                             switch (classe)
                             {
                                 case 1:
-                                    return $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0";
+                                    return
+                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
 
                                 case 2:
-                                    return $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0";
+                                    return
+                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
 
                                 default:
-                                    return $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0";
+                                    return
+                                        $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {options.Count}{options.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
                             }
                     }
                     break;
 
                 case ItemType.Armor:
-                    return $"e_info 2 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.CloseDefence + CloseDefence} {Item.DistanceDefence + DistanceDefence} {Item.MagicDefence + MagicDefence} {Item.DefenceDodge + DefenceDodge} {Item.Price} -1 0 0 0";
+                    List<EquipmentOptionDTO> optionsArmor = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(Id).OrderBy(s => s.Level).ToList();
+                    return
+                        $"e_info 2 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.CloseDefence + CloseDefence} {Item.DistanceDefence + DistanceDefence} {Item.MagicDefence + MagicDefence} {Item.DefenceDodge + DefenceDodge} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {optionsArmor.Count}{optionsArmor.Aggregate(string.Empty, (current, option) => current + $" {option.Level % 13}.{option.Type % 51}.{option.Value}")}";
 
                 case ItemType.Fashion:
                     switch (equipmentslot)
@@ -181,6 +195,13 @@ namespace OpenNos.GameObject
                         case EquipmentType.Fairy:
                             return $"e_info 4 {ItemVNum} {Item.Element} {ElementRate + Item.ElementRate} 0 0 0 0 0"; // last IsNosmall
 
+                        case EquipmentType.Necklace:
+                        case EquipmentType.Bracelet:
+                        case EquipmentType.Ring:
+                            List<EquipmentOptionDTO> cellons = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(Id).ToList();
+                            return
+                                $"e_info 4 {ItemVNum} {Item.LevelMinimum} {Item.MaxCellonLvl} {Item.MaxCellon} {cellons.Count} {Item.Price}{cellons.Aggregate(string.Empty, (current, option) => current + $" {option.Type} {option.Level} {option.Value}")}";
+
                         default:
                             return $"e_info 4 {ItemVNum} {Item.LevelMinimum} {Item.MaxCellonLvl} {Item.MaxCellon} {Cellon} {Item.Price}";
                     }
@@ -188,43 +209,38 @@ namespace OpenNos.GameObject
                     return $"e_info 8 {ItemVNum}";
 
                 case ItemType.Box:
-                    if (GetType() == typeof(BoxInstance))
+                    if (GetType() != typeof(BoxInstance)) return $"e_info 7 {ItemVNum} 0";
+                    BoxInstance specialist = (BoxInstance)this;
+
+                    // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl
+                    // 5=fairy pearl
+                    switch (subtype)
                     {
-                        BoxInstance specialist = (BoxInstance)this;
+                        case 0:
+                            return specialist.HoldingVNum == 0
+                                ? $"e_info 7 {ItemVNum} 0"
+                                : $"e_info 7 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} 100 {specialist.SpDamage} {specialist.SpDefence}";
 
-                        // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl
-                        // 5=fairy pearl
-                        switch (subtype)
-                        {
-                            case 0:
-                                return specialist.HoldingVNum == 0 ?
-    $"e_info 7 {ItemVNum} 0" : $"e_info 7 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} 100 {specialist.SpDamage} {specialist.SpDefence}";
+                        case 2:
+                            Item spitem = ServerManager.Instance.GetItem(specialist.HoldingVNum);
+                            return specialist.HoldingVNum == 0
+                                ? $"e_info 7 {ItemVNum} 0"
+                                : $"e_info 7 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} {CharacterHelper.SPXPData[specialist.SpLevel - 1]} {Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
 
-                            case 2:
-                                Item spitem = ServerManager.Instance.GetItem(specialist.HoldingVNum);
-                                return specialist.HoldingVNum == 0 ?
-                                    $"e_info 7 {ItemVNum} 0" :
-                                    $"e_info 7 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} {CharacterHelper.SPXPData[specialist.SpLevel - 1]} {Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
+                        case 4:
+                            return specialist.HoldingVNum == 0 ? $"e_info 11 {ItemVNum} 0" : $"e_info 11 {ItemVNum} 1 {specialist.HoldingVNum}";
 
-                            case 4:
-                                return specialist.HoldingVNum == 0 ?
-                                    $"e_info 11 {ItemVNum} 0" :
-                                    $"e_info 11 {ItemVNum} 1 {specialist.HoldingVNum}";
+                        case 5:
+                            Item fairyitem = ServerManager.Instance.GetItem(specialist.HoldingVNum);
+                            return specialist.HoldingVNum == 0 ? $"e_info 12 {ItemVNum} 0" : $"e_info 12 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.ElementRate + fairyitem.ElementRate}";
 
-                            case 5:
-                                Item fairyitem = ServerManager.Instance.GetItem(specialist.HoldingVNum);
-                                return specialist.HoldingVNum == 0 ?
-                                    $"e_info 12 {ItemVNum} 0" :
-                                    $"e_info 12 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.ElementRate + fairyitem.ElementRate}";
-
-                            default:
-                                return $"e_info 8 {ItemVNum} {Design} {Rare}";
-                        }
+                        default:
+                            return $"e_info 8 {ItemVNum} {Design} {Rare}";
                     }
-                    return $"e_info 7 {ItemVNum} 0";
 
                 case ItemType.Shell:
-                    return $"e_info 4 {ItemVNum} {Item.LevelMinimum} {Rare} {Item.Price} 0"; // 0 = Number of effects
+                    List<EquipmentOptionDTO> shellOptions = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(Id).OrderBy(s => s.Level).ToList();
+                    return $"e_info 9 {ItemVNum} {Upgrade} {Rare} {Item.Price} {shellOptions.Count}{shellOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Level % 13}.{option.Type % 51}.{option.Value}")}";
             }
             return string.Empty;
         }

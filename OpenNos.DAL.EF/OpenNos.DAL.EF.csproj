@@ -98,10 +98,13 @@
     <Compile Include="BazaarItemDAO.cs" />
     <Compile Include="BCardDAO.cs" />
     <Compile Include="CardDAO.cs" />
+    <Compile Include="Entities\LogChat.cs" />
+    <Compile Include="Entities\LogPlayerAction.cs" />
     <Compile Include="Entities\RollGeneratedItem.cs" />
     <Compile Include="Entities\Mate.cs" />
     <Compile Include="Entities\ScriptedInstance.cs" />
     <Compile Include="Entities\BCard.cs" />
+    <Compile Include="LogChatDAO.cs" />
     <Compile Include="Migrations\201706141825546_Aphrodite55.cs" />
     <Compile Include="Migrations\201706141825546_Aphrodite55.Designer.cs">
       <DependentUpon>201706141825546_Aphrodite55.cs</DependentUpon>
@@ -113,6 +116,14 @@
     <Compile Include="Migrations\201708022244240_Aphrodite57.cs" />
     <Compile Include="Migrations\201708022244240_Aphrodite57.Designer.cs">
       <DependentUpon>201708022244240_Aphrodite57.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708201611126_Aphrodite58.cs" />
+    <Compile Include="Migrations\201708201611126_Aphrodite58.Designer.cs">
+      <DependentUpon>201708201611126_Aphrodite58.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708201906330_Aphrodite59.cs" />
+    <Compile Include="Migrations\201708201906330_Aphrodite59.Designer.cs">
+      <DependentUpon>201708201906330_Aphrodite59.cs</DependentUpon>
     </Compile>
     <Compile Include="RollGeneratedItemDAO.cs" />
     <Compile Include="MateDAO.cs" />
@@ -255,8 +266,8 @@
     <Compile Include="Entities\BazaarItem.cs" />
     <Compile Include="Entities\BoxInstance.cs" />
     <Compile Include="Entities\Card.cs" />
-    <Compile Include="Entities\CellonOption.cs" />
-    <Compile Include="CellonOptionDAO.cs" />
+    <Compile Include="Entities\EquipmentOption.cs" />
+    <Compile Include="EquipmentOptionDAO.cs" />
     <Compile Include="Entities\Character.cs" />
     <Compile Include="Entities\CharacterRelation.cs" />
     <Compile Include="Entities\CharacterSkill.cs" />
@@ -626,6 +637,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201708022244240_Aphrodite57.resx">
       <DependentUpon>201708022244240_Aphrodite57.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708201611126_Aphrodite58.resx">
+      <DependentUpon>201708201611126_Aphrodite58.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708201906330_Aphrodite59.resx">
+      <DependentUpon>201708201906330_Aphrodite59.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

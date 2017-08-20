@@ -42,6 +42,8 @@ namespace OpenNos.DAL.EF
 
         public byte FamilyLevel { get; set; }
 
+        public byte FamilyFaction { get; set; }
+
         public virtual ICollection<FamilyLog> FamilyLogs { get; set; }
 
         [MaxLength(255)]

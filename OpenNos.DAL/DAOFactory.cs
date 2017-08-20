@@ -14,9 +14,51 @@
 
 using OpenNos.Core;
 using OpenNos.DAL.Interface;
-using OpenNos.DAL.Mock;
 using System;
 using System.Configuration;
+using OpenNos.DAL.EF;
+using AccountDAO = OpenNos.DAL.Mock.AccountDAO;
+using BazaarItemDAO = OpenNos.DAL.Mock.BazaarItemDAO;
+using BCardDAO = OpenNos.DAL.Mock.BCardDAO;
+using CardDAO = OpenNos.DAL.Mock.CardDAO;
+using CharacterDAO = OpenNos.DAL.Mock.CharacterDAO;
+using CharacterRelationDAO = OpenNos.DAL.Mock.CharacterRelationDAO;
+using CharacterSkillDAO = OpenNos.DAL.Mock.CharacterSkillDAO;
+using ComboDAO = OpenNos.DAL.Mock.ComboDAO;
+using DropDAO = OpenNos.DAL.Mock.DropDAO;
+using EquipmentOptionDAO = OpenNos.DAL.Mock.EquipmentOptionDAO;
+using FamilyCharacterDAO = OpenNos.DAL.Mock.FamilyCharacterDAO;
+using FamilyDAO = OpenNos.DAL.Mock.FamilyDAO;
+using FamilyLogDAO = OpenNos.DAL.Mock.FamilyLogDAO;
+using GeneralLogDAO = OpenNos.DAL.Mock.GeneralLogDAO;
+using ItemDAO = OpenNos.DAL.Mock.ItemDAO;
+using ItemInstanceDAO = OpenNos.DAL.Mock.ItemInstanceDAO;
+using MailDAO = OpenNos.DAL.Mock.MailDAO;
+using MapDAO = OpenNos.DAL.Mock.MapDAO;
+using MapMonsterDAO = OpenNos.DAL.Mock.MapMonsterDAO;
+using MapNpcDAO = OpenNos.DAL.Mock.MapNpcDAO;
+using MapTypeDAO = OpenNos.DAL.Mock.MapTypeDAO;
+using MapTypeMapDAO = OpenNos.DAL.Mock.MapTypeMapDAO;
+using MateDAO = OpenNos.DAL.Mock.MateDAO;
+using MinilandObjectDAO = OpenNos.DAL.Mock.MinilandObjectDAO;
+using NpcMonsterDAO = OpenNos.DAL.Mock.NpcMonsterDAO;
+using NpcMonsterSkillDAO = OpenNos.DAL.Mock.NpcMonsterSkillDAO;
+using PenaltyLogDAO = OpenNos.DAL.Mock.PenaltyLogDAO;
+using PortalDAO = OpenNos.DAL.Mock.PortalDAO;
+using QuicklistEntryDAO = OpenNos.DAL.Mock.QuicklistEntryDAO;
+using RecipeDAO = OpenNos.DAL.Mock.RecipeDAO;
+using RecipeItemDAO = OpenNos.DAL.Mock.RecipeItemDAO;
+using RespawnDAO = OpenNos.DAL.Mock.RespawnDAO;
+using RespawnMapTypeDAO = OpenNos.DAL.Mock.RespawnMapTypeDAO;
+using RollGeneratedItemDAO = OpenNos.DAL.Mock.RollGeneratedItemDAO;
+using ScriptedInstanceDAO = OpenNos.DAL.Mock.ScriptedInstanceDAO;
+using ShopDAO = OpenNos.DAL.Mock.ShopDAO;
+using ShopItemDAO = OpenNos.DAL.Mock.ShopItemDAO;
+using ShopSkillDAO = OpenNos.DAL.Mock.ShopSkillDAO;
+using SkillDAO = OpenNos.DAL.Mock.SkillDAO;
+using StaticBonusDAO = OpenNos.DAL.Mock.StaticBonusDAO;
+using StaticBuffDAO = OpenNos.DAL.Mock.StaticBuffDAO;
+using TeleporterDAO = OpenNos.DAL.Mock.TeleporterDAO;
 
 namespace OpenNos.DAL
 {
@@ -30,7 +72,7 @@ namespace OpenNos.DAL
         private static ICardDAO _cardDAO;
         private static IBCardDAO _bcardDAO;
         private static IRollGeneratedItemDAO _rollGeneratedItemDAO;
-        private static ICellonOptionDAO _cellonoptionDAO;
+        private static IEquipmentOptionDAO _equipmentOptionDAO;
         private static ICharacterDAO _characterDAO;
         private static ICharacterRelationDAO _characterRelationDAO;
         private static ICharacterSkillDAO _characterskillDAO;
@@ -39,9 +81,10 @@ namespace OpenNos.DAL
         private static IFamilyCharacterDAO _familycharacterDAO;
         private static IFamilyDAO _familyDAO;
         private static IFamilyLogDAO _familylogDAO;
-        private static IGeneralLogDAO _generallogDAO;
+        private static IGeneralLogDao _generallogDAO;
         private static IItemDAO _itemDAO;
         private static IItemInstanceDAO _iteminstanceDAO;
+        private static ILogChatDAO _logChatDAO;
         private static IMailDAO _mailDAO;
         private static IMapDAO _mapDAO;
         private static IMapMonsterDAO _mapmonsterDAO;
@@ -148,23 +191,21 @@ namespace OpenNos.DAL
             }
         }
 
-        public static ICellonOptionDAO CellonOptionDAO
+        public static IEquipmentOptionDAO EquipmentOptionDAO
         {
             get
             {
-                if (_cellonoptionDAO == null)
+                if (_equipmentOptionDAO != null) return _equipmentOptionDAO;
+                if (_useMock)
                 {
-                    if (_useMock)
-                    {
-                        _cellonoptionDAO = new CellonOptionDAO();
-                    }
-                    else
-                    {
-                        _cellonoptionDAO = new EF.CellonOptionDAO();
-                    }
+                    _equipmentOptionDAO = new EquipmentOptionDAO();
+                }
+                else
+                {
+                    _equipmentOptionDAO = new EF.EquipmentOptionDAO();
                 }
 
-                return _cellonoptionDAO;
+                return _equipmentOptionDAO;
             }
         }
 
@@ -328,7 +369,7 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IGeneralLogDAO GeneralLogDAO
+        public static IGeneralLogDao GeneralLogDAO
         {
             get
             {
@@ -386,6 +427,25 @@ namespace OpenNos.DAL
                 }
 
                 return _iteminstanceDAO;
+            }
+        }
+
+        public static ILogChatDAO LogChatDAO
+        {
+            get
+            {
+                if (_logChatDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _logChatDAO = new LogChatDAO();
+                    }
+                    else
+                    {
+                        _logChatDAO = new EF.LogChatDAO();
+                    }
+                }
+                return _logChatDAO;
             }
         }
 

@@ -24,6 +24,12 @@ namespace OpenNos.GameObject.Packets.ClientPackets
         [PacketIndex(4)]
         public byte? Slot2 { get; set; }
 
+        [PacketIndex(5)]
+        public InventoryType? CellonInventoryType { get; set; }
+
+        [PacketIndex(6)]
+        public byte? CellonSlot { get; set; }
+
         #endregion
     }
 }
