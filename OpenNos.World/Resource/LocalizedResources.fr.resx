@@ -1520,10 +1520,10 @@ Veux-tu le porter ?</value>
     <value>L'arène des talents est ouverte de 18:00 à 22:00</value>
   </data>
   <data name="ARENA_TEAM_FOUND" xml:space="preserve">
-    <value>Participants trouvés</value>
+    <value>Participants inscrits trouvés</value>
   </data>
   <data name="ARENA_TICKET_LEFT" xml:space="preserve">
-    <value>Il te reste {0} inscription(s) possible.</value>
+    <value>Tu peux encore participer {0} fois aujourd'hui.</value>
   </data>
   <data name="NO_TEAM_ARENA" xml:space="preserve">
     <value>Aucun participant trouvé.</value>
@@ -1536,5 +1536,26 @@ Veux-tu le porter ?</value>
   </data>
   <data name="SEARCH_RIVAL_ARENA_TEAM" xml:space="preserve">
     <value>Chercher l'équipe adverse</value>
+  </data>
+  <data name="EQUALITY" xml:space="preserve">
+    <value>Egalité !</value>
+  </data>
+  <data name="ERENIA" xml:space="preserve">
+    <value>Tu fais partie de l'équipe Erenia.</value>
+  </data>
+  <data name="SELECT_ORDER_ARENA" xml:space="preserve">
+    <value>Choisis l'ordre dans lequel les participants vont combattre sinon cet ordre sera déterminé au hasard.</value>
+  </data>
+  <data name="SELECT_ORDER_ARENA_TIME" xml:space="preserve">
+    <value>Plus que 1 minutes avant le début du combat. Bonne chance !</value>
+  </data>
+  <data name="VICTORIOUS_ERENIA" xml:space="preserve">
+    <value>Vainqueur !  Erenia</value>
+  </data>
+  <data name="VICTORIOUS_ZENAS" xml:space="preserve">
+    <value>Vainqueur ! Zénas</value>
+  </data>
+  <data name="ZENAS" xml:space="preserve">
+    <value>Tu fais partie de l'équipe Zénas.</value>
   </data>
 </root>

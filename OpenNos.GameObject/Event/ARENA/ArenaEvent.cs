@@ -115,6 +115,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                 o.Session.Character.Mp = (int)o.Session.Character.MPLoad();
                                                                 ServerManager.Instance.ChangeMapInstance(o.Session.Character.CharacterId, map.MapInstanceId, o.GroupId == member.GroupId ? 125 : 14, (o.GroupId == member.GroupId ? 37 : 38) + (i % 3) * 2);
                                                                 o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA_TIME"), 0));
+                                                                o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA_TIME"), 10));
                                                                 o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA"), 10));
                                                                 o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA"), 0));
 
