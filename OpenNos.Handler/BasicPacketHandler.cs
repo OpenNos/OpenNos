@@ -959,7 +959,7 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        if (shell.EquipmentOptions.Count > 0)
+                        if (shell.EquipmentOptions.Any())
                         {
                             // ALREADY IDENTIFIED
                             return;

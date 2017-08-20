@@ -4032,30 +4032,23 @@ namespace OpenNos.GameObject
             byte newSkill = 0;
             for (int i = 200; i <= 210; i++)
             {
-                byte newSkill = 0;
-                for (int i = 200; i <= 210; i++)
+                if (i == 209)
                 {
-                    if (i == 209)
-                    {
-                        i++;
-                    }
+                    i++;
+                }
 
-                    Skill skinfo = ServerManager.Instance.GetSkill((short)i);
-                    if (skinfo.Class == 0 && JobLevel >= skinfo.LevelMinimum)
-                    {
-                        if (Skills.All(s => s.Value.SkillVNum != i))
-                        {
-                            newSkill = 1;
-                            Skills[i] = new CharacterSkill { SkillVNum = (short)i, CharacterId = CharacterId };
-                        }
-                    }
-                }
-                if (newSkill > 0)
+                Skill skinfo = ServerManager.Instance.GetSkill((short) i);
+                if (skinfo.Class != 0 || JobLevel < skinfo.LevelMinimum)
                 {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                    Session.SendPacket(GenerateSki());
-                    Session.SendPackets(GenerateQuicklist());
+                    continue;
                 }
+                if (Skills.Any(s => s.Value.SkillVNum == i))
+                {
+                    continue;
+                }
+
+                newSkill = 1;
+                Skills[i] = new CharacterSkill {SkillVNum = (short) i, CharacterId = CharacterId};
             }
             if (newSkill <= 0)
             {
@@ -4360,7 +4353,8 @@ namespace OpenNos.GameObject
                         {
                             DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
                             WearableInstance instance = itemInstance as WearableInstance;
-                            if (instance?.EquipmentOptions?.Count > 0)
+
+                            if (instance?.EquipmentOptions.Any() == true)
                             {
                                 DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
                             }
