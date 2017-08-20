@@ -73,7 +73,7 @@ namespace OpenNos.GameObject.Helpers
                 }
             }
 
-            return $"ta_p {tatype} {(byte)type} 5 5 {groups.TrimEnd(' ')}";
+            return $"ta_p {tatype} {(byte)type} {5 - arenateam.Where(s => s.ArenaTeamType == type).Sum(s => s.Summon)} {5 - arenateam.Where(s => s.ArenaTeamType != type).Sum(s => s.Summon)} {groups.TrimEnd(' ')}";
         }
 
         public string GenerateFrank(byte type)
@@ -171,7 +171,7 @@ namespace OpenNos.GameObject.Helpers
 
         public string GenerateTaSt(TalentArenaOptionType watch)
         {
-            throw new NotImplementedException();
+            return $"ta_st {(byte)watch}";
         }
 
         public string GenerateFStashRemove(short slot)
@@ -451,7 +451,7 @@ namespace OpenNos.GameObject.Helpers
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
-        public string GenerateTaF(byte victoriousteam )
+        public string GenerateTaF(byte victoriousteam)
         {
             return $"ta_f 0 {victoriousteam} 2 2 0 2 3 1 2";
         }
@@ -464,7 +464,7 @@ namespace OpenNos.GameObject.Helpers
         public string GenerateRl(byte type)
         {
             string str = $"rl {type}";
-            ServerManager.Instance.GroupList.ForEach(s=>
+            ServerManager.Instance.GroupList.ForEach(s =>
             {
                 ClientSession leader = s.Characters.ElementAt(0);
                 str += $" {s.Raid.Id}.{s.Raid?.LevelMinimum}.{s.Raid?.LevelMaximum}.{leader.Character.Name}.{leader.Character.Level}.{(leader.Character.UseSp ? leader.Character.Morph : -1)}.{(byte)leader.Character.Class}.{(byte)leader.Character.Gender}.{s.CharacterCount}.{leader.Character.HeroLevel}";

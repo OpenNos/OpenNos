@@ -14,6 +14,8 @@ namespace OpenNos.GameObject
         public byte? Order { get; set; }
         public bool Dead { get; set; }
         public DateTime? LastSummoned { get; set; }
+        public byte Kill { get; set; }
+        public byte Summon { get; set; }
 
         public ArenaTeamMember(ClientSession session, ArenaTeamType arenaTeamType, byte? order)
         {

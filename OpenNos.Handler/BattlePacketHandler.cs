@@ -700,11 +700,8 @@ namespace OpenNos.Handler
                                                 {
                                                     team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
                                                 }
-                                                if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType)
-                                                {
-                                                    PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
-                                                }
-                                                else if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                if ((team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType)
+                                                      || (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))))
                                                 {
                                                     PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
                                                 }

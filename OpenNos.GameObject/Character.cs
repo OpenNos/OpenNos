@@ -722,6 +722,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string GenerateTaFc()
+        {
+            return $"ta_fc 0 {CharacterId}";
+        }
+
         public void CloseExchangeOrTrade()
         {
             if (InExchangeOrTrade)

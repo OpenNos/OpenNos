@@ -242,6 +242,8 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                       map.Broadcast(tm2.Session, tm2.Session.Character.GenerateTp());
                                                                                       tm.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
                                                                                       tm2.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
+                                                                                      ArenaTeam.ToList().ForEach(friends => { friends.Session.SendPacket(tm.Session.Character.GenerateTaFc()); });
+                                                                                      map.IsPVP = false;
                                                                                   }
                                                                                   newround = true;
                                                                                   ArenaTeam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, ArenaTeam, arenauser.ArenaTeamType, true)); });
@@ -251,7 +253,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                               {
                                                                                   tm.Session.Character.PositionX = 87;
                                                                                   tm.Session.Character.PositionY = 39;
-                                                                                  ArenaTeam.Where(friends => friends.ArenaTeamType == tm.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket($"ta_fc 0 {tm.Session.Character.CharacterId}"); });
+                                                                                  ArenaTeam.Where(friends => friends.ArenaTeamType == tm.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(tm.Session.Character.GenerateTaFc()); });
                                                                                   map.Broadcast(tm.Session, tm.Session.Character.GenerateTp());
                                                                                   tm2.Session.Character.PositionX = 56;
                                                                                   tm2.Session.Character.PositionY = 40;
@@ -261,7 +263,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                   map.Broadcast("ta_s");
                                                                                   Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(start4 =>
                                                                                   {
-                                                                                      //activate PVP
+                                                                                      map.IsPVP = true;
                                                                                   });
 
                                                                               }
