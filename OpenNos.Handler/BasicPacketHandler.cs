@@ -916,11 +916,17 @@ namespace OpenNos.Handler
 
                         InventoryType inventoryType = (InventoryType) guriPacket.Argument;
                         ItemInstance pearls = Session.Character.Inventory.FirstOrDefault(s => s.Value.ItemVNum == 1429).Value;
-                        ItemInstance shell = Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, inventoryType);
+                        WearableInstance shell = (WearableInstance)Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, inventoryType);
 
                         if (pearls == null || shell == null)
                         {
                             // USING PACKET LOGGER
+                            return;
+                        }
+
+                        if (shell.EquipmentOptions.Count > 0)
+                        {
+                            // ALREADY IDENTIFIED
                             return;
                         }
 
@@ -942,7 +948,7 @@ namespace OpenNos.Handler
                         foreach (EquipmentOptionDTO s in shellOptions)
                         {
                             s.WearableInstanceId = shell.Id;
-                            DAOFactory.EquipmentOptionDAO.InsertOrUpdate(s);
+                            shell.EquipmentOptions.Add(s);
                         }
                         break;
                     case 300:

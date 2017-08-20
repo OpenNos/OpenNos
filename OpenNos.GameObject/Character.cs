@@ -1675,27 +1675,35 @@ namespace OpenNos.GameObject
 
             for (short i = 0; i < 16; i++)
             {
-                if (Inventory != null)
+                if (Inventory == null) continue;
+                ItemInstance item = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear) ??
+                                    Inventory.LoadBySlotAndType<SpecialistInstance>(i, InventoryType.Wear);
+                if (item == null) continue;
+                switch (item.Item.EquipmentSlot)
                 {
-                    ItemInstance item = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear) ??
-                                        Inventory.LoadBySlotAndType<SpecialistInstance>(i, InventoryType.Wear);
-                    if (item != null)
-                    {
-                        switch (item.Item.EquipmentSlot)
-                        {
-                            case EquipmentType.Armor:
-                                armorRare = item.Rare;
-                                armorUpgrade = item.Upgrade;
-                                break;
+                    case EquipmentType.Armor:
+                        armorRare = item.Rare;
+                        armorUpgrade = item.Upgrade;
+                        ((WearableInstance) item).EquipmentOptions.Clear();
+                        ((WearableInstance) item).EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
+                        break;
 
-                            case EquipmentType.MainWeapon:
-                                weaponRare = item.Rare;
-                                weaponUpgrade = item.Upgrade;
-                                break;
-                        }
-                        eqlist += $" {i}.{item.Item.VNum}.{item.Rare}.{(item.Item.IsColored ? item.Design : item.Upgrade)}.0";
-                    }
+                    case EquipmentType.MainWeapon:
+                        weaponRare = item.Rare;
+                        weaponUpgrade = item.Upgrade;
+                        ((WearableInstance) item).EquipmentOptions.Clear();
+                        ((WearableInstance) item).EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
+                        break;
+
+                    case EquipmentType.SecondaryWeapon:
+                    case EquipmentType.Necklace:
+                    case EquipmentType.Bracelet:
+                    case EquipmentType.Ring:
+                        ((WearableInstance) item).EquipmentOptions.Clear();
+                        ((WearableInstance) item).EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
+                        break;
                 }
+                eqlist += $" {i}.{item.Item.VNum}.{item.Rare}.{(item.Item.IsColored ? item.Design : item.Upgrade)}.0";
             }
             return $"equip {weaponUpgrade}{weaponRare} {armorUpgrade}{armorRare}{eqlist}";
         }
@@ -3865,7 +3873,7 @@ namespace OpenNos.GameObject
         {
             if (Class == 0)
             {
-                byte NewSkill = 0;
+                byte newSkill = 0;
                 for (int i = 200; i <= 210; i++)
                 {
                     if (i == 209)
@@ -3878,12 +3886,12 @@ namespace OpenNos.GameObject
                     {
                         if (Skills.All(s => s.Value.SkillVNum != i))
                         {
-                            NewSkill = 1;
+                            newSkill = 1;
                             Skills[i] = new CharacterSkill { SkillVNum = (short)i, CharacterId = CharacterId };
                         }
                     }
                 }
-                if (NewSkill > 0)
+                if (newSkill > 0)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                     Session.SendPacket(GenerateSki());
@@ -3899,7 +3907,7 @@ namespace OpenNos.GameObject
             {
                 specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
             }
-            byte SkillSpCount = (byte)SkillsSp.Count;
+            byte skillSpCount = (byte)SkillsSp.Count;
             SkillsSp = new ConcurrentDictionary<int, CharacterSkill>();
             foreach (Skill ski in ServerManager.Instance.GetAllSkill())
             {
@@ -3908,7 +3916,7 @@ namespace OpenNos.GameObject
                     SkillsSp[ski.SkillVNum] = new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = CharacterId };
                 }
             }
-            if (SkillsSp.Count != SkillSpCount)
+            if (SkillsSp.Count != skillSpCount)
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
             }
@@ -4185,6 +4193,11 @@ namespace OpenNos.GameObject
                         foreach (ItemInstance itemInstance in inventories.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse))
                         {
                             DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
+                            WearableInstance instance = itemInstance as WearableInstance;
+                            if (instance?.EquipmentOptions?.Count > 0)
+                            {
+                                DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
+                            }
                         }
                     }
                 }
