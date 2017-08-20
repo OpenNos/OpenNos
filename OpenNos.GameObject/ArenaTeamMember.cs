@@ -13,6 +13,7 @@ namespace OpenNos.GameObject
         public ArenaTeamType ArenaTeamType { get; set; }
         public byte? Order { get; set; }
         public bool Dead { get; set; }
+        public DateTime? LastSummoned { get; set; }
 
         public ArenaTeamMember(ClientSession session, ArenaTeamType arenaTeamType, byte? order)
         {

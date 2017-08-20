@@ -79,6 +79,7 @@ namespace OpenNos.GameObject
 
         private ConcurrentDictionary<int, List<TeleporterDTO>> _teleporters;
 
+
         private bool inRelationRefreshMode;
 
         #endregion
@@ -99,6 +100,8 @@ namespace OpenNos.GameObject
         public MapInstance ArenaInstance { get; private set; }
 
         public List<BazaarItemLink> BazaarList { get; set; }
+
+        public List<ConcurrentBag<ArenaTeamMember>> ArenaTeams { get; set; } = new List<ConcurrentBag<ArenaTeamMember>>();
 
         public int ChannelId { get; set; }
 

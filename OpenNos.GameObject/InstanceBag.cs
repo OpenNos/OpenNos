@@ -13,6 +13,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace OpenNos.GameObject
@@ -28,7 +29,7 @@ namespace OpenNos.GameObject
             UnlockEvents = new List<EventContainer>();
             ButtonLocker = new Locker();
             MonsterLocker = new Locker();
-        }
+    }
 
         #endregion
 

@@ -169,6 +169,11 @@ namespace OpenNos.GameObject.Helpers
             return packet;
         }
 
+        public string GenerateTaSt(TalentArenaOptionType watch)
+        {
+            throw new NotImplementedException();
+        }
+
         public string GenerateFStashRemove(short slot)
         {
             return $"f_stash {GenerateRemovePacket(slot)}";

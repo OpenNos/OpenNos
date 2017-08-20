@@ -19,6 +19,7 @@ using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -74,7 +75,7 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), mutliTargetListPacket.ToString());
             if (mutliTargetListPacket.TargetsAmount > 0 && mutliTargetListPacket.TargetsAmount == mutliTargetListPacket.Targets.Count)
             {
-                IEnumerable<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.Select(s=>s.Value) : Session.Character.Skills.Select(s=>s.Value);
+                IEnumerable<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.Select(s => s.Value) : Session.Character.Skills.Select(s => s.Value);
                 CharacterSkill ski = null;
 
                 foreach (MultiTargetListSubPacket subpacket in mutliTargetListPacket.Targets)
@@ -396,7 +397,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            IEnumerable<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp?.Select(s=>s.Value) : Session.Character.Skills?.Select(s=>s.Value);
+            IEnumerable<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp?.Select(s => s.Value) : Session.Character.Skills?.Select(s => s.Value);
 
             if (skills != null)
             {
@@ -428,7 +429,7 @@ namespace OpenNos.Handler
                         }
 
                         Session.SendPacket(Session.Character.GenerateStat());
-                        CharacterSkill skillinfo = Session.Character.Skills.Select(s=>s.Value).OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
+                        CharacterSkill skillinfo = Session.Character.Skills.Select(s => s.Value).OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
                         Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {skillinfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
 
                         // Generate scp
@@ -444,28 +445,22 @@ namespace OpenNos.Handler
                             {
                                 foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange)))
                                 {
-                                    if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                    if (Session.CurrentMapInstance.IsPVP)
                                     {
-                                        if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
+                                        ConcurrentBag<ArenaTeamMember> team = null;
+                                        if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
                                         {
-                                            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Citadel))
-                                            {
-                                                PVPHit(new HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill), character);
-                                            }
+                                            team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
                                         }
-                                    }
-                                    else if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.PVPMap))
-                                    {
-                                        if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+
+                                        if ((team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == character)?.ArenaTeamType)
+                                                     || (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))))
                                         {
                                             PVPHit(new HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill), character);
                                         }
-                                    }
-                                    else if (Session.CurrentMapInstance.IsPVP)
-                                    {
-                                        if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                                        else
                                         {
-                                            PVPHit(new HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill), character);
+                                            Session.SendPacket($"cancel 2 {targetId}");
                                         }
                                     }
                                     else
@@ -572,28 +567,16 @@ namespace OpenNos.Handler
                                             int count = 0;
                                             foreach (ClientSession character in playersInAOERange)
                                             {
-                                                if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                                if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
                                                 {
-                                                    if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
+                                                    ConcurrentBag<ArenaTeamMember> team = null;
+                                                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
                                                     {
-                                                        if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Citadel))
-                                                        {
-                                                            count++;
-                                                            PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
-                                                        }
+                                                        team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
                                                     }
-                                                }
-                                                else if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.PVPMap))
-                                                {
-                                                    if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
-                                                    {
-                                                        count++;
-                                                        PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
-                                                    }
-                                                }
-                                                else if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
-                                                {
-                                                    if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+
+                                                    if ((team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == character)?.ArenaTeamType)
+                                                       || (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))))
                                                     {
                                                         count++;
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
@@ -611,38 +594,15 @@ namespace OpenNos.Handler
 
                                             // hit the targetted monster
 
-                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
                                             {
-                                                if (Session.Character.Family == null || playerToAttack.Character.Family == null || Session.Character.Family.FamilyId != playerToAttack.Character.Family.FamilyId)
+                                                ConcurrentBag<ArenaTeamMember> team = null;
+                                                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
                                                 {
-                                                    if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Citadel))
-                                                    {
-                                                        PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), playerToAttack);
-                                                    }
-                                                    else
-                                                    {
-                                                        Session.SendPacket($"cancel 2 {targetId}");
-                                                    }
+                                                    team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
                                                 }
-                                                else
-                                                {
-                                                    Session.SendPacket($"cancel 2 {targetId}");
-                                                }
-                                            }
-                                            else if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.PVPMap))
-                                            {
-                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
-                                                {
-                                                    PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), playerToAttack);
-                                                }
-                                                else
-                                                {
-                                                    Session.SendPacket($"cancel 2 {targetId}");
-                                                }
-                                            }
-                                            else if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
-                                            {
-                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                if ((team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType)
+                                                     || (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))))
                                                 {
                                                     PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), playerToAttack);
                                                 }
@@ -659,26 +619,15 @@ namespace OpenNos.Handler
                                             //hit all other monsters
                                             foreach (ClientSession character in playersInAOERange)
                                             {
-                                                if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                                if (Session.CurrentMapInstance.IsPVP)
                                                 {
-                                                    if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
+                                                    ConcurrentBag<ArenaTeamMember> team = null;
+                                                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
                                                     {
-                                                        if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Citadel))
-                                                        {
-                                                            PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
-                                                        }
+                                                        team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
                                                     }
-                                                }
-                                                else if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.PVPMap))
-                                                {
-                                                    if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
-                                                    {
-                                                        PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
-                                                    }
-                                                }
-                                                else if (Session.CurrentMapInstance.IsPVP)
-                                                {
-                                                    if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                                                    if ((team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == character)?.ArenaTeamType)
+                                                     || (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))))
                                                     {
                                                         PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
                                                     }
@@ -699,40 +648,17 @@ namespace OpenNos.Handler
                                             {
                                                 ski.Hit = 0;
                                             }
-                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
-                                            {
-                                                if (Session.Character.Family == null || playerToAttack.Character.Family == null || Session.Character.Family.FamilyId != playerToAttack.Character.Family.FamilyId)
-                                                {
-                                                    if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Citadel))
-                                                    {
-                                                        PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
-                                                    }
-                                                    else
-                                                    {
-                                                        Session.SendPacket($"cancel 2 {targetId}");
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    Session.SendPacket($"cancel 2 {targetId}");
-                                                }
-                                            }
-                                            else if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.PVPMap))
-                                            {
-                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
-                                                {
-                                                    PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
-                                                }
-                                                else
-                                                {
-                                                    Session.SendPacket($"cancel 2 {targetId}");
-                                                }
-                                            }
-                                            else if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
+                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
                                             {
                                                 if (Session.CurrentMapInstance.MapInstanceId != ServerManager.Instance.FamilyArenaInstance.MapInstanceId)
                                                 {
-                                                    if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                    ConcurrentBag<ArenaTeamMember> team = null;
+                                                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
+                                                    {
+                                                        team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
+                                                    }
+                                                    if ((team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType)
+                                                     || (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))))
                                                     {
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session,
                                                             ski.Skill), playerToAttack);
@@ -744,7 +670,13 @@ namespace OpenNos.Handler
                                                 }
                                                 else
                                                 {
-                                                    if (Session.Character.Family == null || Session.Character.Family.FamilyCharacters.Any(s => s.Character.CharacterId != playerToAttack.Character.CharacterId))
+                                                    ConcurrentBag<ArenaTeamMember> team = null;
+                                                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
+                                                    {
+                                                        team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
+                                                    }
+                                                    if ((team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType)
+                                                      || (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))))
                                                     {
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
                                                     }
@@ -761,38 +693,18 @@ namespace OpenNos.Handler
                                         }
                                         else
                                         {
-                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
                                             {
-                                                if (Session.Character.Family == null || playerToAttack.Character.Family == null || Session.Character.Family.FamilyId != playerToAttack.Character.Family.FamilyId)
+                                                ConcurrentBag<ArenaTeamMember> team = null;
+                                                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
                                                 {
-                                                    if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Citadel))
-                                                    {
-                                                        PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
-                                                    }
-                                                    else
-                                                    {
-                                                        Session.SendPacket($"cancel 2 {targetId}");
-                                                    }
+                                                    team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
                                                 }
-                                                else
-                                                {
-                                                    Session.SendPacket($"cancel 2 {targetId}");
-                                                }
-                                            }
-                                            else if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.PVPMap))
-                                            {
-                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType)
                                                 {
                                                     PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
                                                 }
-                                                else
-                                                {
-                                                    Session.SendPacket($"cancel 2 {targetId}");
-                                                }
-                                            }
-                                            else if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
-                                            {
-                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                else if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
                                                 {
                                                     PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
                                                 }
@@ -960,7 +872,7 @@ namespace OpenNos.Handler
 
         private void ZoneHit(int Castingid, short x, short y)
         {
-            IEnumerable<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.Select(s=>s.Value) : Session.Character.Skills.Select(s=>s.Value);
+            IEnumerable<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.Select(s => s.Value) : Session.Character.Skills.Select(s => s.Value);
             CharacterSkill characterSkill = skills.FirstOrDefault(s => s.Skill.CastId == Castingid);
             if (!Session.Character.WeaponLoaded(characterSkill) || !Session.HasCurrentMapInstance)
             {
@@ -998,24 +910,7 @@ namespace OpenNos.Handler
                         }
                         foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(x, y, characterSkill.Skill.TargetRange)))
                         {
-                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
-                            {
-                                if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
-                                {
-                                    if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Citadel))
-                                    {
-                                        PVPHit(new HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y), character);
-                                    }
-                                }
-                            }
-                            else if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.PVPMap))
-                            {
-                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
-                                {
-                                    PVPHit(new HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y), character);
-                                }
-                            }
-                            else if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
+                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
                             {
                                 if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
                                 {
