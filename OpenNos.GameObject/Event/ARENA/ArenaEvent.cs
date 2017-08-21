@@ -222,24 +222,39 @@ namespace OpenNos.GameObject.Event.ARENA
                                                     });
                                           Observable.Timer(TimeSpan.FromSeconds(timer + 6)).Subscribe(start =>
                                                                   {
-                                                                      bool newround = true;
-                                                                      int count = 0;
-                                                                      
+                                                                      bool newround1 = true;
+                                                                      bool newround2 = true;
+                                                                      int count1 = 0;
+                                                                      int count2 = 0;
                                                                       Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(start3 =>
                                                                       {
-                                                                          if(count != ArenaTeam.Count(at => at.Dead))
+                                                                          int ereniacount = ArenaTeam.Count(at => at.Dead && at.ArenaTeamType == ArenaTeamType.ERENIA);
+                                                                          int zenascount = ArenaTeam.Count(at => at.Dead && at.ArenaTeamType == ArenaTeamType.ZENAS);
+                                                                          if (count1 != ereniacount || count2 != zenascount)
                                                                           {
-                                                                              count = ArenaTeam.Count(at => at.Dead);
-                                                                              newround = true;
+                                                                              if (count1 != ereniacount)
+                                                                              {
+                                                                                  newround1 = true;
+                                                                              }
+                                                                              if (count2 != zenascount)
+                                                                              {
+                                                                                  newround2 = true;
+                                                                              }
+                                                                              count1 = ereniacount;
+                                                                              count2 = zenascount;
                                                                           }
+
                                                                           ArenaTeamMember tm = ArenaTeam.OrderBy(tm3 => tm3.Order).FirstOrDefault(tm3 => tm3.ArenaTeamType == ArenaTeamType.ERENIA && !tm3.Dead);
                                                                           ArenaTeamMember tm2 = ArenaTeam.OrderBy(tm3 => tm3.Order).FirstOrDefault(tm3 => tm3.ArenaTeamType == ArenaTeamType.ZENAS && !tm3.Dead);
 
-                                                                          if (newround)
+                                                                          if (newround1 || newround2)
                                                                           {
                                                                               timer = 300;
-                                                                              newround = false;
-                                                                              ArenaTeam.ToList().ForEach(friends => { friends.Session.Character.GenerateTaM(3, timer); });
+                                                                              ArenaTeam.ToList().ForEach(friends =>
+                                                                              {
+                                                                                  friends.Session.SendPacket(friends.Session.Character.GenerateTaM(2, timer));
+                                                                                  friends.Session.SendPacket(friends.Session.Character.GenerateTaM(3, timer));
+                                                                              });
                                                                               IDisposable obs5 = Observable.Timer(TimeSpan.FromSeconds(timer)).Subscribe(start4 =>
                                                                               {
                                                                                   if (tm2 != null && tm != null)
@@ -257,21 +272,31 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                       ArenaTeam.Where(friends => friends.ArenaTeamType == tm.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(friends.Session.Character.GenerateTaFc()); });
                                                                                       map.IsPVP = false;
                                                                                   }
-                                                                                  newround = true;
+                                                                                  newround1 = true;
+                                                                                  newround2 = true;
                                                                                   ArenaTeam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, ArenaTeam, arenauser.ArenaTeamType, true)); });
                                                                               });
 
                                                                               if (tm != null && tm2 != null)
                                                                               {
-                                                                                  tm.Session.Character.PositionX = 87;
-                                                                                  tm.Session.Character.PositionY = 39;
+                                                                                  if (newround1)
+                                                                                  {
+                                                                                      tm.Session.Character.PositionX = 87;
+                                                                                      tm.Session.Character.PositionY = 39;
+                                                                                      map.Broadcast(tm.Session, tm.Session.Character.GenerateTp());
+                                                                                  }
+
+                                                                                  if (newround2)
+                                                                                  {
+                                                                                      tm2.Session.Character.PositionX = 56;
+                                                                                      tm2.Session.Character.PositionY = 40;
+                                                                                  }
+                                                                                  map.Broadcast(tm2.Session, tm2.Session.Character.GenerateTp());
+
                                                                                   ArenaTeam.ToList().ForEach(friends => { friends.Session.SendPacket(friends.ArenaTeamType == ArenaTeamType.ERENIA ? tm.Session.Character.GenerateTaFc() : tm2.Session.Character.GenerateTaFc()); });
-                                                                                  map.Broadcast(tm.Session, tm.Session.Character.GenerateTp());
-                                                                                  tm2.Session.Character.PositionX = 56;
-                                                                                  tm2.Session.Character.PositionY = 40;
                                                                                   tm.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Call));
                                                                                   tm2.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Call));
-                                                                                  map.Broadcast(tm2.Session, tm2.Session.Character.GenerateTp());
+
                                                                                   map.Broadcast("ta_s");
                                                                                   Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(start4 =>
                                                                                   {
@@ -284,7 +309,8 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                   if (tm == null && tm2 == null)
                                                                                   {
                                                                                       map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("EQUALITY"), 0));
-                                                                                      ArenaTeam.ToList().ForEach(arenauser => {
+                                                                                      ArenaTeam.ToList().ForEach(arenauser =>
+                                                                                      {
                                                                                           arenauser.Session.SendPacket(arenauser.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("EQUALITY"), 10));
                                                                                           arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaF(3));
                                                                                       });
@@ -292,7 +318,8 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                   else if (tm == null)
                                                                                   {
                                                                                       map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("VICTORIOUS_ZENAS"), 0));
-                                                                                      ArenaTeam.ToList().ForEach(arenauser => {
+                                                                                      ArenaTeam.ToList().ForEach(arenauser =>
+                                                                                      {
                                                                                           arenauser.Session.SendPacket(arenauser.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("VICTORIOUS_ZENAS"), 10));
                                                                                           arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaF(1));
                                                                                       });
@@ -300,13 +327,18 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                   else
                                                                                   {
                                                                                       map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("VICTORIOUS_ERENIA"), 0));
-                                                                                      ArenaTeam.ToList().ForEach(arenauser => {
+                                                                                      ArenaTeam.ToList().ForEach(arenauser =>
+                                                                                      {
                                                                                           arenauser.Session.SendPacket(arenauser.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("VICTORIOUS_ERENIA"), 10));
                                                                                           arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaF(2));
                                                                                       });
                                                                                   }
                                                                                   obs3.Dispose();
                                                                               }
+
+
+                                                                              newround1 = false;
+                                                                              newround2 = false;
                                                                           }
                                                                       });
                                                                   });

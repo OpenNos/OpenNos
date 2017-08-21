@@ -207,7 +207,7 @@ namespace OpenNos.GameObject
                             ArenaTeamMember member = team.FirstOrDefault(s => s.Session == session);
                             if (member != null)
                             {
-                                if (member.LastSummoned != null)
+                                if (member.LastSummoned == null)
                                 {
                                     session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
                                     member.Dead = true;

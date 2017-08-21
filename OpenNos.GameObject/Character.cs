@@ -5295,7 +5295,7 @@ namespace OpenNos.GameObject
             if (tm != null)
             {
                 ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
-                IEnumerable<long> ids = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
+                IEnumerable<long> ids = tm.Where(s => tmem.ArenaTeamType != s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
                 score1 = MapInstance.InstanceBag.DeadList.Count(s => ids.Contains(s));
                 score2 = MapInstance.InstanceBag.DeadList.Count(s => !ids.Contains(s));
             }
@@ -5318,7 +5318,7 @@ namespace OpenNos.GameObject
                 atype = tmem.ArenaTeamType;
                 IEnumerable<long> ids = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
                 ConcurrentBag<ArenaTeamMember> oposit = tm.Where(s => tmem.ArenaTeamType != s.ArenaTeamType);
-                ConcurrentBag<ArenaTeamMember> own = tm.Where(s => tmem.ArenaTeamType != s.ArenaTeamType);
+                ConcurrentBag<ArenaTeamMember> own = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType);
                 score1 = 3 - MapInstance.InstanceBag.DeadList.Count(s => ids.Contains(s));
                 score2 = 3 - MapInstance.InstanceBag.DeadList.Count(s => !ids.Contains(s));
                 life1 = 3 - own.Count(s => s.Dead);
