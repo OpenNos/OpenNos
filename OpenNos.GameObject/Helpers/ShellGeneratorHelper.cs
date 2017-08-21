@@ -472,13 +472,17 @@ namespace OpenNos.GameObject.Helpers
             int? maximum = (int?)ShellOptionType[randomOptionId][1 + optionLevel * 2];
 
             if (!minimum.HasValue || !maximum.HasValue)
+            {
                 return null;
+            }
 
             int m = Rand.Next(minimum.Value, maximum.Value + 1);
             int value = (int)Math.Round((double)m / 1000 * shellLevel);
 
             if (m != 0)
+            {
                 return value == 0 ? 1 : value;
+            }
             return null;
         }
 
@@ -491,12 +495,18 @@ namespace OpenNos.GameObject.Helpers
             List<object> optionsAlreadyOn = new List<object>();
 
             if (shellLevel < 50)
+            {
                 shellLevel = 50;
+            }
 
             if (shellType < 8)
+            {
                 letterMultiplier = (shellLevel <= 70 ? 1 : shellLevel <= 80 ? 3 : shellLevel <= 90 ? 5 : 1);
+            }
             else if (shellType < 10)
+            {
                 letterMultiplier = shellLevel * 2 + 1;
+            }
 
             switch (shellType)
             {
@@ -545,7 +555,9 @@ namespace OpenNos.GameObject.Helpers
             for (int g = 3; g <= 23; g += 2)
             {
                 if (ShellType[w][g] == null)
+                {
                     continue;
+                }
 
                 List<object> possibleOptions = new List<object>();
 
@@ -553,34 +565,46 @@ namespace OpenNos.GameObject.Helpers
                 {
                     int? index = (int?)ShellType[w][g];
                     if (index == null)
+                    {
                         continue;
+                    }
 
                     object option = ShellOptionLevel[index.Value]?[i];
                     if (option == null)
+                    {
                         continue;
+                    }
                     possibleOptions.Add(option);
                 }
 
                 foreach (object t in optionsAlreadyOn)
                 {
                     if (possibleOptions.Contains(t))
+                    {
                         possibleOptions.Remove(t);
+                    }
                 }
 
                 if (possibleOptions.Count == 0)
+                {
                     continue;
+                }
 
                 object generatedOption = possibleOptions[Rand.Next(possibleOptions.Count)];
 
                 if ((int)ShellType[w][g + 1] != 1 && (Rand.Next(2) != 0))
+                {
                     continue;
+                }
 
                 int? optionValue = GenerateOptionValue((int)generatedOption, (int)ShellType[w][g], shellLevel);
                 int optionType = (int)generatedOption;
                 int optionLevel = (int)ShellType[w][g];
 
                 if (optionValue == null)
+                {
                     continue;
+                }
 
                 optionsAlreadyOn.Add(generatedOption);
                 shellOptions.Add(new EquipmentOptionDTO

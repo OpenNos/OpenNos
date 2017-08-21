@@ -155,14 +155,19 @@ namespace OpenNos.GameObject.Helpers
         public static EquipmentOptionDTO GenerateOption(int itemEffectValue)
         {
             if (new Random().Next(100) > 50)
+            {
                 return null;
+            }
             var dictionary = _generatorDictionary[itemEffectValue];
             Dictionary<CellonType, CellonGenerator>.ValueCollection list = dictionary.Values;
             EquipmentOptionDTO result = new EquipmentOptionDTO();
             int rand = new Random().Next(list.Count * 2);
             for (var i = 0; i < list.Count; i++)
             {
-                if (i != rand) continue;
+                if (i != rand)
+                {
+                    continue;
+                }
                 result.Value = new Random().Next(list.ElementAt(i).Min, list.ElementAt(i).Max);
                 result.Level = (byte)itemEffectValue;
                 result.Type = (byte)i;

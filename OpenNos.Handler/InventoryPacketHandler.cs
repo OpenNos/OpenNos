@@ -189,15 +189,16 @@ namespace OpenNos.Handler
                     inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(equipmentInfoPacket.Slot, InventoryType.Costume);
                     break;
             }
-            if (inventory?.Item != null)
+            if (inventory?.Item == null)
             {
-                if (inventory.IsEmpty || isNPCShopItem)
-                {
-                    Session.SendPacket(inventory.GenerateEInfo());
-                    return;
-                }
-                Session.SendPacket(inventory.Item.EquipmentSlot != EquipmentType.Sp ? inventory.GenerateEInfo() : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ? (inventory as SpecialistInstance)?.GeneratePslInfo() : (inventory as SpecialistInstance)?.GenerateSlInfo());
+                return;
             }
+            if (inventory.IsEmpty || isNPCShopItem)
+            {
+                Session.SendPacket(inventory.GenerateEInfo());
+                return;
+            }
+            Session.SendPacket(inventory.Item.EquipmentSlot != EquipmentType.Sp ? inventory.GenerateEInfo() : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ? (inventory as SpecialistInstance)?.GeneratePslInfo() : (inventory as SpecialistInstance)?.GenerateSlInfo());
         }
 
         // TODO: TRANSLATE IT TO PACKETDEFINITION!
@@ -1554,7 +1555,7 @@ namespace OpenNos.Handler
                             }
                             if (cellon.Item.Effect == 100)
                             {
-                                if (inventory.Item.MaxCellonLvl < cellon.Item.EffectValue)
+                                if (cellon.Item.EffectValue > inventory.Item.MaxCellonLvl)
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLON_LEVEL_TOO_HIGH"), 0));
                                     return;
@@ -1562,7 +1563,7 @@ namespace OpenNos.Handler
                                 if (inventory.Item.MaxCellon <=
                                     DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(inventory.Id).Count())
                                 {
-                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_MUCH_CELLON"), 0));
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLON_FULL"), 0));
                                     return;
                                 }
                                 int gold;
@@ -1620,7 +1621,7 @@ namespace OpenNos.Handler
 
                                 // SUCCESS
                                 option.WearableInstanceId = inventory.Id;
-                                DAOFactory.EquipmentOptionDAO.InsertOrUpdate(option);
+                                inventory.EquipmentOptions.Add(option);
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLONING_SUCCESS"), 0));
                             }
                         }
@@ -1918,12 +1919,6 @@ namespace OpenNos.Handler
             {
                 ItemInstance item2 = item.DeepCopy();
                 item2.Id = Guid.NewGuid();
-                IEnumerable<EquipmentOptionDTO> options = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id);
-                foreach (EquipmentOptionDTO i in options)
-                {
-                    i.WearableInstanceId = item2.Id;
-                    DAOFactory.EquipmentOptionDAO.InsertOrUpdate(i);
-                }
                 List<ItemInstance> inv = targetSession.Character.Inventory.AddToInventory(item2);
                 if (!inv.Any())
                 {
@@ -1947,7 +1942,10 @@ namespace OpenNos.Handler
         /// <param name="vnum"></param>
         private void RemoveSP(short vnum)
         {
-            if (Session == null || !Session.HasSession) return;
+            if (Session == null || !Session.HasSession)
+            {
+                return;
+            }
             if (Session.Character.IsVehicled)
             {
                 return;

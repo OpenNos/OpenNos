@@ -415,10 +415,7 @@ namespace OpenNos.GameObject
                     ItemInstance newItemInstance = inv.DeepCopy();
                     newItemInstance.Id = random2;
                     newItemInstance.Amount = amount;
-                    droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance)
-                    {
-                        EquipmentOptions = DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(inv.Id).ToList()
-                    };
+                    droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance);
                     DAOFactory.EquipmentOptionDAO.Delete(inv.Id);
                     DroppedList[droppedItem.TransportId] = droppedItem;
                     inv.Amount -= amount;

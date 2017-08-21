@@ -566,7 +566,10 @@ namespace OpenNos.GameObject
         public MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
         {
             Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
-            if (map == null) return null;
+            if (map == null)
+            {
+                return null;
+            }
             Guid guid = Guid.NewGuid();
             MapInstance mapInstance = new MapInstance(map, guid, false, type, mapclock);
             mapInstance.LoadMonsters();

@@ -75,13 +75,25 @@ namespace OpenNos.GameObject
                                 List<ItemInstance> newInv = null;
                                 foreach (RollGeneratedItemDTO rollitem in roll)
                                 {
-                                    if (newInv != null) continue;
+                                    if (newInv != null)
+                                    {
+                                        continue;
+                                    }
                                     currentrnd += rollitem.Probability;
-                                    if (currentrnd < rnd) continue;
+                                    if (currentrnd < rnd)
+                                    {
+                                        continue;
+                                    }
                                     newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
-                                    if (!newInv.Any()) continue;
+                                    if (!newInv.Any())
+                                    {
+                                        continue;
+                                    }
                                     short slot = inv.Slot;
-                                    if (slot == -1) continue;
+                                    if (slot == -1)
+                                    {
+                                        continue;
+                                    }
                                     session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
                                     newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
                                     session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);

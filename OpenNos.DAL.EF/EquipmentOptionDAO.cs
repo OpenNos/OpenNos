@@ -64,7 +64,9 @@ namespace OpenNos.DAL.EF
                         i => i.WearableInstanceId.Equals(wearableInstanceId)))
                     {
                         if (equipmentOption != null)
+                        {
                             context.EquipmentOption.Remove(equipmentOption);
+                        }
                     }
                     context.SaveChanges();
                     return DeleteResult.Deleted;
@@ -88,7 +90,10 @@ namespace OpenNos.DAL.EF
         protected override EquipmentOptionDTO Update(EquipmentOption entity, EquipmentOptionDTO equipment,
             OpenNosContext context)
         {
-            if (entity == null) return _mapper.Map<EquipmentOptionDTO>(null);
+            if (entity == null)
+            {
+                return _mapper.Map<EquipmentOptionDTO>(null);
+            }
             entity.Level = equipment.Level;
             entity.Type = equipment.Type;
             entity.Value = equipment.Value;

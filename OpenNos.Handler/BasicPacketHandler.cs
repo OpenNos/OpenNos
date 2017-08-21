@@ -162,7 +162,10 @@ namespace OpenNos.Handler
         /// <param name="complimentPacket"></param>
         public void Compliment(ComplimentPacket complimentPacket)
         {
-            if (complimentPacket == null) return;
+            if (complimentPacket == null)
+            {
+                return;
+            }
             Logger.Debug(Session.Character.GenerateIdentity(), "Compliment Packet");
             long complimentedCharacterId = complimentPacket.CharacterId;
             if (Session.Character.Level >= 30)
@@ -214,7 +217,10 @@ namespace OpenNos.Handler
         /// <param name="directionPacket"></param>
         public void Dir(DirectionPacket directionPacket)
         {
-            if (directionPacket.CharacterId != Session.Character.CharacterId) return;
+            if (directionPacket.CharacterId != Session.Character.CharacterId)
+            {
+                return;
+            }
             Session.Character.Direction = directionPacket.Direction;
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateDir());
         }
@@ -227,14 +233,20 @@ namespace OpenNos.Handler
         {
             Logger.Debug(Session.Character.GenerateIdentity(), "GetGift packet");
             int giftId = getGiftPacket.GiftId;
-            if (!Session.Character.MailList.ContainsKey(giftId)) return;
+            if (!Session.Character.MailList.ContainsKey(giftId))
+            {
+                return;
+            }
             MailDTO mail = Session.Character.MailList[giftId];
             if (getGiftPacket.Type == 4 && mail.AttachmentVNum != null)
             {
                 if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                 {
                     ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity).FirstOrDefault();
-                    if (newInv == null) return;
+                    if (newInv == null)
+                    {
+                        return;
+                    }
                     if (newInv.Rare != 0)
                     {
                         WearableInstance wearable = newInv as WearableInstance;
@@ -336,7 +348,10 @@ namespace OpenNos.Handler
         public void GetStats(NpinfoPacket npinfoPacket)
         {
             Session.SendPacket(Session.Character.GenerateStatChar());
-            if (npinfoPacket.Page == Session.Character.ScPage) return;
+            if (npinfoPacket.Page == Session.Character.ScPage)
+            {
+                return;
+            }
             Session.Character.ScPage = npinfoPacket.Page;
             Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
             Session.SendPackets(Session.Character.GenerateScP(npinfoPacket.Page));
@@ -369,7 +384,9 @@ namespace OpenNos.Handler
                 case 2://leave
                     ClientSession sender = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
                     if (sender.Character?.Group == null)
+                    {
                         return;
+                    }
 
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEFT_RAID")), 0));
                     if (Session?.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
@@ -396,7 +413,9 @@ namespace OpenNos.Handler
                     {
                         ClientSession chartokick = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
                         if (chartokick.Character?.Group == null)
+                        {
                             return;
+                        }
 
                         chartokick.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("KICK_RAID")), 0));
                         grp = chartokick.Character?.Group;
@@ -569,7 +588,10 @@ namespace OpenNos.Handler
             }
             else if (pjoinPacket.RequestType.Equals(GroupRequestType.Sharing))
             {
-                if (Session.Character.Group == null) return;
+                if (Session.Character.Group == null)
+                {
+                    return;
+                }
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_SHARE_INFO")));
                 Session.Character.Group.Characters.Where(s => s.Character.CharacterId != Session.Character.CharacterId).ToList().ForEach(s =>
                 {
@@ -674,56 +696,59 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePidx());
                 }
             }
-            else switch (pjoinPacket.RequestType)
+            else
             {
-                case GroupRequestType.Declined:
-                    if (targetSession != null && !targetSession.Character.GroupSentRequestCharacterIds.Contains(Session.Character.CharacterId))
-                    {
-                        return;
-                    }
-                    if (targetSession != null)
-                    {
-                        targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
-
-                        targetSession.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10));
-                    }
-                    break;
-                case GroupRequestType.AcceptedShare:
-                    if (targetSession != null && !targetSession.Character.GroupSentRequestCharacterIds.Contains(Session.Character.CharacterId))
-                    {
-                        return;
-                    }
-                    if (targetSession != null)
-                    {
-                        targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
-
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), targetSession.Character.Name), 0));
-                        if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
+                switch (pjoinPacket.RequestType)
+                {
+                    case GroupRequestType.Declined:
+                        if (targetSession != null && !targetSession.Character.GroupSentRequestCharacterIds.Contains(Session.Character.CharacterId))
                         {
-                            Session.Character.SetReturnPoint(targetSession.Character.Return.DefaultMapId, targetSession.Character.Return.DefaultX, targetSession.Character.Return.DefaultY);
-                            targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
+                            return;
                         }
-                    }
-                    break;
-                case GroupRequestType.DeclinedShare:
-                    if (targetSession != null && !targetSession.Character.GroupSentRequestCharacterIds.Contains(Session.Character.CharacterId))
-                    {
-                        return;
-                    }
-                    targetSession?.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
+                        if (targetSession != null)
+                        {
+                            targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
 
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REFUSED_SHARE"), 0));
-                    break;
-                case GroupRequestType.Requested:
-                    break;
-                case GroupRequestType.Invited:
-                    break;
-                case GroupRequestType.Accepted:
-                    break;
-                case GroupRequestType.Sharing:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                            targetSession.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10));
+                        }
+                        break;
+                    case GroupRequestType.AcceptedShare:
+                        if (targetSession != null && !targetSession.Character.GroupSentRequestCharacterIds.Contains(Session.Character.CharacterId))
+                        {
+                            return;
+                        }
+                        if (targetSession != null)
+                        {
+                            targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
+
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), targetSession.Character.Name), 0));
+                            if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
+                            {
+                                Session.Character.SetReturnPoint(targetSession.Character.Return.DefaultMapId, targetSession.Character.Return.DefaultX, targetSession.Character.Return.DefaultY);
+                                targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
+                            }
+                        }
+                        break;
+                    case GroupRequestType.DeclinedShare:
+                        if (targetSession != null && !targetSession.Character.GroupSentRequestCharacterIds.Contains(Session.Character.CharacterId))
+                        {
+                            return;
+                        }
+                        targetSession?.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
+
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REFUSED_SHARE"), 0));
+                        break;
+                    case GroupRequestType.Requested:
+                        break;
+                    case GroupRequestType.Invited:
+                        break;
+                    case GroupRequestType.Accepted:
+                        break;
+                    case GroupRequestType.Sharing:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
         }
 
@@ -766,7 +791,10 @@ namespace OpenNos.Handler
             message = message.Trim();
 
             CharacterDTO character = DAOFactory.CharacterDAO.LoadById(btkPacket.CharacterId);
-            if (character == null) return;
+            if (character == null)
+            {
+                return;
+            }
             //session is not on current server, check api if the target character is on another server
             int? sentChannelId = CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
             {
@@ -808,7 +836,10 @@ namespace OpenNos.Handler
                         if (!Session.Character.IsBlockingCharacter(characterId))
                         {
                             ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
-                            if (otherSession == null) return;
+                            if (otherSession == null)
+                            {
+                                return;
+                            }
                             if (otherSession.Character.FriendRequestCharacters.Contains(Session.Character.CharacterId))
                             {
                                 switch (fInsPacket.Type)
@@ -887,7 +918,10 @@ namespace OpenNos.Handler
         /// <param name="guriPacket"></param>
         public void Guri(GuriPacket guriPacket)
         {
-            if (guriPacket == null) return;
+            if (guriPacket == null)
+            {
+                return;
+            }
             if (guriPacket.Type == 10 && guriPacket.Data >= 973 && guriPacket.Data <= 999 && !Session.Character.EmoticonsBlocked)
             {
                 if (guriPacket.User != null && Convert.ToInt64(guriPacket.User.Value) == Session.Character.CharacterId)
@@ -904,6 +938,7 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 switch (guriPacket.Type)
                 {
                     // SHELL IDENTIFYING
@@ -916,11 +951,20 @@ namespace OpenNos.Handler
 
                         InventoryType inventoryType = (InventoryType) guriPacket.Argument;
                         ItemInstance pearls = Session.Character.Inventory.FirstOrDefault(s => s.Value.ItemVNum == 1429).Value;
-                        ItemInstance shell = Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, inventoryType);
+                        WearableInstance shell = (WearableInstance)Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, inventoryType);
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_IDENTIFIED"), 0));
+                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(3006), ReceiverType.All);
+
 
                         if (pearls == null || shell == null)
                         {
                             // USING PACKET LOGGER
+                            return;
+                        }
+
+                        if (shell.EquipmentOptions.Any())
+                        {
+                            // ALREADY IDENTIFIED
                             return;
                         }
 
@@ -942,7 +986,7 @@ namespace OpenNos.Handler
                         foreach (EquipmentOptionDTO s in shellOptions)
                         {
                             s.WearableInstanceId = shell.Id;
-                            DAOFactory.EquipmentOptionDAO.InsertOrUpdate(s);
+                            shell.EquipmentOptions.Add(s);
                         }
                         break;
                     case 300:
@@ -1215,6 +1259,7 @@ namespace OpenNos.Handler
                                         }
                                     }
                                     else
+                                    {
                                         switch (guriPacket.Type)
                                         {
                                             case 201:
@@ -1323,11 +1368,13 @@ namespace OpenNos.Handler
                                                 }
                                                 break;
                                         }
+                                    }
                                     break;
                             }
                         }
                         break;
                 }
+            }
         }
 
         /// <summary>
@@ -1764,9 +1811,15 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                 }
             }
-            if (pstpacket.Unknow1.HasValue) return;
+            if (pstpacket.Unknow1.HasValue)
             {
-                if (!int.TryParse(pstpacket.Id.ToString(), out int id) || !byte.TryParse(pstpacket.Type.ToString(), out byte type)) return;
+                return;
+            }
+            {
+                if (!int.TryParse(pstpacket.Id.ToString(), out int id) || !byte.TryParse(pstpacket.Type.ToString(), out byte type))
+                {
+                    return;
+                }
                 switch (pstpacket.Argument)
                 {
                     case 3:
@@ -2033,7 +2086,10 @@ namespace OpenNos.Handler
             int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
 
             if (!Session.HasCurrentMapInstance || Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) || Session.Character.IsChangingMapInstance ||
-                Session.Character.HasShopOpened) return;
+                Session.Character.HasShopOpened)
+            {
+                return;
+            }
             if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(1) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
             {
                 if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)

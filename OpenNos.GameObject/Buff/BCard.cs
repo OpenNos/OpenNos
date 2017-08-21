@@ -55,7 +55,10 @@ namespace OpenNos.GameObject
                     if (session.GetType() == typeof(Character))
                     {
                         Character character = session as Character;
-                        if (character != null) character.LastSpeedChange = DateTime.Now;
+                        if (character != null)
+                        {
+                            character.LastSpeedChange = DateTime.Now;
+                        }
                         Character o = session as Character;
                         o?.Session.SendPacket(o.GenerateCond());
                     }
@@ -71,7 +74,10 @@ namespace OpenNos.GameObject
                         for (int i = 0; i < FirstData; i++)
                         {
                             MapMonster monster = session as MapMonster;
-                            if (monster == null) continue;
+                            if (monster == null)
+                            {
+                                continue;
+                            }
                             short x = (short)(ServerManager.Instance.RandomNumber(-3, 3) + monster.MapX);
                             MapMonster mapMonster = monster;
                             short y = (short)(ServerManager.Instance.RandomNumber(-3, 3) + mapMonster.MapY);
@@ -85,7 +91,9 @@ namespace OpenNos.GameObject
                                 case 2:
                                     MapMonster monster = session as MapMonster;
                                     if (monster != null)
+                                    {
                                         EventHelper.Instance.RunEvent(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
+                                    }
                                     break;
                                 default:
                                     MapMonster mapMonster = session as MapMonster;

@@ -1436,7 +1436,7 @@
     <value>Participants found</value>
   </data>
   <data name="ARENA_TICKET_LEFT" xml:space="preserve">
-    <value>remaining participation(s) {0}</value>
+    <value>Remaining participation(s) {0}</value>
   </data>
   <data name="NO_TEAM_ARENA" xml:space="preserve">
     <value>No participants found</value>
@@ -1452,5 +1452,26 @@
   </data>
   <data name="WORLD_SERVER_CONSOLE_TITLE" xml:space="preserve">
     <value>WORLD SERVER - ID : {0} | Players : {1}</value>
+  </data>
+  <data name="EQUALITY" xml:space="preserve">
+    <value>Equality!</value>
+  </data>
+  <data name="ERENIA" xml:space="preserve">
+    <value>You are on the Erenia team.</value>
+  </data>
+  <data name="SELECT_ORDER_ARENA" xml:space="preserve">
+    <value>Choice the order of participation or it will be determinated randomly!</value>
+  </data>
+  <data name="SELECT_ORDER_ARENA_TIME" xml:space="preserve">
+    <value>One minut remaning before the begin of the fight. Good luck!</value>
+  </data>
+  <data name="VICTORIOUS_ERENIA" xml:space="preserve">
+    <value>Winner!  Erenia</value>
+  </data>
+  <data name="VICTORIOUS_ZENAS" xml:space="preserve">
+    <value>Winner! Zenas</value>
+  </data>
+  <data name="ZENAS" xml:space="preserve">
+    <value>You are on the Zenas team.</value>
   </data>
 </root>
