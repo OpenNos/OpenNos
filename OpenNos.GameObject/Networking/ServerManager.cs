@@ -121,7 +121,7 @@ namespace OpenNos.GameObject
 
         public int GoldRate { get; set; }
 
-        public List<Group> Groups => GroupsThreadSafe.Select(s=>s.Value).ToList();
+        public List<Group> Groups => GroupsThreadSafe.Select(s => s.Value).ToList();
 
         public int HeroicStartLevel { get; set; }
 
@@ -190,31 +190,78 @@ namespace OpenNos.GameObject
                 {
                     session.Character.RemoveVehicle();
                 }
-                List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
+                List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad, BuffType.Good, BuffType.Neutral };
                 session.Character.DisableBuffs(bufftodisable);
                 session.SendPacket(session.Character.GenerateStat());
                 session.SendPacket(session.Character.GenerateCond());
                 session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
                 session.Character.LeaveTalentArena();
                 session.SendPacket("eff_ob -1 -1 0 4269");
-                session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
-                Task.Factory.StartNew(async () =>
+                switch (session.CurrentMapInstance.MapInstanceType)
                 {
-                    bool revive = true;
-                    for (int i = 1; i <= 30; i++)
-                    {
-                        await Task.Delay(1000);
-                        if (session.Character.Hp > 0)
+                    case MapInstanceType.TalentArenaMapInstance:
+                        ConcurrentBag<ArenaTeamMember> team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == session));
+                        if (team != null)
                         {
-                            revive = false;
-                            break;
+                            ArenaTeamMember member = team.FirstOrDefault(s => s.Session == session);
+                            if (member != null)
+                            {
+                                if (member.LastSummoned != null)
+                                {
+                                    session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
+                                    member.Dead = true;
+                                    team.ToList().Where(s => s.LastSummoned != null).ToList().ForEach(s =>
+                                    {
+                                        s.LastSummoned = null;
+                                        s.Session.Character.PositionX = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
+                                        s.Session.Character.PositionY = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
+                                        session.CurrentMapInstance.Broadcast(s.Session.Character.GenerateTp());
+                                        s.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
+                                    });
+                                    ArenaTeamMember killer = team.OrderBy(s => s.Order).FirstOrDefault(s => !s.Dead && s.ArenaTeamType != member.ArenaTeamType);
+                                    session.CurrentMapInstance.Broadcast(session.Character.GenerateSay(string.Format("WINNER_ARENA_ROUND", killer.Session.Character.Name, killer.ArenaTeamType), 10));
+                                    session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format("WINNER_ARENA_ROUND", killer.Session.Character.Name, killer.ArenaTeamType), 0));
+                                }
+
+                                member.Session.Character.PositionX = member.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
+                                member.Session.Character.PositionY = member.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
+                                session.CurrentMapInstance.Broadcast(member.Session, member.Session.Character.GenerateTp());
+                                session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
+                                team.Where(friends => friends.ArenaTeamType == member.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(friends.Session.Character.GenerateTaFc()); });
+                                team.ToList().ForEach(arenauser =>
+                                {
+                                    arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, team, arenauser.ArenaTeamType, true));
+                                    arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaM(2, 0));
+                                });
+                                session.Character.Hp = (int)session.Character.HPLoad();
+                                session.Character.Mp = (int)session.Character.MPLoad();
+                                session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRevive());
+                                session.SendPacket(session.Character.GenerateStat());
+                            }
                         }
-                    }
-                    if (revive)
-                    {
-                        Instance.ReviveFirstPosition(session.Character.CharacterId);
-                    }
-                });
+                        break;
+
+                    default:
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
+                        Task.Factory.StartNew(async () =>
+                        {
+                            bool revive = true;
+                            for (int i = 1; i <= 30; i++)
+                            {
+                                await Task.Delay(1000);
+                                if (session.Character.Hp > 0)
+                                {
+                                    revive = false;
+                                    break;
+                                }
+                            }
+                            if (revive)
+                            {
+                                Instance.ReviveFirstPosition(session.Character.CharacterId);
+                            }
+                        });
+                        break;
+                }
             }
         }
 
@@ -228,7 +275,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.RemoveVehicle();
                 }
-                List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
+                List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad, BuffType.Good, BuffType.Neutral };
                 Session.Character.DisableBuffs(bufftodisable);
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
@@ -412,7 +459,7 @@ namespace OpenNos.GameObject
                     session.CurrentMapInstance.UnregisterSession(session.Character.CharacterId);
                     LeaveMap(session.Character.CharacterId);
                     session.Character.IsChangingMapInstance = true;
-                    if(session.Character.IsSitting)
+                    if (session.Character.IsSitting)
                     {
                         session.Character.IsSitting = false;
                     }
@@ -529,7 +576,7 @@ namespace OpenNos.GameObject
                     {
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
                     }
-                
+
                     session.Character.IsChangingMapInstance = false;
                     session.SendPacket(session.Character.GenerateMinimapPosition());
                     session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>
@@ -744,7 +791,7 @@ namespace OpenNos.GameObject
                             }
                         }
                         GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                        GroupsThreadSafe.TryRemove(grp.GroupId,out Group value);
+                        GroupsThreadSafe.TryRemove(grp.GroupId, out Group value);
                     }
                     session.Character.Group = null;
                 }
@@ -872,7 +919,7 @@ namespace OpenNos.GameObject
                         break;
                 }
             });
-            _items.AddRange(_item.Select(s=>s.Value));
+            _items.AddRange(_item.Select(s => s.Value));
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_LOADED"), _items.Count));
 
             // intialize monsterdrops
@@ -910,7 +957,7 @@ namespace OpenNos.GameObject
                 _npcMonsters[npcMonster.NpcMonsterVNum].BCards = new List<BCard>();
                 DAOFactory.BCardDAO.LoadByNpcMonsterVNum(npcMonster.NpcMonsterVNum).ToList().ForEach(s => _npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard)s));
             });
-            _npcs.AddRange(_npcMonsters.Select(s=>s.Value));
+            _npcs.AddRange(_npcMonsters.Select(s => s.Value));
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count));
 
             // intialize recipes
@@ -963,7 +1010,7 @@ namespace OpenNos.GameObject
                 DAOFactory.BCardDAO.LoadBySkillVNum(skillObj.SkillVNum).ToList().ForEach(o => skillObj.BCards.Add((BCard)o));
                 _skill[skillObj.SkillVNum] = skillObj as Skill;
             });
-            _skills.AddRange(_skill.Select(s=>s.Value));
+            _skills.AddRange(_skill.Select(s => s.Value));
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
 
             // initialize buffs
@@ -1021,7 +1068,7 @@ namespace OpenNos.GameObject
                     monstercount += newMap.Monsters.Count;
                     i++;
                 });
-                _maps.AddRange(_mapList.Select(s=>s.Value));
+                _maps.AddRange(_mapList.Select(s => s.Value));
                 if (i != 0)
                 {
                     Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_LOADED"), i));
@@ -1400,7 +1447,7 @@ namespace OpenNos.GameObject
                 RemoveItemProcess();
             });
 
-         
+
 
             CommunicationServiceClient.Instance.SessionKickedEvent += OnSessionKicked;
             CommunicationServiceClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
@@ -1457,7 +1504,7 @@ namespace OpenNos.GameObject
                 family.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(family.FamilyId).ToList();
                 _family[family.FamilyId] = family;
             });
-            FamilyList.AddRange(_family.Select(s=>s.Value));
+            FamilyList.AddRange(_family.Select(s => s.Value));
         }
 
         private void LoadScriptedInstances()

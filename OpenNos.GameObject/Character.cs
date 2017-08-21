@@ -5289,6 +5289,21 @@ namespace OpenNos.GameObject
             return new[] { value1, value2 };
         }
 
+        public string GenerateTaM(int type, int timer)
+        {
+            ConcurrentBag<ArenaTeamMember> tm= ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
+            int score1 = 0;
+            int score2 = 0;
+            if(tm !=null)
+            {
+                ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
+                IEnumerable<long> ids = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
+                score1 = MapInstance.InstanceBag.DeadList.Count(s => ids.Contains(s));
+                score2 = MapInstance.InstanceBag.DeadList.Count(s => !ids.Contains(s));
+            }
+            return $"ta_m {type} {score1} {score2} {timer} 0";
+        }
+
         public void LeaveTalentArena()
         {
             ArenaMember memb = ServerManager.Instance.ArenaMembers.FirstOrDefault(s => s.Session == Session);

@@ -56,11 +56,11 @@ namespace OpenNos.Handler
             if (arenateam != null && Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
             {
                 IEnumerable<ArenaTeamMember> ownteam = arenateam.Where(s => s.ArenaTeamType == arenateam?.FirstOrDefault(e => e.Session == Session)?.ArenaTeamType);
-                ClientSession client = ownteam.Where(s=> s.Session != Session).OrderBy(s => s.Order).Skip(packet.CalledIndex).FirstOrDefault().Session;
+                ClientSession client = ownteam.Where(s => s.Session != Session).OrderBy(s => s.Order).Skip(packet.CalledIndex).FirstOrDefault().Session;
                 ArenaTeamMember memb = arenateam.FirstOrDefault(s => s.Session == client);
-                if (client != null && client.CurrentMapInstance == Session.CurrentMapInstance && memb != null && memb.LastSummoned == null && ownteam.Sum(s => s.Summon) < 5)
+                if (client != null && client.CurrentMapInstance == Session.CurrentMapInstance && memb != null && memb.LastSummoned == null && ownteam.Sum(s => s.SummonCount) < 5)
                 {
-                    memb.Summon++;
+                    memb.SummonCount++;
                     arenateam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, arenateam, arenauser.ArenaTeamType, true)); });
                     arenateam.FirstOrDefault(s => s.Session == client).LastSummoned = DateTime.Now;
                     Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(4432));
@@ -88,11 +88,15 @@ namespace OpenNos.Handler
 
                     Observable.Timer(TimeSpan.FromSeconds(timer + 3)).Subscribe(o =>
                       {
-                          arenateam.FirstOrDefault(s => s.Session == client).LastSummoned = null;
-                          client.Character.PositionX = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
-                          client.Character.PositionY = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
-                          Session?.CurrentMapInstance.Broadcast(client.Character.GenerateTp());
-                          client.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
+                          DateTime? lastsummoned = arenateam.FirstOrDefault(s => s.Session == client).LastSummoned;
+                          if (lastsummoned != null && ((DateTime)lastsummoned).AddSeconds(timer) < DateTime.Now)
+                          {
+                              arenateam.FirstOrDefault(s => s.Session == client).LastSummoned = null;
+                              client.Character.PositionX = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
+                              client.Character.PositionY = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
+                              Session?.CurrentMapInstance.Broadcast(client.Character.GenerateTp());
+                              client.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
+                          }
                       });
                 }
             }

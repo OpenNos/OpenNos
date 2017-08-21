@@ -73,7 +73,7 @@ namespace OpenNos.GameObject.Helpers
                 }
             }
 
-            return $"ta_p {tatype} {(byte)type} {5 - arenateam.Where(s => s.ArenaTeamType == type).Sum(s => s.Summon)} {5 - arenateam.Where(s => s.ArenaTeamType != type).Sum(s => s.Summon)} {groups.TrimEnd(' ')}";
+            return $"ta_p {tatype} {(byte)type} {5 - arenateam.Where(s => s.ArenaTeamType == type).Sum(s => s.SummonCount)} {5 - arenateam.Where(s => s.ArenaTeamType != type).Sum(s => s.SummonCount)} {groups.TrimEnd(' ')}";
         }
 
         public string GenerateFrank(byte type)
@@ -544,11 +544,6 @@ namespace OpenNos.GameObject.Helpers
         public string GenerateTaF(byte victoriousteam)
         {
             return $"ta_f 0 {victoriousteam} 2 2 0 2 3 1 2";
-        }
-
-        public string GenerateTaM(int type, int timer)
-        {
-            return $"ta_m {type} 0 0 {timer} 0";
         }
 
         public string GenerateRl(byte type)

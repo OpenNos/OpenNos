@@ -110,6 +110,8 @@ namespace OpenNos.GameObject.Event.ARENA
                                                             o.Session.SendPacket("ta_close");
                                                             Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(time2 =>
                                                             {
+                                                                List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad, BuffType.Good, BuffType.Neutral };
+                                                                o.Session.Character.DisableBuffs(bufftodisable);
                                                                 int i = Array.IndexOf(arenamembers, o) + 1;
                                                                 o.Session.Character.Hp = (int)o.Session.Character.HPLoad();
                                                                 o.Session.Character.Mp = (int)o.Session.Character.MPLoad();
@@ -119,11 +121,11 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                 o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA"), 10));
                                                                 o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA"), 0));
 
-                                                                o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaM(0, 0));
+                                                                o.Session.SendPacket(o.Session.Character.GenerateTaM(0, 0));
                                                                 o.Session.SendPacket("ta_sv 0");
                                                                 o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
 
-                                                                o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaM(3, timer));
+                                                                o.Session.SendPacket(o.Session.Character.GenerateTaM(3, timer));
 
 
                                                                 o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(o.GroupId == s.GroupId ? "ZENAS" : "ERENIA"), 10));
@@ -205,9 +207,9 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                     arenauser.Order = x;
                                                                                 }
                                                                             }
-                                                                           
+
                                                                         }
-                                                                        arenauser.Session.SendPacket($"ta_pn {arenauser.Order+1}");
+                                                                        arenauser.Session.SendPacket($"ta_pn {arenauser.Order + 1}");
                                                                         arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, ArenaTeam, arenauser.ArenaTeamType, true));
                                                                     });
                                                                     map.MapDesignObjects.ToArray().ToList().ForEach(md => map.Broadcast(md.GenerateEffect(true)));
@@ -219,8 +221,15 @@ namespace OpenNos.GameObject.Event.ARENA
                                           Observable.Timer(TimeSpan.FromSeconds(timer + 6)).Subscribe(start =>
                                                                   {
                                                                       bool newround = true;
+                                                                      int count = 0;
+                                                                      
                                                                       Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(start3 =>
                                                                       {
+                                                                          if(count != ArenaTeam.Count(at => at.Dead))
+                                                                          {
+                                                                              count = ArenaTeam.Count(at => at.Dead);
+                                                                              newround = true;
+                                                                          }
                                                                           ArenaTeamMember tm = ArenaTeam.OrderBy(tm3 => tm3.Order).FirstOrDefault(tm3 => tm3.ArenaTeamType == ArenaTeamType.ERENIA && !tm3.Dead);
                                                                           ArenaTeamMember tm2 = ArenaTeam.OrderBy(tm3 => tm3.Order).FirstOrDefault(tm3 => tm3.ArenaTeamType == ArenaTeamType.ZENAS && !tm3.Dead);
 
@@ -228,7 +237,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                           {
                                                                               timer = 300;
                                                                               newround = false;
-                                                                              map.Broadcast(UserInterfaceHelper.Instance.GenerateTaM(3, timer));
+                                                                              ArenaTeam.ToList().ForEach(friends => { friends.Session.Character.GenerateTaM(3, timer); });
                                                                               IDisposable obs5 = Observable.Timer(TimeSpan.FromSeconds(timer)).Subscribe(start4 =>
                                                                               {
                                                                                   if (tm2 != null && tm != null)
