@@ -250,7 +250,7 @@
     <value>Déconnection forcée du client {0}, Trop de connexion...</value>
   </data>
   <data name="FRIEND_REQ_BLOCKED" xml:space="preserve">
-    <value>À partir de maintenant, tu bloques les demandes d'amitiées.</value>
+    <value>À partir de maintenant, tu bloques les demandes d'amitiés.</value>
   </data>
   <data name="FRIEND_REQ_UNLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu débloques les demandes d'amitiées</value>
@@ -265,7 +265,7 @@
     <value>Tu as obtenu de l'or.</value>
   </data>
   <data name="GROUP_BLOCKED" xml:space="preserve">
-    <value>Ce joueur a bloqué les demandes de groupe.</value>
+    <value>Le joueur a bloqué les demandes de groupe.</value>
   </data>
   <data name="GROUP_CLOSED" xml:space="preserve">
     <value>Groupe dissous.</value>
@@ -325,7 +325,7 @@
     <value>Tu ne peux pas abandonner cet objet.</value>
   </data>
   <data name="ITEM_NOT_SOLDABLE" xml:space="preserve">
-    <value>Ce objet ne peut pas être vendu.</value>
+    <value>Cet objet ne peut pas être vendu.</value>
   </data>
   <data name="ITEM_NOT_TRADABLE" xml:space="preserve">
     <value>Tu ne peux pas échanger cet objet.</value>
@@ -358,7 +358,7 @@
     <value>Magicien</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
-    <value>Maximum d'or atteint.</value>
+    <value>Le montant maximal d'or a été atteint.</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Message reçu {0} sur le client {1}</value>
@@ -821,7 +821,7 @@ Veux-tu le porter ?</value>
     <value>C'est impossible de faire un commerce avec {0} par ce qu'il est en plein combat.</value>
   </data>
   <data name="ALREADY_EXCHANGE" xml:space="preserve">
-    <value>Le joueur est déjà en train d'effectué un échange.</value>
+    <value>Le joueur est déjà en train d'effectuer un échange.</value>
   </data>
   <data name="HAS_SHOP_OPENED" xml:space="preserve">
     <value>Tu ne peux pas faire d'échanger avec ce joueur, car il a ouvert un magasin.</value>
@@ -908,10 +908,10 @@ Veux-tu le porter ?</value>
     <value>L'objet que tu recherches est introuvable.</value>
   </data>
   <data name="MONSTER_NOT_FOUND" xml:space="preserve">
-    <value>Le monstre que tu recherches est introuvable.</value>
+    <value>Le monstre n'a pas pu être trouvé.</value>
   </data>
   <data name="ADVENTURERS_CANT_USE" xml:space="preserve">
-    <value>Ton personnage ne remplis les conditions requise pour utiliser cet objet.</value>
+    <value>Ton personnage ne remplit les conditions requises pour utiliser cet objet.</value>
   </data>
   <data name="SAVING_ALL" xml:space="preserve">
     <value>Le serveur vient d'effectuer une sauvegarde des données.</value>
@@ -971,7 +971,7 @@ Veux-tu le porter ?</value>
     <value>Astuce : Un problème ? reportez le sur notre page github !</value>
   </data>
   <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
-    <value>Le monstre doit être en vie. Sinon, essayez de cliquer dessus et ressayez !</value>
+    <value>Le monstre doit être en vie. Sinon, essayez de cliquer dessus et réessayez !</value>
   </data>
   <data name="MONSTER_REMOVED" xml:space="preserve">
     <value>Le monstre a été supprimé.</value>
@@ -1118,7 +1118,7 @@ Veux-tu le porter ?</value>
     <value>[Taux de chance d'apparition d'or] : </value>
   </data>
   <data name="GOLD_DROP_RATE_CHANGED" xml:space="preserve">
-    <value>Gold drop rate changed!</value>
+    <value>Le taux d'apparition de l'or a été augmenté !</value>
   </data>
   <data name="GROUP_MEMBER_ALREADY_IN_FAMILY" xml:space="preserve">
     <value>Un membre du groupe possède déjà une famille.</value>
@@ -1565,7 +1565,7 @@ Veux-tu le porter ?</value>
     <value>Options ajoutées.</value>
   </data>
   <data name="CELLON_LEVEL_TOO_HIGH" xml:space="preserve">
-    <value>Le niveau de ce cellon est trop élevé pour être utilisé sur ce objet.</value>
+    <value>Le niveau de ce cellon est trop élevé pour être utilisé sur cet objet.</value>
   </data>
   <data name="NOT_ENOUGH_GOLD" xml:space="preserve">
     <value>Tu n'as pas assez d'or !</value>
@@ -1574,6 +1574,6 @@ Veux-tu le porter ?</value>
     <value>Les options sont identifiées.</value>
   </data>
   <data name="TOO_MUCH_CELLON" xml:space="preserve">
-    <value>Il y a trop de cellons !</value>
+    <value>Ce bijou possède déjà le nombre maximal d'améliorations.</value>
   </data>
 </root>

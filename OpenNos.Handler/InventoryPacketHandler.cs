@@ -1563,7 +1563,7 @@ namespace OpenNos.Handler
                                 if (inventory.Item.MaxCellon <=
                                     DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(inventory.Id).Count())
                                 {
-                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_MUCH_CELLON"), 0));
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLON_FULL"), 0));
                                     return;
                                 }
                                 int gold;
