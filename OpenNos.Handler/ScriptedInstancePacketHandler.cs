@@ -111,6 +111,10 @@ namespace OpenNos.Handler
             {
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
             }
+            else if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
+            {
+                ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, ServerManager.Instance.ArenaInstance.MapInstanceId);
+            }
             else if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
             {
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
@@ -313,11 +317,10 @@ namespace OpenNos.Handler
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_REQUIERED_LEVEL"), 0));
                                     return;
                                 }
-
-                                MapCell mapcell = character.CurrentMapInstance.Map.GetRandomPosition();
+                                
                                 Session.Character.MapX = portal.PositionX;
                                 Session.Character.MapY = portal.PositionY;
-                                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, character.CurrentMapInstance.MapInstanceId, mapcell.X, mapcell.Y);
+                                ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, character.CurrentMapInstance.MapInstanceId);
                                 Session.SendPacket(portal.GenerateMainInfo());
                                 Session.SendPackets(portal.GenerateMinimap());
                                 Session.SendPacket(portal.FirstMap.InstanceBag.GenerateScore());

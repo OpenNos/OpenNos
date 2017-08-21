@@ -541,11 +541,6 @@ namespace OpenNos.GameObject.Helpers
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
-        public string GenerateTaF(byte victoriousteam)
-        {
-            return $"ta_f 0 {victoriousteam} 2 2 0 2 3 1 2";
-        }
-
         public string GenerateRl(byte type)
         {
             string str = $"rl {type}";

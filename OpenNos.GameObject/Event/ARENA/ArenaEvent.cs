@@ -1,4 +1,5 @@
 ﻿using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
@@ -110,6 +111,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                             o.Session.SendPacket("ta_close");
                                                             Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(time2 =>
                                                             {
+                                                                o.Session.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = o.Session.Account.AccountId, CharacterId = o.Session.Character.CharacterId, IpAddress = o.Session.IpAddress, LogData = "Entry", LogType = "TalentArena", Timestamp = DateTime.Now });
                                                                 List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad, BuffType.Good, BuffType.Neutral };
                                                                 o.Session.Character.DisableBuffs(bufftodisable);
                                                                 int i = Array.IndexOf(arenamembers, o) + 1;
@@ -282,21 +284,26 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                   if (tm == null && tm2 == null)
                                                                                   {
                                                                                       map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("EQUALITY"), 0));
-                                                                                      ArenaTeam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(arenauser.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("EQUALITY"), 10)); });
-                                                                                      map.Broadcast(UserInterfaceHelper.Instance.GenerateTaF(3));
+                                                                                      ArenaTeam.ToList().ForEach(arenauser => {
+                                                                                          arenauser.Session.SendPacket(arenauser.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("EQUALITY"), 10));
+                                                                                          arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaF(3));
+                                                                                      });
                                                                                   }
                                                                                   else if (tm == null)
                                                                                   {
                                                                                       map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("VICTORIOUS_ZENAS"), 0));
-                                                                                      ArenaTeam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(arenauser.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("VICTORIOUS_ZENAS"), 10)); });
-                                                                                      map.Broadcast(UserInterfaceHelper.Instance.GenerateTaF(1));
+                                                                                      ArenaTeam.ToList().ForEach(arenauser => {
+                                                                                          arenauser.Session.SendPacket(arenauser.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("VICTORIOUS_ZENAS"), 10));
+                                                                                          arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaF(1));
+                                                                                      });
                                                                                   }
                                                                                   else
                                                                                   {
                                                                                       map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("VICTORIOUS_ERENIA"), 0));
-                                                                                      ArenaTeam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(arenauser.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("VICTORIOUS_ERENIA"), 10)); });
-                                                                                      map.Broadcast(Language.Instance.GetMessageFromKey("VICTORIOUS_ERENIA"));
-                                                                                      map.Broadcast(UserInterfaceHelper.Instance.GenerateTaF(2));
+                                                                                      ArenaTeam.ToList().ForEach(arenauser => {
+                                                                                          arenauser.Session.SendPacket(arenauser.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("VICTORIOUS_ERENIA"), 10));
+                                                                                          arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaF(2));
+                                                                                      });
                                                                                   }
                                                                                   obs3.Dispose();
                                                                               }

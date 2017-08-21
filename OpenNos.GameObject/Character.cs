@@ -392,8 +392,6 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; set; }
 
-        public byte TicketLeft { get; set; }
-
         public IDisposable Life { get; set; }
 
         #endregion
@@ -466,7 +464,7 @@ namespace OpenNos.GameObject
             Session.CurrentMapInstance?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
             Session.CurrentMapInstance?.Broadcast(GenerateEff(6), PositionX, PositionY);
             Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
-            foreach (CharacterSkill skill in Skills.Select(s=>s.Value))
+            foreach (CharacterSkill skill in Skills.Select(s => s.Value))
             {
                 if (skill.SkillVNum >= 200)
                 {
@@ -691,7 +689,7 @@ namespace OpenNos.GameObject
                                     SpCooldown = 30;
                                     if (SkillsSp != null)
                                     {
-                                        foreach (CharacterSkill ski in SkillsSp.Where(s => !s.Value.CanBeUsed()).Select(s=>s.Value))
+                                        foreach (CharacterSkill ski in SkillsSp.Where(s => !s.Value.CanBeUsed()).Select(s => s.Value))
                                         {
                                             short time = ski.Skill.Cooldown;
                                             double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
@@ -1698,23 +1696,23 @@ namespace OpenNos.GameObject
                     case EquipmentType.Armor:
                         armorRare = item.Rare;
                         armorUpgrade = item.Upgrade;
-                        ((WearableInstance) item).EquipmentOptions.Clear();
-                        ((WearableInstance) item).EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
+                        ((WearableInstance)item).EquipmentOptions.Clear();
+                        ((WearableInstance)item).EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
                         break;
 
                     case EquipmentType.MainWeapon:
                         weaponRare = item.Rare;
                         weaponUpgrade = item.Upgrade;
-                        ((WearableInstance) item).EquipmentOptions.Clear();
-                        ((WearableInstance) item).EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
+                        ((WearableInstance)item).EquipmentOptions.Clear();
+                        ((WearableInstance)item).EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
                         break;
 
                     case EquipmentType.SecondaryWeapon:
                     case EquipmentType.Necklace:
                     case EquipmentType.Bracelet:
                     case EquipmentType.Ring:
-                        ((WearableInstance) item).EquipmentOptions.Clear();
-                        ((WearableInstance) item).EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
+                        ((WearableInstance)item).EquipmentOptions.Clear();
+                        ((WearableInstance)item).EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
                         break;
                 }
                 eqlist += $" {i}.{item.Item.VNum}.{item.Rare}.{(item.Item.IsColored ? item.Design : item.Upgrade)}.0";
@@ -1977,11 +1975,11 @@ namespace OpenNos.GameObject
                 Random random = new Random(DateTime.Now.Millisecond & monsterToAttack.MapMonsterId);
 
                 // owner set
-                long? dropOwner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?) null;
+                long? dropOwner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?)null;
                 Group group = null;
                 if (dropOwner != null)
                 {
-                    group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long) dropOwner));
+                    group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)dropOwner));
                 }
 
                 // end owner set
@@ -2007,7 +2005,7 @@ namespace OpenNos.GameObject
                         continue;
                     }
                     double rndamount = ServerManager.Instance.RandomNumber() * random.NextDouble();
-                    if (!(rndamount <= (double) drop.DropChance * dropRate / 5000d))
+                    if (!(rndamount <= (double)drop.DropChance * dropRate / 5000d))
                     {
                         continue;
                     }
@@ -2016,7 +2014,7 @@ namespace OpenNos.GameObject
                     {
                         continue;
                     }
-                    if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                    if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                     {
                         List<long> alreadyGifted = new List<long>();
                         foreach (long charId in monsterToAttack.DamageList.Keys)
@@ -2026,7 +2024,7 @@ namespace OpenNos.GameObject
                                 continue;
                             }
                             ClientSession giftsession = ServerManager.Instance.GetSessionByCharacterId(charId);
-                            giftsession?.Character.GiftAdd(drop.ItemVNum, (byte) drop.Amount);
+                            giftsession?.Character.GiftAdd(drop.ItemVNum, (byte)drop.Amount);
                             alreadyGifted.Add(charId);
                         }
                     }
@@ -2034,7 +2032,7 @@ namespace OpenNos.GameObject
                     {
                         if (@group != null && @group.GroupType == GroupType.Group)
                         {
-                            if (@group.SharingMode == (byte) GroupSharingType.ByOrder)
+                            if (@group.SharingMode == (byte)GroupSharingType.ByOrder)
                             {
                                 dropOwner = @group.GetNextOrderedCharacterId(this);
                                 if (dropOwner.HasValue)
@@ -2043,7 +2041,7 @@ namespace OpenNos.GameObject
                                         .ForEach(s => s.SendPacket(
                                             s.Character.GenerateSay(
                                                 string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop.ItemVNum).Name,
-                                                    @group.Characters.Single(c => c.Character.CharacterId == (long) dropOwner).Character.Name, drop.Amount), 10)));
+                                                    @group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop.Amount), 10)));
                                 }
                             }
                             else
@@ -2072,10 +2070,10 @@ namespace OpenNos.GameObject
                 // gold calculation
                 int gold = GetGold(monsterToAttack);
                 long maxGold = ServerManager.Instance.MaxGold;
-                gold = gold > maxGold ? (int) maxGold : gold;
+                gold = gold > maxGold ? (int)maxGold : gold;
                 double randChance = ServerManager.Instance.RandomNumber() * random.NextDouble();
 
-                if (gold > 0 && randChance <= (int) (ServerManager.Instance.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
+                if (gold > 0 && randChance <= (int)(ServerManager.Instance.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
                 {
                     DropDTO drop2 = new DropDTO
                     {
@@ -2084,7 +2082,7 @@ namespace OpenNos.GameObject
                     };
                     if (Session.CurrentMapInstance != null)
                     {
-                        if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                        if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                         {
                             List<long> alreadyGifted = new List<long>();
                             foreach (long charId in monsterToAttack.DamageList.Keys)
@@ -2113,7 +2111,7 @@ namespace OpenNos.GameObject
                         {
                             if (@group != null && MapInstance.MapInstanceType != MapInstanceType.LodInstance)
                             {
-                                if (@group.SharingMode == (byte) GroupSharingType.ByOrder)
+                                if (@group.SharingMode == (byte)GroupSharingType.ByOrder)
                                 {
                                     dropOwner = @group.GetNextOrderedCharacterId(this);
 
@@ -2122,7 +2120,7 @@ namespace OpenNos.GameObject
                                         @group.Characters.ToList()
                                             .ForEach(s => s.SendPacket(s.Character.GenerateSay(
                                                 string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop2.ItemVNum).Name,
-                                                    @group.Characters.Single(c => c.Character.CharacterId == (long) dropOwner).Character.Name, drop2.Amount), 10)));
+                                                    @group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop2.Amount), 10)));
                                     }
                                 }
                                 else
@@ -2213,12 +2211,12 @@ namespace OpenNos.GameObject
             Miniland = ServerManager.Instance.GenerateMapInstance(20001, MapInstanceType.NormalInstance, new InstanceBag());
             foreach (MinilandObjectDTO obj in DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId))
             {
-                MapDesignObject mapobj = (MapDesignObject) obj;
+                MapDesignObject mapobj = (MapDesignObject)obj;
                 if (mapobj.ItemInstanceId == null)
                 {
                     continue;
                 }
-                ItemInstance item = Inventory.LoadByItemInstance<ItemInstance>((Guid) mapobj.ItemInstanceId);
+                ItemInstance item = Inventory.LoadByItemInstance<ItemInstance>((Guid)mapobj.ItemInstanceId);
                 if (item == null)
                 {
                     continue;
@@ -2227,7 +2225,7 @@ namespace OpenNos.GameObject
                 Miniland.MapDesignObjects.Add(mapobj);
             }
         }
-        
+
         public string GenerateMinilandPoint()
         {
             return $"mlpt {MinilandPoint} 100";
@@ -2286,7 +2284,7 @@ namespace OpenNos.GameObject
         {
             // FAIRY BUFF CARD ID
             bool isBuffed = Buff.Any(b => b.Card.CardId == 131);
-            
+
             WearableInstance fairy = null;
             if (Inventory != null)
             {
@@ -3085,7 +3083,7 @@ namespace OpenNos.GameObject
                     {
                         if ((bz.Item as WearableInstance) != null)
                         {
-                            info = ((WearableInstance) bz.Item).GenerateEInfo().Replace(' ', '^').Replace("e_info^", "");
+                            info = ((WearableInstance)bz.Item).GenerateEInfo().Replace(' ', '^').Replace("e_info^", "");
                         }
                     }
 
@@ -3205,7 +3203,7 @@ namespace OpenNos.GameObject
 
         public string GenerateSki()
         {
-            IEnumerable<CharacterSkill> characterSkills = UseSp ? SkillsSp.Select(s=>s.Value) : Skills.Select(s => s.Value);
+            IEnumerable<CharacterSkill> characterSkills = UseSp ? SkillsSp.Select(s => s.Value) : Skills.Select(s => s.Value);
             string skibase = string.Empty;
             IEnumerable<CharacterSkill> enumerable = characterSkills as IList<CharacterSkill> ?? characterSkills.ToList();
             if (!UseSp)
@@ -3238,7 +3236,7 @@ namespace OpenNos.GameObject
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
             if (Inventory != null)
             {
-                foreach (ItemInstance inv in Inventory.Select(s=>s.Value))
+                foreach (ItemInstance inv in Inventory.Select(s => s.Value))
                 {
                     EquipmentBCards.AddRange(inv.Item.BCards);
                     switch (inv.Type)
@@ -3628,7 +3626,7 @@ namespace OpenNos.GameObject
         {
             int cpmax = (Class > 0 ? 40 : 0) + JobLevel * 2;
             int cpused = 0;
-            foreach (CharacterSkill ski in Skills.Select(s=>s.Value))
+            foreach (CharacterSkill ski in Skills.Select(s => s.Value))
             {
                 cpused += ski.Skill.CPCost;
             }
@@ -3714,7 +3712,7 @@ namespace OpenNos.GameObject
         public string GetMinilandObjectList()
         {
             string mlobjstring = "mlobjlst";
-            foreach (ItemInstance item in Inventory.Where(s => s.Value.Type == InventoryType.Miniland).OrderBy(s => s.Value.Slot).Select(s=>s.Value))
+            foreach (ItemInstance item in Inventory.Where(s => s.Value.Type == InventoryType.Miniland).OrderBy(s => s.Value.Slot).Select(s => s.Value))
             {
                 if (item.Item.IsMinilandObject)
                 {
@@ -3907,14 +3905,14 @@ namespace OpenNos.GameObject
 
             if (!UseSp)
             {
-                return (int) ((CharacterHelper.HPData[(byte) Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
+                return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
             }
 
-            SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
+            SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
 
             if (specialist == null)
             {
-                return (int) ((CharacterHelper.HPData[(byte) Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
+                return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
             }
 
             int point = CharacterHelper.SlPoint(specialist.SlHP, 3);
@@ -4037,7 +4035,7 @@ namespace OpenNos.GameObject
                     i++;
                 }
 
-                Skill skinfo = ServerManager.Instance.GetSkill((short) i);
+                Skill skinfo = ServerManager.Instance.GetSkill((short)i);
                 if (skinfo.Class != 0 || JobLevel < skinfo.LevelMinimum)
                 {
                     continue;
@@ -4048,7 +4046,7 @@ namespace OpenNos.GameObject
                 }
 
                 newSkill = 1;
-                Skills[i] = new CharacterSkill {SkillVNum = (short) i, CharacterId = CharacterId};
+                Skills[i] = new CharacterSkill { SkillVNum = (short)i, CharacterId = CharacterId };
             }
             if (newSkill <= 0)
             {
@@ -4320,7 +4318,7 @@ namespace OpenNos.GameObject
                     lock (Inventory)
                     {
                         // load and concat inventory with equipment
-                        IEnumerable<ItemInstance> inventories = Inventory.Select(s=>s.Value);
+                        IEnumerable<ItemInstance> inventories = Inventory.Select(s => s.Value);
                         IEnumerable<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
                         IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
                         currentlySavedInventoryIds = characters.Where(s => s.CharacterId != CharacterId)
@@ -4371,7 +4369,7 @@ namespace OpenNos.GameObject
                         DAOFactory.CharacterSkillDAO.Delete(characterSkillToDeleteId);
                     }
 
-                    foreach (CharacterSkill characterSkill in Skills.Select(s=>s.Value))
+                    foreach (CharacterSkill characterSkill in Skills.Select(s => s.Value))
                     {
                         DAOFactory.CharacterSkillDAO.InsertOrUpdate(characterSkill);
                     }
@@ -4898,7 +4896,7 @@ namespace OpenNos.GameObject
                             specialist.XP = 0;
                         }
                         LearnSPSkill();
-                        Skills.Select(s=>s.Value).ToList().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
+                        Skills.Select(s => s.Value).ToList().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
                         Session.SendPacket(GenerateSki());
                         Session.SendPackets(GenerateQuicklist());
 
@@ -5291,10 +5289,10 @@ namespace OpenNos.GameObject
 
         public string GenerateTaM(int type, int timer)
         {
-            ConcurrentBag<ArenaTeamMember> tm= ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
+            ConcurrentBag<ArenaTeamMember> tm = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
             int score1 = 0;
             int score2 = 0;
-            if(tm !=null)
+            if (tm != null)
             {
                 ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
                 IEnumerable<long> ids = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
@@ -5304,10 +5302,37 @@ namespace OpenNos.GameObject
             return $"ta_m {type} {score1} {score2} {timer} 0";
         }
 
+        public string GenerateTaF(byte victoriousteam)
+        {
+            ConcurrentBag<ArenaTeamMember> tm = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
+            int score1 = 0;
+            int score2 = 0;
+            int life1 = 0;
+            int life2 = 0;
+            int call1 = 0;
+            int call2 = 0;
+            ArenaTeamType atype = ArenaTeamType.ERENIA;
+            if (tm != null)
+            {
+                ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
+                atype = tmem.ArenaTeamType;
+                IEnumerable<long> ids = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
+                ConcurrentBag<ArenaTeamMember> oposit = tm.Where(s => tmem.ArenaTeamType != s.ArenaTeamType);
+                ConcurrentBag<ArenaTeamMember> own = tm.Where(s => tmem.ArenaTeamType != s.ArenaTeamType);
+                score1 = 3 - MapInstance.InstanceBag.DeadList.Count(s => ids.Contains(s));
+                score2 = 3 - MapInstance.InstanceBag.DeadList.Count(s => !ids.Contains(s));
+                life1 = 3 - own.Count(s => s.Dead);
+                life2 = 3 - oposit.Count(s => s.Dead);
+                call1 = 5 - own.Sum(s => s.SummonCount);
+                call2 = 5 - oposit.Sum(s => s.SummonCount);
+            }
+            return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
+        }
+
         public void LeaveTalentArena()
         {
             ArenaMember memb = ServerManager.Instance.ArenaMembers.FirstOrDefault(s => s.Session == Session);
-            if(memb !=null)
+            if (memb != null)
             {
                 if (memb.GroupId != null)
                 {
