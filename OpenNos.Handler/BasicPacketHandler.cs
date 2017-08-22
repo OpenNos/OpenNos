@@ -634,7 +634,7 @@ namespace OpenNos.Handler
                         if (currentGroup != null)
                         {
                             currentGroup.JoinGroup(targetSession);
-                            targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOINED_GROUP"), 10));
+                            targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("JOINED_GROUP")));
                             createNewGroup = false;
                         }
                     }
@@ -679,7 +679,7 @@ namespace OpenNos.Handler
                     {
                         Group group = new Group(GroupType.Group);
                         @group.JoinGroup(pjoinPacket.CharacterId);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), targetSession.Character.Name), 10));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), targetSession.Character.Name)));
                         @group.JoinGroup(Session.Character.CharacterId);
                         ServerManager.Instance.AddGroup(@group);
                         targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_ADMIN")));
@@ -1455,7 +1455,7 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"), 10));
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"), 1));
                             }
                             return;
                         default:

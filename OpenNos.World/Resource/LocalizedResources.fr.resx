@@ -781,7 +781,7 @@
     <value>Tu es le maître du groupe.</value>
   </data>
   <data name="GROUP_JOIN" xml:space="preserve">
-    <value>Vous avez rejoint le groupe de {0}</value>
+    <value>Tu as rejoint le groupe de {0}</value>
   </data>
   <data name="NO_WIG" xml:space="preserve">
     <value>Tu ne portes pas de coiffures spéciales</value>
@@ -1076,7 +1076,7 @@ Veux-tu le porter ?</value>
     <value>Cridefamille</value>
   </data>
   <data name="FAMILY_FOUNDED" xml:space="preserve">
-    <value>Félicitations. La famille {0} a été fondée !</value>
+    <value>Félicitations !  La famille {0} a été fondée !</value>
   </data>
   <data name="FAMILY_GROUP_NOT_FULL" xml:space="preserve">
     <value>Il faut minimum trois membres dans le groupe pour pouvoir crée une famille !</value>
@@ -1226,10 +1226,10 @@ Veux-tu le porter ?</value>
     <value>La transformation a été interrompue. Tu n'as plus assez de point SP</value>
   </data>
   <data name="SP_POINTSADDED" xml:space="preserve">
-    <value>Tu as reçu {0} points pour ta Carte Spécialiste !</value>
+    <value>Tes points de spécialiste de base ont été augmentés de  {0}.</value>
   </data>
   <data name="SP_POINTSADDEDBOTH" xml:space="preserve">
-    <value>Tu as reçu {0} points de base et {1} points additionnels</value>
+    <value>Tes points de spécialiste de base ont été augmentés de {0} et les points additionnels de  {1}.</value>
   </data>
   <data name="STATE_CHANGED" xml:space="preserve">
     <value>L'offre a été mise à jour. La vente a été annulée.</value>
@@ -1253,13 +1253,13 @@ Veux-tu le porter ?</value>
     <value>Le diable de feu volant a disparu.</value>
   </data>
   <data name="LOD_CLOSED" xml:space="preserve">
-    <value>La Terre Des Morts est fermée.</value>
+    <value>Tu ne peux pas adhérer maintenant.</value>
   </data>
   <data name="LOD_REQUIERE_LVL" xml:space="preserve">
-    <value>Seul les membres de niveau 55 ou plus peuvent entrer dans la Terre Des Morts</value>
+    <value>Seuls les membres de niveau 55 ou plus peuvent entrer dans la Terre Des Morts</value>
   </data>
   <data name="NEED_FAMILY" xml:space="preserve">
-    <value>Tu ne peux pas rejoindre la Terre Des Morts sans famille.</value>
+    <value>Seuls les membres d'une famille peuvent entrer sur la Terre des morts.</value>
   </data>
   <data name="NOT_ENOUGH_SAVER" xml:space="preserve">
     <value>Tu n'as pas assez de fontaine magique pour pouvoir résscuciter.</value>
@@ -1349,7 +1349,7 @@ Veux-tu le porter ?</value>
     <value>Le niveau de ton NosMate est trop haut pour pouvoir être équipé.</value>
   </data>
   <data name="PET_IN_TEAM_UNRELEASABLE" xml:space="preserve">
-    <value>Tu ne peux pas libéré ton NosMate lorsqu'il t'accompagne.</value>
+    <value>Tu ne peux pas libérer ton NosMate lorsqu'il t'accompagne.</value>
   </data>
   <data name="PET_KICKED" xml:space="preserve">
     <value>Ton NosMate a été renvoyé au Mini-Pays.</value>
@@ -1448,10 +1448,10 @@ Veux-tu le porter ?</value>
     <value>L'équipe du raid a été dissoute !</value>
   </data>
   <data name="RAID_JOIN" xml:space="preserve">
-    <value>{0} a rejoint l'équipe du Raid.</value>
+    <value>{0} a rejoint l'équipe du raid.</value>
   </data>
   <data name="RAID_LEFT" xml:space="preserve">
-    <value>Tu as quitté l'équipe du Raid.</value>
+    <value>Tu as quitté l'équipe du raid.</value>
   </data>
   <data name="RAID_LEVEL_INCORRECT" xml:space="preserve">
     <value>Ton niveau ne correspond pas avec le niveau requis pour ce raid, par conséquant tu ne recevras aucune récompense !</value>
@@ -1460,10 +1460,10 @@ Veux-tu le porter ?</value>
     <value>Le membre de l'équipe : {0} est mort !</value>
   </data>
   <data name="RAID_REGISTERED" xml:space="preserve">
-    <value>L'équipe de Raid a été enregistrée dans la liste</value>
+    <value>L'équipe de raid a été enregistrée dans la liste</value>
   </data>
   <data name="RAID_START" xml:space="preserve">
-    <value>Le Raid a commencé !</value>
+    <value>Le raid a commencé !</value>
   </data>
   <data name="RAID_SUCCEED" xml:space="preserve">
     <value>[Équipe de {1}] L'équipe de raid  {0} a mené à bien sa mission.</value>
@@ -1575,5 +1575,29 @@ Veux-tu le porter ?</value>
   </data>
   <data name="TOO_MUCH_CELLON" xml:space="preserve">
     <value>Ce bijou possède déjà le nombre maximal d'améliorations.</value>
+  </data>
+  <data name="ASK_OPEN_BOX" xml:space="preserve">
+    <value>Ouvrir le coffre au trésor ?</value>
+  </data>
+  <data name="DO_YOU_WANT_RAID" xml:space="preserve">
+    <value>Veux-tu commencer le raid ?</value>
+  </data>
+  <data name="FAMILY_LEAVE" xml:space="preserve">
+    <value>Tu as quitté la famille.</value>
+  </data>
+  <data name="NEED_TEAM" xml:space="preserve">
+    <value>Une équipe de raid doit d'abord avoir été formée.</value>
+  </data>
+  <data name="NEW_MISSION" xml:space="preserve">
+    <value>Nouvel objectif de mission !</value>
+  </data>
+  <data name="ONLY_TEAM_LEADER_CAN_START" xml:space="preserve">
+    <value>Seul le chef d'équipe peut emprunter le portail.</value>
+  </data>
+  <data name="TS_PENALTY" xml:space="preserve">
+    <value>Pénalité de l'espace-temps</value>
+  </data>
+  <data name="YOU_ARE_RAID_CHIEF" xml:space="preserve">
+    <value>Tu es le chef de raid à présent. Invite des membres</value>
   </data>
 </root>

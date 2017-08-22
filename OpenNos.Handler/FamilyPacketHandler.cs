@@ -421,6 +421,7 @@ namespace OpenNos.Handler
                 Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManaged, Session.Character.Name);
                 long FamilyId = Session.Character.Family.FamilyId;
                 DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_LEAVE")));
 
                 ServerManager.Instance.FamilyRefresh(FamilyId);
                 CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
