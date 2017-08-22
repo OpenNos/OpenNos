@@ -132,7 +132,7 @@ namespace OpenNos.GameObject.Event.ARENA
 
                                                                 o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(o.GroupId == s.GroupId ? "ZENAS" : "ERENIA"), 10));
                                                                 ArenaTeam.Add(new ArenaTeamMember(o.Session, o.GroupId == s.GroupId ? ArenaTeamType.ZENAS : ArenaTeamType.ERENIA, null));
-                                                                o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(0, ArenaTeam, o.GroupId == s.GroupId ? ArenaTeamType.ZENAS : ArenaTeamType.ERENIA, false));
+                                                                o.Session.SendPacket(o.Session.Character.GenerateTaP(0, false));
 
                                                                 string groups = string.Empty;
 
@@ -191,7 +191,7 @@ namespace OpenNos.GameObject.Event.ARENA
 
                                                                       if (resettap)
                                                                       {
-                                                                          ArenaTeam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, ArenaTeam, arenauser.ArenaTeamType, false)); });
+                                                                          ArenaTeam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, false)); });
                                                                       }
                                                                   });
 
@@ -212,7 +212,7 @@ namespace OpenNos.GameObject.Event.ARENA
 
                                                                         }
                                                                         arenauser.Session.SendPacket($"ta_pn {arenauser.Order + 1}");
-                                                                        arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, ArenaTeam, arenauser.ArenaTeamType, true));
+                                                                        arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true));
                                                                     });
                                                                     map.MapDesignObjects.ToArray().ToList().ForEach(md => map.Broadcast(md.GenerateEffect(true)));
                                                                     map.MapDesignObjects.RemoveAll(md => true);
@@ -274,7 +274,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                   }
                                                                                   newround1 = true;
                                                                                   newround2 = true;
-                                                                                  ArenaTeam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, ArenaTeam, arenauser.ArenaTeamType, true)); });
+                                                                                  ArenaTeam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2,  true)); });
                                                                               });
 
                                                                               if (tm != null && tm2 != null)

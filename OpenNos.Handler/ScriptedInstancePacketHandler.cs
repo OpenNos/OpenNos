@@ -61,7 +61,7 @@ namespace OpenNos.Handler
                 if (client != null && client.CurrentMapInstance == Session.CurrentMapInstance && memb != null && memb.LastSummoned == null && ownteam.Sum(s => s.SummonCount) < 5)
                 {
                     memb.SummonCount++;
-                    arenateam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, arenateam, arenauser.ArenaTeamType, true)); });
+                    arenateam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true)); });
                     arenateam.FirstOrDefault(s => s.Session == client).LastSummoned = DateTime.Now;
                     Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(4432));
                     for (int i = 0; i < 3; i++)

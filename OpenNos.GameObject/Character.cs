@@ -1954,7 +1954,7 @@ namespace OpenNos.GameObject
                 }
                 fairy = Inventory.LoadBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
             }
-            return $"in 1 {(Authority == AuthorityType.Moderator && !Undercover ? "[Support]" + Name : Name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (Group?.GroupId ?? -1) : -1)} {(fairy != null && !Undercover ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(Family?.FamilyId != null && !Undercover ? Family?.FamilyId : -1)} {(Family?.Name != null && !Undercover ? Family?.Name : "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator && !Undercover ? 500 : Compliment)} {Size} {HeroLevel}";
+            return $"in 1 {(Authority == AuthorityType.Moderator && !Undercover ? "[Support]" + Name : Name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (Group?.GroupId ?? -1) : -1)} {(fairy != null && !Undercover ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(Family?.FamilyId != null && !Undercover ? Family?.FamilyId : -1)} {(Family?.Name != null && !Undercover ? Family?.Name : "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator && !Undercover ? 500 : Compliment)} {Size} {HeroLevel}";
         }
 
         public string GenerateInvisible()
@@ -5098,7 +5098,7 @@ namespace OpenNos.GameObject
                     break;
                 case 3:
                     result = $"raid 3";
-                    Group?.Characters?.ToList().ForEach(s => { result += $" {s.Character?.CharacterId}.{Math.Ceiling(s.Character.Hp / s.Character.HPLoad() * 100)}.{Math.Ceiling(s.Character.Mp / s.Character.MPLoad() * 100)}"; });
+                    Group?.Characters?.ToList().ForEach(s => { result += $" {s.Character?.CharacterId}.{(int)(s.Character.Hp / s.Character.HPLoad() * 100)}.{(int)(s.Character.Mp / s.Character.MPLoad() * 100)}"; });
                     break;
                 case 4:
                     result = $"raid 4";
@@ -5214,6 +5214,56 @@ namespace OpenNos.GameObject
                     Session.SendPacket(GenerateCond());
                 }
             }
+        }
+
+        public string GenerateTaPs()
+        {
+            List<ArenaTeamMember> arenateam = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session)).OrderBy(s => s.ArenaTeamType).ToList();
+            ArenaTeamType type = ArenaTeamType.ERENIA;
+            string groups = string.Empty;
+            if (arenateam != null)
+            {
+                type = arenateam.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType ?? ArenaTeamType.ERENIA;
+
+                for (byte i = 0; i < 6; i++)
+                {
+                    ArenaTeamMember arenamembers = arenateam.FirstOrDefault(s => (i < 3 ? s.ArenaTeamType == type : s.ArenaTeamType != type) && s.Order == i % 3);
+                    if (arenamembers != null)
+                    {
+                        groups += $"{arenamembers.Session.Character.CharacterId}.{(int)(arenamembers.Session.Character.Hp / arenamembers.Session.Character.HPLoad() * 100)}.{(int)(arenamembers.Session.Character.Mp / arenamembers.Session.Character.MPLoad() * 100)}.0 ";
+                    }
+                    else
+                    {
+                        groups += $"-1.-1.-1.-1.-1 ";
+                    }
+                }
+            }
+            return $"ta_ps {groups.TrimEnd(' ')}";
+        }
+
+        public string GenerateTaP(byte tatype, bool showOponent)
+        {
+            List<ArenaTeamMember> arenateam = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session)).OrderBy(s => s.ArenaTeamType).ToList();
+            ArenaTeamType type = ArenaTeamType.ERENIA;
+            string groups = string.Empty;
+            if (arenateam != null)
+            {
+                type = arenateam.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType ?? ArenaTeamType.ERENIA;
+                
+                for (byte i = 0; i < 6; i++)
+                {
+                    ArenaTeamMember arenamembers = arenateam.FirstOrDefault(s => (i < 3 ? s.ArenaTeamType == type : s.ArenaTeamType != type) && s.Order == i % 3);
+                    if (arenamembers != null && (i > 2 ? showOponent : true))
+                    {
+                        groups += $"{(arenamembers.Dead ? 0 : 1)}.{arenamembers.Session.Character.CharacterId}.{(byte)arenamembers.Session.Character.Class}.{(byte)arenamembers.Session.Character.Gender}.{(byte)arenamembers.Session.Character.Morph} ";
+                    }
+                    else
+                    {
+                        groups += $"-1.-1.-1.-1.-1 ";
+                    }
+                }
+            }
+            return $"ta_p {tatype} {(byte)type} {5 - arenateam.Where(s => s.ArenaTeamType == type).Sum(s => s.SummonCount)} {5 - arenateam.Where(s => s.ArenaTeamType != type).Sum(s => s.SummonCount)} {groups.TrimEnd(' ')}";
         }
 
         public void DisableBuffs(List<BuffType> types, int level = 100)

@@ -231,7 +231,7 @@ namespace OpenNos.GameObject
                                 team.Where(friends => friends.ArenaTeamType == member.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(friends.Session.Character.GenerateTaFc()); });
                                 team.ToList().ForEach(arenauser =>
                                 {
-                                    arenauser.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaP(2, team, arenauser.ArenaTeamType, true));
+                                    arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2,  true));
                                     arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaM(2, 0));
                                 });
                                 session.Character.Hp = (int)session.Character.HPLoad();
