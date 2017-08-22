@@ -1611,11 +1611,10 @@ namespace OpenNos.Handler
                                 // GENERATE OPTION
                                 EquipmentOptionDTO option = CellonGeneratorHelper.GenerateOption(cellon.Item.EffectValue);
 
-                                // FAIL DELETE JEWEL
+                                // FAIL
                                 if (option == null || DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(inventory.Id).Any(s => s.Type == option.Type))
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLONING_FAILED"), 0));
-                                    Session.Character.Inventory.DeleteById(inventory.Id);
                                     return;
                                 }
 
