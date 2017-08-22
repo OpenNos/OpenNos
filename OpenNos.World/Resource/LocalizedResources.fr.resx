@@ -1531,8 +1531,8 @@ Veux-tu le porter ?</value>
   <data name="RETRY_SEARCH_ARENA_TEAM" xml:space="preserve">
     <value>Essaie à nouveau de former l'équipe.</value>
   </data>
-  <data name="SEARCH_ARENA_TEAM" xml:space="preserve">
-    <value>Chercher une équipe inscrite</value>
+  <data name="ARENA_TEAM_LEAVE" xml:space="preserve">
+    <value>Le participant a annulé l'inscription.</value>
   </data>
   <data name="SEARCH_RIVAL_ARENA_TEAM" xml:space="preserve">
     <value>Chercher l'équipe adverse</value>
