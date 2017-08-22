@@ -89,7 +89,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                   ItemInstanceId = item.Id,
                                                   CharacterId = member.Session.Character.CharacterId,
                                                   MapX = (short)(i > 2 ? 120 : 19),
-                                                  MapY = (short)(i > 2 ? 35 + (i % 3) * 4 : 36 + (i % 3) * 4),
+                                                  MapY = (short)(i > 2 ? 35 + i % 3 * 4 : 36 + i % 3 * 4),
                                               });
                                           }
                                           short timer = 60;
@@ -117,7 +117,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                 int i = Array.IndexOf(arenamembers, o) + 1;
                                                                 o.Session.Character.Hp = (int)o.Session.Character.HPLoad();
                                                                 o.Session.Character.Mp = (int)o.Session.Character.MPLoad();
-                                                                ServerManager.Instance.ChangeMapInstance(o.Session.Character.CharacterId, map.MapInstanceId, o.GroupId == member.GroupId ? 125 : 14, (o.GroupId == member.GroupId ? 37 : 38) + (i % 3) * 2);
+                                                                ServerManager.Instance.ChangeMapInstance(o.Session.Character.CharacterId, map.MapInstanceId, o.GroupId == member.GroupId ? 125 : 14, (o.GroupId == member.GroupId ? 37 : 38) + i % 3 * 2);
                                                                 o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA_TIME"), 0));
                                                                 o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA_TIME"), 10));
                                                                 o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA"), 10));
@@ -148,7 +148,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                   {
                                                                                       resettap = true;
                                                                                       ArenaTeamMember teammember = ArenaTeam.FirstOrDefault(at => at.Session == chara.Session);
-                                                                                      if (teammember != null && !ArenaTeam.Any(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
+                                                                                      if (teammember != null && !ArenaTeam.Any(at => at.Order == e.ItemInstance.ItemVNum - 4433 && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
                                                                                       {
                                                                                           if (teammember.Order != null)
                                                                                           {
@@ -167,14 +167,14 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                   if (!map.GetCharactersInRange(e.MapX, e.MapY, 0).Any())
                                                                                   {
                                                                                       resettap = true;
-                                                                                      ArenaTeamMember teammember = ArenaTeam.FirstOrDefault(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS));
+                                                                                      ArenaTeamMember teammember = ArenaTeam.FirstOrDefault(at => at.Order == e.ItemInstance.ItemVNum - 4433 && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS));
                                                                                       if (teammember != null)
                                                                                       {
                                                                                           teammember.Order = null;
                                                                                       }
                                                                                   }
                                                                               }
-                                                                              if (!ArenaTeam.Any(at => at.Order == (e.ItemInstance.ItemVNum - 4433) && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
+                                                                              if (!ArenaTeam.Any(at => at.Order == e.ItemInstance.ItemVNum - 4433 && at.ArenaTeamType == (e.MapX == 120 ? ArenaTeamType.ERENIA : ArenaTeamType.ZENAS)))
                                                                               {
                                                                                   if (e.ItemInstance.Design == 4436)
                                                                                   {

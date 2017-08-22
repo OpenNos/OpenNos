@@ -736,8 +736,8 @@ namespace OpenNos.Handler
             {
                 DAOFactory.IteminstanceDAO.InsertOrUpdate(destinationInventory);
             }
-            Session.SendPacket((destinationInventory != null) ? destinationInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(fReposPacket.NewSlot));
-            Session.SendPacket((sourceInventory != null) ? sourceInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(fReposPacket.OldSlot));
+            Session.SendPacket(destinationInventory != null ? destinationInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(fReposPacket.NewSlot));
+            Session.SendPacket(sourceInventory != null ? sourceInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(fReposPacket.OldSlot));
             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
         }
 

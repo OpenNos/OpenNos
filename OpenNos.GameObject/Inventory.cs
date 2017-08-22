@@ -506,9 +506,9 @@ namespace OpenNos.GameObject
                     case InventoryType.SecondPartnerInventory:
                     case InventoryType.ThirdPartnerInventory:
                     case InventoryType.Wear:
-                        nextFreeSlot = (LoadBySlotAndType((short)sourceInstance.Item.EquipmentSlot, targetType) == null
-                        ? (short)sourceInstance.Item.EquipmentSlot
-                        : (short)-1);
+                        nextFreeSlot = LoadBySlotAndType((short)sourceInstance.Item.EquipmentSlot, targetType) == null
+                            ? (short)sourceInstance.Item.EquipmentSlot
+                            : (short)-1;
                         break;
 
                     default:

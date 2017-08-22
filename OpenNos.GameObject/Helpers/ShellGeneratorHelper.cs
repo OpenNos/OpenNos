@@ -501,7 +501,7 @@ namespace OpenNos.GameObject.Helpers
 
             if (shellType < 8)
             {
-                letterMultiplier = (shellLevel <= 70 ? 1 : shellLevel <= 80 ? 3 : shellLevel <= 90 ? 5 : 1);
+                letterMultiplier = shellLevel <= 70 ? 1 : shellLevel <= 80 ? 3 : shellLevel <= 90 ? 5 : 1;
             }
             else if (shellType < 10)
             {
@@ -592,7 +592,7 @@ namespace OpenNos.GameObject.Helpers
 
                 object generatedOption = possibleOptions[Rand.Next(possibleOptions.Count)];
 
-                if ((int)ShellType[w][g + 1] != 1 && (Rand.Next(2) != 0))
+                if ((int)ShellType[w][g + 1] != 1 && Rand.Next(2) != 0)
                 {
                     continue;
                 }

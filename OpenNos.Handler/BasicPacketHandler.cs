@@ -491,7 +491,7 @@ namespace OpenNos.Handler
                         ServerManager.Instance.GroupList.Add(Session.Character.Group);
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_REGISTERED")));
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
-                        ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {(string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"), Session.Character.Name))}", ReceiverType.AllExceptGroup);
+                        ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"), Session.Character.Name)}", ReceiverType.AllExceptGroup);
                     }
                     break;
                 case 2:
@@ -1213,7 +1213,7 @@ namespace OpenNos.Handler
 
                                             // message = $" ";
                                             string[] valuesplit = guriPacket.Value.Split(' ');
-                                            message = valuesplit.Aggregate(message, (current, t) => current + (t + "^"));
+                                            message = valuesplit.Aggregate(message, (current, t) => current + t + "^");
                                             message = message.Substring(0, message.Length - 1); // Remove the last ^
                                             message = message.Trim();
                                             if (message.Length > 60)
@@ -1285,8 +1285,7 @@ namespace OpenNos.Handler
                                             default:
                                                 if (guriPacket.Type == 208 && guriPacket.Argument == 0)
                                                 {
-                                                    if (guriPacket.User != null && (short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) &&
-                                                                                    short.TryParse(guriPacket.Value, out short mountSlot)))
+                                                    if (guriPacket.User != null && short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) && short.TryParse(guriPacket.Value, out short mountSlot))
                                                     {
                                                         ItemInstance mount = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(mountSlot, InventoryType.Main);
                                                         BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
@@ -1299,8 +1298,7 @@ namespace OpenNos.Handler
                                                 }
                                                 else if (guriPacket.Type == 209 && guriPacket.Argument == 0)
                                                 {
-                                                    if (guriPacket.User != null && (short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) &&
-                                                                                    short.TryParse(guriPacket.Value, out short mountSlot)))
+                                                    if (guriPacket.User != null && short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) && short.TryParse(guriPacket.Value, out short mountSlot))
                                                     {
                                                         WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(mountSlot, InventoryType.Equipment);
                                                         BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);

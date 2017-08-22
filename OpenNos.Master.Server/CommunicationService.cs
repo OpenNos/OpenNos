@@ -244,7 +244,7 @@ namespace OpenNos.Master.Server
                 lastGroup = world.WorldGroup;
                 
                 int currentlyConnectedAccounts = MSManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.WorldGroup == world.WorldGroup);
-                int channelcolor = (int)Math.Round(((double)currentlyConnectedAccounts / world.AccountLimit) * 20) + 1;
+                int channelcolor = (int)Math.Round((double)currentlyConnectedAccounts / world.AccountLimit * 20) + 1;
 
                 channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:{channelcolor}:{worldCount}.{world.ChannelId}.{world.WorldGroup} ";
             }
@@ -346,7 +346,7 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-            MSManager.Instance.ConnectedAccounts= MSManager.Instance.ConnectedAccounts.Where(a => a == null || (a.ConnectedWorld?.Id.Equals(worldId)) != true);
+            MSManager.Instance.ConnectedAccounts= MSManager.Instance.ConnectedAccounts.Where(a => a == null || a.ConnectedWorld?.Id.Equals(worldId) != true);
             MSManager.Instance.WorldServers.RemoveAll(w => w.Id.Equals(worldId));
         }
 
