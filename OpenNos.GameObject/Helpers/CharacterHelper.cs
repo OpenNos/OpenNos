@@ -708,7 +708,7 @@ namespace OpenNos.GameObject.Helpers
 
             if (upgrade > 15)
             {
-                point += 173 + (25 + (5 * (upgrade - 15)));
+                point += 173 + 25 + 5 * (upgrade - 15);
             }
 
             return point;

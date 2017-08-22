@@ -7,7 +7,7 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public EventContainer(MapInstance mapInstance, EventActionType eventActionType, Object param)
+        public EventContainer(MapInstance mapInstance, EventActionType eventActionType, object param)
         {
             MapInstance = mapInstance;
             EventActionType = eventActionType;
@@ -22,7 +22,7 @@ namespace OpenNos.GameObject
 
         public MapInstance MapInstance { get; set; }
 
-        public Object Parameter { get; set; }
+        public object Parameter { get; set; }
 
         #endregion
     }

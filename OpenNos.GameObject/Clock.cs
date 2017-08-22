@@ -51,7 +51,7 @@ namespace OpenNos.GameObject
 
         public string GetClock()
         {
-            return $"evnt {Type} {(Enabled ? 0 : (Type != 3) ? -1 : 1)} {DeciSecondRemaining} {BasesSecondRemaining}";
+            return $"evnt {Type} {(Enabled ? 0 : Type != 3 ? -1 : 1)} {DeciSecondRemaining} {BasesSecondRemaining}";
         }
 
         public void StartClock()

@@ -257,7 +257,7 @@ namespace OpenNos.GameObject
                         }
                         break;
                     case ReceiverType.AllExceptGroup:
-                        foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId && (s.Character?.Group == null || (s.Character?.Group?.GroupId != sentPacket.Sender?.Character?.Group?.GroupId))))
+                        foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId && (s.Character?.Group == null || s.Character?.Group?.GroupId != sentPacket.Sender?.Character?.Group?.GroupId)))
                         {
                             if (session.HasSelectedCharacter)
                             {

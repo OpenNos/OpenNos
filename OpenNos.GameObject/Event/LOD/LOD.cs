@@ -52,7 +52,7 @@ namespace OpenNos.GameObject.Event
             {
                 RefreshLOD(LODTime);
 
-                if (LODTime == HornTime || (LODTime == HornTime - (HornRespawn * dhspawns)))
+                if (LODTime == HornTime || LODTime == HornTime - HornRespawn * dhspawns)
                 {
                     SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
                     foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
@@ -65,7 +65,7 @@ namespace OpenNos.GameObject.Event
                         }
                     }
                 }        
-                else if (LODTime == HornTime - (HornRespawn * dhspawns) - HornStay)
+                else if (LODTime == HornTime - HornRespawn * dhspawns - HornStay)
                 {
                     SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
                     foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
