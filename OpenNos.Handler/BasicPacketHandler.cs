@@ -979,10 +979,6 @@ namespace OpenNos.Handler
                             // NOT ENOUGH PEARLS
                             return;
                         }
-                        else
-                        {
-                            Session.Character.Inventory.RemoveItemAmount(pearls.ItemVNum, perlsNeeded);
-                        }
 
                         List<EquipmentOptionDTO> shellOptions = ShellGeneratorHelper.GenerateShell(shellType, shell.Rare, shell.Upgrade);
                         foreach (EquipmentOptionDTO s in shellOptions)
@@ -990,6 +986,7 @@ namespace OpenNos.Handler
                             s.WearableInstanceId = shell.Id;
                             shell.EquipmentOptions.Add(s);
                         }
+                        Session.Character.Inventory.RemoveItemAmount(pearls.ItemVNum, perlsNeeded);
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_IDENTIFIED"), 0));
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(3006), ReceiverType.All);
 
