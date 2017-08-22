@@ -1141,7 +1141,7 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 4; i++)
                         {
-                            byte type = (byte)(Int32.Parse(currentLine[2 + 5 * i]));
+                            byte type = (byte)(int.Parse(currentLine[2 + 5 * i]));
                             if (type != 0)
                             {
                                 BCardDTO itemCard = new BCardDTO
@@ -1161,7 +1161,7 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 4; i++)
                         {
-                            byte type = (byte)(Int32.Parse(currentLine[2 + 5 * i]));
+                            byte type = (byte)(int.Parse(currentLine[2 + 5 * i]));
                             if (type != 0)
                             {
                                 BCardDTO itemCard = new BCardDTO
@@ -2199,7 +2199,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
                     {
-                        int type = Int32.Parse(currentLine[3]);
+                        int type = int.Parse(currentLine[3]);
                         if (type != 0 && type!=-1)
                         {
                             BCardDTO itemCard = new BCardDTO
@@ -3468,7 +3468,7 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 5; i++)
                         {
-                            int type = Int32.Parse(currentLine[2 + 5 * i]);
+                            int type = int.Parse(currentLine[2 + 5 * i]);
                             if (type != 0 && type != -1)
                             {
                                 BCardDTO itemCard = new BCardDTO
