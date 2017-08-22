@@ -22,6 +22,7 @@ namespace OpenNos.Domain
         LODDH,
         RANKINGREFRESH,
         TALENTARENA,
-        MASTERARENA
+        MASTERARENA,
+        ICEBREAKER
     }
 }
