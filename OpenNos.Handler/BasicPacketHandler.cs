@@ -943,18 +943,15 @@ namespace OpenNos.Handler
                 {
                     // SHELL IDENTIFYING
                     case 204:
+                        InventoryType inventoryType = (InventoryType)guriPacket.Argument;
+                        ItemInstance pearls = Session.Character.Inventory.FirstOrDefault(s => s.Value.ItemVNum == 1429).Value;
+                        WearableInstance shell = (WearableInstance)Session.Character.Inventory.LoadBySlotAndType((short)guriPacket.User.Value, inventoryType);
+
                         if (!guriPacket.User.HasValue)
                         {
                             // USING PACKET LOGGER
                             return;
                         }
-
-                        InventoryType inventoryType = (InventoryType) guriPacket.Argument;
-                        ItemInstance pearls = Session.Character.Inventory.FirstOrDefault(s => s.Value.ItemVNum == 1429).Value;
-                        WearableInstance shell = (WearableInstance)Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, inventoryType);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_IDENTIFIED"), 0));
-                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(3006), ReceiverType.All);
-
 
                         if (pearls == null || shell == null)
                         {
@@ -975,11 +972,16 @@ namespace OpenNos.Handler
                         }
 
                         int shellType = ShellGeneratorHelper.ShellTypes[shell.ItemVNum];
+                        int perlsNeeded = shell.Upgrade / 10 + shell.Rare;
 
-                        if (pearls.Amount <= shell.Upgrade / 10 + shell.Rare)
+                        if (pearls.Amount <= perlsNeeded)
                         {
                             // NOT ENOUGH PEARLS
                             return;
+                        }
+                        else
+                        {
+                            Session.Character.Inventory.RemoveItemAmount(pearls.ItemVNum, perlsNeeded);
                         }
 
                         List<EquipmentOptionDTO> shellOptions = ShellGeneratorHelper.GenerateShell(shellType, shell.Rare, shell.Upgrade);
@@ -988,6 +990,9 @@ namespace OpenNos.Handler
                             s.WearableInstanceId = shell.Id;
                             shell.EquipmentOptions.Add(s);
                         }
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_IDENTIFIED"), 0));
+                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(3006), ReceiverType.All);
+
                         break;
                     case 300:
                         if (guriPacket.Argument == 8023)
