@@ -978,7 +978,7 @@ namespace OpenNos.Handler
                         int shellType = ShellGeneratorHelper.ShellTypes[shell.ItemVNum];
                         int perlsNeeded = shell.Upgrade / 10 + shell.Rare;
 
-                        if (Session.Character.Inventory.CountItem(pearls.ItemVNum) <= perlsNeeded)
+                        if (Session.Character.Inventory.CountItem(pearls.ItemVNum) < perlsNeeded)
                         {
                             // NOT ENOUGH PEARLS
                             return;
