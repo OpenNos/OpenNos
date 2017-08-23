@@ -966,6 +966,7 @@ namespace OpenNos.Handler
                         if (shell.EquipmentOptions.Any())
                         {
                             // ALREADY IDENTIFIED
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_ALREADY_IDENTIFIED"), 0));
                             return;
                         }
 

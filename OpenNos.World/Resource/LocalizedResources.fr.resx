@@ -1600,4 +1600,16 @@ Veux-tu le porter ?</value>
   <data name="YOU_ARE_RAID_CHIEF" xml:space="preserve">
     <value>Tu es le chef de raid à présent. Invite des membres</value>
   </data>
+  <data name="CANNOT_LEAVE_FAMILY" xml:space="preserve">
+    <value>Le chef de famille ne peut pas quitter.</value>
+  </data>
+  <data name="CANT_USE_THAT" xml:space="preserve">
+    <value>Tu ne peux pas effectuer cette action maintenant.</value>
+  </data>
+  <data name="SHELL_ALREADY_IDENTIFIED" xml:space="preserve">
+    <value>Les options de cet objet ont déjà été identifiées.</value>
+  </data>
+  <data name="USER_ON_INSTANCEMAP" xml:space="preserve">
+    <value>Le joueur n'est pas sur une map générale.</value>
+  </data>
 </root>

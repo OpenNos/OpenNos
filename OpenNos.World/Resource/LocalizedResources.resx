@@ -1474,4 +1474,16 @@
   <data name="ZENAS" xml:space="preserve">
     <value>You are on the Zenas team.</value>
   </data>
+  <data name="CANNOT_LEAVE_FAMILY" xml:space="preserve">
+    <value>The family head cannot exit the family.</value>
+  </data>
+  <data name="CANT_USE_THAT" xml:space="preserve">
+    <value>You cannot do it now.</value>
+  </data>
+  <data name="SHELL_ALREADY_IDENTIFIED" xml:space="preserve">
+    <value>Options of this object are already identified.</value>
+  </data>
+  <data name="USER_ON_INSTANCEMAP" xml:space="preserve">
+    <value>The player is not on a general map.</value>
+  </data>
 </root>
