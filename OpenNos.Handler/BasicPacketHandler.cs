@@ -957,6 +957,11 @@ namespace OpenNos.Handler
                         ItemInstance pearls = Session.Character.Inventory.FirstOrDefault(s => s.Value.ItemVNum == 1429).Value;
                         WearableInstance shell = (WearableInstance)Session.Character.Inventory.LoadBySlotAndType((short)guriPacket.User.Value, inventoryType);
 
+                        if (shell.Upgrade < 30 || shell.Upgrade > 90)
+                        {
+                            return;
+                        }
+
                         if (pearls == null || shell == null)
                         {
                             // USING PACKET LOGGER
