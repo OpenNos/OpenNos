@@ -1149,4 +1149,37 @@
   <data name="ASSISTANT" xml:space="preserve">
     <value>ผู้ช่วย</value>
   </data>
+  <data name="ADD_OPTION_ON_STUFF" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ADD_OPTION_ON_STUFF_NOT_EMPTY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NEED_PARFUM_TO_CHANGE_SHELL" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_BROKEN" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_ERASED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_FOR_ARMOR_ONLY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_FOR_WEAPON_ONLY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_LEVEL_TOO_HIGH" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_MUST_BE_IDENTIFIED" xml:space="preserve">
+    <value>La rune doit être identifiée pour pouvoir être utilisable.</value>
+  </data>
+  <data name="SHELL_OPTION_SET" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_RARITY_TOO_HIGH" xml:space="preserve">
+    <value />
+  </data>
 </root>

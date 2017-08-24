@@ -54,6 +54,7 @@ namespace OpenNos.GameObject
                     {
                         if (!((WearableInstance) inv).EquipmentOptions.Any())
                         {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_MUST_BE_IDENTIFIED"), 0));
                             return;
                         }
                         if (packetsplit == null)
@@ -76,9 +77,11 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
-
+         
                         WearableInstance shell = (WearableInstance)inv;
                         WearableInstance eq = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
+                       
+
                         if (eq == null)
                         {
                             // PACKET MODIFIED
@@ -100,26 +103,31 @@ namespace OpenNos.GameObject
                                 if (eq.BoundCharacterId != session.Character.CharacterId && eq.BoundCharacterId != null)
                                 {
                                     // NEED TO PERFUME STUFF BEFORE CHANGING SHELL
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_PARFUM_TO_CHANGE_SHELL"), 0));
                                     return;
                                 }
                                 if (eq.Rare < shell.Rare)
                                 {
                                     // RARITY TOO HIGH ON SHELL
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_RARITY_TOO_HIGH"), 0));
                                     return;
                                 }
                                 if (eq.Item.LevelMinimum < shell.Upgrade)
                                 {
                                     // SHELL LEVEL TOO HIGH
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_LEVEL_TOO_HIGH"), 0));
                                     return;
                                 }
                                 if (eq.Item.ItemType != ItemType.Armor && shell.Item.ItemSubType == 1)
                                 {
                                     // ARMOR SHELL ONLY APPLY ON ARMORS
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_FOR_ARMOR_ONLY"), 0));
                                     return;
                                 }
                                 if (eq.Item.ItemType != ItemType.Weapon && shell.Item.ItemSubType == 0)
                                 {
                                     // WEAPON SHELL ONLY APPLY ON WEAPONS
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_FOR_WEAPON_ONLY"), 0));
                                     return;
                                 }
 
@@ -128,6 +136,7 @@ namespace OpenNos.GameObject
                                     if (new Random().Next(100) >= 50)
                                     {
                                         // BREAK BECAUSE DIDN'T USE MAGIC ERASER
+                                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_BROKEN"), 0));
                                         session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
                                         return;
                                     }
@@ -140,6 +149,8 @@ namespace OpenNos.GameObject
                                 eq.EquipmentOptions.Clear();
                                 foreach (EquipmentOptionDTO i in shell.EquipmentOptions)
                                 {
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_OPTION_SET"), 0));
                                     i.WearableInstanceId = eq.Id;
                                     eq.EquipmentOptions.Add(i);
                                 }

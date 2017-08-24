@@ -78,6 +78,8 @@ namespace OpenNos.GameObject
                             eq.EquipmentOptions.Clear();
                             eq.ShellRarity = null;
                             session.Character.Inventory.RemoveItemAmount(1430);
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_ERASED"), 0));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId));
                             break;
                     }
                     break;

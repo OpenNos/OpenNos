@@ -1486,4 +1486,37 @@
   <data name="USER_ON_INSTANCEMAP" xml:space="preserve">
     <value>The player is not on a general map.</value>
   </data>
+  <data name="ADD_OPTION_ON_STUFF" xml:space="preserve">
+    <value>Do you want to add an option on this stuff ? If yes, this item will be link to you only.</value>
+  </data>
+  <data name="ADD_OPTION_ON_STUFF_NOT_EMPTY" xml:space="preserve">
+    <value>The option will be replace by the new. You've 50% of chance to win, else the item will be destroyed. Do you want to continue ?</value>
+  </data>
+  <data name="NEED_PARFUM_TO_CHANGE_SHELL" xml:space="preserve">
+    <value>You cannot change the shell, the soul is not yours.</value>
+  </data>
+  <data name="SHELL_BROKEN" xml:space="preserve">
+    <value>The shell is broken because it has failed.</value>
+  </data>
+  <data name="SHELL_ERASED" xml:space="preserve">
+    <value>The option has been erased.</value>
+  </data>
+  <data name="SHELL_FOR_ARMOR_ONLY" xml:space="preserve">
+    <value>You can only use this shell on armor.</value>
+  </data>
+  <data name="SHELL_FOR_WEAPON_ONLY" xml:space="preserve">
+    <value>You can only use this shell on weapon.</value>
+  </data>
+  <data name="SHELL_LEVEL_TOO_HIGH" xml:space="preserve">
+    <value>The level of the shell is too high.</value>
+  </data>
+  <data name="SHELL_MUST_BE_IDENTIFIED" xml:space="preserve">
+    <value>The shell must be identified before use.</value>
+  </data>
+  <data name="SHELL_OPTION_SET" xml:space="preserve">
+    <value>A new option has been added.</value>
+  </data>
+  <data name="SHELL_RARITY_TOO_HIGH" xml:space="preserve">
+    <value>The shell rarity is too high.</value>
+  </data>
 </root>

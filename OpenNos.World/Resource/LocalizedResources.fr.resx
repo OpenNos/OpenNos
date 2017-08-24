@@ -1612,4 +1612,37 @@ Veux-tu le porter ?</value>
   <data name="USER_ON_INSTANCEMAP" xml:space="preserve">
     <value>Le joueur n'est pas sur une map générale.</value>
   </data>
+  <data name="ADD_OPTION_ON_STUFF" xml:space="preserve">
+    <value>Souhaites-tu ajouter une option à cet équipement ?Si tu ajoutes une option, aucun autre joueur ne pourra plus l'utiliser, car l'équipement sera lié à toi.</value>
+  </data>
+  <data name="ADD_OPTION_ON_STUFF_NOT_EMPTY" xml:space="preserve">
+    <value>L'option existante sera supprimée et remplacée par une nouvelle.La probabilité de réussite est actuellement de 50 %.Veux-tu continuer ?</value>
+  </data>
+  <data name="NEED_PARFUM_TO_CHANGE_SHELL" xml:space="preserve">
+    <value>Tu ne peux pas changer la rune de cet équipement, l'âme est liée à un autre joueur.</value>
+  </data>
+  <data name="SHELL_BROKEN" xml:space="preserve">
+    <value>La rune est brisée, car l'ajout de l'option a échoué.</value>
+  </data>
+  <data name="SHELL_ERASED" xml:space="preserve">
+    <value>L'option a été supprimée.</value>
+  </data>
+  <data name="SHELL_FOR_ARMOR_ONLY" xml:space="preserve">
+    <value>Cette rune est uniquement utilisable sur une armure.</value>
+  </data>
+  <data name="SHELL_FOR_WEAPON_ONLY" xml:space="preserve">
+    <value>Cette rune est uniquement utilisable sur une arme.</value>
+  </data>
+  <data name="SHELL_LEVEL_TOO_HIGH" xml:space="preserve">
+    <value>Le niveau de la rune est trop élevé pour être appliqué à cet équipement.</value>
+  </data>
+  <data name="SHELL_MUST_BE_IDENTIFIED" xml:space="preserve">
+    <value>La rune doit être identifiée pour pouvoir être utilisable.</value>
+  </data>
+  <data name="SHELL_OPTION_SET" xml:space="preserve">
+    <value>Une nouvelle option a été ajoutée.</value>
+  </data>
+  <data name="SHELL_RARITY_TOO_HIGH" xml:space="preserve">
+    <value>La rareté de la rune est trop élevée pour être appliquée à cet équipement.</value>
+  </data>
 </root>
