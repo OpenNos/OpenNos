@@ -112,31 +112,41 @@ namespace OpenNos.GameObject
                                     // SHELL LEVEL TOO HIGH
                                     return;
                                 }
-                                if (eq.Item.ItemType == ItemType.Armor && shell.Item.ItemSubType == 1 || eq.Item.ItemType == ItemType.Weapon && shell.Item.ItemSubType == 0)
+                                if (eq.Item.ItemType != ItemType.Armor && shell.Item.ItemSubType == 1)
                                 {
-                                    if (eq.EquipmentOptions != null)
-                                    {
-                                        if (new Random().Next(100) >= 50)
-                                        {
-                                            // BREAK BECAUSE DIDN'T USE MAGIC ERASER
-                                            session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
-                                            return;
-                                        }
-                                    }
-                                    if (eq.EquipmentOptions == null)
-                                    {
-                                        eq.EquipmentOptions = new List<EquipmentOptionDTO>();
-                                    }
-                                    eq.EquipmentOptions.Clear();
-                                    foreach (EquipmentOptionDTO i in shell.EquipmentOptions)
-                                    {
-                                        i.WearableInstanceId = eq.Id;
-                                        eq.EquipmentOptions.Add(i);
-                                    }
-                                    eq.BoundCharacterId = session.Character.CharacterId;
-                                    eq.ShellRarity = shell.Rare;
-                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
+                                    // ARMOR SHELL ONLY APPLY ON ARMORS
+                                    return;
                                 }
+                                if (eq.Item.ItemType != ItemType.Weapon && shell.Item.ItemSubType == 0)
+                                {
+                                    // WEAPON SHELL ONLY APPLY ON WEAPONS
+                                    return;
+                                }
+
+                                if (eq.EquipmentOptions?.Any() == true)
+                                {
+                                    if (new Random().Next(100) >= 50)
+                                    {
+                                        // BREAK BECAUSE DIDN'T USE MAGIC ERASER
+                                        session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
+                                        return;
+                                    }
+                                }
+                                if (eq.EquipmentOptions == null)
+                                {
+                                    eq.EquipmentOptions = new List<EquipmentOptionDTO>();
+                                }
+
+                                eq.EquipmentOptions.Clear();
+                                foreach (EquipmentOptionDTO i in shell.EquipmentOptions)
+                                {
+                                    i.WearableInstanceId = eq.Id;
+                                    eq.EquipmentOptions.Add(i);
+                                }
+
+                                eq.BoundCharacterId = session.Character.CharacterId;
+                                eq.ShellRarity = shell.Rare;
+                                session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
                                 break;
                         }
                     }
