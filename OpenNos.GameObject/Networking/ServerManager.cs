@@ -185,7 +185,7 @@ namespace OpenNos.GameObject
         public void AskPVPRevive(long characterId)
         {
             ClientSession session = GetSessionByCharacterId(characterId);
-            if (session == null || !session.HasSelectedCharacter)
+            if (session != null && session.HasSelectedCharacter)
             {
                 if (session.Character.IsVehicled)
                 {
@@ -203,406 +203,407 @@ namespace OpenNos.GameObject
                         ConcurrentBag<ArenaTeamMember> team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == session));
                         if (team != null)
                         {
-                            session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
-                            member.Dead = true;
-                            team.ToList().Where(s => s.LastSummoned != null).ToList().ForEach(s =>
+                            ArenaTeamMember member = team.FirstOrDefault(s => s.Session == session);
+                            if (member != null)
                             {
-                                s.LastSummoned = null;
-                                s.Session.Character.PositionX = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
-                                s.Session.Character.PositionY = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
-                                session.CurrentMapInstance.Broadcast(s.Session.Character.GenerateTp());
-                                s.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
-                            });
-                            ArenaTeamMember killer = team.OrderBy(s => s.Order).FirstOrDefault(s => !s.Dead && s.ArenaTeamType != member.ArenaTeamType);
-                            session.CurrentMapInstance.Broadcast(session.Character.GenerateSay(string.Format("WINNER_ARENA_ROUND", killer.Session.Character.Name, killer.ArenaTeamType), 10));
-                            session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format("WINNER_ARENA_ROUND", killer.Session.Character.Name, killer.ArenaTeamType), 0));
+                                if (member.LastSummoned == null)
+                                {
+                                    session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
+                                    member.Dead = true;
+                                    team.ToList().Where(s => s.LastSummoned != null).ToList().ForEach(s =>
+                                    {
+                                        s.LastSummoned = null;
+                                        s.Session.Character.PositionX = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
+                                        s.Session.Character.PositionY = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
+                                        session.CurrentMapInstance.Broadcast(s.Session.Character.GenerateTp());
+                                        s.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
+                                    });
+                                    ArenaTeamMember killer = team.OrderBy(s => s.Order).FirstOrDefault(s => !s.Dead && s.ArenaTeamType != member.ArenaTeamType);
+                                    session.CurrentMapInstance.Broadcast(session.Character.GenerateSay(string.Format("WINNER_ARENA_ROUND", killer.Session.Character.Name, killer.ArenaTeamType), 10));
+                                    session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format("WINNER_ARENA_ROUND", killer.Session.Character.Name, killer.ArenaTeamType), 0));
+                                }
+
+                                member.Session.Character.PositionX = member.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
+                                member.Session.Character.PositionY = member.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
+                                session.CurrentMapInstance.Broadcast(member.Session, member.Session.Character.GenerateTp());
+                                session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
+                                team.Where(friends => friends.ArenaTeamType == member.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(friends.Session.Character.GenerateTaFc()); });
+                                team.ToList().ForEach(arenauser =>
+                                {
+                                    arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true));
+                                    arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaM(2, 0));
+                                });
+                                session.Character.Hp = (int)session.Character.HPLoad();
+                                session.Character.Mp = (int)session.Character.MPLoad();
+                                session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRevive());
+                                session.SendPacket(session.Character.GenerateStat());
+                            }
                         }
+                        break;
 
                     default:
                         session.Character.LeaveTalentArena();
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
                         Task.Factory.StartNew(async () =>
                         {
-                            arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2,  true));
-                            arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaM(2, 0));
-                        });
-                        session.Character.Hp = (int)session.Character.HPLoad();
-                        session.Character.Mp = (int)session.Character.MPLoad();
-                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRevive());
-                        session.SendPacket(session.Character.GenerateStat());
-                    }
-                    break;
-
-                default:
-                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
-                    Task.Factory.StartNew(async () =>
-                    {
-                        bool revive = true;
-                        for (int i = 1; i <= 30; i++)
-                        {
-                            await Task.Delay(1000);
-                            if (session.Character.Hp <= 0)
+                            bool revive = true;
+                            for (int i = 1; i <= 30; i++)
                             {
-                                continue;
+                                await Task.Delay(1000);
+                                if (session.Character.Hp > 0)
+                                {
+                                    revive = false;
+                                    break;
+                                }
                             }
-                            revive = false;
-                            break;
-                        }
-                        if (revive)
-                        {
-                            Instance.ReviveFirstPosition(session.Character.CharacterId);
-                        }
-                    });
-                    break;
+                            if (revive)
+                            {
+                                Instance.ReviveFirstPosition(session.Character.CharacterId);
+                            }
+                        });
+                        break;
+                }
             }
         }
 
         // PacketHandler -> with Callback?
         public void AskRevive(long characterId)
         {
-            ClientSession clientSession = GetSessionByCharacterId(characterId);
-            if (clientSession == null || !clientSession.HasSelectedCharacter)
+            ClientSession Session = GetSessionByCharacterId(characterId);
+            if (Session != null && Session.HasSelectedCharacter)
             {
-                return;
-            }
-            if (clientSession.Character.IsVehicled)
-            {
-                clientSession.Character.RemoveVehicle();
-            }
-            List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad, BuffType.Good, BuffType.Neutral };
-            clientSession.Character.DisableBuffs(bufftodisable);
-            clientSession.SendPacket(clientSession.Character.GenerateStat());
-            clientSession.SendPacket(clientSession.Character.GenerateCond());
-            clientSession.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
-            switch (clientSession.CurrentMapInstance.MapInstanceType)
-            {
-                case MapInstanceType.BaseMapInstance:
-                    if (clientSession.Character.Level > 20)
-                    {
-                        clientSession.Character.Dignity -= (short)(clientSession.Character.Level < 50 ? clientSession.Character.Level : 50);
-                        if (clientSession.Character.Dignity < -1000)
+                if (Session.Character.IsVehicled)
+                {
+                    Session.Character.RemoveVehicle();
+                }
+                List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad, BuffType.Good, BuffType.Neutral };
+                Session.Character.DisableBuffs(bufftodisable);
+                Session.SendPacket(Session.Character.GenerateStat());
+                Session.SendPacket(Session.Character.GenerateCond());
+                Session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
+                switch (Session.CurrentMapInstance.MapInstanceType)
+                {
+                    case MapInstanceType.BaseMapInstance:
+                        if (Session.Character.Level > 20)
                         {
-                            clientSession.Character.Dignity = -1000;
-                        }
-                        clientSession.SendPacket(clientSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(clientSession.Character.Level < 50 ? clientSession.Character.Level : 50)), 11));
-                        clientSession.SendPacket(clientSession.Character.GenerateFd());
-                        clientSession.CurrentMapInstance?.Broadcast(clientSession, clientSession.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                        clientSession.CurrentMapInstance?.Broadcast(clientSession, clientSession.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    }
-                    clientSession.SendPacket("eff_ob -1 -1 0 4269");
-
-                    clientSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {(clientSession.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
-                    Task.Factory.StartNew(async () =>
-                    {
-                        bool revive = true;
-                        for (int i = 1; i <= 30; i++)
-                        {
-                            await Task.Delay(1000);
-                            if (clientSession.Character.Hp <= 0)
+                            Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
+                            if (Session.Character.Dignity < -1000)
                             {
-                                continue;
+                                Session.Character.Dignity = -1000;
                             }
-                            revive = false;
-                            break;
+                            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
+                            Session.SendPacket(Session.Character.GenerateFd());
+                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         }
-                        if (revive)
-                        {
-                            Instance.ReviveFirstPosition(clientSession.Character.CharacterId);
-                        }
-                    });
-                    break;
+                        Session.SendPacket("eff_ob -1 -1 0 4269");
 
-                case MapInstanceType.TimeSpaceInstance:
-                    if (!(clientSession.CurrentMapInstance.InstanceBag.Lives - clientSession.CurrentMapInstance.InstanceBag.DeadList.Count <= 1))
-                    {
-                        clientSession.Character.Hp = 1;
-                        clientSession.Character.Mp = 1;
-                        return;
-                    }
-                    clientSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE"), clientSession.CurrentMapInstance.InstanceBag.Lives - clientSession.CurrentMapInstance.InstanceBag.DeadList.Count + 1), 0));
-                    clientSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^1 #revival^1 {(clientSession.Character.Level > 10 ? Language.Instance.GetMessageFromKey("ASK_REVIVE_TS_LOW_LEVEL") : Language.Instance.GetMessageFromKey("ASK_REVIVE_TS"))}"));
-                    clientSession.CurrentMapInstance.InstanceBag.DeadList.Add(clientSession.Character.CharacterId);
-                    Task.Factory.StartNew(async () =>
-                    {
-                        bool revive = true;
-                        for (int i = 1; i <= 30; i++)
-                        {
-                            await Task.Delay(1000);
-                            if (clientSession.Character.Hp <= 0)
-                            {
-                                continue;
-                            }
-                            revive = false;
-                            break;
-                        }
-                        if (revive)
-                        {
-                            Instance.ReviveFirstPosition(clientSession.Character.CharacterId);
-                        }
-                    });
-
-                    break;
-
-                case MapInstanceType.RaidInstance:
-                    List<long> save = clientSession.CurrentMapInstance.InstanceBag.DeadList.ConvertAll(s => s);
-                    if (clientSession.CurrentMapInstance.InstanceBag.Lives - clientSession.CurrentMapInstance.InstanceBag.DeadList.Count < 0)
-                    {
-                        clientSession.Character.Hp = 1;
-                        clientSession.Character.Mp = 1;
-                    }
-                    else if (2 - save.Count(s => s == clientSession.Character.CharacterId) > 0)
-                    {
-                        clientSession.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"), 2 - clientSession.CurrentMapInstance.InstanceBag.DeadList.Count(s => s == clientSession.Character.CharacterId))));
-                        clientSession.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), clientSession.Character.Name)));
-
-                        clientSession.CurrentMapInstance.InstanceBag.DeadList.Add(clientSession.Character.CharacterId);
-                        clientSession.Character.Group?.Characters.ToList().ForEach(
-                            session =>
-                            {
-                                session.SendPacket(session.Character.Group.GeneraterRaidmbf());
-                                session.SendPacket(session.Character.Group.GenerateRdlst());
-                            });
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
                         Task.Factory.StartNew(async () =>
                         {
-                            await Task.Delay(20000);
-                            Instance.ReviveFirstPosition(clientSession.Character.CharacterId);
-                        });
-                    }
-                    else
-                    {
-                        Group grp = clientSession.Character.Group;
-                        if (grp != null)
-                        {
-                            grp.Characters.ToList().ForEach(s =>
+                            bool revive = true;
+                            for (int i = 1; i <= 30; i++)
                             {
-                                s.SendPacket(s.Character.Group.GeneraterRaidmbf());
-                                s.SendPacket(s.Character.Group.GenerateRdlst());
-                            });
-                            grp.LeaveGroup(clientSession);
-                            clientSession.SendPacket(clientSession.Character.GenerateRaid(1, true));
-                            clientSession.SendPacket(clientSession.Character.GenerateRaid(2, true));
-                            clientSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), 0));
-                        }
-                    }
-                    break;
-
-                case MapInstanceType.LodInstance:
-                    clientSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_LOD")}"));
-                    Task.Factory.StartNew(async () =>
-                    {
-                        bool revive = true;
-                        for (int i = 1; i <= 30; i++)
-                        {
-                            await Task.Delay(1000);
-                            if (clientSession.Character.Hp <= 0)
-                            {
-                                continue;
+                                await Task.Delay(1000);
+                                if (Session.Character.Hp > 0)
+                                {
+                                    revive = false;
+                                    break;
+                                }
                             }
-                            revive = false;
-                            break;
-                        }
-                        if (revive)
-                        {
-                            Instance.ReviveFirstPosition(clientSession.Character.CharacterId);
-                        }
-                    });
-                    break;
+                            if (revive)
+                            {
+                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            }
+                        });
+                        break;
 
-                default:
-                    Instance.ReviveFirstPosition(clientSession.Character.CharacterId);
-                    break;
+                    case MapInstanceType.TimeSpaceInstance:
+                        if (!(Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count() <= 1))
+                        {
+                            Session.Character.Hp = 1;
+                            Session.Character.Mp = 1;
+                            return;
+                        }
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE"), Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count() + 1), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^1 #revival^1 {(Session.Character.Level > 10 ? Language.Instance.GetMessageFromKey("ASK_REVIVE_TS_LOW_LEVEL") : Language.Instance.GetMessageFromKey("ASK_REVIVE_TS"))}"));
+                        Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
+                        Task.Factory.StartNew(async () =>
+                        {
+                            bool revive = true;
+                            for (int i = 1; i <= 30; i++)
+                            {
+                                await Task.Delay(1000);
+                                if (Session.Character.Hp > 0)
+                                {
+                                    revive = false;
+                                    break;
+                                }
+                            }
+                            if (revive)
+                            {
+                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            }
+                        });
+
+                        break;
+
+                    case MapInstanceType.RaidInstance:
+                        List<long> save = Session.CurrentMapInstance.InstanceBag.DeadList.ConvertAll(s => s);
+                        if (Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count() < 0)
+                        {
+                            Session.Character.Hp = 1;
+                            Session.Character.Mp = 1;
+                        }
+                        else if (2 - save.Count(s => s == Session.Character.CharacterId) > 0)
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"), 2 - Session.CurrentMapInstance.InstanceBag.DeadList.Where(s => s == Session.Character.CharacterId).Count())));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), Session.Character.Name)));
+
+                            Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
+                            Session.Character.Group?.Characters.ToList().ForEach(
+                                session =>
+                                {
+                                    session.SendPacket(session.Character.Group.GeneraterRaidmbf());
+                                    session.SendPacket(session.Character.Group.GenerateRdlst());
+                                });
+                            Task.Factory.StartNew(async () =>
+                            {
+                                await Task.Delay(20000);
+                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            });
+                        }
+                        else
+                        {
+                            Group grp = Session.Character.Group;
+                            if (grp != null)
+                            {
+                                grp.Characters.ToList().ForEach(s =>
+                                {
+                                    s.SendPacket(s.Character.Group.GeneraterRaidmbf());
+                                    s.SendPacket(s.Character.Group.GenerateRdlst());
+                                });
+                                grp.LeaveGroup(Session);
+                                Session.SendPacket(Session.Character.GenerateRaid(1, true));
+                                Session.SendPacket(Session.Character.GenerateRaid(2, true));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), 0));
+                            }
+                        }
+                        break;
+
+                    case MapInstanceType.LodInstance:
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_LOD")}"));
+                        Task.Factory.StartNew(async () =>
+                        {
+                            bool revive = true;
+                            for (int i = 1; i <= 30; i++)
+                            {
+                                await Task.Delay(1000);
+                                if (Session.Character.Hp > 0)
+                                {
+                                    revive = false;
+                                    break;
+                                }
+                            }
+                            if (revive)
+                            {
+                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            }
+                        });
+                        break;
+
+                    default:
+                        Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                        break;
+                }
             }
         }
 
-        public void BazaarRefresh(long bazaarItemId)
+        public void BazaarRefresh(long BazaarItemId)
         {
             InBazaarRefreshMode = true;
-            CommunicationServiceClient.Instance.UpdateBazaar(ServerGroup, bazaarItemId);
+            CommunicationServiceClient.Instance.UpdateBazaar(ServerGroup, BazaarItemId);
             SpinWait.SpinUntil(() => !InBazaarRefreshMode);
         }
 
         public void ChangeMap(long id, short? mapId = null, short? mapX = null, short? mapY = null)
         {
             ClientSession session = GetSessionByCharacterId(id);
-            if (session?.Character == null)
+            if (session?.Character != null)
             {
-                return;
+                if (mapId != null)
+                {
+                    session.Character.MapInstanceId = GetBaseMapInstanceIdByMapId((short)mapId);
+                }
+                ChangeMapInstance(id, session.Character.MapInstanceId, mapX, mapY);
             }
-            if (mapId != null)
-            {
-                session.Character.MapInstanceId = GetBaseMapInstanceIdByMapId((short)mapId);
-            }
-            ChangeMapInstance(id, session.Character.MapInstanceId, mapX, mapY);
         }
 
         // Both partly
         public void ChangeMapInstance(long id, Guid mapInstanceId, int? mapX = null, int? mapY = null)
         {
             ClientSession session = GetSessionByCharacterId(id);
-            if (session?.Character == null || session.Character.IsChangingMapInstance)
+            if (session?.Character != null && !session.Character.IsChangingMapInstance)
             {
-                return;
-            }
-            try
-            {
-                if (session.Character.IsExchanging)
+                try
                 {
-                    session.Character.CloseExchangeOrTrade();
-                }
-                if (session.Character.HasShopOpened)
-                {
-                    session.Character.CloseShop();
-                }
-                session.Character.LeaveTalentArena();
-                session.CurrentMapInstance.RemoveMonstersTarget(session.Character.CharacterId);
-                session.CurrentMapInstance.UnregisterSession(session.Character.CharacterId);
-                LeaveMap(session.Character.CharacterId);
-                session.Character.IsChangingMapInstance = true;
-                if (session.Character.IsSitting)
-                {
-                    session.Character.IsSitting = false;
-                }
-                // cleanup sending queue to avoid sending uneccessary packets to it
-                session.ClearLowPriorityQueue();
+                    if (session.Character.IsExchanging)
+                    {
+                        session.Character.CloseExchangeOrTrade();
+                    }
+                    if (session.Character.HasShopOpened)
+                    {
+                        session.Character.CloseShop();
+                    }
+                    session.Character.LeaveTalentArena();
+                    session.CurrentMapInstance.RemoveMonstersTarget(session.Character.CharacterId);
+                    session.CurrentMapInstance.UnregisterSession(session.Character.CharacterId);
+                    LeaveMap(session.Character.CharacterId);
+                    session.Character.IsChangingMapInstance = true;
+                    if (session.Character.IsSitting)
+                    {
+                        session.Character.IsSitting = false;
+                    }
+                    // cleanup sending queue to avoid sending uneccessary packets to it
+                    session.ClearLowPriorityQueue();
 
-                session.Character.MapInstanceId = mapInstanceId;
-                if (session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
-                {
-                    session.Character.MapId = session.Character.MapInstance.Map.MapId;
+                    session.Character.MapInstanceId = mapInstanceId;
+                    if (session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                    {
+                        session.Character.MapId = session.Character.MapInstance.Map.MapId;
+                        if (mapX != null && mapY != null)
+                        {
+                            session.Character.MapX = (short)mapX;
+                            session.Character.MapY = (short)mapY;
+                        }
+                    }
                     if (mapX != null && mapY != null)
                     {
-                        session.Character.MapX = (short)mapX;
-                        session.Character.MapY = (short)mapY;
+                        session.Character.PositionX = (short)mapX;
+                        session.Character.PositionY = (short)mapY;
                     }
-                }
-                if (mapX != null && mapY != null)
-                {
-                    session.Character.PositionX = (short)mapX;
-                    session.Character.PositionY = (short)mapY;
-                }
 
-                session.CurrentMapInstance = session.Character.MapInstance;
-                session.CurrentMapInstance.RegisterSession(session);
+                    session.CurrentMapInstance = session.Character.MapInstance;
+                    session.CurrentMapInstance.RegisterSession(session);
 
-                session.SendPacket(session.Character.GenerateCInfo());
-                session.SendPacket(session.Character.GenerateCMode());
-                session.SendPacket(session.Character.GenerateEq());
-                session.SendPacket(session.Character.GenerateEquipment());
-                session.SendPacket(session.Character.GenerateLev());
-                session.SendPacket(session.Character.GenerateStat());
-                session.SendPacket(session.Character.GenerateAt());
-                session.SendPacket(session.Character.GenerateCond());
-                session.SendPacket(session.Character.GenerateCMap());
-                session.SendPacket(session.Character.GenerateStatChar());
-                session.SendPacket(session.Character.GeneratePairy());
-                session.SendPacket(session.Character.GeneratePinit());
-                session.SendPackets(session.Character.GeneratePst());
-                session.SendPacket(session.Character.GenerateAct());
-                session.SendPacket(session.Character.GenerateScpStc());
-                session.SendPacket(session.CurrentMapInstance.GenerateMapDesignObjects());
-                session.SendPackets(session.CurrentMapInstance.GetMapDesignObjectEffects());
+                    session.SendPacket(session.Character.GenerateCInfo());
+                    session.SendPacket(session.Character.GenerateCMode());
+                    session.SendPacket(session.Character.GenerateEq());
+                    session.SendPacket(session.Character.GenerateEquipment());
+                    session.SendPacket(session.Character.GenerateLev());
+                    session.SendPacket(session.Character.GenerateStat());
+                    session.SendPacket(session.Character.GenerateAt());
+                    session.SendPacket(session.Character.GenerateCond());
+                    session.SendPacket(session.Character.GenerateCMap());
+                    session.SendPacket(session.Character.GenerateStatChar());
+                    session.SendPacket(session.Character.GeneratePairy());
+                    session.SendPacket(session.Character.GeneratePinit());
+                    session.SendPackets(session.Character.GeneratePst());
+                    session.SendPacket(session.Character.GenerateAct());
+                    session.SendPacket(session.Character.GenerateScpStc());
+                    session.SendPacket(session.CurrentMapInstance.GenerateMapDesignObjects());
+                    session.SendPackets(session.CurrentMapInstance.GetMapDesignObjectEffects());
 
-                Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm), visibleSession =>
-                {
-                    session.SendPacket(visibleSession.Character.GenerateIn());
-                    session.SendPacket(visibleSession.Character.GenerateGidx());
-                    visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(mate =>
+                    Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm), visibleSession =>
                     {
-                        session.SendPacket(mate.GenerateIn());
-                    });
-                });
-
-
-                session.SendPackets(session.CurrentMapInstance.GetMapItems());
-                MapInstancePortalHandler.GenerateMinilandEntryPortals(session.CurrentMapInstance.Map.MapId, session.Character.Miniland.MapInstanceId).ForEach(p => session.SendPacket(p.GenerateGp()));
-
-                if (session.CurrentMapInstance.InstanceBag.Clock.Enabled)
-                {
-                    session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());
-                }
-                if (session.CurrentMapInstance.Clock.Enabled)
-                {
-                    session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());
-                }
-
-                // TODO: fix this
-                if (session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.CleftOfDarkness))
-                {
-                    session.SendPacket("bc 0 0 0");
-                }
-                if (!session.Character.InvisibleGm)
-                {
-                    Parallel.ForEach(session.Character.Mates.Where(m => m.IsTeamMember), mate =>
-                    {
-                        mate.PositionX = (short)(session.Character.PositionX + (mate.MateType == MateType.Partner ? -1 : 1));
-                        mate.PositionY = (short)(session.Character.PositionY + 1);
-                        session.CurrentMapInstance.Broadcast(mate.GenerateIn());
-                    });
-                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                }
-                if (session.Character.Size != 10)
-                {
-                    session.SendPacket(session.Character.GenerateScal());
-                }
-                if (session.CurrentMapInstance != null && session.CurrentMapInstance.IsDancing && !session.Character.IsDancing)
-                {
-                    session.CurrentMapInstance?.Broadcast("dance 2");
-                }
-                else if (session.CurrentMapInstance != null && !session.CurrentMapInstance.IsDancing && session.Character.IsDancing)
-                {
-                    session.Character.IsDancing = false;
-                    session.CurrentMapInstance?.Broadcast("dance");
-                }
-                if (Groups != null)
-                {
-                    Parallel.ForEach(Groups, group =>
-                    {
-                        foreach (ClientSession groupSession in group.Characters)
+                        session.SendPacket(visibleSession.Character.GenerateIn());
+                        session.SendPacket(visibleSession.Character.GenerateGidx());
+                        visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(mate =>
                         {
-                            ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMapInstance == groupSession.CurrentMapInstance);
-                            if (chara == null)
+                            session.SendPacket(mate.GenerateIn());
+                        });
+                    });
+
+
+                    session.SendPackets(session.CurrentMapInstance.GetMapItems());
+                    MapInstancePortalHandler.GenerateMinilandEntryPortals(session.CurrentMapInstance.Map.MapId, session.Character.Miniland.MapInstanceId).ForEach(p => session.SendPacket(p.GenerateGp()));
+
+                    if (session.CurrentMapInstance.InstanceBag.Clock.Enabled)
+                    {
+                        session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());
+                    }
+                    if (session.CurrentMapInstance.Clock.Enabled)
+                    {
+                        session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());
+                    }
+
+                    // TODO: fix this
+                    if (session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.CleftOfDarkness))
+                    {
+                        session.SendPacket("bc 0 0 0");
+                    }
+                    if (!session.Character.InvisibleGm)
+                    {
+                        Parallel.ForEach(session.Character.Mates.Where(m => m.IsTeamMember), mate =>
+                        {
+                            mate.PositionX = (short)(session.Character.PositionX + (mate.MateType == MateType.Partner ? -1 : 1));
+                            mate.PositionY = (short)(session.Character.PositionY + 1);
+                            session.CurrentMapInstance.Broadcast(mate.GenerateIn());
+                        });
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    }
+                    if (session.Character.Size != 10)
+                    {
+                        session.SendPacket(session.Character.GenerateScal());
+                    }
+                    if (session.CurrentMapInstance != null && session.CurrentMapInstance.IsDancing && !session.Character.IsDancing)
+                    {
+                        session.CurrentMapInstance?.Broadcast("dance 2");
+                    }
+                    else if (session.CurrentMapInstance != null && !session.CurrentMapInstance.IsDancing && session.Character.IsDancing)
+                    {
+                        session.Character.IsDancing = false;
+                        session.CurrentMapInstance?.Broadcast("dance");
+                    }
+                    if (Groups != null)
+                    {
+                        Parallel.ForEach(Groups, group =>
+                        {
+                            foreach (ClientSession groupSession in group.Characters)
                             {
-                                continue;
+                                ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMapInstance == groupSession.CurrentMapInstance);
+                                if (chara == null)
+                                {
+                                    continue;
+                                }
+                                groupSession.SendPacket(groupSession.Character.GeneratePinit());
+                                groupSession.SendPackets(groupSession.Character.GeneratePst());
                             }
-                            groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                            groupSession.SendPackets(groupSession.Character.GeneratePst());
+                        });
+                    }
+
+                    if (session.Character.Group != null && session.Character.Group.GroupType == GroupType.Group)
+                    {
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                    }
+
+                    session.Character.IsChangingMapInstance = false;
+                    session.SendPacket(session.Character.GenerateMinimapPosition());
+                    session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>
+                    {
+                        if (!e.Item2.Contains(session.Character.CharacterId))
+                        {
+                            e.Item2.Add(session.Character.CharacterId);
+                            EventHelper.Instance.RunEvent(e.Item1, session);
                         }
                     });
                 }
-
-                if (session.Character.Group != null && session.Character.Group.GroupType == GroupType.Group)
+                catch (Exception ex)
                 {
-                    session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                    Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
+                    session.Character.IsChangingMapInstance = false;
                 }
-
-                session.Character.IsChangingMapInstance = false;
-                session.SendPacket(session.Character.GenerateMinimapPosition());
-                session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>
-                {
-                    if (e.Item2.Contains(session.Character.CharacterId))
-                    {
-                        return;
-                    }
-                    e.Item2.Add(session.Character.CharacterId);
-                    EventHelper.Instance.RunEvent(e.Item1, session);
-                });
-            }
-            catch (Exception)
-            {
-                Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
-                session.Character.IsChangingMapInstance = false;
             }
         }
 
         public sealed override void Dispose()
         {
-            if (_disposed)
+            if (!_disposed)
             {
-                return;
+                GC.SuppressFinalize(this);
+                _disposed = true;
             }
-            GC.SuppressFinalize(this);
-            _disposed = true;
         }
 
         public void FamilyRefresh(long familyId)
@@ -610,9 +611,9 @@ namespace OpenNos.GameObject
             CommunicationServiceClient.Instance.UpdateFamily(ServerGroup, familyId);
         }
 
-        public MapInstance GenerateMapInstance(short mapId, MapInstanceType type, InstanceBag mapclock)
+        public MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
         {
-            Map map = _maps.FirstOrDefault(m => m.MapId.Equals(mapId));
+            Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
             if (map == null)
             {
                 return null;
@@ -641,9 +642,9 @@ namespace OpenNos.GameObject
             return _skills;
         }
 
-        public Guid GetBaseMapInstanceIdByMapId(short mapId)
+        public Guid GetBaseMapInstanceIdByMapId(short MapId)
         {
-            return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == mapId && s.Value.MapInstanceType == MapInstanceType.BaseMapInstance).Key;
+            return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == MapId && s.Value.MapInstanceType == MapInstanceType.BaseMapInstance).Key;
         }
 
         public List<DropDTO> GetDropsByMonsterVNum(short monsterVNum)
@@ -732,75 +733,69 @@ namespace OpenNos.GameObject
 
         public void GroupLeave(ClientSession session)
         {
-            if (Groups == null)
+            if (Groups != null)
             {
-                return;
-            }
-            Group grp = Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId));
-            if (grp == null)
-            {
-                return;
-            }
-            if (grp.CharacterCount >= 3 && grp.GroupType == GroupType.Group || grp.CharacterCount >= 2 && grp.GroupType != GroupType.Group)
-            {
-                if (grp.Characters.ElementAt(0) == session)
+                Group grp = Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId));
+                if (grp != null)
                 {
-                    Broadcast(session, UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, string.Empty, grp.Characters.ElementAt(1).Character.CharacterId);
-                }
-                grp.LeaveGroup(session);
+                    if (grp.CharacterCount >= 3 && grp.GroupType == GroupType.Group || grp.CharacterCount >= 2 && grp.GroupType != GroupType.Group)
+                    {
+                        if (grp.Characters.ElementAt(0) == session)
+                        {
+                            Broadcast(session, UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, string.Empty, grp.Characters.ElementAt(1).Character.CharacterId);
+                        }
+                        grp.LeaveGroup(session);
 
-                if (grp.GroupType == GroupType.Group)
-                {
-                    foreach (ClientSession groupSession in grp.Characters)
-                    {
-                        groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                        groupSession.SendPackets(session.Character.GeneratePst());
-                        groupSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
-                    }
-                    session.SendPacket(session.Character.GeneratePinit());
-                    session.SendPackets(session.Character.GeneratePst());
-                    Broadcast(session.Character.GeneratePidx(true));
-                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
-                }
-                else
-                {
-                    foreach (ClientSession groupSession in grp.Characters)
-                    {
-                        session.SendPacket(session.Character.GenerateRaid(1, true));
-                        session.SendPacket(session.Character.GenerateRaid(2, true));
-                        groupSession.SendPacket(grp.GenerateRdlst());
-                        groupSession.SendPacket(groupSession.Character.GenerateRaid(0, false));
-                    }
-                    if (session?.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
-                    {
-                        Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
-                    }
-                    session?.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
-                }
+                        if (grp.GroupType == GroupType.Group)
+                        {
+                            foreach (ClientSession groupSession in grp.Characters)
+                            {
+                                groupSession.SendPacket(groupSession.Character.GeneratePinit());
+                                groupSession.SendPackets(session.Character.GeneratePst());
+                                groupSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
+                            }
+                            session.SendPacket(session.Character.GeneratePinit());
+                            session.SendPackets(session.Character.GeneratePst());
+                            Broadcast(session.Character.GeneratePidx(true));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
+                        }
+                        else
+                        {
+                            foreach (ClientSession groupSession in grp.Characters)
+                            {
+                                session.SendPacket(session.Character.GenerateRaid(1, true));
+                                session.SendPacket(session.Character.GenerateRaid(2, true));
+                                groupSession.SendPacket(grp.GenerateRdlst());
+                                groupSession.SendPacket(groupSession.Character.GenerateRaid(0, false));
+                            }
+                            if (session?.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+                            {
+                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                            }
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
+                        }
 
-            }
-            else
-            {
-                ClientSession[] grpmembers = new ClientSession[40];
-                grp.Characters.ToList().CopyTo(grpmembers);
-                foreach (ClientSession targetSession in grpmembers)
-                {
-                    if (targetSession == null)
-                    {
-                        continue;
                     }
-                    targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
-                    Broadcast(targetSession.Character.GeneratePidx(true));
-                    grp.LeaveGroup(targetSession);
-                    targetSession.SendPacket(targetSession.Character.GeneratePinit());
-                    targetSession.SendPackets(targetSession.Character.GeneratePst());
+                    else
+                    {
+                        ClientSession[] grpmembers = new ClientSession[40];
+                        grp.Characters.ToList().CopyTo(grpmembers);
+                        foreach (ClientSession targetSession in grpmembers)
+                        {
+                            if (targetSession != null)
+                            {
+                                targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
+                                Broadcast(targetSession.Character.GeneratePidx(true));
+                                grp.LeaveGroup(targetSession);
+                                targetSession.SendPacket(targetSession.Character.GeneratePinit());
+                                targetSession.SendPackets(targetSession.Character.GeneratePst());
+                            }
+                        }
+                        GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
+                        GroupsThreadSafe.TryRemove(grp.GroupId, out Group value);
+                    }
+                    session.Character.Group = null;
                 }
-                GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                GroupsThreadSafe.TryRemove(grp.GroupId, out Group value);
-            }
-            if (session != null)
-            {
-                session.Character.Group = null;
             }
         }
 
@@ -1045,7 +1040,7 @@ namespace OpenNos.GameObject
                 int i = 0;
                 int monstercount = 0;
                 OrderablePartitioner<MapDTO> mapPartitioner = Partitioner.Create(DAOFactory.MapDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
-                ConcurrentDictionary<short, Map> mapList = new ConcurrentDictionary<short, Map>();
+                ConcurrentDictionary<short, Map> _mapList = new ConcurrentDictionary<short, Map>();
                 Parallel.ForEach(mapPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 8 }, map =>
                 {
                     Guid guid = Guid.NewGuid();
@@ -1053,7 +1048,7 @@ namespace OpenNos.GameObject
                     {
                         Music = map.Music
                     };
-                    mapList[map.MapId] = mapinfo;
+                    _mapList[map.MapId] = mapinfo;
                     MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance, new InstanceBag());
                     _mapinstances.TryAdd(guid, newMap);
 
@@ -1074,7 +1069,7 @@ namespace OpenNos.GameObject
                     monstercount += newMap.Monsters.Count;
                     i++;
                 });
-                _maps.AddRange(mapList.Select(s => s.Value));
+                _maps.AddRange(_mapList.Select(s => s.Value));
                 if (i != 0)
                 {
                     Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_LOADED"), i));
@@ -1123,21 +1118,21 @@ namespace OpenNos.GameObject
             return Groups != null && Groups.Any(g => g.IsMemberOfGroup(characterId) && g.CharacterCount == (byte)g.GroupType);
         }
 
-        public void JoinMiniland(ClientSession session, ClientSession minilandOwner)
+        public void JoinMiniland(ClientSession Session, ClientSession MinilandOwner)
         {
-            ChangeMapInstance(session.Character.CharacterId, minilandOwner.Character.Miniland.MapInstanceId, 5, 8);
-            if (session.Character.Miniland.MapInstanceId != minilandOwner.Character.Miniland.MapInstanceId)
+            ChangeMapInstance(Session.Character.CharacterId, MinilandOwner.Character.Miniland.MapInstanceId, 5, 8);
+            if (Session.Character.Miniland.MapInstanceId != MinilandOwner.Character.Miniland.MapInstanceId)
             {
-                session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(session.Character.MinilandMessage.Replace(' ', '^'), 0));
-                session.SendPacket(session.Character.GenerateMlinfobr());
-                minilandOwner.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = session.Account.AccountId, CharacterId = session.Character.CharacterId, IpAddress = session.IpAddress, LogData = "Miniland", LogType = "World", Timestamp = DateTime.Now });
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Session.Character.MinilandMessage.Replace(' ', '^'), 0));
+                Session.SendPacket(Session.Character.GenerateMlinfobr());
+                MinilandOwner.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "Miniland", LogType = "World", Timestamp = DateTime.Now });
             }
             else
             {
-                session.SendPacket(session.Character.GenerateMlinfo());
+                Session.SendPacket(Session.Character.GenerateMlinfo());
             }
-            minilandOwner.Character.Mates.Where(s => !s.IsTeamMember).ToList().ForEach(s => session.SendPacket(s.GenerateIn()));
-            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MINILAND_VISITOR"), session.Character.GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day), session.Character.GeneralLogs.Count(s => s.LogData == "Miniland")), 10));
+            MinilandOwner.Character.Mates.Where(s => !s.IsTeamMember).ToList().ForEach(s => Session.SendPacket(s.GenerateIn()));
+            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MINILAND_VISITOR"), Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day), Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland")), 10));
         }
 
         // Server
@@ -1173,22 +1168,21 @@ namespace OpenNos.GameObject
             TopReputation = DAOFactory.CharacterDAO.GetTopReputation();
         }
 
-        public void RelationRefresh(long relationId)
+        public void RelationRefresh(long RelationId)
         {
             inRelationRefreshMode = true;
-            CommunicationServiceClient.Instance.UpdateRelation(ServerGroup, relationId);
+            CommunicationServiceClient.Instance.UpdateRelation(ServerGroup, RelationId);
             SpinWait.SpinUntil(() => !inRelationRefreshMode);
         }
 
-        public void RemoveMapInstance(Guid mapId)
+        public void RemoveMapInstance(Guid MapId)
         {
-            KeyValuePair<Guid, MapInstance> map = _mapinstances.FirstOrDefault(s => s.Key == mapId);
-            if (map.Equals(default(KeyValuePair<Guid, MapInstance>)))
+            KeyValuePair<Guid, MapInstance> map = _mapinstances.FirstOrDefault(s => s.Key == MapId);
+            if (!map.Equals(default(KeyValuePair<Guid, MapInstance>)))
             {
-                return;
+                map.Value.Dispose();
+                ((IDictionary)_mapinstances).Remove(map.Key);
             }
-            map.Value.Dispose();
-            ((IDictionary)_mapinstances).Remove(map.Key);
         }
 
         // Map
@@ -1241,10 +1235,7 @@ namespace OpenNos.GameObject
                 return;
             }
             PropertyInfo propertyinfo = session.Character.GetType().GetProperty(property);
-            if (propertyinfo != null)
-            {
-                propertyinfo.SetValue(session.Character, value, null);
-            }
+            propertyinfo.SetValue(session.Character, value, null);
         }
 
         public void Shout(string message)
@@ -1261,12 +1252,11 @@ namespace OpenNos.GameObject
             for (int i = 0; i < 60 * 4; i++)
             {
                 await Task.Delay(1000);
-                if (!Instance.ShutdownStop)
+                if (Instance.ShutdownStop)
                 {
-                    continue;
+                    Instance.ShutdownStop = false;
+                    return;
                 }
-                Instance.ShutdownStop = false;
-                return;
             }
             message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
             Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
@@ -1274,12 +1264,11 @@ namespace OpenNos.GameObject
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);
-                if (!Instance.ShutdownStop)
+                if (Instance.ShutdownStop)
                 {
-                    continue;
+                    Instance.ShutdownStop = false;
+                    return;
                 }
-                Instance.ShutdownStop = false;
-                return;
             }
             message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
             Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
@@ -1287,12 +1276,11 @@ namespace OpenNos.GameObject
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);
-                if (!Instance.ShutdownStop)
+                if (Instance.ShutdownStop)
                 {
-                    continue;
+                    Instance.ShutdownStop = false;
+                    return;
                 }
-                Instance.ShutdownStop = false;
-                return;
             }
             message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
             Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
@@ -1300,27 +1288,25 @@ namespace OpenNos.GameObject
             for (int i = 0; i < 10; i++)
             {
                 await Task.Delay(1000);
-                if (!Instance.ShutdownStop)
+                if (Instance.ShutdownStop)
                 {
-                    continue;
+                    Instance.ShutdownStop = false;
+                    return;
                 }
-                Instance.ShutdownStop = false;
-                return;
             }
             Instance.SaveAll();
             CommunicationServiceClient.Instance.UnregisterWorldServer(WorldId);
             Environment.Exit(0);
         }
 
-        public void TeleportOnRandomPlaceInMap(ClientSession session, Guid guid)
+        public void TeleportOnRandomPlaceInMap(ClientSession Session, Guid guid)
         {
             MapInstance map = GetMapInstance(guid);
-            if (guid == default(Guid))
+            if (guid != default(Guid))
             {
-                return;
+                MapCell pos = map.Map.GetRandomPosition();
+                ChangeMapInstance(Session.Character.CharacterId, guid, pos.X, pos.Y);
             }
-            MapCell pos = map.Map.GetRandomPosition();
-            ChangeMapInstance(session.Character.CharacterId, guid, pos.X, pos.Y);
         }
 
         // Server
@@ -1443,9 +1429,7 @@ namespace OpenNos.GameObject
                 BotProcess();
             });
 
-            EventHelper.Instance.GenerateEvent(EventType.ACT4SHIP);
             EventHelper.Instance.RunEvent(new EventContainer(Instance.GetMapInstance(Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
-
             foreach (Schedule schedule in Schedules)
             {
                 Observable.Timer(TimeSpan.FromSeconds(EventHelper.Instance.GetMilisecondsBeforeTime(schedule.Time).TotalSeconds), TimeSpan.FromDays(1)).Subscribe(e =>
@@ -1499,10 +1483,10 @@ namespace OpenNos.GameObject
         {
             // TODO: Parallelization of family load
             FamilyList = new List<Family>();
-            ConcurrentDictionary<long, Family> families = new ConcurrentDictionary<long, Family>();
-            Parallel.ForEach(DAOFactory.FamilyDAO.LoadAll(), familyDto =>
+            ConcurrentDictionary<long, Family> _family = new ConcurrentDictionary<long, Family>();
+            Parallel.ForEach(DAOFactory.FamilyDAO.LoadAll(), familyDTO =>
             {
-                Family family = (Family)familyDto;
+                Family family = (Family)familyDTO;
                 family.FamilyCharacters = new List<FamilyCharacter>();
                 foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(family.FamilyId).ToList())
                 {
@@ -1519,9 +1503,9 @@ namespace OpenNos.GameObject
                     }
                 }
                 family.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(family.FamilyId).ToList();
-                families[family.FamilyId] = family;
+                _family[family.FamilyId] = family;
             });
-            FamilyList.AddRange(families.Select(s => s.Value));
+            FamilyList.AddRange(_family.Select(s => s.Value));
         }
 
         private void LoadScriptedInstances()
@@ -1529,27 +1513,25 @@ namespace OpenNos.GameObject
             Raids = new List<ScriptedInstance>();
             Parallel.ForEach(_mapinstances, map =>
             {
-                foreach (ScriptedInstanceDTO scriptedInstanceDto in DAOFactory.ScriptedInstanceDAO.LoadByMap(map.Value.Map.MapId).ToList())
+                foreach (ScriptedInstance si in DAOFactory.ScriptedInstanceDAO.LoadByMap(map.Value.Map.MapId).ToList())
                 {
-                    ScriptedInstance si = (ScriptedInstance) scriptedInstanceDto;
-                    switch (si.Type)
+                    if (si.Type == ScriptedInstanceType.TimeSpace)
                     {
-                        case ScriptedInstanceType.TimeSpace:
-                            si.LoadGlobals();
-                            map.Value.ScriptedInstances.Add(si);
-                            break;
-                        case ScriptedInstanceType.Raid:
-                            si.LoadGlobals();
-                            Raids.Add(si);
-                            Portal port = new Portal
-                            {
-                                Type = (byte)PortalType.Raid,
-                                SourceMapId = si.MapId,
-                                SourceX = si.PositionX,
-                                SourceY = si.PositionY
-                            };
-                            map.Value.Portals.Add(port);
-                            break;
+                        si.LoadGlobals();
+                        map.Value.ScriptedInstances.Add(si);
+                    }
+                    else if (si.Type == ScriptedInstanceType.Raid)
+                    {
+                        si.LoadGlobals();
+                        Raids.Add(si);
+                        Portal port = new Portal()
+                        {
+                            Type = (byte)PortalType.Raid,
+                            SourceMapId = si.MapId,
+                            SourceX = si.PositionX,
+                            SourceY = si.PositionY
+                        };
+                        map.Value.Portals.Add(port);
                     }
                 }
             });
@@ -1572,9 +1554,9 @@ namespace OpenNos.GameObject
         private void OnBazaarRefresh(object sender, EventArgs e)
         {
             // TODO: Parallelization of bazaar.
-            long bazaarId = (long)sender;
-            BazaarItemDTO bzdto = DAOFactory.BazaarItemDAO.LoadById(bazaarId);
-            BazaarItemLink bzlink = BazaarList.FirstOrDefault(s => s.BazaarItem.BazaarItemId == bazaarId);
+            long BazaarId = (long)sender;
+            BazaarItemDTO bzdto = DAOFactory.BazaarItemDAO.LoadById(BazaarId);
+            BazaarItemLink bzlink = BazaarList.FirstOrDefault(s => s.BazaarItem.BazaarItemId == BazaarId);
             lock (BazaarList)
             {
                 if (bzdto != null)
@@ -1613,9 +1595,9 @@ namespace OpenNos.GameObject
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
             // TODO: Parallelization of family.
-            long familyId = (long)sender;
-            FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(familyId);
-            Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == familyId);
+            long FamilyId = (long)sender;
+            FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(FamilyId);
+            Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == FamilyId);
             lock (FamilyList)
             {
                 if (famdto != null)
@@ -1676,27 +1658,23 @@ namespace OpenNos.GameObject
 
         private void OnMessageSentToCharacter(object sender, EventArgs e)
         {
-            if (sender == null)
+            if (sender != null)
             {
-                return;
-            }
-            SCSCharacterMessage message = (SCSCharacterMessage)sender;
+                SCSCharacterMessage message = (SCSCharacterMessage)sender;
 
-            ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == message.DestinationCharacterId);
-            switch (message.Type)
-            {
-                case MessageType.WhisperGM:
-                case MessageType.Whisper:
-                    if (targetSession == null || message.Type == MessageType.WhisperGM && targetSession.Account.Authority != AuthorityType.GameMaster)
-                    {
-                        return;
-                    }
-
-                    if (targetSession.Character.GmPvtBlock)
-                    {
-                        if (message.DestinationCharacterId != null)
+                ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == message.DestinationCharacterId);
+                switch (message.Type)
+                {
+                    case MessageType.WhisperGM:
+                    case MessageType.Whisper:
+                        if (targetSession == null || message.Type == MessageType.WhisperGM && targetSession.Account.Authority != AuthorityType.GameMaster)
                         {
-                            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
+                            return;
+                        }
+
+                        if (targetSession.Character.GmPvtBlock)
+                        {
+                            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
                             {
                                 DestinationCharacterId = message.SourceCharacterId,
                                 SourceCharacterId = message.DestinationCharacterId.Value,
@@ -1705,12 +1683,9 @@ namespace OpenNos.GameObject
                                 Type = MessageType.PrivateChat
                             });
                         }
-                    }
-                    else if (targetSession.Character.WhisperBlocked)
-                    {
-                        if (message.DestinationCharacterId != null)
+                        else if (targetSession.Character.WhisperBlocked)
                         {
-                            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
+                            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
                             {
                                 DestinationCharacterId = message.SourceCharacterId,
                                 SourceCharacterId = message.DestinationCharacterId.Value,
@@ -1719,44 +1694,56 @@ namespace OpenNos.GameObject
                                 Type = MessageType.PrivateChat
                             });
                         }
-                    }
-                    else
-                    {
-                        if (message.SourceWorldId != WorldId)
+                        else
                         {
-                            if (message.DestinationCharacterId != null)
+                            if (message.SourceWorldId != WorldId)
                             {
-                                CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
+                                CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
                                 {
                                     DestinationCharacterId = message.SourceCharacterId,
                                     SourceCharacterId = message.DestinationCharacterId.Value,
                                     SourceWorldId = WorldId,
-                                    Message = targetSession.Character.GenerateSay(
-                                        string.Format(Language.Instance.GetMessageFromKey("MESSAGE_SENT_TO_CHARACTER"), targetSession.Character.Name, ChannelId), 11),
+                                    Message = targetSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MESSAGE_SENT_TO_CHARACTER"), targetSession.Character.Name, ChannelId), 11),
                                     Type = MessageType.PrivateChat
                                 });
+                                targetSession.SendPacket($"{message.Message} <{Language.Instance.GetMessageFromKey("CHANNEL")}: {CommunicationServiceClient.Instance.GetChannelIdByWorldId(message.SourceWorldId)}>");
                             }
-                            targetSession.SendPacket($"{message.Message} <{Language.Instance.GetMessageFromKey("CHANNEL")}: {CommunicationServiceClient.Instance.GetChannelIdByWorldId(message.SourceWorldId)}>");
+                            else
+                            {
+                                targetSession.SendPacket(message.Message);
+                            }
                         }
-                        else
+                        break;
+
+                    case MessageType.Shout:
+                        Shout(message.Message);
+                        break;
+
+                    case MessageType.PrivateChat:
+                        targetSession?.SendPacket(message.Message);
+                        break;
+
+                    case MessageType.FamilyChat:
+                        if (message.DestinationCharacterId.HasValue)
                         {
-                            targetSession.SendPacket(message.Message);
+                            if (message.SourceWorldId != WorldId)
+                            {
+                                Parallel.ForEach(Instance.Sessions, session =>
+                                {
+                                    if (session.HasSelectedCharacter && session.Character.Family != null)
+                                    {
+                                        if (session.Character.Family.FamilyId == message.DestinationCharacterId)
+                                        {
+                                            session.SendPacket($"say 1 0 6 <{Language.Instance.GetMessageFromKey("CHANNEL")}: {CommunicationServiceClient.Instance.GetChannelIdByWorldId(message.SourceWorldId)}>{message.Message}");
+                                        }
+                                    }
+                                });
+                            }
                         }
-                    }
-                    break;
+                        break;
 
-                case MessageType.Shout:
-                    Shout(message.Message);
-                    break;
-
-                case MessageType.PrivateChat:
-                    targetSession?.SendPacket(message.Message);
-                    break;
-
-                case MessageType.FamilyChat:
-                    if (message.DestinationCharacterId.HasValue)
-                    {
-                        if (message.SourceWorldId != WorldId)
+                    case MessageType.Family:
+                        if (message.DestinationCharacterId.HasValue)
                         {
                             Parallel.ForEach(Instance.Sessions, session =>
                             {
@@ -1764,30 +1751,13 @@ namespace OpenNos.GameObject
                                 {
                                     if (session.Character.Family.FamilyId == message.DestinationCharacterId)
                                     {
-                                        session.SendPacket($"say 1 0 6 <{Language.Instance.GetMessageFromKey("CHANNEL")}: {CommunicationServiceClient.Instance.GetChannelIdByWorldId(message.SourceWorldId)}>{message.Message}");
+                                        session.SendPacket(message.Message);
                                     }
                                 }
                             });
                         }
-                    }
-                    break;
-
-                case MessageType.Family:
-                    if (message.DestinationCharacterId.HasValue)
-                    {
-                        Parallel.ForEach(Instance.Sessions, session =>
-                        {
-                            if (!session.HasSelectedCharacter || session.Character.Family == null)
-                            {
-                                return;
-                            }
-                            if (session.Character.Family.FamilyId == message.DestinationCharacterId)
-                            {
-                                session.SendPacket(message.Message);
-                            }
-                        });
-                    }
-                    break;
+                        break;
+                }
             }
         }
 
@@ -1842,16 +1812,15 @@ namespace OpenNos.GameObject
 
         private void OnSessionKicked(object sender, EventArgs e)
         {
-            if (sender == null)
+            if (sender != null)
             {
-                return;
+                Tuple<long?, long?> kickedSession = (Tuple<long?, long?>)sender;
+
+                ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
+                                                                           && (!kickedSession.Item1.HasValue || s.Account.AccountId == kickedSession.Item2));
+
+                targetSession?.Disconnect();
             }
-            Tuple<long?, long?> kickedSession = (Tuple<long?, long?>)sender;
-
-            ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
-                                                                       && (!kickedSession.Item1.HasValue || s.Account.AccountId == kickedSession.Item2));
-
-            targetSession?.Disconnect();
         }
 
         private void OnShutdown(object sender, EventArgs e)
