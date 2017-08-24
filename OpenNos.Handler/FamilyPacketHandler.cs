@@ -421,6 +421,7 @@ namespace OpenNos.Handler
                 Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManaged, Session.Character.Name);
                 long FamilyId = Session.Character.Family.FamilyId;
                 DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_LEAVE")));
 
                 ServerManager.Instance.FamilyRefresh(FamilyId);
                 CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
@@ -736,8 +737,8 @@ namespace OpenNos.Handler
             {
                 DAOFactory.IteminstanceDAO.InsertOrUpdate(destinationInventory);
             }
-            Session.SendPacket((destinationInventory != null) ? destinationInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(fReposPacket.NewSlot));
-            Session.SendPacket((sourceInventory != null) ? sourceInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(fReposPacket.OldSlot));
+            Session.SendPacket(destinationInventory != null ? destinationInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(fReposPacket.NewSlot));
+            Session.SendPacket(sourceInventory != null ? sourceInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(fReposPacket.OldSlot));
             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
         }
 

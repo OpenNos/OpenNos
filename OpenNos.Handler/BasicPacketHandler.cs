@@ -491,7 +491,7 @@ namespace OpenNos.Handler
                         ServerManager.Instance.GroupList.Add(Session.Character.Group);
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_REGISTERED")));
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
-                        ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {(string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"), Session.Character.Name))}", ReceiverType.AllExceptGroup);
+                        ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"), Session.Character.Name)}", ReceiverType.AllExceptGroup);
                     }
                     break;
                 case 2:
@@ -547,43 +547,45 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                if (Session.Character.CharacterId != pjoinPacket.CharacterId)
+                if (Session.Character.CharacterId == pjoinPacket.CharacterId)
                 {
-                    if (targetSession != null)
-                    {
-                        if (Session.Character.IsBlockedByCharacter(pjoinPacket.CharacterId))
-                        {
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
-                            return;
-                        }
+                    return;
+                }
+                if (targetSession == null)
+                {
+                    return;
+                }
+                if (Session.Character.IsBlockedByCharacter(pjoinPacket.CharacterId))
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
+                    return;
+                }
 
-                        if (targetSession.Character.GroupRequestBlocked)
+                if (targetSession.Character.GroupRequestBlocked)
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_BLOCKED"), 0));
+                }
+                else
+                {
+                    // save sent group request to current character
+                    Session.Character.GroupSentRequestCharacterIds.Add(targetSession.Character.CharacterId);
+                    if (Session.Character.Group == null || Session.Character.Group.GroupType == GroupType.Group)
+                    {
+                        if (targetSession?.Character?.Group == null || targetSession?.Character?.Group.GroupType == GroupType.Group)
                         {
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_BLOCKED"), 0));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), targetSession.Character.Name)));
+                            targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"));
                         }
                         else
                         {
-                            // save sent group request to current character
-                            Session.Character.GroupSentRequestCharacterIds.Add(targetSession.Character.CharacterId);
-                            if (Session.Character.Group == null || Session.Character.Group.GroupType == GroupType.Group)
-                            {
-                                if (targetSession?.Character?.Group == null || targetSession?.Character?.Group.GroupType == GroupType.Group)
-                                {
-                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), targetSession.Character.Name)));
-                                    targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"));
-                                }
-                                else
-                                {
-                                    //can't invite raid member
-                                }
-                            }
-                            else
-                            {
-                                targetSession.SendPacket($"qna #rd^1^{Session.Character.CharacterId}^1 {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU_RAID"), Session.Character.Name)}");
-                            }
-
+                            //can't invite raid member
                         }
                     }
+                    else
+                    {
+                        targetSession.SendPacket($"qna #rd^1^{Session.Character.CharacterId}^1 {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU_RAID"), Session.Character.Name)}");
+                    }
+
                 }
             }
             else if (pjoinPacket.RequestType.Equals(GroupRequestType.Sharing))
@@ -634,7 +636,7 @@ namespace OpenNos.Handler
                         if (currentGroup != null)
                         {
                             currentGroup.JoinGroup(targetSession);
-                            targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOINED_GROUP"), 10));
+                            targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("JOINED_GROUP")));
                             createNewGroup = false;
                         }
                     }
@@ -679,7 +681,7 @@ namespace OpenNos.Handler
                     {
                         Group group = new Group(GroupType.Group);
                         @group.JoinGroup(pjoinPacket.CharacterId);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), targetSession.Character.Name), 10));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), targetSession.Character.Name)));
                         @group.JoinGroup(Session.Character.CharacterId);
                         ServerManager.Instance.AddGroup(@group);
                         targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_ADMIN")));
@@ -689,12 +691,13 @@ namespace OpenNos.Handler
                         targetSession.Character.Group = @group;
                     }
                 }
-                if (Session.Character.Group.GroupType == GroupType.Group)
+                if (Session.Character.Group.GroupType != GroupType.Group)
                 {
-                    // player join group
-                    ServerManager.Instance.UpdateGroup(pjoinPacket.CharacterId);
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePidx());
+                    return;
                 }
+                // player join group
+                ServerManager.Instance.UpdateGroup(pjoinPacket.CharacterId);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePidx());
             }
             else
             {
@@ -943,18 +946,21 @@ namespace OpenNos.Handler
                 {
                     // SHELL IDENTIFYING
                     case 204:
-                        if (!guriPacket.User.HasValue)
+
+                        if (guriPacket.User == null)
                         {
-                            // USING PACKET LOGGER
+                            // WRONG PACKET
                             return;
                         }
 
-                        InventoryType inventoryType = (InventoryType) guriPacket.Argument;
+                        InventoryType inventoryType = (InventoryType)guriPacket.Argument;
                         ItemInstance pearls = Session.Character.Inventory.FirstOrDefault(s => s.Value.ItemVNum == 1429).Value;
-                        WearableInstance shell = (WearableInstance)Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, inventoryType);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_IDENTIFIED"), 0));
-                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(3006), ReceiverType.All);
+                        WearableInstance shell = (WearableInstance)Session.Character.Inventory.LoadBySlotAndType((short)guriPacket.User.Value, inventoryType);
 
+                        if (shell.Upgrade < 30 || shell.Upgrade > 90)
+                        {
+                            return;
+                        }
 
                         if (pearls == null || shell == null)
                         {
@@ -965,6 +971,7 @@ namespace OpenNos.Handler
                         if (shell.EquipmentOptions.Any())
                         {
                             // ALREADY IDENTIFIED
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_ALREADY_IDENTIFIED"), 0));
                             return;
                         }
 
@@ -975,8 +982,9 @@ namespace OpenNos.Handler
                         }
 
                         int shellType = ShellGeneratorHelper.ShellTypes[shell.ItemVNum];
+                        int perlsNeeded = shell.Upgrade / 10 + shell.Rare;
 
-                        if (pearls.Amount <= shell.Upgrade / 10 + shell.Rare)
+                        if (Session.Character.Inventory.CountItem(pearls.ItemVNum) < perlsNeeded)
                         {
                             // NOT ENOUGH PEARLS
                             return;
@@ -988,11 +996,15 @@ namespace OpenNos.Handler
                             s.WearableInstanceId = shell.Id;
                             shell.EquipmentOptions.Add(s);
                         }
+                        Session.Character.Inventory.RemoveItemAmount(pearls.ItemVNum, perlsNeeded);
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_IDENTIFIED"), 0));
+                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(3006));
+
                         break;
                     case 300:
                         if (guriPacket.Argument == 8023)
                         {
-                            if (Int16.TryParse(guriPacket.Data.ToString(), out short slot))
+                            if (short.TryParse(guriPacket.Data.ToString(), out short slot))
                             {
                                 ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
                                 if (box != null)
@@ -1029,7 +1041,11 @@ namespace OpenNos.Handler
                             }
                             if (vnumToUse != -1)
                             {
-                                if (!Int64.TryParse(guriPacket.User.Value.ToString(), out long charId))
+                                if (guriPacket.User == null)
+                                {
+                                    return;
+                                }
+                                if (!long.TryParse(guriPacket.User.Value.ToString(), out long charId))
                                 {
                                     return;
                                 }
@@ -1075,7 +1091,7 @@ namespace OpenNos.Handler
                                 case 400:
                                     if (guriPacket.User.HasValue)
                                     {
-                                        if (!Int16.TryParse(guriPacket.User.Value.ToString(), out short MapNpcId))
+                                        if (!short.TryParse(guriPacket.User.Value.ToString(), out short MapNpcId))
                                         {
                                             return;
                                         }
@@ -1156,7 +1172,7 @@ namespace OpenNos.Handler
                                     if (!guriPacket.User.HasValue)
                                     {
                                         const short baseVnum = 1623;
-                                        if (Int16.TryParse(guriPacket.Argument.ToString(), out short faction))
+                                        if (short.TryParse(guriPacket.Argument.ToString(), out short faction))
                                         {
                                             if (Session.Character.Inventory.CountItem(baseVnum + faction) > 0)
                                             {
@@ -1203,7 +1219,7 @@ namespace OpenNos.Handler
 
                                             // message = $" ";
                                             string[] valuesplit = guriPacket.Value.Split(' ');
-                                            message = valuesplit.Aggregate(message, (current, t) => current + (t + "^"));
+                                            message = valuesplit.Aggregate(message, (current, t) => current + t + "^");
                                             message = message.Substring(0, message.Length - 1); // Remove the last ^
                                             message = message.Trim();
                                             if (message.Length > 60)
@@ -1248,7 +1264,7 @@ namespace OpenNos.Handler
                                 default:
                                     if (guriPacket.Type == 199 && guriPacket.Argument == 1)
                                     {
-                                        if (guriPacket.User != null && Int64.TryParse(guriPacket.User.Value.ToString(), out long charId))
+                                        if (guriPacket.User != null && long.TryParse(guriPacket.User.Value.ToString(), out long charId))
                                         {
                                             if (!Session.Character.IsFriendOfCharacter(charId))
                                             {
@@ -1275,8 +1291,7 @@ namespace OpenNos.Handler
                                             default:
                                                 if (guriPacket.Type == 208 && guriPacket.Argument == 0)
                                                 {
-                                                    if (guriPacket.User != null && (short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) &&
-                                                                                    short.TryParse(guriPacket.Value, out short mountSlot)))
+                                                    if (guriPacket.User != null && short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) && short.TryParse(guriPacket.Value, out short mountSlot))
                                                     {
                                                         ItemInstance mount = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(mountSlot, InventoryType.Main);
                                                         BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
@@ -1289,8 +1304,7 @@ namespace OpenNos.Handler
                                                 }
                                                 else if (guriPacket.Type == 209 && guriPacket.Argument == 0)
                                                 {
-                                                    if (guriPacket.User != null && (short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) &&
-                                                                                    short.TryParse(guriPacket.Value, out short mountSlot)))
+                                                    if (guriPacket.User != null && short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) && short.TryParse(guriPacket.Value, out short mountSlot))
                                                     {
                                                         WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(mountSlot, InventoryType.Equipment);
                                                         BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
@@ -1455,7 +1469,7 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"), 10));
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"), 1));
                             }
                             return;
                         default:

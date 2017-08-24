@@ -3081,7 +3081,7 @@ namespace OpenNos.GameObject
                     string info = string.Empty;
                     if (bz.Item.Item.Type == InventoryType.Equipment)
                     {
-                        if ((bz.Item as WearableInstance) != null)
+                        if (bz.Item as WearableInstance != null)
                         {
                             info = ((WearableInstance)bz.Item).GenerateEInfo().Replace(' ', '^').Replace("e_info^", "");
                         }
@@ -3188,7 +3188,7 @@ namespace OpenNos.GameObject
 
         public string GenerateScpStc()
         {
-            return $"sc_p_stc {(MaxMateCount / 10)}";
+            return $"sc_p_stc {MaxMateCount / 10}";
         }
 
         public string GenerateShop(string shopname)
@@ -3594,7 +3594,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStatInfo()
         {
-            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}{(Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}"))}";
+            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}{Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}")}";
         }
 
         public TalkPacket GenerateTalk(string message)
@@ -4930,7 +4930,7 @@ namespace OpenNos.GameObject
 
         private int GetGold(MapMonster mapMonster)
         {
-            if(!((MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)))
+            if(!(MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance))
             {
                 return 0;
             }
@@ -5314,8 +5314,8 @@ namespace OpenNos.GameObject
                     foreach (BCard entry in buff.Card.BCards.Concat(EquipmentBCards).Where(
                         s => s.Type.Equals((byte)type)
                              && s.SubType.Equals((byte)(subtype / 10)) &&
-                             (s.CastType != 1 || (s.CastType == 1 &&
-                                               buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))))
+                             (s.CastType != 1 || s.CastType == 1 &&
+                              buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
                     {
                         if (entry.IsLevelScaled)
                         {

@@ -738,7 +738,7 @@ namespace OpenNos.GameObject
                 Group grp = Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId));
                 if (grp != null)
                 {
-                    if ((grp.CharacterCount >= 3 && grp.GroupType == GroupType.Group) || (grp.CharacterCount >= 2 && grp.GroupType != GroupType.Group))
+                    if (grp.CharacterCount >= 3 && grp.GroupType == GroupType.Group || grp.CharacterCount >= 2 && grp.GroupType != GroupType.Group)
                     {
                         if (grp.Characters.ElementAt(0) == session)
                         {

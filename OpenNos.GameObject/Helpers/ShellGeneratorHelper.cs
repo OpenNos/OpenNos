@@ -374,16 +374,16 @@ namespace OpenNos.GameObject.Helpers
             { 3, new List<object>{ "Diminue la chance d\"exposition aux petites plaies", "X%", 18, 52, null, null, null, null, null, null }},
             { 4, new List<object>{ "Diminue la chance d\"être exposé aux plaies en général", "X%", null, null, 18, 52, null, null, null, null }},
             { 5, new List<object>{ "Diminue la chance d\"être exposé aux plaies béantes en général", "X%", null, null, null, null, 2, 18, null, null }},
-            { 6, new List<object>{ "Ogłuszenie", "X%", 18, 52, null, null, null, null, null, null }},
-            { 7, new List<object>{ "Zamrożenie", "X%", null, null, 18, 52, null, null, null, null }},
-            { 8, new List<object>{ "Silne ogłuszenie", "X%", null, null, null, null, 18, 52, null, null }},
+            { 6, new List<object>{ "Trou noir", "X%", 18, 52, null, null, null, null, null, null }},
+            { 7, new List<object>{ "Congelé", "X%", null, null, 18, 52, null, null, null, null }},
+            { 8, new List<object>{ "Trou noir mortel", "X%", null, null, null, null, 18, 52, null, null }},
             { 9, new List<object>{ "Augmente les dégâts sur les plantes", "X%", 60, 104, 110, 204, null, null, null, null }},
             { 10, new List<object>{ "Augmente les dégâts sur les animaux", "X%", 60, 104, 110, 204, null, null, null, null }},
             { 11, new List<object>{ "Augmente les dégâts sur les démons", "X%", 60, 104, 110, 204, null, null, null, null }},
             { 12, new List<object>{ "Augmente les dégâts sur les zombies", "X%", null, null, 60, 104, 110, 204, null, null }},
-            { 13, new List<object>{ "Zwiększa szkody przy małych zwierzętach", "X%", null, null, 60, 104, 110, 204, null, null }},
+            { 13, new List<object>{ "Augmente les dégats sur les petits animaux", "X%", null, null, 60, 104, 110, 204, null, null }},
             { 14, new List<object>{ "Augmente les dégâts sur les monstres géants", "X%", null, null, null, null, null, null, 229, 256 }},
-            { 15, new List<object>{ "(poza różdżkami) Zwiększona szansa krytycznego uderzenia", "X%", 30, 104, null, null, null, null, null, null }},
+            { 15, new List<object>{ "(Excepté baguette) Augmente les dégats critiques: ", "X%", 30, 104, null, null, null, null, null, null }},
             { 16, new List<object>{ "(poza różdżkami) Zwiększone krytyczne obrażenia", "X%", 342, 645, null, null, null, null, null, null }},
             { 17, new List<object>{ "(tylko różdżki) Niezakłócony podczas rzucania czarów", "X", null, null, null, null, null, null, null, null }},
             { 18, new List<object>{ "Augmente l\"élément feu", "X", null, null, 482, 802, 915, 1545, null, null }},
@@ -494,14 +494,14 @@ namespace OpenNos.GameObject.Helpers
             List<EquipmentOptionDTO> shellOptions = new List<EquipmentOptionDTO>();
             List<object> optionsAlreadyOn = new List<object>();
 
-            if (shellLevel < 50)
+            if (shellLevel < 30)
             {
-                shellLevel = 50;
+                shellLevel = 30;
             }
 
             if (shellType < 8)
             {
-                letterMultiplier = (shellLevel <= 70 ? 1 : shellLevel <= 80 ? 3 : shellLevel <= 90 ? 5 : 1);
+                letterMultiplier = shellLevel <= 70 ? 1 : shellLevel <= 80 ? 3 : shellLevel <= 90 ? 5 : 1;
             }
             else if (shellType < 10)
             {
@@ -592,7 +592,7 @@ namespace OpenNos.GameObject.Helpers
 
                 object generatedOption = possibleOptions[Rand.Next(possibleOptions.Count)];
 
-                if ((int)ShellType[w][g + 1] != 1 && (Rand.Next(2) != 0))
+                if ((int)ShellType[w][g + 1] != 1 && Rand.Next(2) != 0)
                 {
                     continue;
                 }
