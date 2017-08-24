@@ -5258,7 +5258,7 @@ namespace OpenNos.GameObject
 
         public string GenerateTaPs()
         {
-            List<ArenaTeamMember> arenateam = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session)).OrderBy(s => s.ArenaTeamType).ToList();
+            List<ArenaTeamMember> arenateam = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s!=null && s.Any(o => o?.Session == Session)).OrderBy(s => s.ArenaTeamType).ToList();
             ArenaTeamType type = ArenaTeamType.ERENIA;
             string groups = string.Empty;
             if (arenateam != null)
