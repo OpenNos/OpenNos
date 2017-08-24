@@ -45,7 +45,7 @@ namespace OpenNos.Handler
                             return;
                         }
                     }
-                    Session.Character.LeaveTalentArena();
+                    Session.Character.LeaveTalentArena(true);
                     break;
             }
         }

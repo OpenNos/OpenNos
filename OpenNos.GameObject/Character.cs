@@ -4930,14 +4930,14 @@ namespace OpenNos.GameObject
 
         private int GetGold(MapMonster mapMonster)
         {
-            if(!(MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance))
+            if (!(MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance))
             {
                 return 0;
             }
 
             int lowBaseGold = ServerManager.Instance.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
             int actMultiplier = Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61) ?? false ? 5 : 1;
-            return lowBaseGold* ServerManager.Instance.GoldRate * actMultiplier;
+            return lowBaseGold * ServerManager.Instance.GoldRate * actMultiplier;
         }
 
         private int GetHXP(NpcMonsterDTO monster, Group group)
@@ -5239,13 +5239,13 @@ namespace OpenNos.GameObject
 
         public string GenerateTaP(byte tatype, bool showOponent)
         {
-            List<ArenaTeamMember> arenateam = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session)).OrderBy(s => s.ArenaTeamType).ToList();
+            List<ArenaTeamMember> arenateam = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s!=null && s.Any(o => o.Session == Session)).OrderBy(s => s.ArenaTeamType).ToList();
             ArenaTeamType type = ArenaTeamType.ERENIA;
             string groups = string.Empty;
             if (arenateam != null)
             {
                 type = arenateam.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType ?? ArenaTeamType.ERENIA;
-                
+
                 for (byte i = 0; i < 6; i++)
                 {
                     ArenaTeamMember arenamembers = arenateam.FirstOrDefault(s => (i < 3 ? s.ArenaTeamType == type : s.ArenaTeamType != type) && s.Order == i % 3);
@@ -5375,7 +5375,7 @@ namespace OpenNos.GameObject
             return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
         }
 
-        public void LeaveTalentArena(bool Surrender = true)
+        public void LeaveTalentArena(bool Surrender = false)
         {
             ArenaMember memb = ServerManager.Instance.ArenaMembers.FirstOrDefault(s => s.Session == Session);
             if (memb != null)
@@ -5406,15 +5406,25 @@ namespace OpenNos.GameObject
                     {
                         Session.Character.TalentSurrender++;
                     }
-                    tm.Where(s => s.ArenaTeamType == tmem.ArenaTeamType).ToList().ForEach(s =>
+                    tm.ToList().ForEach(s =>
                     {
-                        s.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ARENA_TALENT_LEFT"), Session.Character.Name), 0));
+                        if (s.ArenaTeamType == tmem.ArenaTeamType)
+                        {
+                            s.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ARENA_TALENT_LEFT"), Session.Character.Name), 0));
+                        }
+                        s.Session.SendPacket(s.Session.Character.GenerateTaP(2, true));
                     });
+
+                    Session.SendPacket(Session.Character.GenerateTaP(1, true));
+                    Session.SendPacket(Session.Character.GenerateTaM(1, 0));
+                    Session.SendPacket("ta_sv 1");
+                    Session.SendPacket("taw_sv 1");
                 }
+                ServerManager.Instance.ArenaTeams.Remove(tm);
                 tm = tm.Where(s => s.Session != Session);
                 if (tm.Any())
                 {
-                    ServerManager.Instance.ArenaTeams.Remove(tm);
+                    ServerManager.Instance.ArenaTeams.Add(tm);
                 }
             }
         }

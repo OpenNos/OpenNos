@@ -242,7 +242,7 @@ namespace OpenNos.GameObject
                         break;
 
                     default:
-                        session.Character.LeaveTalentArena();
+                        session.Character.LeaveTalentArena(true);
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
                         Task.Factory.StartNew(async () =>
                         {
