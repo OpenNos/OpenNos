@@ -76,20 +76,27 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
-                        
+
+                        WearableInstance shell = (WearableInstance)inv;
+                        WearableInstance eq = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
+                        if (eq == null)
+                        {
+                            // PACKET MODIFIED
+                            return;
+                        }
                         switch (requestType)
                         {
                             case 0:
-                                session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(short) inv.Type}^{inv.Slot}^1^{1}^{(short) eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF")}");
+                                if (eq.EquipmentOptions.Any())
+                                {
+                                    session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(short)inv.Type}^{inv.Slot}^1^{1}^{(short)eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF_NOT_EMPTY")}");
+                                }
+                                else
+                                {
+                                    session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(short)inv.Type}^{inv.Slot}^1^{1}^{(short)eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF")}");
+                                }
                                 break;
                             case 1:
-                                WearableInstance shell = (WearableInstance) inv;
-                                WearableInstance eq = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
-                                if (eq == null)
-                                {
-                                    // PACKET MODIFIED
-                                    return;
-                                }
                                 if (shell.EquipmentOptions == null)
                                 {
                                     // SHELL NOT IDENTIFIED
@@ -114,7 +121,7 @@ namespace OpenNos.GameObject
                                 {
                                     if (eq.EquipmentOptions != null)
                                     {
-                                        if (new Random().Next(100) > 50)
+                                        if (new Random().Next(100) >= 50)
                                         {
                                             // BREAK BECAUSE DIDN'T USE MAGIC ERASER
                                             session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
@@ -126,10 +133,10 @@ namespace OpenNos.GameObject
                                         eq.EquipmentOptions = new List<EquipmentOptionDTO>();
                                     }
                                     eq.EquipmentOptions.Clear();
-                                    eq.EquipmentOptions.AddRange(shell.EquipmentOptions);
-                                    foreach (EquipmentOptionDTO i in eq.EquipmentOptions)
+                                    foreach (EquipmentOptionDTO i in shell.EquipmentOptions)
                                     {
                                         i.WearableInstanceId = eq.Id;
+                                        eq.EquipmentOptions.Add(i);
                                     }
                                     eq.BoundCharacterId = session.Character.CharacterId;
                                     eq.ShellRarity = shell.Rare;
