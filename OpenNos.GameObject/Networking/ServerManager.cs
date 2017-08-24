@@ -196,7 +196,6 @@ namespace OpenNos.GameObject
                 session.SendPacket(session.Character.GenerateStat());
                 session.SendPacket(session.Character.GenerateCond());
                 session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
-                session.Character.LeaveTalentArena();
                 session.SendPacket("eff_ob -1 -1 0 4269");
                 switch (session.CurrentMapInstance.MapInstanceType)
                 {
@@ -243,6 +242,7 @@ namespace OpenNos.GameObject
                         break;
 
                     default:
+                        session.Character.LeaveTalentArena();
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
                         Task.Factory.StartNew(async () =>
                         {

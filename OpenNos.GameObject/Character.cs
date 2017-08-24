@@ -65,7 +65,7 @@ namespace OpenNos.GameObject
 
         public Node[,] BrushFire { get; set; }
 
-        public List<Buff> Buff { get; internal set; }
+        public ConcurrentBag<Buff> Buff { get; internal set; }
 
         public bool CanFight => !IsSitting && ExchangeInfo == null;
 
@@ -5121,7 +5121,7 @@ namespace OpenNos.GameObject
             }
             else if (oldbuff != null)
             {
-                Buff.RemoveAll(s => s.Card.CardId.Equals(bf.Card.CardId));
+                Buff = Buff.Where(s => !s.Card.CardId.Equals(bf.Card.CardId));
 
                 bf.RemainingTime = bf.Card.Duration * 6 / 10 + oldbuff.RemainingTime;
                 Buff.Add(bf);
@@ -5156,7 +5156,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            Buff.RemoveAll(s => s.Card.CardId.Equals(indicator.Card.CardId));
+            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
             Buff.Add(indicator);
             indicator.RemainingTime = indicator.Card.Duration;
             indicator.Start = DateTime.Now;
@@ -5202,7 +5202,7 @@ namespace OpenNos.GameObject
                 }
                 if (Buff.Contains(indicator))
                 {
-                    Buff.RemoveAll(s => s.Card.CardId == id);
+                    Buff = Buff.Where(s => s.Card.CardId != id);
                 }
                 if (indicator.Card.BCards.Any(s => s.Type == (byte)BCardType.CardType.Move))
                 {
@@ -5375,7 +5375,7 @@ namespace OpenNos.GameObject
             return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
         }
 
-        public void LeaveTalentArena()
+        public void LeaveTalentArena(bool Surrender = true)
         {
             ArenaMember memb = ServerManager.Instance.ArenaMembers.FirstOrDefault(s => s.Session == Session);
             if (memb != null)
@@ -5394,8 +5394,29 @@ namespace OpenNos.GameObject
                     });
                 }
                 ServerManager.Instance.ArenaMembers.Remove(memb);
+                Session.SendPacket(Session.Character.GenerateBsInfo(2, 2, 0, 0));
             }
-            Session.SendPacket(Session.Character.GenerateBsInfo(2, 2, 0, 0));
+            ConcurrentBag<ArenaTeamMember> tm = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
+            if (tm != null)
+            {
+                ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
+                if (tmem != null)
+                {
+                    if (Surrender)
+                    {
+                        Session.Character.TalentSurrender++;
+                    }
+                    tm.Where(s => s.ArenaTeamType == tmem.ArenaTeamType).ToList().ForEach(s =>
+                    {
+                        s.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ARENA_TALENT_LEFT"), Session.Character.Name), 0));
+                    });
+                }
+                tm = tm.Where(s => s.Session != Session);
+                if (tm.Any())
+                {
+                    ServerManager.Instance.ArenaTeams.Remove(tm);
+                }
+            }
         }
 
         #endregion

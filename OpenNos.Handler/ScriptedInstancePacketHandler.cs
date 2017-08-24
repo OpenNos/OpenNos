@@ -317,7 +317,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_REQUIERED_LEVEL"), 0));
                                     return;
                                 }
-                                
+
                                 Session.Character.MapX = portal.PositionX;
                                 Session.Character.MapY = portal.PositionY;
                                 ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, character.CurrentMapInstance.MapInstanceId);
@@ -354,7 +354,11 @@ namespace OpenNos.Handler
         {
             if (rxitPacket?.State == 1)
             {
-                if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.TimeSpaceInstance)
+                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
+                {
+                    ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, ServerManager.Instance.ArenaInstance.MapInstanceId);
+                }
+                else if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.TimeSpaceInstance)
                 {
                     if (Session.CurrentMapInstance.InstanceBag.Lock)
                     {

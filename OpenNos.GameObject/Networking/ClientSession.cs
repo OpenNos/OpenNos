@@ -303,7 +303,7 @@ namespace OpenNos.GameObject
             // register for servermanager
             ServerManager.Instance.RegisterSession(this);
             Character.SetSession(this);
-            Character.Buff = new List<Buff>();
+            Character.Buff = new ConcurrentBag<Buff>();
         }
 
         private void ClearReceiveQueue()
