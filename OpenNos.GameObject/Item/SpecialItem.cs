@@ -236,6 +236,10 @@ namespace OpenNos.GameObject
 
                 // vehicles
                 case 1000:
+                    if (session.Character.HasShopOpened)
+                    {
+                        return;
+                    }
                     if (Morph > 0)
                     {
                         if (option == 0 && !session.Character.IsVehicled)
