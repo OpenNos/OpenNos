@@ -88,8 +88,8 @@ namespace OpenNos.GameObject
                         {
                             case 0:
                                 session.SendPacket(eq.EquipmentOptions.Any()
-                                    ? $"qna #u_i^1^{session.Character.CharacterId}^{(short) inv.Type}^{inv.Slot}^1^{1}^{(short) eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF_NOT_EMPTY")}"
-                                    : $"qna #u_i^1^{session.Character.CharacterId}^{(short) inv.Type}^{inv.Slot}^1^{1}^{(short) eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF")}");
+                                    ? $"qna #u_i^1^{session.Character.CharacterId}^{(short) inv.Type}^{inv.Slot}^1^1^{(short) eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF_NOT_EMPTY")}"
+                                    : $"qna #u_i^1^{session.Character.CharacterId}^{(short) inv.Type}^{inv.Slot}^1^1^{(short) eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF")}");
                                 break;
                             case 1:
                                 if (shell.EquipmentOptions == null)
