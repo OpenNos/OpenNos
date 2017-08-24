@@ -456,7 +456,7 @@ namespace OpenNos.GameObject.Helpers
                     case BazaarListType.Other:
                         if (bz.Item.Item.Type == InventoryType.Equipment)
                         {
-                            if (bz.Item.Item.ItemType == ItemType.Box && !bz.Item.Item.IsHolder)
+                            if (bz.Item.Item.ItemType == ItemType.Box && !bz.Item.Item.Flag9)
                             {
                                 bzlist.Add(bz);
                             }

@@ -163,7 +163,7 @@ namespace OpenNos.Import.Console
                                 {
                                     CastType = 1,
                                     CardId = card.CardId,
-                                    Type = byte.Parse(currentLine[2+i * 6]),
+                                    Type = byte.Parse(currentLine[2 + i * 6]),
                                     SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
                                     FirstData = (short)(int.Parse(currentLine[5]) / 4),
                                     SecondData = (short)(int.Parse(currentLine[6]) / 4),
@@ -1170,7 +1170,7 @@ namespace OpenNos.Import.Console
                                     Type = type,
                                     SubType = (byte)int.Parse(currentLine[6 + 5 * i]),
                                     FirstData = (short)(int.Parse(currentLine[5 + 5])),
-                                    SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4), 
+                                    SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
                                     ThirdData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
                                     CastType = 1
                                 };
@@ -2200,12 +2200,12 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
                     {
                         int type = Int32.Parse(currentLine[3]);
-                        if (type != 0 && type!=-1)
+                        if (type != 0 && type != -1)
                         {
                             BCardDTO itemCard = new BCardDTO
                             {
                                 SkillVNum = skill.SkillVNum,
-                                Type =(byte)type,
+                                Type = (byte)type,
                                 SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
                                 FirstData = (short)(int.Parse(currentLine[5]) / 4),
                                 SecondData = (short)(int.Parse(currentLine[6]) / 4),
@@ -2332,7 +2332,7 @@ namespace OpenNos.Import.Console
                 }
                 else if (currentPacket[0] == "gp")
                 {
-                    if (sbyte.Parse(currentPacket[4])==(byte)PortalType.Raid)
+                    if (sbyte.Parse(currentPacket[4]) == (byte)PortalType.Raid)
                     {
                         ScriptedInstanceDTO ts = new ScriptedInstanceDTO()
                         {
@@ -2797,28 +2797,27 @@ namespace OpenNos.Import.Console
                         item.IsSoldable = currentLine[5] == "0";
                         item.IsDroppable = currentLine[6] == "0";
                         item.IsTradable = currentLine[7] == "0";
-                        item.IsBlocked = currentLine[8] == "1";
-                        item.IsMinilandObject = currentLine[9] == "1";
-                        item.IsHolder = currentLine[10] == "1";
+                        item.IsTradable = currentLine[7] == "0";
+                        item.IsMinilandActionable = currentLine[8] == "1";
+                        item.IsWarehouse = currentLine[9] == "1";
+                        item.Flag9 = currentLine[10] == "1";
+                        item.Flag1 = currentLine[11] == "1";
+                        item.Flag2 = currentLine[12] == "1";
+                        item.Flag3 = currentLine[13] == "1";
+                        item.Flag4 = currentLine[14] == "1";
+                        item.Flag5 = currentLine[15] == "1";
                         item.IsColored = currentLine[16] == "1";
                         item.Sex = currentLine[18] == "1" ? (byte)1 : currentLine[17] == "1" ? (byte)2 : (byte)0;
+                        //not used item.Flag6 = currentLine[19] == "1";
+                        item.Flag6 = currentLine[20] == "1";
                         if (currentLine[21] == "1")
                         {
                             item.ReputPrice = item.Price;
                         }
                         item.IsHeroic = currentLine[22] == "1";
-                        /*
-                        item.IsVehicle = currentLine[11] == "1" ? true : false; // (?)
-                        item.BoxedVehicle = currentLine[12] == "1" ? true : false; // (?)
-                        linesave[4]  unknown
-                        linesave[11] unknown
-                        linesave[12] unknown
-                        linesave[13] unknown
-                        linesave[14] unknown
-                        linesave[15] unknown
-                        linesave[19] unknown
-                        linesave[20] unknown
-                        */
+                        item.Flag7 = currentLine[23] == "1";
+                        item.Flag8 = currentLine[24] == "1";
+
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "DATA")
                     {

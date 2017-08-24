@@ -328,7 +328,7 @@ namespace OpenNos.Handler
                             }
                         }
 
-                        if (minilandobject.Item.IsMinilandObject)
+                        if (minilandobject.Item.IsWarehouse)
                         {
                             Session.Character.WareHouseSize = minilandobject.Item.MinilandObjectPoint;
                         }
@@ -404,7 +404,7 @@ namespace OpenNos.Handler
                     MapDesignObject minilandObject = Session.Character.MapInstance.MapDesignObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
                     if (minilandObject != null)
                     {
-                        if (minilandobject.Item.IsMinilandObject)
+                        if (minilandobject.Item.IsWarehouse)
                         {
                             Session.Character.WareHouseSize = 0;
                         }
@@ -434,7 +434,7 @@ namespace OpenNos.Handler
                 MapDesignObject minilandObject = client.Character.MapInstance.MapDesignObjects.FirstOrDefault(s => s.ItemInstanceId == minilandObjectItem.Id);
                 if (minilandObject != null)
                 {
-                    if (!minilandObjectItem.Item.IsMinilandObject)
+                    if (!minilandObjectItem.Item.IsWarehouse)
                     {
                         byte game = (byte)(minilandObject.ItemInstance.Item.EquipmentSlot == 0 ? 4 + minilandObject.ItemInstance.ItemVNum % 10 : (int)minilandObject.ItemInstance.Item.EquipmentSlot / 3);
                         bool full = false;

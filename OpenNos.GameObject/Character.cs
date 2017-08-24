@@ -3714,7 +3714,7 @@ namespace OpenNos.GameObject
             string mlobjstring = "mlobjlst";
             foreach (ItemInstance item in Inventory.Where(s => s.Value.Type == InventoryType.Miniland).OrderBy(s => s.Value.Slot).Select(s => s.Value))
             {
-                if (item.Item.IsMinilandObject)
+                if (item.Item.IsWarehouse)
                 {
                     WareHouseSize = item.Item.MinilandObjectPoint;
                 }
