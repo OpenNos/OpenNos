@@ -47,7 +47,7 @@ namespace OpenNos.DAL.EF
                     return SaveResult.Updated;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return SaveResult.Error;
             }
@@ -72,7 +72,7 @@ namespace OpenNos.DAL.EF
                     return DeleteResult.Deleted;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return DeleteResult.Error;
             }

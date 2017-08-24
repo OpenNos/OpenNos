@@ -35,9 +35,13 @@ namespace OpenNos.Master.Library.Data
 
         public long CharacterId { get; set; }
 
+        public bool CanSwitchChannel { get; set; }
+
         public DateTime LastPulse { get; set; }
 
         public WorldServer ConnectedWorld { get; set; }
+
+        public WorldServer PreviousChannel { get; set; }
 
         public long SessionId { get; private set; }
 

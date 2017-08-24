@@ -18,7 +18,6 @@ namespace OpenNos.Domain
     {
         // Act
         Act1 = 1,
-
         Act2 = 2,
         Act3 = 3,
         Act4 = 4,
@@ -26,8 +25,8 @@ namespace OpenNos.Domain
         Act52 = 6,
         Act61 = 7,
         Act62 = 8,
-        Act61a = 9,
-        Act61d = 10,
+        Act61A = 9,
+        Act61D = 10,
         CometPlain = 11,
         Mine1 = 12,
         Mine2 = 13,
@@ -39,6 +38,7 @@ namespace OpenNos.Domain
         LandOfTheDead = 19,
         Act32 = 20,
         CleftOfDarkness = 21,
-        Citadel = 23
+        CitadelAngel = 23,
+        CitadelDemon = 24,
     }
 }

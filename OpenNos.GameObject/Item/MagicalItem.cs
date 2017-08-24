@@ -17,6 +17,8 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -32,7 +34,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
         {
             switch (Effect)
             {
@@ -46,6 +48,95 @@ namespace OpenNos.GameObject
                             session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(19, 1, session.Character.CharacterId, MappingHelper.GuriItemEffects[EffectValue]), session.Character.MapX, session.Character.MapY);
                         }
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    }
+                    // APPLY SHELL ON EQUIPMENT
+                    if (inv.Item.ItemType == ItemType.Shell)
+                    {
+                        if (!((WearableInstance) inv).EquipmentOptions.Any())
+                        {
+                            return;
+                        }
+                        if (packetsplit == null)
+                        {
+                            return;
+                        }
+                        
+                        if (packetsplit.Length < 9)
+                        {
+                            // MODIFIED PACKET
+                            return;
+                        }
+
+                        if (!short.TryParse(packetsplit[9], out short eqSlot) || !Enum.TryParse(packetsplit[8], out InventoryType eqType))
+                        {
+                            return;
+                        }
+
+                        if (!int.TryParse(packetsplit[6], out int requestType))
+                        {
+                            return;
+                        }
+                        
+                        switch (requestType)
+                        {
+                            case 0:
+                                session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(short) inv.Type}^{inv.Slot}^1^{1}^{(short) eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF")}");
+                                break;
+                            case 1:
+                                WearableInstance shell = (WearableInstance) inv;
+                                WearableInstance eq = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
+                                if (eq == null)
+                                {
+                                    // PACKET MODIFIED
+                                    return;
+                                }
+                                if (shell.EquipmentOptions == null)
+                                {
+                                    // SHELL NOT IDENTIFIED
+                                    return;
+                                }
+                                if (eq.BoundCharacterId != session.Character.CharacterId && eq.BoundCharacterId != null)
+                                {
+                                    // NEED TO PERFUME STUFF BEFORE CHANGING SHELL
+                                    return;
+                                }
+                                if (eq.Rare < shell.Rare)
+                                {
+                                    // RARITY TOO HIGH ON SHELL
+                                    return;
+                                }
+                                if (eq.Item.LevelMinimum < shell.Upgrade)
+                                {
+                                    // SHELL LEVEL TOO HIGH
+                                    return;
+                                }
+                                if (eq.Item.ItemType == ItemType.Armor && shell.Item.ItemSubType == 1 || eq.Item.ItemType == ItemType.Weapon && shell.Item.ItemSubType == 0)
+                                {
+                                    if (eq.EquipmentOptions != null)
+                                    {
+                                        if (new Random().Next(100) > 50)
+                                        {
+                                            // BREAK BECAUSE DIDN'T USE MAGIC ERASER
+                                            session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
+                                            return;
+                                        }
+                                    }
+                                    if (eq.EquipmentOptions == null)
+                                    {
+                                        eq.EquipmentOptions = new List<EquipmentOptionDTO>();
+                                    }
+                                    eq.EquipmentOptions.Clear();
+                                    eq.EquipmentOptions.AddRange(shell.EquipmentOptions);
+                                    foreach (EquipmentOptionDTO i in eq.EquipmentOptions)
+                                    {
+                                        i.WearableInstanceId = eq.Id;
+                                    }
+                                    eq.BoundCharacterId = session.Character.CharacterId;
+                                    eq.ShellRarity = shell.Rare;
+                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
+                                }
+                                break;
+                        }
                     }
                     break;
 
@@ -63,7 +154,7 @@ namespace OpenNos.GameObject
                         switch (EffectValue)
                         {
                             case 0:
-                                if (Option == 0)
+                                if (option == 0)
                                 {
                                     session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1 #u_i^{type}^{secondaryType}^{inventoryType}^{slot}^2 {Language.Instance.GetMessageFromKey("WANT_TO_SAVE_POSITION")}"));
                                 }
@@ -133,7 +224,7 @@ namespace OpenNos.GameObject
                                 break;
 
                             case 2:
-                                if (Option == 0)
+                                if (option == 0)
                                 {
                                     session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1"));
                                 }
@@ -210,7 +301,7 @@ namespace OpenNos.GameObject
                 case 15:
                     if (!session.Character.IsVehicled)
                     {
-                        if (Option == 0)
+                        if (option == 0)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 3, session.Character.CharacterId, 1));
                         }
@@ -221,7 +312,7 @@ namespace OpenNos.GameObject
                 case 16:
                     if (!session.Character.IsVehicled)
                     {
-                        if (Option == 0)
+                        if (option == 0)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 4, session.Character.CharacterId, 1));
                         }

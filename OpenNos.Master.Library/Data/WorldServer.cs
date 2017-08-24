@@ -1,6 +1,7 @@
 ﻿using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using Hik.Communication.ScsServices.Service;
 using System;
+using OpenNos.Domain;
 
 namespace OpenNos.Master.Library.Data
 {
@@ -28,7 +29,7 @@ namespace OpenNos.Master.Library.Data
 
         public Guid Id { get; set; }
 
-        public SerializableWorldServer Serializable { get; private set; }
+        public SerializableWorldServer Serializable { get; set; }
 
         public IScsServiceClient ServiceClient { get; set; }
 

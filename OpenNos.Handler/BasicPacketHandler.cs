@@ -962,7 +962,7 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        if (pearls == null || shell == null)
+                        if (pearls == null)
                         {
                             // USING PACKET LOGGER
                             return;
@@ -997,9 +997,38 @@ namespace OpenNos.Handler
                             shell.EquipmentOptions.Add(s);
                         }
                         Session.Character.Inventory.RemoveItemAmount(pearls.ItemVNum, perlsNeeded);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_IDENTIFIED"), 0));
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(3006));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_IDENTIFIED"), 0));
+                        break;
+                    case 205:
+                        if (guriPacket.User == null)
+                        {
+                            return;
+                        }
+                        const int perfumeVnum = 1428;
+                        InventoryType perfumeInventoryType = (InventoryType)guriPacket.Argument;
+                        WearableInstance eq = (WearableInstance)Session.Character.Inventory.LoadBySlotAndType((short)guriPacket.User.Value, perfumeInventoryType);
 
+                        if (eq.BoundCharacterId == Session.Character.CharacterId)
+                        {
+                            // ALREADY YOURS
+                            return;
+                        }
+                        if (eq.ShellRarity == null)
+                        {
+                            // NO SHELL APPLIED
+                            return;
+                        }
+
+                        int perfumesNeeded = ShellGeneratorHelper.PerfumeFromItemLevelAndShellRarity(eq.Item.LevelMinimum, (byte)eq.ShellRarity.Value);
+                        if (Session.Character.Inventory.CountItem(perfumeVnum) < perfumesNeeded)
+                        {
+                            // NOT ENOUGH PEARLS
+                            return;
+                        }
+
+                        Session.Character.Inventory.RemoveItemAmount(perfumeVnum, perfumesNeeded);
+                        eq.BoundCharacterId = Session.Character.CharacterId;
                         break;
                     case 300:
                         if (guriPacket.Argument == 8023)

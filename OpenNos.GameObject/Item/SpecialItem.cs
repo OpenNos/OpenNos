@@ -34,16 +34,51 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
         {
             inv.Item.BCards.ForEach(c => c.ApplyBCards(session.Character));
-
+            
             switch (Effect)
             {
                 case 0:
-                    if (VNum == 1429)
+                    switch (VNum)
                     {
-                        session.SendPacket("guri 18 0");
+                        case 1428:
+                            session.SendPacket("guri 18 1");
+                            break;
+                        case 1429:
+                            session.SendPacket("guri 18 0");
+                            break;
+                        case 1430:
+                            if (packetsplit == null)
+                            {
+                                return;
+                            }
+                        
+                            if (packetsplit.Length < 9)
+                            {
+                                // MODIFIED PACKET
+                                return;
+                            }
+
+                            if (!short.TryParse(packetsplit[9], out short eqSlot) || !Enum.TryParse(packetsplit[8], out InventoryType eqType))
+                            {
+                                return;
+                            }
+                            WearableInstance eq = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
+                            if (eq == null)
+                            {
+                                // PACKET MODIFIED
+                                return;
+                            }
+                            if (eq.Item.ItemType != ItemType.Armor && eq.Item.ItemType != ItemType.Weapon)
+                            {
+                                return;
+                            }
+                            eq.EquipmentOptions.Clear();
+                            eq.ShellRarity = null;
+                            session.Character.Inventory.RemoveItemAmount(1430);
+                            break;
                     }
                     break;
                 // sp point potions
@@ -147,7 +182,7 @@ namespace OpenNos.GameObject
                     SpecialistInstance specialistInstance = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                     if (session.Character.UseSp && specialistInstance != null)
                     {
-                        if (Option == 0)
+                        if (option == 0)
                         {
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
                         }
@@ -172,7 +207,7 @@ namespace OpenNos.GameObject
                 case 203:
                     if (!session.Character.IsVehicled)
                     {
-                        if (Option == 0)
+                        if (option == 0)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 2, session.Character.CharacterId, 1));
                         }
@@ -183,7 +218,7 @@ namespace OpenNos.GameObject
                 case 651:
                     if (session.Character.Inventory.All(i => i.Value.Type != InventoryType.Wear))
                     {
-                        if (Option == 0)
+                        if (option == 0)
                         {
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
                         }
@@ -203,7 +238,7 @@ namespace OpenNos.GameObject
                 case 1000:
                     if (Morph > 0)
                     {
-                        if (Option == 0 && !session.Character.IsVehicled)
+                        if (option == 0 && !session.Character.IsVehicled)
                         {
                             if (session.Character.IsSitting)
                             {
@@ -215,7 +250,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            if (!session.Character.IsVehicled && Option != 0)
+                            if (!session.Character.IsVehicled && option != 0)
                             {
                                 DateTime delay = DateTime.Now.AddSeconds(-4);
                                 if (session.Character.LastDelay > delay && session.Character.LastDelay < delay.AddSeconds(2))
@@ -367,7 +402,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1006:
-                    if (Option == 0)
+                    if (option == 0)
                     {
                         session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2 {Language.Instance.GetMessageFromKey("ASK_PET_MAX")}");
                     }

@@ -158,11 +158,11 @@ namespace OpenNos.GameObject.Helpers
             {
                 return null;
             }
-            var dictionary = _generatorDictionary[itemEffectValue];
+            Dictionary<CellonType, CellonGenerator> dictionary = _generatorDictionary[itemEffectValue];
             Dictionary<CellonType, CellonGenerator>.ValueCollection list = dictionary.Values;
             EquipmentOptionDTO result = new EquipmentOptionDTO();
             int rand = new Random().Next(list.Count * 2);
-            for (var i = 0; i < list.Count; i++)
+            for (int i = 0; i < list.Count; i++)
             {
                 if (i != rand)
                 {

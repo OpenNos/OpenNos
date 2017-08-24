@@ -644,26 +644,28 @@ namespace OpenNos.GameObject
 
         public void RemoveItemAmountFromInventory(byte amount, Guid id)
         {
-            if (Owner != null)
+            if (Owner == null)
             {
-                Logger.Debug(Owner.Session.GenerateIdentity(), $"InventoryId: {id} amount: {amount}");
-                ItemInstance inv = this.Select(s => s.Value).FirstOrDefault(i => i.Id.Equals(id));
-
-                if (inv != null)
-                {
-                    inv.Amount -= amount;
-                    if (inv.Amount <= 0)
-                    {
-                        Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(inv.Type, inv.Slot));
-                        TryRemove(inv.Id,out ItemInstance value);
-                        return;
-                    }
-                    Owner.Session.SendPacket(inv.GenerateInventoryAdd());
-                }
+                return;
             }
+            Logger.Debug(Owner.Session.GenerateIdentity(), $"InventoryId: {id} amount: {amount}");
+            ItemInstance inv = this.Select(s => s.Value).FirstOrDefault(i => i.Id.Equals(id));
+
+            if (inv == null)
+            {
+                return;
+            }
+            inv.Amount -= amount;
+            if (inv.Amount <= 0)
+            {
+                Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(inv.Type, inv.Slot));
+                TryRemove(inv.Id,out ItemInstance _);
+                return;
+            }
+            Owner.Session.SendPacket(inv.GenerateInventoryAdd());
         }
 
-        public void Reorder(ClientSession Session, InventoryType inventoryType)
+        public void Reorder(ClientSession session, InventoryType inventoryType)
         {
             List<ItemInstance> itemsByInventoryType = new List<ItemInstance>();
             switch (inventoryType)
@@ -689,7 +691,7 @@ namespace OpenNos.GameObject
 
                 // readd item to inventory
                 item.Slot = i;
-                Session.SendPacket(item.GenerateInventoryAdd());
+                session.SendPacket(item.GenerateInventoryAdd());
                 this[item.Id] = item;
 
                 // increment slot

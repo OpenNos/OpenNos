@@ -110,7 +110,7 @@ namespace OpenNos.GameObject
 
         public short MP { get; set; }
 
-        public byte? ShellRarity { get; set; }
+        public sbyte? ShellRarity { get; set; }
 
         public byte WaterElement { get; set; }
 
@@ -145,29 +145,29 @@ namespace OpenNos.GameObject
                             {
                                 case 4:
                                     return
-                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.OrderBy(s => s.Level).Aggregate(string.Empty, (current, option) => current + $" {option.Level}.{option.Type}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
                                 case 8:
                                     return
-                                        $"e_info 5 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 5 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.OrderBy(s => s.Level).Aggregate(string.Empty, (current, option) => current + $" {option.Level}.{option.Type}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
 
                                 default:
                                     return
-                                        $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.OrderBy(s => s.Level).Aggregate(string.Empty, (current, option) => current + $" {option.Level}.{option.Type}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
                             }
                         case EquipmentType.SecondaryWeapon:
                             switch (classe)
                             {
                                 case 1:
                                     return
-                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.OrderBy(s => s.Level).Aggregate(string.Empty, (current, option) => current + $" {option.Level}.{option.Type}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
 
                                 case 2:
                                     return
-                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.OrderBy(s => s.Level).Aggregate(string.Empty, (current, option) => current + $" {option.Level}.{option.Type}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
 
                                 default:
                                     return
-                                        $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Type}.{option.Level}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
+                                        $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 {(ShellRarity == null ? "-1" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.OrderBy(s => s.Level).Aggregate(string.Empty, (current, option) => current + $" {option.Level}.{option.Type}.{option.Value}")}"; // -1 = {ShellEffectValue} {FirstShell}...
                             }
                     }
                     break;
@@ -314,7 +314,7 @@ namespace OpenNos.GameObject
                     case RarifyMode.Reduced:
 
                         // TODO: Reduced Item Amount
-                        if (session.Character.Gold < (long)(goldprice * reducedpricefactor))
+                        if (session.Character.Gold < (long) (goldprice * reducedpricefactor))
                         {
                             return;
                         }
@@ -322,8 +322,8 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
-                        session.Character.Inventory.RemoveItemAmount(cellaVnum, (int)(cella * reducedpricefactor));
-                        session.Character.Gold -= (long)(goldprice * reducedpricefactor);
+                        session.Character.Inventory.RemoveItemAmount(cellaVnum, (int) (cella * reducedpricefactor));
+                        session.Character.Gold -= (long) (goldprice * reducedpricefactor);
                         session.SendPacket(session.Character.GenerateGold());
                         break;
 
@@ -489,13 +489,14 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-            if (mode != RarifyMode.Drop && session != null)
+            if (mode == RarifyMode.Drop || session == null)
             {
-                ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
-                if (inventory != null)
-                {
-                    session.SendPacket(inventory.GenerateInventoryAdd());
-                }
+                return;
+            }
+            ItemInstance inventoryb = session.Character.Inventory.GetItemInstanceById(Id);
+            if (inventoryb != null)
+            {
+                session.SendPacket(inventoryb.GenerateInventoryAdd());
             }
         }
 

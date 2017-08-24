@@ -14,17 +14,10 @@
 
 namespace OpenNos.Domain
 {
-    public enum MapInstanceType
+    public enum FactionType : byte
     {
-        BaseMapInstance,
-        NormalInstance,
-        LodInstance,
-        TimeSpaceInstance,
-        RaidInstance,
-        FamilyRaidInstance,
-        TalentArenaMapInstance,
-        Act4Instance,
-        IceBreakerInstance,
-        RainbowBattleInstance
+        None = 0,
+        Angel = 1,
+        Demon = 2
     }
 }
