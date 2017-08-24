@@ -7,10 +7,10 @@ namespace OpenNos.Master.Library.Data
     {
         #region Instantiation
 
-        public SerializableWorldServer(Guid id, string epIP, int epPort, int accountLimit, string worldGroup)
+        public SerializableWorldServer(Guid id, string epIp, short epPort, int accountLimit, string worldGroup)
         {
             Id = id;
-            EndPointIP = epIP;
+            EndPointIp = epIp;
             EndPointPort = epPort;
             AccountLimit = accountLimit;
             WorldGroup = worldGroup;
@@ -24,9 +24,9 @@ namespace OpenNos.Master.Library.Data
 
         public int ChannelId { get; set; }
 
-        public string EndPointIP { get; set; }
+        public string EndPointIp { get; set; }
 
-        public int EndPointPort { get; set; }
+        public short EndPointPort { get; set; }
 
         public Guid Id { get; set; }
 

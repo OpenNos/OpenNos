@@ -38,8 +38,8 @@ namespace OpenNos.World
     {
         #region Members
 
-        private static EventHandler exitHandler;
-        private static ManualResetEvent run = new ManualResetEvent(true);
+        private static EventHandler _exitHandler;
+        private static ManualResetEvent _run = new ManualResetEvent(true);
 
         #endregion
 
@@ -71,11 +71,10 @@ namespace OpenNos.World
             // initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
-            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
-            Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}dev";
-            int port = Convert.ToInt32(ConfigurationManager.AppSettings["WorldPort"]);
-            string text = $"WORLD SERVER v{fileVersionInfo.ProductVersion}dev - OpenNos";
+            Console.Title = string.Format(LocalizedResources.WORLD_SERVER_CONSOLE_TITLE, 0, 0);
+            short port = Convert.ToInt16(ConfigurationManager.AppSettings["WorldPort"]);
+            const string text = "OpenNos - World Server";
             int offset = Console.WindowWidth / 2 + text.Length / 2;
             string separator = new string('=', Console.WindowWidth);
             Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
@@ -106,18 +105,17 @@ namespace OpenNos.World
 
             try
             {
-                exitHandler += ExitHandler;
-                NativeMethods.SetConsoleCtrlHandler(exitHandler, true);
+                _exitHandler += ExitHandler;
+                NativeMethods.SetConsoleCtrlHandler(_exitHandler, true);
             }
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
             }
-            NetworkManager<WorldEncryption> networkManager = null;
             portloop:
             try
             {
-                networkManager = new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
+                NetworkManager<WorldEncryption> unused = new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
             catch (SocketException ex)
             {
@@ -133,18 +131,17 @@ namespace OpenNos.World
 
             ServerManager.Instance.ServerGroup = ConfigurationManager.AppSettings["ServerGroup"];
             int sessionLimit = Convert.ToInt32(ConfigurationManager.AppSettings["SessionLimit"]);
-            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ConfigurationManager.AppSettings["IPADDRESS"], port, sessionLimit, ServerManager.Instance.ServerGroup));
+            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ConfigurationManager.AppSettings["IPADDRESS"], (short)port, sessionLimit, ServerManager.Instance.ServerGroup));
 
             if (newChannelId.HasValue)
             {
                 ServerManager.Instance.ChannelId = newChannelId.Value;
-                Console.Title = string.Format(LocalizedResources.WORLD_SERVER_CONSOLE_TITLE, newChannelId.Value, ServerManager.Instance.Sessions.Count());
+                Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count());
             }
             else
             {
                 Logger.Log.ErrorFormat("Could not retrieve ChannelId from Web API.");
                 Console.ReadKey();
-                return;
             }
         }
 

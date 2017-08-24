@@ -68,7 +68,7 @@ namespace OpenNos.Data
 
         short MP { get; set; }
 
-        byte? ShellRarity { get; set; }
+        sbyte? ShellRarity { get; set; }
 
         byte WaterElement { get; set; }
 

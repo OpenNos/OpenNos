@@ -112,7 +112,7 @@ namespace OpenNos.Handler
         public void EquipmentInfo(EquipmentInfoPacket equipmentInfoPacket)
         {
             Logger.Debug(Session.Character.GenerateIdentity(), equipmentInfoPacket.ToString());
-            bool isNPCShopItem = false;
+            bool isNpcShopItem = false;
             WearableInstance inventory = null;
             switch (equipmentInfoPacket.Type)
             {
@@ -128,7 +128,7 @@ namespace OpenNos.Handler
                     break;
 
                 case 2:
-                    isNPCShopItem = true;
+                    isNpcShopItem = true;
                     if (ServerManager.Instance.GetItem(equipmentInfoPacket.Slot) != null)
                     {
                         inventory = new WearableInstance(equipmentInfoPacket.Slot, 1);
@@ -193,7 +193,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (inventory.IsEmpty || isNPCShopItem)
+            if (inventory.IsEmpty || isNpcShopItem)
             {
                 Session.SendPacket(inventory.GenerateEInfo());
                 return;
@@ -567,118 +567,120 @@ namespace OpenNos.Handler
 
                 MapItem mapItem = Session.CurrentMapInstance.DroppedList[getPacket.TransportId];
 
-                if (mapItem != null)
+                if (mapItem == null)
                 {
-                    bool canpick = false;
-                    switch (getPacket.PickerType)
-                    {
-                        case 1:
-                            canpick = Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
-                            break;
+                    return;
+                }
+                bool canpick = false;
+                switch (getPacket.PickerType)
+                {
+                    case 1:
+                        canpick = Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
+                        break;
 
-                        case 2:
-                            Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == getPacket.PickerId && s.CanPickUp);
-                            if (mate != null)
-                            {
-                                canpick = mate.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
-                            }
-                            break;
-                    }
-                    if (canpick && Session.HasCurrentMapInstance)
-                    {
-                        if (mapItem is MonsterMapItem item)
+                    case 2:
+                        Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == getPacket.PickerId && s.CanPickUp);
+                        if (mate != null)
                         {
-                            MonsterMapItem monsterMapItem = item;
-                            if (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.LodInstance && monsterMapItem.OwnerId.HasValue && monsterMapItem.OwnerId.Value != -1)
-                            {
-                                Group group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(monsterMapItem.OwnerId.Value) && g.IsMemberOfGroup(Session.Character.CharacterId));
-                                if (item.CreatedDate.AddSeconds(30) > DateTime.Now && !(monsterMapItem.OwnerId == Session.Character.CharacterId || group != null && group.SharingMode == (byte)GroupSharingType.Everyone))
-                                {
-                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"), 10));
-                                    return;
-                                }
-                            }
-
-                            // initialize and rarify
-                            item.Rarify(null);
+                            canpick = mate.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
                         }
-
-                        if (mapItem.ItemVNum != 1046)
+                        break;
+                }
+                if (!canpick || !Session.HasCurrentMapInstance)
+                {
+                    return;
+                }
+                if (mapItem is MonsterMapItem item)
+                {
+                    MonsterMapItem monsterMapItem = item;
+                    if (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.LodInstance && monsterMapItem.OwnerId.HasValue && monsterMapItem.OwnerId.Value != -1)
+                    {
+                        Group group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(monsterMapItem.OwnerId.Value) && g.IsMemberOfGroup(Session.Character.CharacterId));
+                        if (item.CreatedDate.AddSeconds(30) > DateTime.Now && !(monsterMapItem.OwnerId == Session.Character.CharacterId || @group != null && @group.SharingMode == (byte)GroupSharingType.Everyone))
                         {
-                            ItemInstance mapItemInstance = mapItem.GetItemInstance();
-                            if (mapItemInstance.Item.ItemType == ItemType.Map)
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"), 10));
+                            return;
+                        }
+                    }
+
+                    // initialize and rarify
+                    item.Rarify(null);
+                }
+
+                if (mapItem.ItemVNum != 1046)
+                {
+                    ItemInstance mapItemInstance = mapItem.GetItemInstance();
+                    if (mapItemInstance.Item.ItemType == ItemType.Map)
+                    {
+                        if (mapItemInstance.Item.Effect == 71)
+                        {
+                            Session.Character.SpPoint += mapItem.GetItemInstance().Item.EffectValue;
+                            if (Session.Character.SpPoint > 10000)
                             {
-                                if (mapItemInstance.Item.Effect == 71)
+                                Session.Character.SpPoint = 10000;
+                            }
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
+                            Session.SendPacket(Session.Character.GenerateSpPoint());
+                        }
+                        Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
+                    }
+                    else
+                    {
+                        lock (Session.Character.Inventory)
+                        {
+                            byte amount = mapItem.Amount;
+                            ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
+                            if (inv != null)
+                            {
+                                if (mapItem.EquipmentOptions != null)
                                 {
-                                    Session.Character.SpPoint += mapItem.GetItemInstance().Item.EffectValue;
-                                    if (Session.Character.SpPoint > 10000)
+                                    foreach (EquipmentOptionDTO i in mapItem.EquipmentOptions)
                                     {
-                                        Session.Character.SpPoint = 10000;
+                                        i.WearableInstanceId = inv.Id;
+                                        DAOFactory.EquipmentOptionDAO.InsertOrUpdate(i);
                                     }
-                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
-                                    Session.SendPacket(Session.Character.GenerateSpPoint());
                                 }
                                 Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
-                            }
-                            else
-                            {
-                                lock (Session.Character.Inventory)
-                                {
-                                    byte amount = mapItem.Amount;
-                                    ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
-                                    if (inv != null)
-                                    {
-                                        if (mapItem.EquipmentOptions != null)
-                                        {
-                                            foreach (EquipmentOptionDTO i in mapItem.EquipmentOptions)
-                                            {
-                                                i.WearableInstanceId = inv.Id;
-                                                DAOFactory.EquipmentOptionDAO.InsertOrUpdate(i);
-                                            }
-                                        }
-                                        Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
-                                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
-                                        if (getPacket.PickerType == 2)
-                                        {
-                                            Session.SendPacket(Session.Character.GenerateIcon(1, 1, inv.ItemVNum));
-                                        }
-                                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {inv.Item.Name} x {amount}", 12));
-                                        if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
-                                        {
-                                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{string.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {inv.Item.Name} x {mapItem.Amount}", 10));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // handle gold drop
-                            long maxGold = ServerManager.Instance.MaxGold;
-                            if (mapItem is MonsterMapItem droppedGold && Session.Character.Gold + droppedGold.GoldAmount <= maxGold)
-                            {
                                 if (getPacket.PickerType == 2)
                                 {
-                                    Session.SendPacket(Session.Character.GenerateIcon(1, 1, 1046));
+                                    Session.SendPacket(Session.Character.GenerateIcon(1, 1, inv.ItemVNum));
                                 }
-                                Session.Character.Gold += droppedGold.GoldAmount;
-                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapItem.GetItemInstance().Item.Name} x {droppedGold.GoldAmount}", 12));
+                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {inv.Item.Name} x {amount}", 12));
+                                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
+                                {
+                                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{string.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {inv.Item.Name} x {mapItem.Amount}", 10));
+                                }
                             }
                             else
                             {
-                                Session.Character.Gold = maxGold;
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                             }
-                            Session.SendPacket(Session.Character.GenerateGold());
-                            Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
-                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                         }
                     }
+                }
+                else
+                {
+                    // handle gold drop
+                    long maxGold = ServerManager.Instance.MaxGold;
+                    if (mapItem is MonsterMapItem droppedGold && Session.Character.Gold + droppedGold.GoldAmount <= maxGold)
+                    {
+                        if (getPacket.PickerType == 2)
+                        {
+                            Session.SendPacket(Session.Character.GenerateIcon(1, 1, 1046));
+                        }
+                        Session.Character.Gold += droppedGold.GoldAmount;
+                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapItem.GetItemInstance().Item.Name} x {droppedGold.GoldAmount}", 12));
+                    }
+                    else
+                    {
+                        Session.Character.Gold = maxGold;
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                    }
+                    Session.SendPacket(Session.Character.GenerateGold());
+                    Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                 }
             }
         }
@@ -705,15 +707,17 @@ namespace OpenNos.Handler
                     return;
                 }
                 ItemInstance sourceItem = Session.Character.Inventory.LoadBySlotAndType(mvePacket.Slot, mvePacket.InventoryType);
-                if (sourceItem != null && sourceItem.Item.ItemType == ItemType.Specialist || sourceItem != null && sourceItem.Item.ItemType == ItemType.Fashion)
+                if ((sourceItem == null || sourceItem.Item.ItemType != ItemType.Specialist) && (sourceItem == null || sourceItem.Item.ItemType != ItemType.Fashion))
                 {
-                    ItemInstance inv = Session.Character.Inventory.MoveInInventory(mvePacket.Slot, mvePacket.InventoryType, mvePacket.DestinationInventoryType, mvePacket.DestinationSlot, false);
-                    if (inv != null)
-                    {
-                        Session.SendPacket(inv.GenerateInventoryAdd());
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(mvePacket.InventoryType, mvePacket.Slot));
-                    }
+                    return;
                 }
+                ItemInstance inv = Session.Character.Inventory.MoveInInventory(mvePacket.Slot, mvePacket.InventoryType, mvePacket.DestinationInventoryType, mvePacket.DestinationSlot, false);
+                if (inv == null)
+                {
+                    return;
+                }
+                Session.SendPacket(inv.GenerateInventoryAdd());
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(mvePacket.InventoryType, mvePacket.Slot));
             }
         }
 
@@ -840,62 +844,64 @@ namespace OpenNos.Handler
                     break;
             }
 
-            if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || !(Session.Character.ExchangeInfo?.ExchangeList).Any()))
+            if (!Session.HasCurrentMapInstance || Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value != null ||
+                (Session.Character.ExchangeInfo != null && (Session.Character.ExchangeInfo?.ExchangeList).Any()))
             {
-                ItemInstance inventory = removePacket.InventorySlot != (byte)EquipmentType.Sp ? Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(removePacket.InventorySlot, equipment) : Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(removePacket.InventorySlot, equipment);
-                if (inventory != null)
+                return;
+            }
+            ItemInstance inventory = removePacket.InventorySlot != (byte)EquipmentType.Sp ? Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(removePacket.InventorySlot, equipment) : Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(removePacket.InventorySlot, equipment);
+            if (inventory == null)
+            {
+                return;
+            }
+            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+            double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
+            if (removePacket.Type == 0)
+            {
+                if (removePacket.InventorySlot == (byte)EquipmentType.Sp && Session.Character.UseSp)
                 {
-                    double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-                    double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
-                    if (removePacket.Type == 0)
+                    if (Session.Character.IsVehicled)
                     {
-                        if (removePacket.InventorySlot == (byte)EquipmentType.Sp && Session.Character.UseSp)
-                        {
-                            if (Session.Character.IsVehicled)
-                            {
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
-                                return;
-                            }
-                            if (Session.Character.LastSkillUse.AddSeconds(2) > DateTime.Now)
-                            {
-                                return;
-                            }
-                            Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-                            RemoveSP(inventory.ItemVNum);
-                        }
-                        else if (removePacket.InventorySlot == (byte)EquipmentType.Sp && !Session.Character.UseSp && timeSpanSinceLastSpUsage <= Session.Character.SpCooldown)
-                        {
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
-                            return;
-                        }
-                        Session.Character.EquipmentBCards.RemoveAll(o => o.ItemVNum == inventory.ItemVNum);
-                    }
-
-                    ItemInstance inv = Session.Character.Inventory.MoveInInventory(removePacket.InventorySlot, equipment, InventoryType.Equipment);
-
-                    if (inv == null)
-                    {
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
                         return;
                     }
-
-                    if (inv.Slot != -1)
+                    if (Session.Character.LastSkillUse.AddSeconds(2) > DateTime.Now)
                     {
-                        Session.SendPacket(inventory.GenerateInventoryAdd());
+                        return;
                     }
-                    if (removePacket.Type == 0)
-                    {
-                        Session.SendPacket(Session.Character.GenerateStatChar());
-                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEq());
-                        Session.SendPacket(Session.Character.GenerateEquipment());
-                        Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePairy());
-                    }
-                    else if (mate != null)
-                    {
-                        Session.SendPacket(mate.GenerateScPacket());
-                    }
-
+                    Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+                    RemoveSP(inventory.ItemVNum);
                 }
+                else if (removePacket.InventorySlot == (byte)EquipmentType.Sp && !Session.Character.UseSp && timeSpanSinceLastSpUsage <= Session.Character.SpCooldown)
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
+                    return;
+                }
+                Session.Character.EquipmentBCards.RemoveAll(o => o.ItemVNum == inventory.ItemVNum);
+            }
+
+            ItemInstance inv = Session.Character.Inventory.MoveInInventory(removePacket.InventorySlot, equipment, InventoryType.Equipment);
+
+            if (inv == null)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                return;
+            }
+
+            if (inv.Slot != -1)
+            {
+                Session.SendPacket(inventory.GenerateInventoryAdd());
+            }
+            if (removePacket.Type == 0)
+            {
+                Session.SendPacket(Session.Character.GenerateStatChar());
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEq());
+                Session.SendPacket(Session.Character.GenerateEquipment());
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePairy());
+            }
+            else if (mate != null)
+            {
+                Session.SendPacket(mate.GenerateScPacket());
             }
         }
 

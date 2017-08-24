@@ -464,7 +464,7 @@ namespace OpenNos.Import.Console
             }
             MapTypeDTO mt9 = new MapTypeDTO
             {
-                MapTypeId = (short)MapTypeEnum.Act61a,
+                MapTypeId = (short)MapTypeEnum.Act61A,
                 MapTypeName = "Act6.1a", // angel camp
                 PotionDelay = 300,
                 RespawnMapTypeId = (long)RespawnType.DefaultAct6,
@@ -476,7 +476,7 @@ namespace OpenNos.Import.Console
             }
             MapTypeDTO mt10 = new MapTypeDTO
             {
-                MapTypeId = (short)MapTypeEnum.Act61d,
+                MapTypeId = (short)MapTypeEnum.Act61D,
                 MapTypeName = "Act6.1d", // demon camp
                 PotionDelay = 300,
                 RespawnMapTypeId = (long)RespawnType.DefaultAct6,
@@ -614,13 +614,23 @@ namespace OpenNos.Import.Console
             }
             MapTypeDTO mt23 = new MapTypeDTO
             {
-                MapTypeId = (short)MapTypeEnum.Citadel,
+                MapTypeId = (short)MapTypeEnum.CitadelAngel,
                 MapTypeName = "Citadel",
                 PotionDelay = 300
             };
             if (list.All(s => s.MapTypeId != mt23.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt23);
+            }
+            MapTypeDTO mt24 = new MapTypeDTO
+            {
+                MapTypeId = (short)MapTypeEnum.CitadelDemon,
+                MapTypeName = "Citadel",
+                PotionDelay = 300
+            };
+            if (list.All(s => s.MapTypeId != mt24.MapTypeId))
+            {
+                DAOFactory.MapTypeDAO.Insert(ref mt24);
             }
             Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPES_PARSED"));
         }
@@ -746,10 +756,15 @@ namespace OpenNos.Import.Console
                     mapTypeId = (short)MapTypeEnum.CleftOfDarkness;
                     objectset = true;
                 }
-                else if (i == 130 && i == 131)
+                else if (i == 130)
                 {
                     // "Citadel"
-                    mapTypeId = (short)MapTypeEnum.Citadel;
+                    mapTypeId = (short)MapTypeEnum.CitadelAngel;
+                    objectset = true;
+                }
+                else if (i == 131)
+                {
+                    mapTypeId = (short) MapTypeEnum.CitadelDemon;
                     objectset = true;
                 }
 

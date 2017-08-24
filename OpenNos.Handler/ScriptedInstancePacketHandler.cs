@@ -87,17 +87,17 @@ namespace OpenNos.Handler
                     });
 
                     Observable.Timer(TimeSpan.FromSeconds(timer + 3)).Subscribe(o =>
-                      {
-                          DateTime? lastsummoned = arenateam.FirstOrDefault(s => s.Session == client).LastSummoned;
-                          if (lastsummoned != null && ((DateTime)lastsummoned).AddSeconds(timer) < DateTime.Now)
-                          {
-                              arenateam.FirstOrDefault(s => s.Session == client).LastSummoned = null;
-                              client.Character.PositionX = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
-                              client.Character.PositionY = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
-                              Session?.CurrentMapInstance.Broadcast(client.Character.GenerateTp());
-                              client.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
-                          }
-                      });
+                    {
+                        DateTime? lastsummoned = arenateam.FirstOrDefault(s => s.Session == client).LastSummoned;
+                        if (lastsummoned != null && ((DateTime)lastsummoned).AddSeconds(timer) < DateTime.Now)
+                        {
+                            arenateam.FirstOrDefault(s => s.Session == client).LastSummoned = null;
+                            client.Character.PositionX = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
+                            client.Character.PositionY = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
+                            Session?.CurrentMapInstance.Broadcast(client.Character.GenerateTp());
+                            client.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
+                        }
+                    });
                 }
             }
         }
@@ -119,10 +119,10 @@ namespace OpenNos.Handler
             {
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
                 Session.Character.Group?.Characters.ToList().ForEach(
-                session =>
-                {
-                    session.SendPacket(session.Character.Group.GenerateRdlst());
-                });
+                    session =>
+                    {
+                        session.SendPacket(session.Character.Group.GenerateRdlst());
+                    });
                 Session.SendPacket(Session.Character.GenerateRaid(1, true));
                 Session.SendPacket(Session.Character.GenerateRaid(2, true));
                 Session.Character.Group?.LeaveGroup(Session);
@@ -247,24 +247,24 @@ namespace OpenNos.Handler
                     Session.Character.Group.Raid.FirstMap.InstanceBag.Lock = true;
 
                     Session.Character.Group.Characters.Where(s => s.CurrentMapInstance != Session.CurrentMapInstance).ToList().ForEach(
-                    session =>
-                    {
-                        Session.Character.Group.LeaveGroup(session);
-                        session.SendPacket(session.Character.GenerateRaid(1, true));
-                        session.SendPacket(session.Character.GenerateRaid(2, true));
-                    });
+                        session =>
+                        {
+                            Session.Character.Group.LeaveGroup(session);
+                            session.SendPacket(session.Character.GenerateRaid(1, true));
+                            session.SendPacket(session.Character.GenerateRaid(2, true));
+                        });
 
                     Session.Character.Group.Raid.FirstMap.InstanceBag.Lives = (short)Session.Character.Group.CharacterCount;
                     Session.Character.Group.Characters.ToList().ForEach(
-                    session =>
-                    {
-                        ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Group.Raid.FirstMap.MapInstanceId, session.Character.Group.Raid.StartX, session.Character.Group.Raid.StartY);
-                        session.SendPacket("raidbf 0 0 25");
-                        session.SendPacket(session.Character.Group.GeneraterRaidmbf());
-                        session.SendPacket(session.Character.GenerateRaid(5, false));
-                        session.SendPacket(session.Character.GenerateRaid(4, false));
-                        session.SendPacket(session.Character.GenerateRaid(3, false));
-                    });
+                        session =>
+                        {
+                            ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Group.Raid.FirstMap.MapInstanceId, session.Character.Group.Raid.StartX, session.Character.Group.Raid.StartY);
+                            session.SendPacket("raidbf 0 0 25");
+                            session.SendPacket(session.Character.Group.GeneraterRaidmbf());
+                            session.SendPacket(session.Character.GenerateRaid(5, false));
+                            session.SendPacket(session.Character.GenerateRaid(4, false));
+                            session.SendPacket(session.Character.GenerateRaid(3, false));
+                        });
                 }
                 else
                 {

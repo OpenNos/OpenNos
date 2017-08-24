@@ -187,6 +187,7 @@
     <Compile Include="Buff\Buff.cs" />
     <Compile Include="Buff\BCard.cs" />
     <Compile Include="Buff\Card.cs" />
+    <Compile Include="Event\ACT4\Act4Ship.cs" />
     <Compile Include="Event\ARENA\ArenaEvent.cs" />
     <Compile Include="Event\EventWave.cs" />
     <Compile Include="Helpers\CellonGeneratorHelper.cs" />
@@ -212,6 +213,7 @@
     <Compile Include="Packets\ClientPackets\BlInsPacket.cs" />
     <Compile Include="Packets\ClientPackets\BtkPacket.cs" />
     <Compile Include="Packets\ClientPackets\CreateFamilyPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MzPacket.cs" />
     <Compile Include="Packets\ClientPackets\TaCallPacket.cs" />
     <Compile Include="Packets\ClientPackets\EscapePacket.cs" />
     <Compile Include="Packets\ClientPackets\FamilyChatPacket.cs" />

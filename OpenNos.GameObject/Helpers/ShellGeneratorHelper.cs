@@ -14,6 +14,202 @@ namespace OpenNos.GameObject.Helpers
     //TODO REVIEW MY RUSHED CODE
     public static class ShellGeneratorHelper
     {
+        public static int PerfumeGoldAmountFromLevel(short level)
+        {
+            if (level <= 10)
+            {
+                return 1000;
+            }
+            if (level <= 20)
+            {
+                return 2000;
+            }
+            if (level < 40)
+            {
+                return 5000;
+            }
+            if (level < 50)
+            {
+                return 8000;
+            }
+            if (level < 60)
+            {
+                return 10000;
+            }
+            if (level < 70)
+            {
+                return 12500;
+            }
+            if (level < 80)
+            {
+                return 15000;
+            }
+            return level < 90 ? 17500 : 20000;
+        }
+
+        public static int PerfumeFromItemLevelAndShellRarity(short level, byte rare)
+        {
+            int perfume = 0;
+
+            if (level < 40)
+            {
+                switch (rare)
+                {
+                    case 6:
+                        perfume = 5;
+                        break;
+                    case 7:
+                        perfume = 10;
+                        break;
+                }
+            }
+            if (level < 50)
+            {
+                switch (rare)
+                {
+                    case 3:
+                    case 4:
+                        perfume = 5;
+                        break;
+                    case 5:
+                        perfume = 10;
+                        break;
+                    case 6:
+                        perfume = 20;
+                        break;
+                    case 7:
+                        perfume = 40;
+                        break;
+                }
+            }
+            else if (level < 60)
+            {
+                switch (rare)
+                {
+                    case 2:
+                        perfume = 5;
+                        break;
+                    case 3:
+                    case 4:
+                        perfume = 10;
+                        break;
+                    case 5:
+                        perfume = 20;
+                        break;
+                    case 6:
+                        perfume = 40;
+                        break;
+                    case 7:
+                        perfume = 80;
+                        break;
+                }
+
+            }
+            else if (level < 70)
+            {
+                switch (rare)
+                {
+                    case 1:
+                        perfume = 5;
+                        break;
+                    case 2:
+                    case 3:
+                        perfume = 10;
+                        break;
+                    case 4:
+                        perfume = 20;
+                        break;
+                    case 5:
+                        perfume = 40;
+                        break;
+                    case 6:
+                        perfume = 80;
+                        break;
+                    case 7:
+                        perfume = 120;
+                        break;
+                }
+            }
+            else if (level < 80)
+            {
+                switch (rare)
+                {
+                    case 1:
+                    case 2:
+                        perfume = 10;
+                        break;
+                    case 3:
+                        perfume = 20;
+                        break;
+                    case 4:
+                        perfume = 40;
+                        break;
+                    case 5:
+                        perfume = 80;
+                        break;
+                    case 6:
+                        perfume = 120;
+                        break;
+                    case 7:
+                        perfume = 160;
+                        break;
+                }
+            }
+            else if (level < 90)
+            {
+                switch (rare)
+                {
+                    case 1:
+                    case 2:
+                        perfume = 10;
+                        break;
+                    case 3:
+                        perfume = 20;
+                        break;
+                    case 4:
+                        perfume = 40;
+                        break;
+                    case 5:
+                        perfume = 80;
+                        break;
+                    case 6:
+                        perfume = 160;
+                        break;
+                    case 7:
+                        perfume = 200;
+                        break;
+                }
+            }
+            else if (level < 100)
+            {
+                switch (rare)
+                {
+                    case 1:
+                        perfume = 20;
+                        break;
+                    case 2:
+                        perfume = 40;
+                        break;
+                    case 3:
+                        perfume = 80;
+                        break;
+                    case 4:
+                        perfume = 120;
+                        break;
+                    case 5:
+                        perfume = 160;
+                        break;
+                    case 6:
+                        perfume = 200;
+                        break;
+                    case 7:
+                        perfume = 300;
+                        break;
+                }
+            }
+            return perfume;
+        }
+
         // VNUM -> ShellType
         public static readonly Dictionary<short, byte> ShellTypes = new Dictionary<short, byte>
         {
@@ -369,107 +565,107 @@ namespace OpenNos.GameObject.Helpers
         public static readonly Dictionary<int, List<object>> ShellOptionType = new Dictionary<int, List<object>>
         {
             { 0, new List<object>{ 0, 0, 0, 0, 0 }},
-            { 1, new List<object>{ "Dégâts supplémentaires", "X", 835, 1156, 1187, 1502, 1468, 2101, null, null }},
-            { 2, new List<object>{ "% pour les dégâts", "X%", null, null, null, null, null, null, 88, 212 }},
-            { 3, new List<object>{ "Diminue la chance d\"exposition aux petites plaies", "X%", 18, 52, null, null, null, null, null, null }},
-            { 4, new List<object>{ "Diminue la chance d\"être exposé aux plaies en général", "X%", null, null, 18, 52, null, null, null, null }},
-            { 5, new List<object>{ "Diminue la chance d\"être exposé aux plaies béantes en général", "X%", null, null, null, null, 2, 18, null, null }},
-            { 6, new List<object>{ "Trou noir", "X%", 18, 52, null, null, null, null, null, null }},
-            { 7, new List<object>{ "Congelé", "X%", null, null, 18, 52, null, null, null, null }},
-            { 8, new List<object>{ "Trou noir mortel", "X%", null, null, null, null, 18, 52, null, null }},
-            { 9, new List<object>{ "Augmente les dégâts sur les plantes", "X%", 60, 104, 110, 204, null, null, null, null }},
-            { 10, new List<object>{ "Augmente les dégâts sur les animaux", "X%", 60, 104, 110, 204, null, null, null, null }},
-            { 11, new List<object>{ "Augmente les dégâts sur les démons", "X%", 60, 104, 110, 204, null, null, null, null }},
-            { 12, new List<object>{ "Augmente les dégâts sur les zombies", "X%", null, null, 60, 104, 110, 204, null, null }},
-            { 13, new List<object>{ "Augmente les dégats sur les petits animaux", "X%", null, null, 60, 104, 110, 204, null, null }},
-            { 14, new List<object>{ "Augmente les dégâts sur les monstres géants", "X%", null, null, null, null, null, null, 229, 256 }},
-            { 15, new List<object>{ "(Excepté baguette) Augmente les dégats critiques: ", "X%", 30, 104, null, null, null, null, null, null }},
-            { 16, new List<object>{ "(poza różdżkami) Zwiększone krytyczne obrażenia", "X%", 342, 645, null, null, null, null, null, null }},
-            { 17, new List<object>{ "(tylko różdżki) Niezakłócony podczas rzucania czarów", "X", null, null, null, null, null, null, null, null }},
-            { 18, new List<object>{ "Augmente l\"élément feu", "X", null, null, 482, 802, 915, 1545, null, null }},
-            { 19, new List<object>{ "Augmente l\"élément eau", "X", null, null, 482, 802, 915, 1545, null, null }},
-            { 20, new List<object>{ "Augmente l\"élément lumière", "X", null, null, 482, 802, 915, 1545, null, null }},
-            { 21, new List<object>{ "Augmente l\"élément d\"obscurité", "X", null, null, 482, 802, 915, 1545, null, null }},
-            { 22, new List<object>{ "Zwiększona energia wszystkich elementów", "X", null, null, null, null, null, null, 1187, 1778 }},
-            { 23, new List<object>{ "Zredukowane zużycie PM", "X%", 70, 118, 162, 232, null, null, null, null }},
-            { 24, new List<object>{ "Odnowienie PŻ za zabicie", "X", null, null, 1468, 1504, 1961, 2004, null, null }},
-            { 25, new List<object>{ "Regeneracja PM za zabicie", "X", null, null, 1468, 1504, 1961, 2004, null, null }},
-            { 26, new List<object>{ "Zwiększa SL obrażeń", "X", null, null, 88, 123, 130, 177, null, null }},
-            { 27, new List<object>{ "Zwiększa SL obrony", "X", null, null, 88, 123, 130, 177, null, null }},
-            { 28, new List<object>{ "Zwiększa SL siły", "X", null, null, 88, 123, 130, 177, null, null }},
-            { 29, new List<object>{ "Zwiększa SL energii", "X", null, null, 88, 123, 130, 177, null, null }},
-            { 30, new List<object>{ "Zwiększa ogólny SL", "X", null, null, null, null, null, null, 88, 118 }},
-            { 31, new List<object>{ "(tylko broń główna) Zdobycie większej ilości złota", "X%", 46, 102, 130, 177, 224, 347, null, null }},
-            { 32, new List<object>{ "(tylko broń główna) Zdobycie większej ilości punktów DOŚW", "X%", null, null, 60, 104, 88, 156, null, null }},
-            { 33, new List<object>{ "(tylko broń główna)Zdobycie większej ilości PP", "X%", null, null, 60, 104, 88, 156, null, null }},
-            { 34, new List<object>{ "% do Obrażeń w PVP", "X%", 88, 118, 39, 104, 88, 177, 187, 340 }},
-            { 35, new List<object>{ "Obniża obronę o % w PVP", "X%", 88, 115, 88, 152, 113, 204, 212, 347 }},
-            { 36, new List<object>{ "Obniża odporność przeciwnika na ogień w PVP", "X%", null, null, 18, 77, 60, 147, null, null }},
-            { 37, new List<object>{ "Obniża odporność przeciwnika na wodę w PVP", "X%", null, null, 18, 77, 60, 147, null, null }},
-            { 38, new List<object>{ "Obniża odporność przeciwnika na światło w PVP", "X%", null, null, 18, 77, 60, 147, null, null }},
-            { 39, new List<object>{ "Obniża odporność przeciwnika na mrok w PVP", "X%", null, null, 18, 77, 60, 147, null, null }},
-            { 40, new List<object>{ "Obniża całą odporność przeciwnika w PVP", "X%", null, null, null, null, null, null, 88, 178 }},
-            { 41, new List<object>{ "Trafia za każdym razem w PVP", "X", null, null, null, null, null, null, null, null }},
-            { 42, new List<object>{ "% de dégâts à 15% en PvP", "X%", 483, 602, null, null, null, null, null, null }},
-            { 43, new List<object>{ "Odbierz przeciwnikowi manę w PVP", "X", 88, 190, 229, 304, 360, 502, null, null }},
-            { 44, new List<object>{ "Ignoruje odporność na ogień w PVP z prawdopodobieństwem 25%", "X%", null, null, null, null, null, null, null, null }},
-            { 45, new List<object>{ "Ignoruje odporność na wodę w PVP z prawdopodobieństwem 25%", "X%", null, null, null, null, null, null, null, null }},
-            { 46, new List<object>{ "Ignoruje odporność na światło w PVP z prawdopodobieństwem 25%", "X%", null, null, null, null, null, null, null, null }},
-            { 47, new List<object>{ "Ignoruje odporność na mrok w PVP z prawdopodobieństwem 25%", "X%", null, null, null, null, null, null, null, null }},
-            { 48, new List<object>{ "Odnowienie PS za zabicie", "X", null, null, null, null, null, null, null, null }},
-            { 49, new List<object>{ "Zwiększ celność", "X", null, null, null, null, null, null, null, null }},
-            { 50, new List<object>{ "Zwiększa koncentrację", "X", null, null, null, null, null, null, null, null }},
-            { 51, new List<object>{ "Zwiększona obrona wręcz", "X", 384, 690, 680, 1204, 1471, 2002, null, null }},
-            { 52, new List<object>{ "Zwiększona obrona długodystansowa", "X", 384, 690, 680, 1204, 1471, 2002, null, null }},
-            { 53, new List<object>{ "Zwiększona obrona magiczna", "X", 384, 690, 680, 1204, 1471, 2002, null, null }},
-            { 54, new List<object>{ "% do ogólnej obrony", "X%", null, null, null, null, null, null, 187, 256 }},
-            { 55, new List<object>{ "Zmniejsza szansę małej otwartej rany", "X%", 187, 477, null, null, null, null, null, null }},
-            { 56, new List<object>{ "Zmniejsza szansę otwartej rany i małej otwartej rany", "X%", null, null, 187, 477, null, null, null, null }},
-            { 57, new List<object>{ "Zmniejsza szansę wszystkich otwartych ran", "X%", null, null, null, null, 187, 477, null, null }},
-            { 58, new List<object>{ "Zmniejsza szansę ogłuszenia", "X%", 187, 477, null, null, null, null, null, null }},
-            { 59, new List<object>{ "Zmniejsza szansę wszystkich zamroczeń", "X%", null, null, 187, 404, 285, 504, null, null }},
-            { 60, new List<object>{ "Zmniejsza szansę ręki śmierci", "X%", null, null, 285, 502, 384, 602, null, null }},
-            { 61, new List<object>{ "Zmniejsza szansę bycia zamrożonym", "X%", null, null, 187, 304, 360, 602, null, null }},
-            { 62, new List<object>{ "Zmniejsza szansę bycia oślepionym", "X%", 285, 502, 384, 602, null, null, null, null }},
-            { 63, new List<object>{ "Zmniejsza szansę skurczu", "X%", null, null, 384, 602, null, null, null, null }},
-            { 64, new List<object>{ "Zmniejsza szansę słabego pancerza", "X%", null, null, 384, 602, null, null, null, null }},
-            { 65, new List<object>{ "Zmniejsza szansę szoku", "X%", 384, 602, null, null, null, null, null, null }},
-            { 66, new List<object>{ "Zmniejsza szansę paraliżującej trucizny", "X%", 384, 602, null, null, null, null, null, null }},
-            { 67, new List<object>{ "Zmniejsza szansę wszystkich złych efektów", "X%", null, null, null, null, null, null, 285, 402 }},
-            { 68, new List<object>{ "Zwiększa przywracanie PŻ podczas odpoczywania", "X%", 384, 604, 490, 1004, null, null, null, null }},
-            { 69, new List<object>{ "Zwiększa naturalne przywracanie PŻ", "X%", null, null, null, null, 482, 1002, null, null }},
-            { 70, new List<object>{ "Zwiększa regenerację PM w stanie spoczynku", "X%", 384, 604, 490, 1004, null, null, null, null }},
-            { 71, new List<object>{ "Zwiększa naturalne przywracanie PM", "X%", null, null, null, null, 482, 1002, null, null }},
-            { 72, new List<object>{ "Przywracanie PŻ podczas obrony", "X%", null, null, null, null, null, null, 384, 702 }},
-            { 73, new List<object>{ "Zmniejsza szansę otrzymania krytycznego uderzenia", "X%", 46, 102, 110, 167, null, null, null, null }},
-            { 74, new List<object>{ "Zwiększa odporność na ogień", "X%", null, null, 60, 104, 88, 204, null, null }},
-            { 75, new List<object>{ "Zwiększa odporność na wodę", "X%", null, null, 60, 104, 88, 204, null, null }},
-            { 76, new List<object>{ "Zwiększa odporność na światło", "X%", null, null, 60, 104, 88, 204, null, null }},
-            { 77, new List<object>{ "Zwiększa odporność na mrok", "X%", null, null, 60, 104, 88, 204, null, null }},
-            { 78, new List<object>{ "Zwiększa ogólną odporność", "X%", null, null, null, null, null, null, 201, 278 }},
-            { 79, new List<object>{ "Diminution de la réduction de l\"honneur", "X%", 510, 590, null, null, null, null, null, null }},
-            { 80, new List<object>{ "Diminue les points de consommation", "X%", 508, 577, 471, 602, null, null, null, null }},
-            { 81, new List<object>{ "Augmente la production du Mini-Jeu", "X%", null, null, 490, 602, 693, 904, null, null }},
-            { 82, new List<object>{ "La nourriture guérie mieux", "X%", null, null, 187, 290, 482, 604, null, null }},
-            { 83, new List<object>{ "% pour toutes les défenses en PVP", "X%", 88, 118, 125, 177, 187, 252, 273, 404 }},
-            { 84, new List<object>{ "Évite les attaques au corps en PVP", "X%", null, null, 39, 78, 88, 145, null, null }},
-            { 85, new List<object>{ "Évite les attaques à distance en PVP", "X%", null, null, 39, 78, 88, 145, null, null }},
-            { 86, new List<object>{ "Ignore les dégâts des attaques magiques en PVP", "X%", null, null, 39, 78, 88, 145, null, null }},
-            { 87, new List<object>{ "Esquive toutes les attaques en PVP", "X%", null, null, null, null, null, null, 130, 212 }},
-            { 88, new List<object>{ "Protèges vos MP en PVP", "X", null, null, null, null, null, null, null, null }},
-            { 89, new List<object>{ "Odporny na obrażenia od ognia w PVP", "X", null, null, null, null, null, null, null, null }},
-            { 90, new List<object>{ "Odporny na obrażenia od wody w PVP", "X", null, null, null, null, null, null, null, null }},
-            { 91, new List<object>{ "Odporny na obrażenia od światła w PVP", "X", null, null, null, null, null, null, null, null }},
-            { 92, new List<object>{ "Odporny na obrażenia od mroku w PVP", "X", null, null, null, null, null, null, null, null }}
+            { 1, new List<object>{ 835, 1156, 1187, 1502, 1468, 2101, null, null }},
+            { 2, new List<object>{ null, null, null, null, null, null, 88, 212 }},
+            { 3, new List<object>{ 18, 52, null, null, null, null, null, null }},
+            { 4, new List<object>{ null, null, 18, 52, null, null, null, null }},
+            { 5, new List<object>{ null, null, null, null, 2, 18, null, null }},
+            { 6, new List<object>{ 18, 52, null, null, null, null, null, null }},
+            { 7, new List<object>{ null, null, 18, 52, null, null, null, null }},
+            { 8, new List<object>{ null, null, null, null, 18, 52, null, null }},
+            { 9, new List<object>{ 60, 104, 110, 204, null, null, null, null }},
+            { 10, new List<object>{ 60, 104, 110, 204, null, null, null, null }},
+            { 11, new List<object>{ 60, 104, 110, 204, null, null, null, null }},
+            { 12, new List<object>{ null, null, 60, 104, 110, 204, null, null }},
+            { 13, new List<object>{ null, null, 60, 104, 110, 204, null, null }},
+            { 14, new List<object>{ null, null, null, null, null, null, 229, 256 }},
+            { 15, new List<object>{ 30, 104, null, null, null, null, null, null }},
+            { 16, new List<object>{ 342, 645, null, null, null, null, null, null }},
+            { 17, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 18, new List<object>{ null, null, 482, 802, 915, 1545, null, null }},
+            { 19, new List<object>{ null, null, 482, 802, 915, 1545, null, null }},
+            { 20, new List<object>{ null, null, 482, 802, 915, 1545, null, null }},
+            { 21, new List<object>{ null, null, 482, 802, 915, 1545, null, null }},
+            { 22, new List<object>{ null, null, null, null, null, null, 1187, 1778 }},
+            { 23, new List<object>{ 70, 118, 162, 232, null, null, null, null }},
+            { 24, new List<object>{ null, null, 1468, 1504, 1961, 2004, null, null }},
+            { 25, new List<object>{ null, null, 1468, 1504, 1961, 2004, null, null }},
+            { 26, new List<object>{ null, null, 88, 123, 130, 177, null, null }},
+            { 27, new List<object>{ null, null, 88, 123, 130, 177, null, null }},
+            { 28, new List<object>{ null, null, 88, 123, 130, 177, null, null }},
+            { 29, new List<object>{ null, null, 88, 123, 130, 177, null, null }},
+            { 30, new List<object>{ null, null, null, null, null, null, 88, 118 }},
+            { 31, new List<object>{ 46, 102, 130, 177, 224, 347, null, null }},
+            { 32, new List<object>{ null, null, 60, 104, 88, 156, null, null }},
+            { 33, new List<object>{ null, null, 60, 104, 88, 156, null, null }},
+            { 34, new List<object>{ 88, 118, 39, 104, 88, 177, 187, 340 }},
+            { 35, new List<object>{ 88, 115, 88, 152, 113, 204, 212, 347 }},
+            { 36, new List<object>{ null, null, 18, 77, 60, 147, null, null }},
+            { 37, new List<object>{ null, null, 18, 77, 60, 147, null, null }},
+            { 38, new List<object>{ null, null, 18, 77, 60, 147, null, null }},
+            { 39, new List<object>{ null, null, 18, 77, 60, 147, null, null }},
+            { 40, new List<object>{ null, null, null, null, null, null, 88, 178 }},
+            { 41, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 42, new List<object>{ 483, 602, null, null, null, null, null, null }},
+            { 43, new List<object>{ 88, 190, 229, 304, 360, 502, null, null }},
+            { 44, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 45, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 46, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 47, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 48, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 49, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 50, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 51, new List<object>{ 384, 690, 680, 1204, 1471, 2002, null, null }},
+            { 52, new List<object>{ 384, 690, 680, 1204, 1471, 2002, null, null }},
+            { 53, new List<object>{ 384, 690, 680, 1204, 1471, 2002, null, null }},
+            { 54, new List<object>{ null, null, null, null, null, null, 187, 256 }},
+            { 55, new List<object>{ 187, 477, null, null, null, null, null, null }},
+            { 56, new List<object>{ null, null, 187, 477, null, null, null, null }},
+            { 57, new List<object>{ null, null, null, null, 187, 477, null, null }},
+            { 58, new List<object>{ 187, 477, null, null, null, null, null, null }},
+            { 59, new List<object>{ null, null, 187, 404, 285, 504, null, null }},
+            { 60, new List<object>{ null, null, 285, 502, 384, 602, null, null }},
+            { 61, new List<object>{ null, null, 187, 304, 360, 602, null, null }},
+            { 62, new List<object>{ 285, 502, 384, 602, null, null, null, null }},
+            { 63, new List<object>{ null, null, 384, 602, null, null, null, null }},
+            { 64, new List<object>{ null, null, 384, 602, null, null, null, null }},
+            { 65, new List<object>{ 384, 602, null, null, null, null, null, null }},
+            { 66, new List<object>{ 384, 602, null, null, null, null, null, null }},
+            { 67, new List<object>{ null, null, null, null, null, null, 285, 402 }},
+            { 68, new List<object>{ 384, 604, 490, 1004, null, null, null, null }},
+            { 69, new List<object>{ null, null, null, null, 482, 1002, null, null }},
+            { 70, new List<object>{ 384, 604, 490, 1004, null, null, null, null }},
+            { 71, new List<object>{ null, null, null, null, 482, 1002, null, null }},
+            { 72, new List<object>{ null, null, null, null, null, null, 384, 702 }},
+            { 73, new List<object>{ 46, 102, 110, 167, null, null, null, null }},
+            { 74, new List<object>{ null, null, 60, 104, 88, 204, null, null }},
+            { 75, new List<object>{ null, null, 60, 104, 88, 204, null, null }},
+            { 76, new List<object>{ null, null, 60, 104, 88, 204, null, null }},
+            { 77, new List<object>{ null, null, 60, 104, 88, 204, null, null }},
+            { 78, new List<object>{ null, null, null, null, null, null, 201, 278 }},
+            { 79, new List<object>{ 510, 590, null, null, null, null, null, null }},
+            { 80, new List<object>{ 508, 577, 471, 602, null, null, null, null }},
+            { 81, new List<object>{ null, null, 490, 602, 693, 904, null, null }},
+            { 82, new List<object>{ null, null, 187, 290, 482, 604, null, null }},
+            { 83, new List<object>{ 88, 118, 125, 177, 187, 252, 273, 404 }},
+            { 84, new List<object>{ null, null, 39, 78, 88, 145, null, null }},
+            { 85, new List<object>{ null, null, 39, 78, 88, 145, null, null }},
+            { 86, new List<object>{ null, null, 39, 78, 88, 145, null, null }},
+            { 87, new List<object>{ null, null, null, null, null, null, 130, 212 }},
+            { 88, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 89, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 90, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 91, new List<object>{ null, null, null, null, null, null, null, null }},
+            { 92, new List<object>{ null, null, null, null, null, null, null, null }}
         };
 
         private static readonly Random Rand = new Random();
 
         private static int? GenerateOptionValue(int randomOptionId, int d, int shellLevel)
         {
-            int optionLevel = d % 4 == 0 ? 4 : d % 4;
-            int? minimum = (int?)ShellOptionType[randomOptionId][optionLevel * 2];
-            int? maximum = (int?)ShellOptionType[randomOptionId][1 + optionLevel * 2];
+            int optionLevel = (d % 4) == 0 ? 4 : d % 4;
+            int? minimum = (int?)ShellOptionType[randomOptionId][(optionLevel - 1) * 2];
+            int? maximum = (int?)ShellOptionType[randomOptionId][1 + (optionLevel - 1) * 2];
 
             if (!minimum.HasValue || !maximum.HasValue)
             {

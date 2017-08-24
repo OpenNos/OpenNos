@@ -165,5 +165,14 @@ namespace OpenNos.Master.Library.Interface
         /// </summary>
         /// <param name="worldId">Id of the World to be unregistered</param>
         void UnregisterWorldServer(Guid worldId);
+
+
+        /*
+         * ACT 4
+         */
+        void RegisterInternalAccountLogin(long accountId, int sessionId);
+        bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId);
+        SerializableWorldServer GetPreviousChannelByAccountId(long accountId);
+        SerializableWorldServer GetAct4ChannelInfo(string worldGroup);
     }
 }

@@ -23,6 +23,7 @@ namespace OpenNos.Domain
         RANKINGREFRESH,
         TALENTARENA,
         MASTERARENA,
-        ICEBREAKER
+        ICEBREAKER,
+        ACT4SHIP
     }
 }

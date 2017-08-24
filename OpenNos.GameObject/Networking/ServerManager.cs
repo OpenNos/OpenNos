@@ -230,7 +230,7 @@ namespace OpenNos.GameObject
                                 team.Where(friends => friends.ArenaTeamType == member.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(friends.Session.Character.GenerateTaFc()); });
                                 team.ToList().ForEach(arenauser =>
                                 {
-                                    arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2,  true));
+                                    arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true));
                                     arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaM(2, 0));
                                 });
                                 session.Character.Hp = (int)session.Character.HPLoad();
@@ -362,11 +362,11 @@ namespace OpenNos.GameObject
 
                             Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
                             Session.Character.Group?.Characters.ToList().ForEach(
-                            session =>
-                            {
-                                session.SendPacket(session.Character.Group.GeneraterRaidmbf());
-                                session.SendPacket(session.Character.Group.GenerateRdlst());
-                            });
+                                session =>
+                                {
+                                    session.SendPacket(session.Character.Group.GeneraterRaidmbf());
+                                    session.SendPacket(session.Character.Group.GenerateRdlst());
+                                });
                             Task.Factory.StartNew(async () =>
                             {
                                 await Task.Delay(20000);
@@ -1817,7 +1817,7 @@ namespace OpenNos.GameObject
                 Tuple<long?, long?> kickedSession = (Tuple<long?, long?>)sender;
 
                 ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
-                && (!kickedSession.Item1.HasValue || s.Account.AccountId == kickedSession.Item2));
+                                                                           && (!kickedSession.Item1.HasValue || s.Account.AccountId == kickedSession.Item2));
 
                 targetSession?.Disconnect();
             }

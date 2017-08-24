@@ -152,6 +152,16 @@ namespace OpenNos.Master.Library.Client
         {
             _client.ServiceProxy.RegisterAccountLogin(accountId, sessionId);
         }
+        
+        public bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId)
+        {
+            return _client.ServiceProxy.ConnectAccountInternal(worldId, accountId, sessionId);
+        }
+
+        public void RegisterInternalAccountLogin(long accountId, int sessionId)
+        {
+            _client.ServiceProxy.RegisterInternalAccountLogin(accountId, sessionId);
+        }
 
         public int? RegisterWorldServer(SerializableWorldServer worldServer)
         {
@@ -166,6 +176,17 @@ namespace OpenNos.Master.Library.Client
         public IEnumerable<string> RetrieveServerStatistics()
         {
             return _client.ServiceProxy.RetrieveServerStatistics();
+        }
+        
+        public SerializableWorldServer GetPreviousChannelByAccountId(long accountId)
+        {
+            return _client.ServiceProxy.GetPreviousChannelByAccountId(accountId);
+        }
+
+
+        public SerializableWorldServer GetAct4ChannelInfo(string worldGroup)
+        {
+            return _client.ServiceProxy.GetAct4ChannelInfo(worldGroup);
         }
 
         public int? SendMessageToCharacter(SCSCharacterMessage message)

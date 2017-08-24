@@ -23,11 +23,11 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public Item()
+        protected Item()
         {
         }
 
-        public Item(ItemDTO item)
+        protected Item(ItemDTO item)
         {
             InitializeItem(item);
         }
@@ -120,7 +120,7 @@ namespace OpenNos.GameObject
         }
 
         //TODO: Convert to PacketDefinition
-        public abstract void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null);
+        public abstract void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null);
 
         #endregion
     }

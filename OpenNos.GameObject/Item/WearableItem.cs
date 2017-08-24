@@ -48,7 +48,7 @@ namespace OpenNos.GameObject
                     Mate mate = null;
                     if (option != 0)
                     {
-                        mate = session.Character.Mates.FirstOrDefault(s => s.MateType == MateType.Partner && s.PetId == option - 1);
+                        mate = session.Character.Mates.FirstOrDefault(s => s.MateType == MateType.Partner && s.PetId == (option - 1));
                     }
                     short slot = inv.Slot;
                     InventoryType equipment = InventoryType.Wear;
@@ -73,11 +73,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    // APPLY SHELL ON EQUIPMENT
-                    if (itemToWearType == (InventoryType)6)
-                    {
-
-                    }
+                    
                     if (ItemValidTime > 0 && inv.IsBound)
                     {
                         inv.ItemDeleteTime = DateTime.Now.AddSeconds(ItemValidTime);
