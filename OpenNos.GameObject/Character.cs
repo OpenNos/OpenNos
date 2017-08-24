@@ -858,7 +858,7 @@ namespace OpenNos.GameObject
             {
                 long id2 = relation.RelatedCharacterId == CharacterId ? relation.CharacterId : relation.RelatedCharacterId;
                 bool isOnline = CommunicationServiceClient.Instance.IsCharacterConnected(ServerManager.Instance.ServerGroup, id2);
-                result += $" {id2}|{(short) relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(id2).Name}";
+                result += $" {id2}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(id2).Name}";
             }
             CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
             {
@@ -929,7 +929,7 @@ namespace OpenNos.GameObject
         public string GenerateCInfo()
         {
             return
-                $"c_info {(Authority == AuthorityType.Moderator && !Undercover ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + Name : Name)} - -1 {(Family != null && !Undercover ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte) AuthorityType.User : Authority < AuthorityType.User ? (byte) AuthorityType.User : (byte) Authority)} {(byte) Gender} {(byte) HairStyle} {(byte) HairColor} {(byte) Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {Family?.FamilyLevel ?? 0} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
+                $"c_info {(Authority == AuthorityType.Moderator && !Undercover ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + Name : Name)} - -1 {(Family != null && !Undercover ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {Family?.FamilyLevel ?? 0} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
 
         public string GenerateCMap()
@@ -1577,7 +1577,7 @@ namespace OpenNos.GameObject
                 {
                     continue;
                 }
-                int distance = Map.GetDistance(new MapCell {X = monsterToAttack.MapX, Y = monsterToAttack.MapY}, new MapCell {X = session.Character.PositionX, Y = session.Character.PositionY});
+                int distance = Map.GetDistance(new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }, new MapCell { X = session.Character.PositionX, Y = session.Character.PositionY });
                 if (distance >= nearestDistance)
                 {
                     continue;
@@ -1595,7 +1595,7 @@ namespace OpenNos.GameObject
                 return;
             }
             Dignity += (float)0.5;
-            if (Dignity != (int) Dignity)
+            if (Dignity != (int)Dignity)
             {
                 return;
             }
@@ -1630,7 +1630,7 @@ namespace OpenNos.GameObject
                 color = head.Design;
             }
             return
-                $"eq {CharacterId} {(Invisible ? 6 : Undercover ? (byte) AuthorityType.User : (byte) Authority)} {(byte) Gender} {(byte) HairStyle} {color} {(byte) Class} {GenerateEqListForPacket()} {(!InvisibleGm ? GenerateEqRareUpgradeForPacket() : null)}";
+                $"eq {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {(!InvisibleGm ? GenerateEqRareUpgradeForPacket() : null)}";
         }
 
         public string GenerateEqListForPacket()
@@ -1638,7 +1638,7 @@ namespace OpenNos.GameObject
             string[] invarray = new string[16];
             if (Inventory == null)
             {
-                return $"{invarray[(byte) EquipmentType.Hat]}.{invarray[(byte) EquipmentType.Armor]}.{invarray[(byte) EquipmentType.MainWeapon]}.{invarray[(byte) EquipmentType.SecondaryWeapon]}.{invarray[(byte) EquipmentType.Mask]}.{invarray[(byte) EquipmentType.Fairy]}.{invarray[(byte) EquipmentType.CostumeSuit]}.{invarray[(byte) EquipmentType.CostumeHat]}.{invarray[(byte) EquipmentType.WeaponSkin]}";
+                return $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuit]}.{invarray[(byte)EquipmentType.CostumeHat]}.{invarray[(byte)EquipmentType.WeaponSkin]}";
             }
             for (short i = 0; i < 16; i++)
             {
@@ -1653,7 +1653,7 @@ namespace OpenNos.GameObject
                 }
             }
             return
-                $"{invarray[(byte) EquipmentType.Hat]}.{invarray[(byte) EquipmentType.Armor]}.{invarray[(byte) EquipmentType.MainWeapon]}.{invarray[(byte) EquipmentType.SecondaryWeapon]}.{invarray[(byte) EquipmentType.Mask]}.{invarray[(byte) EquipmentType.Fairy]}.{invarray[(byte) EquipmentType.CostumeSuit]}.{invarray[(byte) EquipmentType.CostumeHat]}.{invarray[(byte) EquipmentType.WeaponSkin]}";
+                $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuit]}.{invarray[(byte)EquipmentType.CostumeHat]}.{invarray[(byte)EquipmentType.WeaponSkin]}";
         }
 
         public string GenerateEqRareUpgradeForPacket()
@@ -4181,12 +4181,12 @@ namespace OpenNos.GameObject
             double multiplicator = 1.0;
             if (!UseSp)
             {
-                return (int) ((CharacterHelper.MPData[(byte) Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0]) * multiplicator);
+                return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0]) * multiplicator);
             }
             SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
             if (specialist == null)
             {
-                return (int) ((CharacterHelper.MPData[(byte) Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0]) * multiplicator);
+                return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0]) * multiplicator);
             }
             int point = CharacterHelper.SlPoint(specialist.SlHP, 3);
 
@@ -4319,7 +4319,7 @@ namespace OpenNos.GameObject
 
         public void ChangeChannel(string ip, short port, byte mode)
         {
-            Session.SendPacket(new MzPacket {Ip = ip, Port = port, Slot = Session.Character.Slot});
+            Session.SendPacket(new MzPacket { Ip = ip, Port = port, Slot = Session.Character.Slot });
             Session.SendPacket($"it {mode}");
 
             Session.IsDisposing = true;
@@ -5283,7 +5283,7 @@ namespace OpenNos.GameObject
 
         public string GenerateTaP(byte tatype, bool showOponent)
         {
-            List<ArenaTeamMember> arenateam = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s!=null && s.Any(o => o.Session == Session)).OrderBy(s => s.ArenaTeamType).ToList();
+            List<ArenaTeamMember> arenateam = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s != null && s.Any(o => o != null && o.Session == Session)).OrderBy(s => s.ArenaTeamType).ToList();
             ArenaTeamType type = ArenaTeamType.ERENIA;
             string groups = string.Empty;
             if (arenateam != null)
