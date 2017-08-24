@@ -1174,7 +1174,7 @@
     <value />
   </data>
   <data name="SHELL_MUST_BE_IDENTIFIED" xml:space="preserve">
-    <value>La rune doit être identifiée pour pouvoir être utilisable.</value>
+    <value />
   </data>
   <data name="SHELL_OPTION_SET" xml:space="preserve">
     <value />

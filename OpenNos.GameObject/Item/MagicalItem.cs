@@ -80,7 +80,6 @@ namespace OpenNos.GameObject
          
                         WearableInstance shell = (WearableInstance)inv;
                         WearableInstance eq = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
-                       
 
                         if (eq == null)
                         {
