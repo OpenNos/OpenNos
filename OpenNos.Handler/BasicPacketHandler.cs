@@ -1034,6 +1034,10 @@ namespace OpenNos.Handler
                     case 300:
                         if (guriPacket.Argument == 8023)
                         {
+                            if (guriPacket.Value == null)
+                            {
+                                return;
+                            }
                             if (short.TryParse(guriPacket.Data.ToString(), out short slot))
                             {
                                 ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
