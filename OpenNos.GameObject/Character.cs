@@ -2332,7 +2332,7 @@ namespace OpenNos.GameObject
                 foreach (Mate mate in mates.Where(s => s.IsTeamMember).OrderByDescending(s => s.MateType))
                 {
                     i++;
-                    str += $" 2|{mate.MateTransportId}|{(mate.MateType == MateType.Partner ? "0" : "1")}|{mate.Level}|{mate.Name.Replace(' ', '^')}|-1|{mate.Monster.NpcMonsterVNum}|0";
+                    str += $" 2|{mate.MateTransportId}|{(int)mate.MateType}|{mate.Level}|{mate.Name.Replace(' ', '^')}|-1|{mate.Monster.NpcMonsterVNum}|0";
                 }
             }
             if (grp == null)
@@ -2366,7 +2366,7 @@ namespace OpenNos.GameObject
 
         public List<string> GeneratePst()
         {
-            return Mates.Where(s => s.IsTeamMember).OrderByDescending(s => s.MateType).Select(mate => $"pst 2 {mate.MateTransportId} {(mate.MateType == MateType.Partner ? "0" : "1")} {mate.Hp / mate.MaxHp * 100} {mate.Mp / mate.MaxMp * 100} {mate.Hp} {mate.Mp} 0 0 0").ToList();
+            return Mates.Where(s => s.IsTeamMember).OrderByDescending(s => s.MateType).Select(mate => $"pst 2 {mate.MateTransportId} {(int)mate.MateType} {mate.Hp / mate.MaxHp * 100} {mate.Mp / mate.MaxMp * 100} {mate.Hp} {mate.Mp} 0 0 0").ToList();
         }
 
         public string GeneratePStashAll()
