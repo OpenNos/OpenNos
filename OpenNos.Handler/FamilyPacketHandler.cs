@@ -385,6 +385,11 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("CANT_KICK_YOURSELF")));
                     return;
                 }
+                if (Session.Character.FamilyCharacter?.Authority <= kickSession.Character.FamilyCharacter?.Authority)
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("CANT_KICK_SAME_AUTHORITY")));
+                    return;
+                }
                 DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
                 Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManaged, kickSession.Character.Name);
 
@@ -400,6 +405,11 @@ namespace OpenNos.Handler
                 FamilyCharacterDTO dbFamilyCharacter = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(dbCharacter.CharacterId);
                 if (dbFamilyCharacter == null || dbFamilyCharacter.FamilyId != Session.Character.Family.FamilyId)
                 {
+                    return;
+                }
+                if (dbFamilyCharacter.Authority == Session.Character.FamilyCharacter.Authority)
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("CANT_KICK_SAME_AUTHORITY")));
                     return;
                 }
                 if (dbFamilyCharacter.Authority == FamilyAuthority.Head)
@@ -432,7 +442,7 @@ namespace OpenNos.Handler
             }
             Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManaged, Session.Character.Name);
             long familyId = Session.Character.Family.FamilyId;
-            DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
+            DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name); 
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_LEAVE")));
 
             ServerManager.Instance.FamilyRefresh(familyId);
