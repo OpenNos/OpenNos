@@ -443,13 +443,14 @@ namespace OpenNos.Handler
                         grp.Characters.ToList().CopyTo(grpmembers);
                         foreach (ClientSession targetSession in grpmembers)
                         {
-                            if (targetSession != null)
+                            if (targetSession == null)
                             {
-                                targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
-                                targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
-                                targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_DISOLVED"), 0));
-                                grp.LeaveGroup(targetSession);
+                                continue;
                             }
+                            targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
+                            targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
+                            targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_DISOLVED"), 0));
+                            grp.LeaveGroup(targetSession);
                         }
                         ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
                         ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId, out Group value);
@@ -486,10 +487,10 @@ namespace OpenNos.Handler
                     }
                     break;
                 case 1:
-                    if (Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && !ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
+                    if (Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && ServerManager.Instance.GroupList.All(s => s.GroupId != Session.Character.Group.GroupId))
                     {
                         ServerManager.Instance.GroupList.Add(Session.Character.Group);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_REGISTERED")));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("RAID_REGISTERED"));
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
                         ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"), Session.Character.Name)}", ReceiverType.AllExceptGroup);
                     }
@@ -498,7 +499,7 @@ namespace OpenNos.Handler
                     if (Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
                     {
                         ServerManager.Instance.GroupList.Remove(Session.Character.Group);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_UNREGISTERED")));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("RAID_UNREGISTERED"));
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(2));
                     }
                     break;
@@ -1447,11 +1448,12 @@ namespace OpenNos.Handler
         /// <param name="rStartPacket"></param>
         public void GetRStart(RStartPacket rStartPacket)
         {
-            if (rStartPacket.Type == 1)
+            if (rStartPacket.Type != 1)
             {
-                Session.CurrentMapInstance.InstanceBag.Lock = true;
-                Preq(new PreqPacket());
+                return;
             }
+            Session.CurrentMapInstance.InstanceBag.Lock = true;
+            Preq(new PreqPacket());
         }
 
         /// <summary>
