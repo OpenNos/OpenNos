@@ -214,6 +214,7 @@
     <Compile Include="Packets\ClientPackets\BtkPacket.cs" />
     <Compile Include="Packets\ClientPackets\CreateFamilyPacket.cs" />
     <Compile Include="Packets\ClientPackets\MzPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SuctlPacket.cs" />
     <Compile Include="Packets\ClientPackets\TaCallPacket.cs" />
     <Compile Include="Packets\ClientPackets\EscapePacket.cs" />
     <Compile Include="Packets\ClientPackets\FamilyChatPacket.cs" />
