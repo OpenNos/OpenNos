@@ -18,7 +18,7 @@ namespace OpenNos.GameObject
         public int Unknown2 { get; set; }
 
         [PacketIndex(2)]
-        public int PetId { get; set; }
+        public int MateTransportId { get; set; }
 
         [PacketIndex(3)]
         public UserType TargetType { get; set; }
