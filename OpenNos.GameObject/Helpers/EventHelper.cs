@@ -337,7 +337,7 @@ namespace OpenNos.GameObject.Helpers
                                             targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
                                             targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
                                             targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
-                                            if (!mapinstances.Any(s => s.MapInstanceId == targetSession?.CurrentMapInstance.MapInstanceId))
+                                            if (!mapinstances.Any(s => s.MapInstanceId == targetSession?.CurrentMapInstance.MapInstanceId && s.MapInstanceType == MapInstanceType.RaidInstance))
                                             {
                                                 mapinstances.Add(targetSession.CurrentMapInstance);
                                             }
