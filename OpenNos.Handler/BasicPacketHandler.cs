@@ -983,6 +983,29 @@ namespace OpenNos.Handler
                         }
 
                         int shellType = ShellGeneratorHelper.ShellTypes[shell.ItemVNum];
+
+                        if (shellType == 8 || shellType == 9)
+                        {
+                            switch (shell.Upgrade)
+                            {
+                                case 25:
+                                case 30:
+                                case 40:
+                                case 55:
+                                case 60:
+                                case 65:
+                                case 70:
+                                case 75:
+                                case 80:
+                                case 85:
+                                    break;
+                                default:
+                                    Session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("STOP_SPAWNING_BROKEN_SHELL"), 0));
+                                    return;
+                            }
+                        }
+
                         int perlsNeeded = shell.Upgrade / 10 + shell.Rare;
 
                         if (Session.Character.Inventory.CountItem(pearls.ItemVNum) < perlsNeeded)
