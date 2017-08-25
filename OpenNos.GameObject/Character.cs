@@ -4392,11 +4392,12 @@ namespace OpenNos.GameObject
                             DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
                             WearableInstance instance = itemInstance as WearableInstance;
 
-                            if (instance?.EquipmentOptions.Any() == true)
+                            if (instance?.EquipmentOptions.Any() != true)
                             {
-                                DAOFactory.EquipmentOptionDAO.Delete(instance.Id);
-                                DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
+                                continue;
                             }
+                            DAOFactory.EquipmentOptionDAO.Delete(instance.Id);
+                            DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
                         }
                     }
                 }

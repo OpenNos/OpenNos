@@ -1548,8 +1548,12 @@ namespace OpenNos.Handler
                     break;
 
                 case 3:
-                    inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
-                    if (inventory != null && upgradePacket.Slot2 != null && upgradePacket.InventoryType2 != null)
+                    if (upgradePacket.InventoryType2 == null)
+                    {
+                        return;
+                    }
+                    inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)upgradePacket.InventoryType2.Value, upgradePacket.InventoryType);
+                    if (inventory != null)
                     {
                         if (upgradePacket.CellonSlot != null && upgradePacket.CellonInventoryType != null)
                         {
@@ -1566,8 +1570,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLON_LEVEL_TOO_HIGH"), 0));
                                     return;
                                 }
-                                if (inventory.Item.MaxCellon <=
-                                    DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(inventory.Id).Count())
+                                if (inventory.Item.MaxCellon <= inventory.EquipmentOptions.Count)
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLON_FULL"), 0));
                                     return;
