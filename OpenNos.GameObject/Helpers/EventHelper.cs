@@ -29,7 +29,7 @@ namespace OpenNos.GameObject.Helpers
     {
         #region Members
 
-        private static EventHelper instance;
+        private static EventHelper _instance;
 
         #endregion
 
@@ -37,14 +37,7 @@ namespace OpenNos.GameObject.Helpers
 
         public static EventHelper Instance
         {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new EventHelper();
-                }
-                return instance;
-            }
+            get { return _instance ?? (_instance = new EventHelper()); }
         }
 
         #endregion
@@ -188,7 +181,6 @@ namespace OpenNos.GameObject.Helpers
 
                     break;
                 case EventActionType.REMOVEMONSTERLOCKER:
-                    EventContainer evt2 = (EventContainer)evt.Parameter;
                     if (evt.MapInstance.InstanceBag.MonsterLocker.Current > 0)
                     {
                         evt.MapInstance.InstanceBag.MonsterLocker.Current--;
@@ -201,7 +193,6 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.REMOVEBUTTONLOCKER:
-                    evt2 = (EventContainer)evt.Parameter;
                     if (evt.MapInstance.InstanceBag.ButtonLocker.Current > 0)
                     {
                         evt.MapInstance.InstanceBag.ButtonLocker.Current--;
@@ -299,7 +290,7 @@ namespace OpenNos.GameObject.Helpers
                             client = evt.MapInstance.Sessions.FirstOrDefault();
                             if (client != null)
                             {
-                                Group grp = client?.Character?.Group;
+                                Group grp = client.Character?.Group;
                                 if (grp == null)
                                 {
                                     return;
@@ -308,11 +299,11 @@ namespace OpenNos.GameObject.Helpers
                                 {
                                     foreach (ClientSession sess in grp.Characters.Where(s => s.CurrentMapInstance.Monsters.Any(e => e.IsBoss)))
                                     {
-                                        if (grp?.Raid?.GiftItems == null)
+                                        if (grp.Raid?.GiftItems == null)
                                         {
                                             continue;
                                         }
-                                        foreach (Gift gift in grp?.Raid?.GiftItems)
+                                        foreach (Gift gift in grp.Raid?.GiftItems)
                                         {
                                             byte rare = 0;
                                             if (gift.IsRandomRare)
@@ -325,11 +316,10 @@ namespace OpenNos.GameObject.Helpers
                                     }
                                     ServerManager.Instance.Broadcast(
                                         UserInterfaceHelper.Instance.GenerateMsg(
-                                            string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp?.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
+                                            string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
 
                                     Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(o =>
                                     {
-
                                         ClientSession[] grpmembers = new ClientSession[40];
                                         grp.Characters.ToList().CopyTo(grpmembers);
                                         foreach (ClientSession targetSession in grpmembers)
