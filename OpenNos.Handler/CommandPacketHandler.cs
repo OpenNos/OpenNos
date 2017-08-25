@@ -1662,10 +1662,11 @@ namespace OpenNos.Handler
         /// <param name="searchItemPacket"></param>
         public void SearchItem(SearchItemPacket searchItemPacket)
         {
-            Logger.Debug("SearchItem Command", Session.Character.GenerateIdentity());
             if (searchItemPacket != null)
             {
-                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(string.IsNullOrEmpty(searchItemPacket.Name) ? string.Empty : searchItemPacket.Name).OrderBy(s => s.VNum).Skip(searchItemPacket.Page * 200).Take(200).ToList();
+                // TODO REVIEW COMMAND LOGGING
+                Logger.Debug("SearchItem Command", Session.Character.GenerateIdentity());
+                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(string.IsNullOrEmpty(searchItemPacket.Data) ? string.Empty : searchItemPacket.Data).OrderBy(s => s.VNum).Skip(0 * 200).Take(200).ToList();
                 if (itemlist.Any())
                 {
                     foreach (ItemDTO item in itemlist)
