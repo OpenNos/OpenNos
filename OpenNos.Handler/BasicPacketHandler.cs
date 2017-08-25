@@ -469,7 +469,7 @@ namespace OpenNos.Handler
             switch (rlPacket.Type)
             {
                 case 0:
-                    if (Session.Character.Group != null && Session.Character.Group.IsLeader(Session) && Session.Character.Group.GroupType != GroupType.Group && ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
+                    if (Session.Character.Group?.IsLeader(Session) == true && Session.Character.Group.GroupType != GroupType.Group && ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
                     {
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
                     }
@@ -490,17 +490,17 @@ namespace OpenNos.Handler
                     if (Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && ServerManager.Instance.GroupList.All(s => s.GroupId != Session.Character.Group.GroupId))
                     {
                         ServerManager.Instance.GroupList.Add(Session.Character.Group);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("RAID_REGISTERED"));
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
-                        ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"), Session.Character.Name)}", ReceiverType.AllExceptGroup);
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_REGISTERED")));
+                        ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"), Session.Character.Name, Session.Character.Group.Raid?.Label)}", ReceiverType.AllExceptGroup);
                     }
                     break;
                 case 2:
                     if (Session.Character.Group != null && Session.Character.Group.GroupType != GroupType.Group && ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
                     {
                         ServerManager.Instance.GroupList.Remove(Session.Character.Group);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("RAID_UNREGISTERED"));
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(2));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_UNREGISTERED")));
                     }
                     break;
                 case 3:
@@ -508,7 +508,7 @@ namespace OpenNos.Handler
                     if (cl != null)
                     {
                         cl.Character.GroupSentRequestCharacterIds.Add(Session.Character.CharacterId);
-                        GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Accepted, CharacterId = cl.Character.CharacterId });
+                        GroupJoin(new PJoinPacket { RequestType = GroupRequestType.Accepted, CharacterId = cl.Character.CharacterId });
                     }
                     break;
             }
