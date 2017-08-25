@@ -121,7 +121,10 @@ namespace OpenNos.GameObject
 
         public int GoldRate { get; set; }
 
-        public List<Group> Groups => GroupsThreadSafe.Select(s => s.Value).ToList();
+        public List<Group> Groups
+        {
+            get { return GroupsThreadSafe.Select(s => s.Value).ToList(); }
+        }
 
         public int HeroicStartLevel { get; set; }
 
@@ -810,12 +813,12 @@ namespace OpenNos.GameObject
         {
             // parse rates
             XPRate = int.Parse(ConfigurationManager.AppSettings["RateXp"]);
-            HeroXpRate = int.Parse(ConfigurationManager.AppSettings["RateHeroicXp"]);
+            HeroXpRate = int.Parse(ConfigurationManager.AppSettings["RateXpHero"]);
+            FairyXpRate = int.Parse(ConfigurationManager.AppSettings["RateXpFairy"]);
             DropRate = int.Parse(ConfigurationManager.AppSettings["RateDrop"]);
             MaxGold = long.Parse(ConfigurationManager.AppSettings["MaxGold"]);
             GoldDropRate = int.Parse(ConfigurationManager.AppSettings["GoldRateDrop"]);
             GoldRate = int.Parse(ConfigurationManager.AppSettings["RateGold"]);
-            FairyXpRate = int.Parse(ConfigurationManager.AppSettings["RateFairyXp"]);
             MaxLevel = byte.Parse(ConfigurationManager.AppSettings["MaxLevel"]);
             MaxJobLevel = byte.Parse(ConfigurationManager.AppSettings["MaxJobLevel"]);
             MaxSPLevel = byte.Parse(ConfigurationManager.AppSettings["MaxSPLevel"]);
