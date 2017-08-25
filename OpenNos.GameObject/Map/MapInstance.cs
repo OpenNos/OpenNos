@@ -107,13 +107,13 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (_isSleepingRequest && !_isSleeping && LastUnregister.AddSeconds(30) < DateTime.Now)
+                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(30) >= DateTime.Now)
                 {
-                    _isSleeping = true;
-                    _isSleepingRequest = false;
-                    return true;
+                    return _isSleeping;
                 }
-                return _isSleeping;
+                _isSleeping = true;
+                _isSleepingRequest = false;
+                return true;
             }
             set
             {
@@ -182,12 +182,13 @@ namespace OpenNos.GameObject
 
         public sealed override void Dispose()
         {
-            if (!_disposed)
+            if (_disposed)
             {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
+                return;
             }
+            Dispose(true);
+            GC.SuppressFinalize(this);
+            _disposed = true;
         }
 
         public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY)
@@ -346,14 +347,18 @@ namespace OpenNos.GameObject
         public void LoadPortals()
         {
             OrderablePartitioner<PortalDTO> partitioner = Partitioner.Create(DAOFactory.PortalDAO.LoadByMap(Map.MapId), EnumerablePartitionerOptions.None);
-            ConcurrentDictionary<int, Portal> _portalList = new ConcurrentDictionary<int, Portal>();
+            ConcurrentDictionary<int, Portal> portalList = new ConcurrentDictionary<int, Portal>();
             Parallel.ForEach(partitioner, portal =>
             {
                 Portal portal2 = portal as Portal;
+                if (portal2 == null)
+                {
+                    return;
+                }
                 portal2.SourceMapInstanceId = MapInstanceId;
-                _portalList[portal2.PortalId] = portal2;
+                portalList[portal2.PortalId] = portal2;
             });
-            _portals.AddRange(_portalList.Select(s => s.Value));
+            _portals.AddRange(portalList.Select(s => s.Value));
         }
 
         public void MapClear()
@@ -519,40 +524,40 @@ namespace OpenNos.GameObject
         internal void StartLife()
         {
             Life = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
-              {
-                  WaveEvents.ForEach(s =>
-                  {
-                      if (s.LastStart.AddSeconds(s.Delay) > DateTime.Now)
-                      {
-                          return;
-                      }
-                      if (s.Offset == 0)
-                      {
-                          s.Events.ForEach(e => EventHelper.Instance.RunEvent(e));
-                      }
-                      s.Offset = s.Offset > 0 ? (byte)(s.Offset - 1) : (byte)0;
-                      s.LastStart = DateTime.Now;
-                  });
-                  try
-                  {
-                      if (Monsters.Count(s => s.IsAlive) == 0)
-                      {
-                          OnMapClean.ForEach(e =>
-                          {
-                              EventHelper.Instance.RunEvent(e);
-                          });
-                          OnMapClean.RemoveAll(s => s != null);
-                      }
-                      if (!IsSleeping)
-                      {
-                          RemoveMapItem();
-                      }
-                  }
-                  catch (Exception e)
-                  {
-                      Logger.Error(e);
-                  }
-              });
+            {
+                WaveEvents.ForEach(s =>
+                {
+                    if (s.LastStart.AddSeconds(s.Delay) > DateTime.Now)
+                    {
+                        return;
+                    }
+                    if (s.Offset == 0)
+                    {
+                        s.Events.ForEach(e => EventHelper.Instance.RunEvent(e));
+                    }
+                    s.Offset = s.Offset > 0 ? (byte) (s.Offset - 1) : (byte) 0;
+                    s.LastStart = DateTime.Now;
+                });
+                try
+                {
+                    if (Monsters.Count(s => s.IsAlive) == 0)
+                    {
+                        OnMapClean.ForEach(e =>
+                        {
+                            EventHelper.Instance.RunEvent(e);
+                        });
+                        OnMapClean.RemoveAll(s => s != null);
+                    }
+                    if (!IsSleeping)
+                    {
+                        RemoveMapItem();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            });
         }
 
         internal List<int> SummonMonsters(List<MonsterToSummon> summonParameters)
@@ -566,7 +571,23 @@ namespace OpenNos.GameObject
                 {
                     continue;
                 }
-                MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.Y, MapX = mon.SpawnCell.X, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, OnDeathEvents = mon.DeathEvents, OnNoticeEvents = mon.NoticingEvents, IsTarget = mon.IsTarget, IsBonus = mon.IsBonus, IsBoss = mon.IsBoss, NoticeRange = mon.NoticeRange };
+                MapMonster monster = new MapMonster
+                {
+                    MonsterVNum = npcmonster.NpcMonsterVNum,
+                    MapY = mon.SpawnCell.Y,
+                    MapX = mon.SpawnCell.X,
+                    MapId = Map.MapId,
+                    IsMoving = mon.IsMoving,
+                    MapMonsterId = GetNextMonsterId(),
+                    ShouldRespawn = false,
+                    Target = mon.Target,
+                    OnDeathEvents = mon.DeathEvents,
+                    OnNoticeEvents = mon.NoticingEvents,
+                    IsTarget = mon.IsTarget,
+                    IsBonus = mon.IsBonus,
+                    IsBoss = mon.IsBoss,
+                    NoticeRange = mon.NoticeRange
+                };
                 monster.Initialize(this);
                 monster.IsHostile = mon.IsHostile;
                 AddMonster(monster);
@@ -588,7 +609,20 @@ namespace OpenNos.GameObject
                 {
                     continue;
                 }
-                MapNpc npc = new MapNpc { NpcVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.X, MapX = mon.SpawnCell.Y, MapId = Map.MapId, IsHostile = true, IsMoving = true, MapNpcId = GetNextNpcId(), Target = mon.Target, OnDeathEvents = mon.DeathEvents, IsMate = mon.IsMate, IsProtected = mon.IsProtected };
+                MapNpc npc = new MapNpc
+                {
+                    NpcVNum = npcmonster.NpcMonsterVNum,
+                    MapY = mon.SpawnCell.X,
+                    MapX = mon.SpawnCell.Y,
+                    MapId = Map.MapId,
+                    IsHostile = true,
+                    IsMoving = true,
+                    MapNpcId = GetNextNpcId(),
+                    Target = mon.Target,
+                    OnDeathEvents = mon.DeathEvents,
+                    IsMate = mon.IsMate,
+                    IsProtected = mon.IsProtected
+                };
                 npc.Initialize(this);
                 AddNPC(npc);
                 Broadcast(npc.GenerateIn());
