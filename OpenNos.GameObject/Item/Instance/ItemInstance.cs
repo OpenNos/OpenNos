@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return BoundCharacterId.HasValue;
+                return BoundCharacterId.HasValue && Item.ItemType != ItemType.Armor && Item.ItemType != ItemType.Weapon;
             }
         }
 
