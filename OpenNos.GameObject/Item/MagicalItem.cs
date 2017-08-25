@@ -86,6 +86,18 @@ namespace OpenNos.GameObject
                             // PACKET MODIFIED
                             return;
                         }
+                        if (eq.Item.ItemType != ItemType.Armor && shell.Item.ItemSubType == 1)
+                        {
+                            // ARMOR SHELL ONLY APPLY ON ARMORS
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_FOR_ARMOR_ONLY"), 0));
+                            return;
+                        }
+                        if (eq.Item.ItemType != ItemType.Weapon && shell.Item.ItemSubType == 0)
+                        {
+                            // WEAPON SHELL ONLY APPLY ON WEAPONS
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_FOR_WEAPON_ONLY"), 0));
+                            return;
+                        }
                         switch (requestType)
                         {
                             case 0:
@@ -115,18 +127,6 @@ namespace OpenNos.GameObject
                                 {
                                     // SHELL LEVEL TOO HIGH
                                     session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_LEVEL_TOO_HIGH"), 0));
-                                    return;
-                                }
-                                if (eq.Item.ItemType != ItemType.Armor && shell.Item.ItemSubType == 1)
-                                {
-                                    // ARMOR SHELL ONLY APPLY ON ARMORS
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_FOR_ARMOR_ONLY"), 0));
-                                    return;
-                                }
-                                if (eq.Item.ItemType != ItemType.Weapon && shell.Item.ItemSubType == 0)
-                                {
-                                    // WEAPON SHELL ONLY APPLY ON WEAPONS
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_FOR_WEAPON_ONLY"), 0));
                                     return;
                                 }
 
