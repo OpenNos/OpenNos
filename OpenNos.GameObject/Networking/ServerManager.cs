@@ -611,9 +611,9 @@ namespace OpenNos.GameObject
             CommunicationServiceClient.Instance.UpdateFamily(ServerGroup, familyId);
         }
 
-        public MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
+        public MapInstance GenerateMapInstance(short mapId, MapInstanceType type, InstanceBag mapclock)
         {
-            Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
+            Map map = _maps.FirstOrDefault(m => m.MapId.Equals(mapId));
             if (map == null)
             {
                 return null;
@@ -1595,9 +1595,9 @@ namespace OpenNos.GameObject
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
             // TODO: Parallelization of family.
-            long FamilyId = (long)sender;
-            FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(FamilyId);
-            Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == FamilyId);
+            long familyId = (long)sender;
+            FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(familyId);
+            Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == familyId);
             lock (FamilyList)
             {
                 if (famdto != null)
