@@ -267,7 +267,7 @@ namespace OpenNos.GameObject
                                     session.Character.MorphUpgrade = 0;
                                     session.Character.MorphUpgrade2 = 0;
                                     session.Character.Morph = Morph + (byte)session.Character.Gender;
-                                    session.Character.Mates.ForEach(x => session.CurrentMapInstance?.Broadcast(x.GenerateOut()));
+                                    session.Character.Mates?.ForEach(x => session.CurrentMapInstance?.Broadcast(x.GenerateOut()));
                                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(196), session.Character.MapX, session.Character.MapY);
                                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
                                     session.SendPacket(session.Character.GenerateCond());
@@ -276,7 +276,7 @@ namespace OpenNos.GameObject
                             }
                             else if (session.Character.IsVehicled)
                             {
-                                session.Character.Mates.ForEach(x =>
+                                session.Character.Mates?.ForEach(x =>
                                 {
                                     x.PositionX = session.Character.PositionX;
                                     x.PositionY = session.Character.PositionY;
