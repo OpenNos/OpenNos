@@ -80,6 +80,8 @@
     <Compile Include="CharacterRelationDAO.cs" />
     <Compile Include="CharacterSkillDAO.cs" />
     <Compile Include="ComboDAO.cs" />
+    <Compile Include="LogChatDAO.cs" />
+    <Compile Include="LogCommandsDAO.cs" />
     <Compile Include="RollGeneratedItemDAO.cs" />
     <Compile Include="DropDAO.cs" />
     <Compile Include="ScriptedInstanceDAO.cs" />

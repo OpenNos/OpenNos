@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
-    public class GeneralLogDAO : BaseDAO<GeneralLogDTO>, IGeneralLogDao
+    public class GeneralLogDAO : BaseDAO<GeneralLogDTO>, IGeneralLogDAO
     {
         #region Methods
 

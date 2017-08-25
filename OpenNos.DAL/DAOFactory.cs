@@ -33,6 +33,8 @@ using FamilyLogDAO = OpenNos.DAL.Mock.FamilyLogDAO;
 using GeneralLogDAO = OpenNos.DAL.Mock.GeneralLogDAO;
 using ItemDAO = OpenNos.DAL.Mock.ItemDAO;
 using ItemInstanceDAO = OpenNos.DAL.Mock.ItemInstanceDAO;
+using LogChatDAO = OpenNos.DAL.Mock.LogChatDAO;
+using LogCommandsDAO = OpenNos.DAL.Mock.LogCommandsDAO;
 using MailDAO = OpenNos.DAL.Mock.MailDAO;
 using MapDAO = OpenNos.DAL.Mock.MapDAO;
 using MapMonsterDAO = OpenNos.DAL.Mock.MapMonsterDAO;
@@ -81,10 +83,11 @@ namespace OpenNos.DAL
         private static IFamilyCharacterDAO _familycharacterDAO;
         private static IFamilyDAO _familyDAO;
         private static IFamilyLogDAO _familylogDAO;
-        private static IGeneralLogDao _generallogDAO;
+        private static IGeneralLogDAO _generallogDAO;
         private static IItemDAO _itemDAO;
         private static IItemInstanceDAO _iteminstanceDAO;
         private static ILogChatDAO _logChatDAO;
+        private static ILogCommandsDAO _logCommandsDAO;
         private static IMailDAO _mailDAO;
         private static IMapDAO _mapDAO;
         private static IMapMonsterDAO _mapmonsterDAO;
@@ -372,7 +375,7 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IGeneralLogDao GeneralLogDAO
+        public static IGeneralLogDAO GeneralLogDAO
         {
             get
             {
@@ -391,7 +394,6 @@ namespace OpenNos.DAL
                 return _generallogDAO;
             }
         }
-
 
         public static IItemDAO ItemDAO
         {
@@ -449,6 +451,25 @@ namespace OpenNos.DAL
                     }
                 }
                 return _logChatDAO;
+            }
+        }
+
+        public static ILogCommandsDAO LogCommandsDAO
+        {
+            get
+            {
+                if (_logCommandsDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _logCommandsDAO = new LogCommandsDAO();
+                    }
+                    else
+                    {
+                        _logCommandsDAO = new EF.LogCommandsDAO();
+                    }
+                }
+                return _logCommandsDAO;
             }
         }
 

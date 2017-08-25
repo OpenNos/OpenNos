@@ -111,24 +111,24 @@ namespace OpenNos.GameObject
 
         public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true, bool isBoss = false)
         {
-            List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
+            List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
-                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, isBonus: isBonus, isHostile: isHostile, isBoss: isBoss) { DeathEvents = deathEvents });
+                summonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, isBonus: isBonus, isHostile: isHostile, isBoss: isBoss) { DeathEvents = deathEvents });
             }
-            return SummonParameters;
+            return summonParameters;
         }
 
         public List<NpcToSummon> GenerateNpcs(short vnum, short amount, List<EventContainer> deathEvents, bool isMate, bool isProtected)
         {
-            List<NpcToSummon> SummonParameters = new List<NpcToSummon>();
+            List<NpcToSummon> summonParameters = new List<NpcToSummon>();
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
-                SummonParameters.Add(new NpcToSummon(vnum, cell, -1, deathEvents, isMate: isMate, isProtected: isProtected));
+                summonParameters.Add(new NpcToSummon(vnum, cell, -1, deathEvents, isMate: isMate, isProtected: isProtected));
             }
-            return SummonParameters;
+            return summonParameters;
         }
 
         public MapCell GetRandomPosition()
@@ -149,14 +149,11 @@ namespace OpenNos.GameObject
         {
             try
             {
-                if (Grid != null)
+                if (Grid == null)
                 {
-                    if (!Grid[x, y].IsWalkable())
-                    {
-                        return true;
-                    }
+                    return false;
                 }
-                return false;
+                return !Grid[x, y].IsWalkable();
             }
             catch
             {
@@ -185,12 +182,13 @@ namespace OpenNos.GameObject
             }
             foreach (MapCell cell in cells.OrderBy(s => _random.Next(int.MaxValue)))
             {
-                if (!IsBlockedZone(firstX, firstY, cell.X, cell.Y))
+                if (IsBlockedZone(firstX, firstY, cell.X, cell.Y))
                 {
-                    firstX = cell.X;
-                    firstY = cell.Y;
-                    return true;
+                    continue;
                 }
+                firstX = cell.X;
+                firstY = cell.Y;
+                return true;
             }
             return false;
         }

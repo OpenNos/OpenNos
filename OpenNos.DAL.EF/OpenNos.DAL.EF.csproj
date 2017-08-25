@@ -99,12 +99,14 @@
     <Compile Include="BCardDAO.cs" />
     <Compile Include="CardDAO.cs" />
     <Compile Include="Entities\LogChat.cs" />
+    <Compile Include="Entities\LogCommands.cs" />
     <Compile Include="Entities\LogPlayerAction.cs" />
     <Compile Include="Entities\RollGeneratedItem.cs" />
     <Compile Include="Entities\Mate.cs" />
     <Compile Include="Entities\ScriptedInstance.cs" />
     <Compile Include="Entities\BCard.cs" />
     <Compile Include="LogChatDAO.cs" />
+    <Compile Include="LogCommandsDAO.cs" />
     <Compile Include="Migrations\201706141825546_Aphrodite55.cs" />
     <Compile Include="Migrations\201706141825546_Aphrodite55.Designer.cs">
       <DependentUpon>201706141825546_Aphrodite55.cs</DependentUpon>
@@ -136,6 +138,10 @@
     <Compile Include="Migrations\201708241912508_Aphrodite62.cs" />
     <Compile Include="Migrations\201708241912508_Aphrodite62.Designer.cs">
       <DependentUpon>201708241912508_Aphrodite62.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708251057526_Aphrodite63.cs" />
+    <Compile Include="Migrations\201708251057526_Aphrodite63.Designer.cs">
+      <DependentUpon>201708251057526_Aphrodite63.cs</DependentUpon>
     </Compile>
     <Compile Include="RollGeneratedItemDAO.cs" />
     <Compile Include="MateDAO.cs" />
@@ -664,6 +670,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201708241912508_Aphrodite62.resx">
       <DependentUpon>201708241912508_Aphrodite62.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708251057526_Aphrodite63.resx">
+      <DependentUpon>201708251057526_Aphrodite63.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

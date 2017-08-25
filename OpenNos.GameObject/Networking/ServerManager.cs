@@ -589,7 +589,7 @@ namespace OpenNos.GameObject
                         }
                     });
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
                     session.Character.IsChangingMapInstance = false;
@@ -770,7 +770,7 @@ namespace OpenNos.GameObject
                             }
                             if (session?.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
                             {
-                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                                Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
                             }
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
                         }

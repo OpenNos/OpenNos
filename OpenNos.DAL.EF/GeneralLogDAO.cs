@@ -23,7 +23,7 @@ using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
-    public class GeneralLogDAO : MappingBaseDAO<GeneralLog, GeneralLogDTO>, IGeneralLogDao
+    public class GeneralLogDAO : MappingBaseDAO<GeneralLog, GeneralLogDTO>, IGeneralLogDAO
     {
         #region Methods
 
@@ -77,9 +77,9 @@ namespace OpenNos.DAL.EF
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                foreach (GeneralLog GeneralLog in context.GeneralLog.Where(s => s.AccountId == accountId))
+                foreach (GeneralLog generalLog in context.GeneralLog.Where(s => s.AccountId == accountId))
                 {
-                    yield return _mapper.Map<GeneralLogDTO>(GeneralLog);
+                    yield return _mapper.Map<GeneralLogDTO>(generalLog);
                 }
             }
         }
