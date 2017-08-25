@@ -4394,6 +4394,7 @@ namespace OpenNos.GameObject
 
                             if (instance?.EquipmentOptions.Any() == true)
                             {
+                                DAOFactory.EquipmentOptionDAO.Delete(instance.Id);
                                 DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
                             }
                         }
