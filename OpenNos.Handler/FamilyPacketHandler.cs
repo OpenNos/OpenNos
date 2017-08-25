@@ -407,33 +407,35 @@ namespace OpenNos.Handler
         public void FamilyLeave(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length == 2)
+            if (packetsplit.Length != 2)
             {
-                if (Session.Character.Family == null || Session.Character.FamilyCharacter == null)
-                {
-                    return;
-                }
-                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("CANNOT_LEAVE_FAMILY")));
-                    return;
-                }
-                Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManaged, Session.Character.Name);
-                long FamilyId = Session.Character.Family.FamilyId;
-                DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_LEAVE")));
-
-                ServerManager.Instance.FamilyRefresh(FamilyId);
-                CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
-                {
-                    DestinationCharacterId = FamilyId,
-                    SourceCharacterId = Session.Character.CharacterId,
-                    SourceWorldId = ServerManager.Instance.WorldId,
-                    Message = "fhis_stc",
-                    Type = MessageType.Family
-                });
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
+                return;
             }
+            if (Session.Character?.Family == null || Session.Character.FamilyCharacter == null)
+            {
+                return;
+            }
+            if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("CANNOT_LEAVE_FAMILY")));
+                return;
+            }
+            Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManaged, Session.Character.Name);
+            long familyId = Session.Character.Family.FamilyId;
+            DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
+            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_LEAVE")));
+
+            ServerManager.Instance.FamilyRefresh(familyId);
+            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
+            {
+                DestinationCharacterId = familyId,
+                SourceCharacterId = Session.Character.CharacterId,
+                SourceWorldId = ServerManager.Instance.WorldId,
+                Message = "fhis_stc",
+                Type = MessageType.Family
+            });
+            Session.Character.Family = null;
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
         }
 
         /// <summary>

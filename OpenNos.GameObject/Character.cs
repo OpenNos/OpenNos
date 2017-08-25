@@ -111,16 +111,7 @@ namespace OpenNos.GameObject
 
         public ExchangeInfo ExchangeInfo { get; set; }
 
-        public Family Family
-        {
-            get
-            {
-                lock (ServerManager.Instance.FamilyList)
-                {
-                    return ServerManager.Instance.FamilyList.FirstOrDefault(s => s != null && s.FamilyCharacters.Any(c => c != null && c.CharacterId == CharacterId));
-                }
-            }
-        }
+        public Family Family { get; set; }
 
         public FamilyCharacterDTO FamilyCharacter
         {

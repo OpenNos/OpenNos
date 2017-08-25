@@ -2087,6 +2087,12 @@ namespace OpenNos.Handler
 
             Session.Character.LastPVPRevive = DateTime.Now;
 
+            long? familyId = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(Session.Character.CharacterId)?.FamilyId;
+            if (familyId != null)
+            {
+                Session.Character.Family = ServerManager.Instance.FamilyList.FirstOrDefault(s => s.FamilyId == familyId.Value);
+            }
+
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
                 Session.SendPacket(Session.Character.GenerateGInfo());
