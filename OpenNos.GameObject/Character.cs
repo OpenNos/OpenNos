@@ -4814,9 +4814,7 @@ namespace OpenNos.GameObject
             }
             if (HeroLevel > 0 && HeroLevel < ServerManager.Instance.MaxHeroLevel)
             {
-                HeroXp += (int)
-                (GetHXP(monsterinfo, grp) *
-                 (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                HeroXp += (int) (GetHXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
             }
             double t = XPLoad();
             while (LevelXp >= t)
@@ -4987,7 +4985,7 @@ namespace OpenNos.GameObject
 
             if (group != null)
             {
-                int levelSum = group.Characters.Sum(g => g.Character.HeroLevel);
+                int levelSum = group.Characters.Sum(g => g.Character.Level);
                 partySize = group.CharacterCount;
                 partyPenalty = 12f / partySize / levelSum;
             }
@@ -4995,9 +4993,9 @@ namespace OpenNos.GameObject
             int heroXp = (int)Math.Round(monster.HeroXp * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.Instance.HeroXpRate * MapInstance.XpRate);
 
             // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
-            if (partySize > 1 && @group != null)
+            if (partySize > 1 && group != null)
             {
-                heroXp = (int)Math.Round(HeroLevel / (HeroLevel * partyPenalty));
+                heroXp = (int)Math.Round(heroXp / (HeroLevel * partyPenalty));
             }
 
             return heroXp;
