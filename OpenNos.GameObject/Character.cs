@@ -578,31 +578,13 @@ namespace OpenNos.GameObject
 
                     if (LastDefence.AddSeconds(4) <= DateTime.Now && LastSkillUse.AddSeconds(2) <= DateTime.Now && Hp > 0)
                     {
-                        if (Hp + HealthHPLoad() < HPLoad())
+                        if (RegenHP())
                         {
                             change = true;
-                            Hp += HealthHPLoad();
                         }
-                        else
+                        if (RegenMP())
                         {
-                            if (Hp != (int) HPLoad())
-                            {
-                                change = true;
-                            }
-                            Hp = (int) HPLoad();
-                        }
-                        if (Mp + HealthMPLoad() < MPLoad())
-                        {
-                            Mp += HealthMPLoad();
                             change = true;
-                        }
-                        else
-                        {
-                            if (Mp != (int) MPLoad())
-                            {
-                                change = true;
-                            }
-                            Mp = (int) MPLoad();
                         }
                         if (change)
                         {
@@ -742,6 +724,44 @@ namespace OpenNos.GameObject
                 Session?.SendPacket(GenerateSpPoint());
                 LastSpGaugeRemove = DateTime.Now;
             }
+        }
+
+        private bool RegenMP()
+        {
+            bool change = false;
+            if (Mp + HealthMPLoad() < MPLoad())
+            {
+                Mp += HealthMPLoad();
+                change = true;
+            }
+            else
+            {
+                if (Mp != (int)MPLoad())
+                {
+                    change = true;
+                }
+                Mp = (int)MPLoad();
+            }
+            return change;
+        }
+
+        private bool RegenHP()
+        {
+            bool change = false;
+            if (Hp + HealthHPLoad() < HPLoad())
+            {
+                change = true;
+                Hp += HealthHPLoad();
+            }
+            else
+            {
+                if (Hp != (int)HPLoad())
+                {
+                    change = true;
+                }
+                Hp = (int)HPLoad();
+            }
+            return change;
         }
 
         public string GenerateTaFc()
