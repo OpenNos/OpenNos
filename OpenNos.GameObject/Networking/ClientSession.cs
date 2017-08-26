@@ -126,7 +126,7 @@ namespace OpenNos.GameObject
 
         public bool HasSession => _client != null;
 
-        public string IpAddress => _client.IpAddress;
+        public string IpAddress => _client.IpAddress.Contains("tcp://") ? _client.IpAddress.Replace("tcp://", "") : _client.IpAddress;
 
         public bool IsAuthenticated { get; set; }
 
