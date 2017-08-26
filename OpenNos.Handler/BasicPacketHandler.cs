@@ -1146,17 +1146,13 @@ namespace OpenNos.Handler
                             switch (guriPacket.Type)
                             {
                                 case 400:
-                                    if (guriPacket.User.HasValue)
+                                    if (guriPacket.Argument != 0)
                                     {
-                                        if (!short.TryParse(guriPacket.User.Value.ToString(), out short MapNpcId))
-                                        {
-                                            return;
-                                        }
                                         if (!Session.HasCurrentMapInstance)
                                         {
                                             return;
                                         }
-                                        MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
+                                        MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(guriPacket.Argument));
                                         if (npc != null)
                                         {
                                             NpcMonster mapobject = ServerManager.Instance.GetNpc(npc.NpcVNum);
