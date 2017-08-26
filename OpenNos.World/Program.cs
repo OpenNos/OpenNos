@@ -216,6 +216,7 @@ namespace OpenNos.World
             DAOFactory.FamilyCharacterDAO.RegisterMapping(typeof(FamilyCharacter)).InitializeMapper();
             DAOFactory.ScriptedInstanceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
             DAOFactory.ScriptedInstanceDAO.RegisterMapping(typeof(ScriptedInstance)).InitializeMapper();
+            DAOFactory.LogChatDAO.RegisterMapping(typeof(LogChatDTO)).InitializeMapper();
         }
 
         public class NativeMethods

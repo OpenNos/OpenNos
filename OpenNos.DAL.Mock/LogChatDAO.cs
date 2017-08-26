@@ -11,9 +11,21 @@ namespace OpenNos.DAL.Mock
 {
     public class LogChatDAO : BaseDAO<LogChatDTO>, ILogChatDAO
     {
-        public SaveResult InsertOrUpdate(ref LogChatDTO logchat)
+        public SaveResult InsertOrUpdate(ref LogChatDTO logChat)
         {
-            throw new NotImplementedException();
+            LogChatDTO dto = LoadByLogId(logChat.LogId);
+            if (dto != null)
+            {
+                dto = logChat;
+                return SaveResult.Updated;
+            }
+            Insert(logChat);
+            return SaveResult.Inserted;
+        }
+
+        public LogChatDTO LoadByLogId(long logId)
+        {
+            return Container.SingleOrDefault(c => c.LogId == logId);
         }
     }
 }

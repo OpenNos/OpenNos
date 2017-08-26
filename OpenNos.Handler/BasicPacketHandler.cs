@@ -1792,6 +1792,15 @@ namespace OpenNos.Handler
             }
             else
             {
+                LogChatDTO log = new LogChatDTO()
+                {
+                    CharacterId = Session.Character.CharacterId,
+                    ChatMessage = message,
+                    ChatType = 0,
+                    IpAddress = Session.IpAddress,
+                    Timestamp = DateTime.Now,
+                };
+                DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
                 byte type = 0;
                 if (Session.Character.Authority == AuthorityType.Moderator)
                 {
