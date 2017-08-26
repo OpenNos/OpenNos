@@ -178,6 +178,7 @@
     <value>Erreur : Votre identifiant ou mot de passe est incorrect. La saisie répétée de données incorrectes entrainera un blocage temporaire de votre compte.                                                                                                                                                                               </value>
   </data>
   <data name="MAINTENANCE" xml:space="preserve">
+    <value>Le serveur est en cours de maintenance. Veuillez réessayer ultérieurement.</value>
   </data>
   <data name="CONNECTION_CLOSED" xml:space="preserve">
     <value>Connection closed.</value>

@@ -40,5 +40,6 @@ namespace OpenNos.Domain
         CleftOfDarkness = 21,
         CitadelAngel = 23,
         CitadelDemon = 24,
+        Oasis = 25,
     }
 }
