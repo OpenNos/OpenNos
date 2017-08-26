@@ -569,7 +569,7 @@ namespace OpenNos.GameObject
                     LastEffect = DateTime.Now;
                 }
 
-                if (LastHealth.AddSeconds(2) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
+                if (LastHealth.AddSeconds(3) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
                 {
                     LastHealth = DateTime.Now;
                     if (Session.HealthStop)
