@@ -1015,11 +1015,9 @@ namespace OpenNos.Handler
                         }
 
                         List<EquipmentOptionDTO> shellOptions = ShellGeneratorHelper.GenerateShell(shellType, shell.Rare, shell.Upgrade);
-                        foreach (EquipmentOptionDTO s in shellOptions)
-                        {
-                            s.WearableInstanceId = shell.Id;
-                            shell.EquipmentOptions.Add(s);
-                        }
+
+                        shell.EquipmentOptions.AddRange(shellOptions);
+
                         Session.Character.Inventory.RemoveItemAmount(pearls.ItemVNum, perlsNeeded);
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(3006));
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_IDENTIFIED"), 0));

@@ -415,13 +415,13 @@ namespace OpenNos.GameObject
             return true;
         }
 
-        public void AddRelation(long characterId, CharacterRelationType Relation)
+        public void AddRelation(long characterId, CharacterRelationType relation)
         {
             CharacterRelationDTO addRelation = new CharacterRelationDTO
             {
                 CharacterId = CharacterId,
                 RelatedCharacterId = characterId,
-                RelationType = Relation
+                RelationType = relation
             };
 
             DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
@@ -4428,6 +4428,7 @@ namespace OpenNos.GameObject
                                 continue;
                             }
                             DAOFactory.EquipmentOptionDAO.Delete(instance.Id);
+                            instance?.EquipmentOptions.ForEach(s => s.WearableInstanceId = instance.Id);
                             DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
                         }
                     }
@@ -4887,7 +4888,7 @@ namespace OpenNos.GameObject
                     Level = ServerManager.Instance.MaxLevel;
                     LevelXp = 0;
                 }
-                if (Level == ServerManager.Instance.HeroicStartLevel)
+                if (Level == ServerManager.Instance.HeroicStartLevel && HeroLevel == 0)
                 {
                     HeroLevel = 1;
                     HeroXp = 0;

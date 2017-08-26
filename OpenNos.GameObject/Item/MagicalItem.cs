@@ -150,7 +150,6 @@ namespace OpenNos.GameObject
                                 {
                                     session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId));
                                     session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_OPTION_SET"), 0));
-                                    i.WearableInstanceId = eq.Id;
                                     eq.EquipmentOptions.Add(i);
                                 }
 

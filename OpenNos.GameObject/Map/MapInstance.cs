@@ -426,7 +426,6 @@ namespace OpenNos.GameObject
             newItemInstance.Id = random2;
             newItemInstance.Amount = amount;
             droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance);
-            DAOFactory.EquipmentOptionDAO.Delete(inv.Id);
             DroppedList[droppedItem.TransportId] = droppedItem;
             inv.Amount -= amount;
             return droppedItem;

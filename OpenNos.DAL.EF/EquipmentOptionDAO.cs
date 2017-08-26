@@ -27,8 +27,7 @@ namespace OpenNos.DAL.EF
     public class EquipmentOptionDAO : SynchronizableBaseDAO<EquipmentOption, EquipmentOptionDTO>, IEquipmentOptionDAO
     {
         #region Methods
-
-
+        
         public SaveResult InsertOrUpdate(ref EquipmentOptionDTO equipmentOption)
         {
             try

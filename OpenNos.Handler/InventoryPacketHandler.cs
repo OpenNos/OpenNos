@@ -633,14 +633,6 @@ namespace OpenNos.Handler
                             ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
                             if (inv != null)
                             {
-                                if (mapItem.EquipmentOptions != null)
-                                {
-                                    foreach (EquipmentOptionDTO i in mapItem.EquipmentOptions)
-                                    {
-                                        i.WearableInstanceId = inv.Id;
-                                        DAOFactory.EquipmentOptionDAO.InsertOrUpdate(i);
-                                    }
-                                }
                                 Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                                 if (getPacket.PickerType == 2)
@@ -1621,14 +1613,13 @@ namespace OpenNos.Handler
                                 EquipmentOptionDTO option = CellonGeneratorHelper.GenerateOption(cellon.Item.EffectValue);
 
                                 // FAIL
-                                if (option == null || DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(inventory.Id).Any(s => s.Type == option.Type))
+                                if (option == null || inventory.EquipmentOptions.Any(s => s.Type == option.Type))
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLONING_FAILED"), 0));
                                     return;
                                 }
 
                                 // SUCCESS
-                                option.WearableInstanceId = inventory.Id;
                                 inventory.EquipmentOptions.Add(option);
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLONING_SUCCESS"), 0));
                             }
@@ -1888,11 +1879,12 @@ namespace OpenNos.Handler
                 targetSession.Character.ExchangeInfo = null;
             }
 
-            if (session?.Character.ExchangeInfo != null)
+            if (session?.Character.ExchangeInfo == null)
             {
-                session.SendPacket("exc_close 0");
-                session.Character.ExchangeInfo = null;
+                return;
             }
+            session.SendPacket("exc_close 0");
+            session.Character.ExchangeInfo = null;
         }
 
         /// <summary>
