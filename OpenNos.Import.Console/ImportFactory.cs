@@ -989,51 +989,167 @@ namespace OpenNos.Import.Console
                         switch (npc.NpcMonsterVNum)
                         {
                             case 2500:
-                                npc.HeroXp = 533;
+                                npc.HeroXp = 879;
                                 break;
 
                             case 2501:
-                                npc.HeroXp = 534;
+                                npc.HeroXp = 881;
                                 break;
 
                             case 2502:
-                                npc.HeroXp = 535;
+                                npc.HeroXp = 884;
                                 break;
 
                             case 2503:
-                                npc.HeroXp = 614;
+                                npc.HeroXp = 1013;
+                                break;
+
+                            case 2505:
+                                npc.HeroXp = 871;
+                                break;
+
+                            case 2506:
+                                npc.HeroXp = 765;
+                                break;
+
+                            case 2507:
+                                npc.HeroXp = 803;
+                                break;
+
+                            case 2508:
+                                npc.HeroXp = 825;
+                                break;
+
+                            case 2509:
+                                npc.HeroXp = 789;
                                 break;
 
                             case 2510:
-                                npc.HeroXp = 534;
+                                npc.HeroXp = 881;
                                 break;
 
                             case 2511:
-                                npc.HeroXp = 533;
+                                npc.HeroXp = 879;
                                 break;
 
                             case 2512:
-                                npc.HeroXp = 535;
+                                npc.HeroXp = 884;
                                 break;
 
                             case 2513:
-                                npc.HeroXp = 651;
+                                npc.HeroXp = 1075;
+                                break;
+
+                            case 2515:
+                                npc.HeroXp = 3803;
+                                break;
+
+                            case 2516:
+                                npc.HeroXp = 836;
+                                break;
+
+                            case 2517:
+                                npc.HeroXp = 450;
+                                break;
+
+                            case 2518:
+                                npc.HeroXp = 911;
+                                break;
+
+                            case 2519:
+                                npc.HeroXp = 845;
+                                break;
+
+                            case 2520:
+                                npc.HeroXp = 3682;
                                 break;
 
                             case 2521:
-                                npc.HeroXp = 170;
+                                npc.HeroXp = 401;
                                 break;
 
                             case 2522:
-                                npc.HeroXp = 286;
+                                npc.HeroXp = 471;
                                 break;
 
                             case 2523:
                                 npc.HeroXp = 328;
                                 break;
 
+                            case 2524:
+                                npc.HeroXp = 12718;
+                                break;
+
                             case 2525:
-                                npc.HeroXp = 261;
+                                npc.HeroXp = 412;
+                                break;
+
+                            case 2526:
+                                npc.HeroXp = 11157;
+                                break;
+
+                            case 2527:
+                                npc.HeroXp = 18057;
+                                break;
+
+                            case 2530:
+                                npc.HeroXp = 28756;
+                                break;
+
+                            case 2559:
+                                npc.HeroXp = 1308;
+                                break;
+
+                            case 2560:
+                                npc.HeroXp = 1234;
+                                break;
+
+                            case 2561:
+                                npc.HeroXp = 1168;
+                                break;
+
+                            case 2562:
+                                npc.HeroXp = 959;
+                                break;
+
+                            case 2563:
+                                npc.HeroXp = 947;
+                                break;
+
+                            case 2564:
+                                npc.HeroXp = 952;
+                                break;
+
+                            case 2566:
+                                npc.HeroXp = 1097;
+                                break;
+
+                            case 2567:
+                                npc.HeroXp = 1096;
+                                break;
+
+                            case 2568:
+                                npc.HeroXp = 4340;
+                                break;
+
+                            case 2569:
+                                npc.HeroXp = 3534;
+                                break;
+
+                            case 2570:
+                                npc.HeroXp = 4343;
+                                break;
+
+                            case 2571:
+                                npc.HeroXp = 2205;
+                                break;
+
+                            case 2572:
+                                npc.HeroXp = 5632;
+                                break;
+
+                            case 2573:
+                                npc.HeroXp = 3756;
                                 break;
 
                             default:

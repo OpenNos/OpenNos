@@ -421,7 +421,7 @@ namespace OpenNos.Handler
                         }
                         if (!inv.Item.IsTradable || inv.IsBound)
                         {
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 10));
                             Session.SendPacket("shop_end 0");
                             return;
                         }

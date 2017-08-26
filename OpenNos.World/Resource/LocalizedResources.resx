@@ -1519,4 +1519,22 @@
   <data name="SHELL_RARITY_TOO_HIGH" xml:space="preserve">
     <value>The shell rarity is too high.</value>
   </data>
+  <data name="ARENA_CALLED" xml:space="preserve">
+    <value>A participant has called : {0}</value>
+  </data>
+  <data name="ARENA_PENALITY_NOTICE" xml:space="preserve">
+    <value>If you cancel the inscription you will suffered a penality.</value>
+  </data>
+  <data name="ASK_CHANGE_SPAWNLOCATION" xml:space="preserve">
+    <value>Do you want to change the respawn town?</value>
+  </data>
+  <data name="RESPAWNLOCATION_CHANGED" xml:space="preserve">
+    <value>The town has been changed!</value>
+  </data>
+  <data name="RIVAL_ARENA_TEAM_FOUND" xml:space="preserve">
+    <value>Enemy team found.</value>
+  </data>
+  <data name="WINNER_ARENA_ROUND" xml:space="preserve">
+    <value>{0} as kill {1}.</value>
+  </data>
 </root>

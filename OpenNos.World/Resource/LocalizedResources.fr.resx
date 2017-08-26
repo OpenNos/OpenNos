@@ -1645,4 +1645,25 @@ Veux-tu le porter ?</value>
   <data name="SHELL_RARITY_TOO_HIGH" xml:space="preserve">
     <value>La rareté de la rune est trop élevée pour être appliquée à cet équipement.</value>
   </data>
+  <data name="ARENA_CALLED" xml:space="preserve">
+    <value>Un autre participant l'appellera rapidement : {0}</value>
+  </data>
+  <data name="ARENA_PENALITY_NOTICE" xml:space="preserve">
+    <value>Si tu annules l'inscription tu recevras une pénalité.</value>
+  </data>
+  <data name="ASK_CHANGE_SPAWNLOCATION" xml:space="preserve">
+    <value>Veux-tu changer le village de renaissance ?</value>
+  </data>
+  <data name="RESPAWNLOCATION_CHANGED" xml:space="preserve">
+    <value>Le village est désigné comme lieu de renaissance.</value>
+  </data>
+  <data name="RIVAL_ARENA_TEAM_FOUND" xml:space="preserve">
+    <value>Une équipe adverse a été trouvée.</value>
+  </data>
+  <data name="SEARCH_ARENA_TEAM" xml:space="preserve">
+    <value>Recherche de l'équipe.</value>
+  </data>
+  <data name="WINNER_ARENA_ROUND" xml:space="preserve">
+    <value>{0} a vaincu {1}.</value>
+  </data>
 </root>

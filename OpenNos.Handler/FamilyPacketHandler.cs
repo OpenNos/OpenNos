@@ -442,7 +442,7 @@ namespace OpenNos.Handler
             }
             Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManaged, Session.Character.Name);
             long familyId = Session.Character.Family.FamilyId;
-            DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name); 
+            DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_LEAVE")));
 
             ServerManager.Instance.FamilyRefresh(familyId);
@@ -465,16 +465,18 @@ namespace OpenNos.Handler
         public void FamilyList(GListPacket gListPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
-            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
+            if (Session.Character.Family == null || Session.Character.FamilyCharacter == null)
             {
-                if (gListPacket.Type == 2)
-                {
-                    Session.SendPacket(Session.Character.GenerateGInfo());
-                    Session.SendPacket(Session.Character.GenerateFamilyMember());
-                    Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
-                    Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
-                }
+                return;
             }
+            if (gListPacket.Type != 2)
+            {
+                return;
+            }
+            Session.SendPacket(Session.Character.GenerateGInfo());
+            Session.SendPacket(Session.Character.GenerateFamilyMember());
+            Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
+            Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
         }
 
         /// <summary>
@@ -618,44 +620,48 @@ namespace OpenNos.Handler
         public void FamilyMessage(string packet)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
-            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
+            if (Session.Character.Family == null || Session.Character.FamilyCharacter == null)
             {
-                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerCanShout || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                return;
+            }
+            if (Session.Character.FamilyCharacter.Authority != FamilyAuthority.Assistant &&
+                (Session.Character.FamilyCharacter.Authority != FamilyAuthority.Manager || !Session.Character.Family.ManagerCanShout) &&
+                Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
+            {
+                return;
+            }
+            string msg = string.Empty;
+            int i = 0;
+            foreach (string str in packet.Split(' '))
+            {
+                if (i > 1)
                 {
-                    string msg = string.Empty;
-                    int i = 0;
-                    foreach (string str in packet.Split(' '))
-                    {
-                        if (i > 1)
-                        {
-                            msg += str + " ";
-                        }
-                        i++;
-                    }
-                    Session.Character.Family.FamilyMessage = msg;
-                    FamilyDTO fam = Session.Character.Family;
-                    DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
-                    ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-                    CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
-                    {
-                        DestinationCharacterId = Session.Character.Family.FamilyId,
-                        SourceCharacterId = Session.Character.CharacterId,
-                        SourceWorldId = ServerManager.Instance.WorldId,
-                        Message = "fhis_stc",
-                        Type = MessageType.Family
-                    });
-                    if (!string.IsNullOrWhiteSpace(msg))
-                    {
-                        CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
-                        {
-                            DestinationCharacterId = Session.Character.Family.FamilyId,
-                            SourceCharacterId = Session.Character.CharacterId,
-                            SourceWorldId = ServerManager.Instance.WorldId,
-                            Message = UserInterfaceHelper.Instance.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage),
-                            Type = MessageType.Family
-                        });
-                    }
+                    msg += str + " ";
                 }
+                i++;
+            }
+            Session.Character.Family.FamilyMessage = msg;
+            FamilyDTO fam = Session.Character.Family;
+            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+            {
+                DestinationCharacterId = Session.Character.Family.FamilyId,
+                SourceCharacterId = Session.Character.CharacterId,
+                SourceWorldId = ServerManager.Instance.WorldId,
+                Message = "fhis_stc",
+                Type = MessageType.Family
+            });
+            if (!string.IsNullOrWhiteSpace(msg))
+            {
+                CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                {
+                    DestinationCharacterId = Session.Character.Family.FamilyId,
+                    SourceCharacterId = Session.Character.CharacterId,
+                    SourceWorldId = ServerManager.Instance.WorldId,
+                    Message = UserInterfaceHelper.Instance.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage),
+                    Type = MessageType.Family
+                });
             }
         }
 
@@ -771,9 +777,11 @@ namespace OpenNos.Handler
         public void FamilyWithdraw(FWithdrawPacket fWithdrawPacket)
         {
             if (Session.Character.Family == null || !(Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
-           || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
-           || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL
-           || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL))
+                                                      || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
+                                                      || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member &&
+                                                      Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL
+                                                      || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager &&
+                                                      Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL))
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
                 return;
