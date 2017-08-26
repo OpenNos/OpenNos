@@ -524,7 +524,6 @@ namespace OpenNos.GameObject
 
         public void CharacterLife()
         {
-            int x = 1;
             bool change = false;
             if (Hp == 0 && LastHealth.AddSeconds(2) <= DateTime.Now)
             {
@@ -579,10 +578,6 @@ namespace OpenNos.GameObject
 
                     if (LastDefence.AddSeconds(4) <= DateTime.Now && LastSkillUse.AddSeconds(2) <= DateTime.Now && Hp > 0)
                     {
-                        if (x == 0)
-                        {
-                            x = 1;
-                        }
                         if (Hp + HealthHPLoad() < HPLoad())
                         {
                             change = true;
@@ -596,21 +591,18 @@ namespace OpenNos.GameObject
                             }
                             Hp = (int) HPLoad();
                         }
-                        if (x == 1)
+                        if (Mp + HealthMPLoad() < MPLoad())
                         {
-                            if (Mp + HealthMPLoad() < MPLoad())
+                            Mp += HealthMPLoad();
+                            change = true;
+                        }
+                        else
+                        {
+                            if (Mp != (int) MPLoad())
                             {
-                                Mp += HealthMPLoad();
                                 change = true;
                             }
-                            else
-                            {
-                                if (Mp != (int) MPLoad())
-                                {
-                                    change = true;
-                                }
-                                Mp = (int) MPLoad();
-                            }
+                            Mp = (int) MPLoad();
                         }
                         if (change)
                         {
@@ -642,6 +634,33 @@ namespace OpenNos.GameObject
                 if (specialist == null)
                 {
                     return;
+                }
+                switch (specialist.Design)
+                {
+                    case 6:
+                        AddBuff(new Buff(387), false);
+                        break;
+                    case 7:
+                        AddBuff(new Buff(395), false);
+                        break;
+                    case 8:
+                        AddBuff(new Buff(396), false);
+                        break;
+                    case 9:
+                        AddBuff(new Buff(397), false);
+                        break;
+                    case 10:
+                        AddBuff(new Buff(398), false);
+                        break;
+                    case 11:
+                        AddBuff(new Buff(410), false);
+                        break;
+                    case 12:
+                        AddBuff(new Buff(411), false);
+                        break;
+                    case 13:
+                        AddBuff(new Buff(444), false);
+                        break;
                 }
                 byte spType = 0;
 
@@ -5132,7 +5151,7 @@ namespace OpenNos.GameObject
                     break;
                 case 3:
                     result = $"raid 3";
-                    Group?.Characters?.ToList().ForEach(s => { result += $" {s.Character?.CharacterId}.{(int)(s.Character.Hp / s.Character.HPLoad() * 100)}.{(int)(s.Character.Mp / s.Character.MPLoad() * 100)}"; });
+                    Group?.Characters?.Where(p => p.Character != null).ToList().ForEach(s => { result += $" {s.Character?.CharacterId}.{(int)(s.Character.Hp / s.Character.HPLoad() * 100)}.{(int)(s.Character.Mp / s.Character.MPLoad() * 100)}"; });
                     break;
                 case 4:
                     result = $"raid 4";
@@ -5170,53 +5189,47 @@ namespace OpenNos.GameObject
                 Buff.Add(bf);
             }
             bf.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
-            Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime))
-                .Subscribe(
-                    o =>
-                    {
-                        RemoveBuff(bf.Card.CardId);
-                        if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
-                            bf.Card.TimeoutBuffChance)
-                        {
-                            AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
-                        }
-                    });
+            Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime)).Subscribe(o =>
+            {
+                RemoveBuff(bf.Card.CardId);
+                if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
+                    bf.Card.TimeoutBuffChance)
+                {
+                    AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
+                }
+            });
 
             Session.SendPacket($"vb {bf.Card.CardId} 1 {bf.RemainingTime * 10}");
-            Session.SendPacket(
-                Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name),
-                    12));
+            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 12));
         }
 
-        public void AddBuff(Buff indicator)
+        public void AddBuff(Buff indicator, bool notify = true)
         {
             if (indicator?.Card == null)
             {
                 return;
             }
+            if (!notify && Buff.Any(s => s.Card.CardId == indicator.Card.CardId))
+            {
+                return;
+            }
             Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
-            Buff.Add(indicator);
             indicator.RemainingTime = indicator.Card.Duration;
             indicator.Start = DateTime.Now;
+            Buff.Add(indicator);
 
-            Session.SendPacket(
-                $"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
-            Session.SendPacket(
-                Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name),
-                    20));
+            Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
+            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 20));
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
-            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100))
-                .Subscribe(
-                    o =>
-                    {
-                        RemoveBuff(indicator.Card.CardId);
-                        if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
-                            indicator.Card.TimeoutBuffChance)
-                        {
-                            AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
-                        }
-                    });
+            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>
+            {
+                RemoveBuff(indicator.Card.CardId);
+                if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
+                {
+                    AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
+                }
+            });
         }
 
         private void RemoveBuff(int id)
