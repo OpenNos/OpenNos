@@ -186,11 +186,11 @@ namespace OpenNos.Master.Server
             }
             if (accountId.HasValue)
             {
-                MSManager.Instance.ConnectedAccounts= MSManager.Instance.ConnectedAccounts.Where(s => !s.AccountId.Equals(accountId.Value));
+                MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(s => !s.AccountId.Equals(accountId.Value));
             }
             else if (sessionId.HasValue)
             {
-                MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(s =>!s.SessionId.Equals(sessionId.Value));
+                MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(s => !s.SessionId.Equals(sessionId.Value));
             }
         }
 
@@ -292,7 +292,6 @@ namespace OpenNos.Master.Server
             string lastGroup = string.Empty;
             byte worldCount = 0;
             string channelPacket = $"NsTeST {sessionId} ";
-
             foreach (WorldServer world in MSManager.Instance.WorldServers.OrderBy(w => w.WorldGroup).Where(s => s.ChannelId != 51))
             {
                 if (lastGroup != world.WorldGroup)
@@ -302,11 +301,11 @@ namespace OpenNos.Master.Server
                 lastGroup = world.WorldGroup;
 
                 int currentlyConnectedAccounts = MSManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.WorldGroup == world.WorldGroup);
-                int channelcolor = (int) Math.Round((double) currentlyConnectedAccounts / world.AccountLimit * 20) + 1;
+                int channelcolor = (int)Math.Round((double)currentlyConnectedAccounts / world.AccountLimit * 20) + 1;
 
                 channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:{channelcolor}:{worldCount}.{world.ChannelId}.{world.WorldGroup} ";
             }
-            return channelPacket;
+            return MSManager.Instance.WorldServers.Any() ? channelPacket : null;
         }
 
         public IEnumerable<string> RetrieveServerStatistics()
@@ -404,7 +403,7 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-            MSManager.Instance.ConnectedAccounts= MSManager.Instance.ConnectedAccounts.Where(a => a == null || a.ConnectedWorld?.Id.Equals(worldId) != true);
+            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(a => a == null || a.ConnectedWorld?.Id.Equals(worldId) != true);
             MSManager.Instance.WorldServers.RemoveAll(w => w.Id.Equals(worldId));
         }
 
