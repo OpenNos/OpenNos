@@ -1832,48 +1832,47 @@ namespace OpenNos.Handler
         {
             SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
             WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
-            if (sp != null)
+            if (sp == null)
             {
-                if (Session.Character.GetReputIco() < sp.Item.ReputationMinimum)
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
-                    return;
-                }
-                if (fairy != null && sp.Item.Element != 0 && fairy.Item.Element != sp.Item.Element && fairy.Item.Element != sp.Item.SecondaryElement)
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
-                    return;
-                }
-                List<BuffType> bufftodisable = new List<BuffType>();
-                bufftodisable.Add(BuffType.Bad);
-                bufftodisable.Add(BuffType.Good);
-                bufftodisable.Add(BuffType.Neutral);
-                Session.Character.DisableBuffs(bufftodisable);
-                Session.Character.LastTransform = DateTime.Now;
-                Session.Character.UseSp = true;
-                Session.Character.Morph = sp.Item.Morph;
-                Session.Character.MorphUpgrade = sp.Upgrade;
-                Session.Character.MorphUpgrade2 = sp.Design;
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
-                Session.SendPacket(Session.Character.GenerateLev());
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), Session.Character.PositionX, Session.Character.PositionY);
-                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
-                Session.SendPacket(Session.Character.GenerateSpPoint());
-                Session.Character.LoadSpeed();
-                Session.SendPacket(Session.Character.GenerateCond());
-                Session.SendPacket(Session.Character.GenerateStat());
-                Session.SendPacket(Session.Character.GenerateStatChar());
-                Session.Character.SkillsSp = new ConcurrentDictionary<int, CharacterSkill>();
-                Parallel.ForEach(ServerManager.Instance.GetAllSkill(), skill =>
-                {
-                    if (skill.Class == Session.Character.Morph + 31 && sp.SpLevel >= skill.LevelMinimum)
-                    {
-                        Session.Character.SkillsSp[skill.SkillVNum] = new CharacterSkill { SkillVNum = skill.SkillVNum, CharacterId = Session.Character.CharacterId };
-                    }
-                });
-                Session.SendPacket(Session.Character.GenerateSki());
-                Session.SendPackets(Session.Character.GenerateQuicklist());
+                return;
             }
+            if (Session.Character.GetReputIco() < sp.Item.ReputationMinimum)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
+                return;
+            }
+            if (fairy != null && sp.Item.Element != 0 && fairy.Item.Element != sp.Item.Element && fairy.Item.Element != sp.Item.SecondaryElement)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
+                return;
+            }
+            List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
+            Session.Character.DisableBuffs(bufftodisable);
+            Session.Character.LastTransform = DateTime.Now;
+            Session.Character.UseSp = true;
+            Session.Character.SpInstance = sp;
+            Session.Character.Morph = sp.Item.Morph;
+            Session.Character.MorphUpgrade = sp.Upgrade;
+            Session.Character.MorphUpgrade2 = sp.Design;
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
+            Session.SendPacket(Session.Character.GenerateLev());
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), Session.Character.PositionX, Session.Character.PositionY);
+            Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
+            Session.SendPacket(Session.Character.GenerateSpPoint());
+            Session.Character.LoadSpeed();
+            Session.SendPacket(Session.Character.GenerateCond());
+            Session.SendPacket(Session.Character.GenerateStat());
+            Session.SendPacket(Session.Character.GenerateStatChar());
+            Session.Character.SkillsSp = new ConcurrentDictionary<int, CharacterSkill>();
+            Parallel.ForEach(ServerManager.Instance.GetAllSkill(), skill =>
+            {
+                if (skill.Class == Session.Character.Morph + 31 && sp.SpLevel >= skill.LevelMinimum)
+                {
+                    Session.Character.SkillsSp[skill.SkillVNum] = new CharacterSkill { SkillVNum = skill.SkillVNum, CharacterId = Session.Character.CharacterId };
+                }
+            });
+            Session.SendPacket(Session.Character.GenerateSki());
+            Session.SendPackets(Session.Character.GenerateQuicklist());
         }
 
         /// <summary>

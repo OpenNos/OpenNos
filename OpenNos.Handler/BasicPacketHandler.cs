@@ -1823,11 +1823,12 @@ namespace OpenNos.Handler
                 if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
                 {
                     ConcurrentBag<ArenaTeamMember> member = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(e => e.Session == Session));
-                    if (member != null)
+                    if (member == null)
                     {
-                        ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
-                        member.Where(s => s.ArenaTeamType == member2.ArenaTeamType && s != member2).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(message.Trim(), type)));
+                        return;
                     }
+                        ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
+                    member.Where(s => s.ArenaTeamType == member2?.ArenaTeamType && s != member2).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(message.Trim(), type)));
                 }
                 else
                 {
@@ -1839,7 +1840,7 @@ namespace OpenNos.Handler
         /// <summary>
         /// pst packet
         /// </summary>
-        /// <param name="pstPacket"></param>
+        /// <param name="pstpacket"></param>
         public void SendMail(PstPacket pstpacket)
         {
             Logger.Debug(Session.Character.GenerateIdentity(), pstpacket.ToString());

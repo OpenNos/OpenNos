@@ -388,6 +388,8 @@ namespace OpenNos.GameObject
 
         public byte VehicleSpeed { private get; set; }
 
+        public SpecialistInstance SpInstance { get; set; }
+
         public int WareHouseSize { get; set; }
 
         public int WaterResistance { get; set; }
@@ -668,57 +670,61 @@ namespace OpenNos.GameObject
                     SpPoint = 0;
                     SpAdditionPoint -= spType;
                 }
-                else if (SpPoint == 0 && SpAdditionPoint >= spType)
+                else
                 {
-                    SpAdditionPoint -= spType;
-                }
-                else if (SpPoint == 0 && SpAdditionPoint < spType)
-                {
-                    SpAdditionPoint = 0;
-
-                    double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-
-                    if (UseSp)
+                    switch (SpPoint)
                     {
-                        LastSp = currentRunningSeconds;
-                        if (Session != null && Session.HasSession)
-                        {
-                            if (IsVehicled)
+                        case 0 when SpAdditionPoint >= spType:
+                            SpAdditionPoint -= spType;
+                            break;
+                        case 0 when SpAdditionPoint < spType:
+                            SpAdditionPoint = 0;
+
+                            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+
+                            if (UseSp)
                             {
-                                return;
-                            }
-                            Logger.Debug(GenerateIdentity(), specialist.ItemVNum.ToString());
-                            UseSp = false;
-                            LoadSpeed();
-                            Session.SendPacket(GenerateCond());
-                            Session.SendPacket(GenerateLev());
-                            SpCooldown = 30;
-                            if (SkillsSp != null)
-                            {
-                                foreach (CharacterSkill ski in SkillsSp.Where(s => !s.Value.CanBeUsed()).Select(s => s.Value))
+                                LastSp = currentRunningSeconds;
+                                if (Session != null && Session.HasSession)
                                 {
-                                    short time = ski.Skill.Cooldown;
-                                    double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
-                                    temp /= 1000;
-                                    SpCooldown = temp > SpCooldown ? (int) temp : SpCooldown;
+                                    if (IsVehicled)
+                                    {
+                                        return;
+                                    }
+                                    Logger.Debug(GenerateIdentity(), specialist.ItemVNum.ToString());
+                                    UseSp = false;
+                                    LoadSpeed();
+                                    Session.SendPacket(GenerateCond());
+                                    Session.SendPacket(GenerateLev());
+                                    SpCooldown = 30;
+                                    if (SkillsSp != null)
+                                    {
+                                        foreach (CharacterSkill ski in SkillsSp.Where(s => !s.Value.CanBeUsed()).Select(s => s.Value))
+                                        {
+                                            short time = ski.Skill.Cooldown;
+                                            double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
+                                            temp /= 1000;
+                                            SpCooldown = temp > SpCooldown ? (int) temp : SpCooldown;
+                                        }
+                                    }
+                                    Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), SpCooldown), 11));
+                                    Session.SendPacket($"sd {SpCooldown}");
+                                    Session.CurrentMapInstance?.Broadcast(GenerateCMode());
+                                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, CharacterId), PositionX, PositionY);
+
+                                    // ms_c
+                                    Session.SendPacket(GenerateSki());
+                                    Session.SendPackets(GenerateQuicklist());
+                                    Session.SendPacket(GenerateStat());
+                                    Session.SendPacket(GenerateStatChar());
+                                    Observable.Timer(TimeSpan.FromMilliseconds(SpCooldown * 1000)).Subscribe(o =>
+                                    {
+                                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
+                                        Session.SendPacket("sd 0");
+                                    });
                                 }
                             }
-                            Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), SpCooldown), 11));
-                            Session.SendPacket($"sd {SpCooldown}");
-                            Session.CurrentMapInstance?.Broadcast(GenerateCMode());
-                            Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, CharacterId), PositionX, PositionY);
-
-                            // ms_c
-                            Session.SendPacket(GenerateSki());
-                            Session.SendPackets(GenerateQuicklist());
-                            Session.SendPacket(GenerateStat());
-                            Session.SendPacket(GenerateStatChar());
-                            Observable.Timer(TimeSpan.FromMilliseconds(SpCooldown * 1000)).Subscribe(o =>
-                            {
-                                Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
-                                Session.SendPacket("sd 0");
-                            });
-                        }
+                            break;
                     }
                 }
                 Session?.SendPacket(GenerateSpPoint());
@@ -4806,7 +4812,6 @@ namespace OpenNos.GameObject
                 return;
             }
             Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
-            SpecialistInstance specialist = null;
             if (Hp <= 0)
             {
                 return;
@@ -4818,12 +4823,6 @@ namespace OpenNos.GameObject
                 Session.SendPacket(GenerateStat());
                 Session.SendPacket(GenerateEff(5));
             }
-
-            if (Inventory != null)
-            {
-                specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
-            }
-
             if (Level < ServerManager.Instance.MaxLevel)
             {
                 if (isMonsterOwner)
@@ -4837,7 +4836,7 @@ namespace OpenNos.GameObject
             }
             if (Class == 0 && JobLevel < 20 || Class != 0 && JobLevel < ServerManager.Instance.MaxJobLevel)
             {
-                if (specialist != null && UseSp && specialist.SpLevel < ServerManager.Instance.MaxSPLevel && specialist.SpLevel > 19)
+                if (SpInstance != null && UseSp && SpInstance.SpLevel < ServerManager.Instance.MaxSPLevel && SpInstance.SpLevel > 19)
                 {
                     JobLevelXp += (int) (GetJXP(monsterinfo, grp) / 2D * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                 }
@@ -4846,19 +4845,41 @@ namespace OpenNos.GameObject
                     JobLevelXp += (int) (GetJXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                 }
             }
-            if (specialist != null && UseSp && specialist.SpLevel < ServerManager.Instance.MaxSPLevel)
+            if (SpInstance != null && UseSp && SpInstance.SpLevel < ServerManager.Instance.MaxSPLevel)
             {
-                int multiplier = specialist.SpLevel < 10 ? 10 : specialist.SpLevel < 19 ? 5 : 1;
-                specialist.XP += (int) (GetJXP(monsterinfo, grp) * (multiplier + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                int multiplier = SpInstance.SpLevel < 10 ? 10 : SpInstance.SpLevel < 19 ? 5 : 1;
+                SpInstance.XP += (int) (GetJXP(monsterinfo, grp) * (multiplier + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
             }
             if (HeroLevel > 0 && HeroLevel < ServerManager.Instance.MaxHeroLevel)
             {
                 HeroXp += (int) (GetHXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
             }
+
+            GenerateLevelXpLevelUp();
+            WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+            if (fairy != null)
+            {
+                if (fairy.ElementRate + fairy.Item.ElementRate < fairy.Item.MaxElementRate && Level <= monsterinfo.Level + 15 && Level >= monsterinfo.Level - 15)
+                {
+                    fairy.XP += ServerManager.Instance.FairyXpRate;
+                }
+                GenerateFairyXpLevelUp();
+            }
+            GenerateJobXpLevelUp();
+            if (SpInstance != null)
+            {
+                GenerateSpXpLevelUp();
+            }
+            GenerateHeroXpLevelUp();
+            Session.SendPacket(GenerateLev());
+        }
+
+        private void GenerateLevelXpLevelUp()
+        {
             double t = XPLoad();
             while (LevelXp >= t)
             {
-                LevelXp -= (long) t;
+                LevelXp -= (long)t;
                 Level++;
                 t = XPLoad();
                 if (Level >= ServerManager.Instance.MaxLevel)
@@ -4866,13 +4887,13 @@ namespace OpenNos.GameObject
                     Level = ServerManager.Instance.MaxLevel;
                     LevelXp = 0;
                 }
-                else if (Level == ServerManager.Instance.HeroicStartLevel)
+                if (Level == ServerManager.Instance.HeroicStartLevel)
                 {
                     HeroLevel = 1;
                     HeroXp = 0;
                 }
-                Hp = (int) HPLoad();
-                Mp = (int) MPLoad();
+                Hp = (int)HPLoad();
+                Mp = (int)MPLoad();
                 Session.SendPacket(GenerateStat());
                 if (Family != null)
                 {
@@ -4905,37 +4926,40 @@ namespace OpenNos.GameObject
                 Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
                 ServerManager.Instance.UpdateGroup(CharacterId);
             }
+        }
 
-            WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Fairy, InventoryType.Wear);
-            if (fairy != null)
+        private void GenerateFairyXpLevelUp()
+        {
+            // TODO CLEANUP AND ADD FAIRY PROPERTY
+            WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+            if (fairy == null)
             {
-                if (fairy.ElementRate + fairy.Item.ElementRate < fairy.Item.MaxElementRate &&
-                    Level <= monsterinfo.Level + 15 && Level >= monsterinfo.Level - 15)
-                {
-                    fairy.XP += ServerManager.Instance.FairyXpRate;
-                }
-                t = CharacterHelper.LoadFairyXPData(fairy.ElementRate + fairy.Item.ElementRate);
-                while (fairy.XP >= t)
-                {
-                    fairy.XP -= (int) t;
-                    fairy.ElementRate++;
-                    if ((fairy.ElementRate + fairy.Item.ElementRate) == fairy.Item.MaxElementRate)
-                    {
-                        fairy.XP = 0;
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
-                    }
-                    else
-                    {
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
-                    }
-                    Session.SendPacket(GeneratePairy());
-                }
+                return;
             }
+            double t = CharacterHelper.LoadFairyXPData(fairy.ElementRate + fairy.Item.ElementRate);
+            while (fairy.XP >= t)
+            {
+                fairy.XP -= (int)t;
+                fairy.ElementRate++;
+                if ((fairy.ElementRate + fairy.Item.ElementRate) == fairy.Item.MaxElementRate)
+                {
+                    fairy.XP = 0;
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
+                }
+                else
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
+                }
+                Session.SendPacket(GeneratePairy());
+            }
+        }
 
-            t = JobXPLoad();
+        private void GenerateJobXpLevelUp()
+        {
+            double t = JobXPLoad();
             while (JobLevelXp >= t)
             {
-                JobLevelXp -= (long) t;
+                JobLevelXp -= (long)t;
                 JobLevel++;
                 t = JobXPLoad();
                 if (JobLevel >= 20 && Class == 0)
@@ -4948,8 +4972,8 @@ namespace OpenNos.GameObject
                     JobLevel = ServerManager.Instance.MaxJobLevel;
                     JobLevelXp = 0;
                 }
-                Hp = (int) HPLoad();
-                Mp = (int) MPLoad();
+                Hp = (int)HPLoad();
+                Mp = (int)MPLoad();
                 Session.SendPacket(GenerateStat());
                 Session.SendPacket(GenerateLevelUp());
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
@@ -4957,36 +4981,41 @@ namespace OpenNos.GameObject
                 Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
                 Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
             }
-            if (specialist != null)
+        }
+
+        private void GenerateSpXpLevelUp()
+        {
+            double t = SPXPLoad();
+
+            while (UseSp && SpInstance.XP >= t)
             {
+                SpInstance.XP -= (long)t;
+                SpInstance.SpLevel++;
                 t = SPXPLoad();
-
-                while (UseSp && specialist.XP >= t)
+                Session.SendPacket(GenerateStat());
+                Session.SendPacket(GenerateLevelUp());
+                if (SpInstance.SpLevel >= ServerManager.Instance.MaxSPLevel)
                 {
-                    specialist.XP -= (long) t;
-                    specialist.SpLevel++;
-                    t = SPXPLoad();
-                    Session.SendPacket(GenerateStat());
-                    Session.SendPacket(GenerateLevelUp());
-                    if (specialist.SpLevel >= ServerManager.Instance.MaxSPLevel)
-                    {
-                        specialist.SpLevel = ServerManager.Instance.MaxSPLevel;
-                        specialist.XP = 0;
-                    }
-                    LearnSPSkill();
-                    Skills.Select(s => s.Value).ToList().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
-                    Session.SendPacket(GenerateSki());
-                    Session.SendPackets(GenerateQuicklist());
-
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
-                    Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
-                    Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
+                    SpInstance.SpLevel = ServerManager.Instance.MaxSPLevel;
+                    SpInstance.XP = 0;
                 }
+                LearnSPSkill();
+                Skills.Select(s => s.Value).ToList().ForEach(s => s.LastUse = DateTime.Now.AddDays(-1));
+                Session.SendPacket(GenerateSki());
+                Session.SendPackets(GenerateQuicklist());
+
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
+                Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
+                Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
             }
-            t = HeroXPLoad();
+        }
+
+        private void GenerateHeroXpLevelUp()
+        {
+            double t = HeroXPLoad();
             while (HeroXp >= t)
             {
-                HeroXp -= (long) t;
+                HeroXp -= (long)t;
                 HeroLevel++;
                 t = HeroXPLoad();
                 if (HeroLevel >= ServerManager.Instance.MaxHeroLevel)
@@ -4994,15 +5023,14 @@ namespace OpenNos.GameObject
                     HeroLevel = ServerManager.Instance.MaxHeroLevel;
                     HeroXp = 0;
                 }
-                Hp = (int) HPLoad();
-                Mp = (int) MPLoad();
+                Hp = (int)HPLoad();
+                Mp = (int)MPLoad();
                 Session.SendPacket(GenerateStat());
                 Session.SendPacket(GenerateLevelUp());
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_LEVELUP"), 0));
                 Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
                 Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
             }
-            Session.SendPacket(GenerateLev());
         }
 
         private int GetGold(MapMonster mapMonster)
@@ -5141,12 +5169,7 @@ namespace OpenNos.GameObject
 
         private double SPXPLoad()
         {
-            SpecialistInstance specialist = null;
-            if (Inventory != null)
-            {
-                specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-            }
-            return specialist != null ? CharacterHelper.SPXPData[specialist.SpLevel - 1] : 0;
+            return SpInstance != null ? CharacterHelper.SPXPData[SpInstance.SpLevel == 0 ? 0 : SpInstance.SpLevel - 1] : 0;
         }
 
         private double XPLoad()

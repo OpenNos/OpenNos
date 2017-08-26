@@ -1418,6 +1418,7 @@ namespace OpenNos.Handler
                 if (morphPacket.MorphId < 30 && morphPacket.MorphId > 0)
                 {
                     Session.Character.UseSp = true;
+                    Session.Character.SpInstance = Session.Character.Inventory?.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
                     Session.Character.Morph = morphPacket.MorphId;
                     Session.Character.MorphUpgrade = morphPacket.Upgrade;
                     Session.Character.MorphUpgrade2 = morphPacket.MorphDesign;
@@ -1435,6 +1436,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.IsVehicled = false;
                     Session.Character.UseSp = false;
+                    Session.Character.SpInstance = null;
                     Session.Character.ArenaWinner = 0;
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.SendPacket(Session.Character.GenerateLev());
