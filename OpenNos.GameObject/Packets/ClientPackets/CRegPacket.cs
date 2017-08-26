@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
         [PacketIndex(8)]
         public long Price { get; set; }
         [PacketIndex(9)]
-        public short Taxe { get; set; }
+        public int Taxe { get; set; }
         [PacketIndex(10)]
         public byte MedalUsed { get; set; }
 

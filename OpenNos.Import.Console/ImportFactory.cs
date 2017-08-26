@@ -2812,7 +2812,6 @@ namespace OpenNos.Import.Console
                         item.IsSoldable = currentLine[5] == "0";
                         item.IsDroppable = currentLine[6] == "0";
                         item.IsTradable = currentLine[7] == "0";
-                        item.IsTradable = currentLine[7] == "0";
                         item.IsMinilandActionable = currentLine[8] == "1";
                         item.IsWarehouse = currentLine[9] == "1";
                         item.Flag9 = currentLine[10] == "1";
