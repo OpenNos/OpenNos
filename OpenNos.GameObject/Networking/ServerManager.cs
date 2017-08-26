@@ -438,6 +438,14 @@ namespace OpenNos.GameObject
                 {
                     session.Character.MapInstanceId = GetBaseMapInstanceIdByMapId((short)mapId);
                 }
+                try
+                {
+                    _mapinstances.Where(x => x.Key == session.Character.MapInstanceId).First();
+                }
+                catch
+                {
+                    return;
+                }
                 ChangeMapInstance(id, session.Character.MapInstanceId, mapX, mapY);
             }
         }
