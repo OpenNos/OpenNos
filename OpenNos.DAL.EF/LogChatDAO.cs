@@ -44,8 +44,8 @@ namespace OpenNos.DAL.EF
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    long mailId = log.LogId;
-                    LogChat entity = context.LogChat.FirstOrDefault(c => c.LogId.Equals(mailId));
+                    long logId = log.LogId;
+                    LogChat entity = context.LogChat.FirstOrDefault(c => c.LogId.Equals(logId));
 
                     if (entity == null)
                     {
