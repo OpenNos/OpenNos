@@ -12,6 +12,8 @@ namespace OpenNos.DAL.EF.Entities
         [Key]
         public long CommandId { get; set; }
 
+        public virtual Character Character { get; set; }
+
         public long? CharacterId { get; set; }
 
         public string Command { get; set; }
