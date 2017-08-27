@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
@@ -158,6 +159,22 @@ namespace OpenNos.GameObject
             catch
             {
                 return true;
+            }
+        }
+
+        public bool IsArenaPVPable(int x, int y)
+        {
+            try
+            {
+                if (Grid == null)
+                {
+                    return false;
+                }
+                return !Grid[x, y].IsArenaStairs();
+            }
+            catch
+            {
+                return false;
             }
         }
 

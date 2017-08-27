@@ -216,7 +216,15 @@ namespace OpenNos.Handler
                 AccountDTO account = null;
                 if (loginPacketParts.Length > 4)
                 {
-                    account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+                    if (loginPacketParts.Length > 7 && loginPacketParts[4] == "DAC" && loginPacketParts[8] == "CrossServerAuthenticate")
+                    {
+                        isCrossServerLogin = true;
+                        account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[5]);
+                    }
+                    else
+                    {
+                        account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+                    }
                 }
                 try
                 {

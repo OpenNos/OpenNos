@@ -365,7 +365,7 @@ namespace OpenNos.GameObject
                     string sessionPacket = _encryptor.DecryptCustomParameter(packetData);
 
                     string[] sessionParts = sessionPacket.Split(' ');
-                    if (!sessionParts.Any())
+                    if (sessionParts.Length == 0)
                     {
                         return;
                     }
@@ -424,41 +424,45 @@ namespace OpenNos.GameObject
 
                         if (_waitForPacketsAmount.HasValue)
                         {
-                            if (_waitForPacketList.Count != _waitForPacketsAmount - 1)
+                            _waitForPacketList.Add(packetstring);
+                            string[] packetssplit = packetstring.Split(' ');
+                            if (packetssplit.Length > 3 && packetsplit[1] == "DAC")
                             {
-                                _waitForPacketList.Add(packetstring);
+                                _waitForPacketList.Add("0 CrossServerAuthenticate");
                             }
-                            else
+                            if (_waitForPacketList.Count != _waitForPacketsAmount)
                             {
-                                _waitForPacketList.Add(packetstring);
-                                _waitForPacketsAmount = null;
-                                string queuedPackets = string.Join(" ", _waitForPacketList.ToArray());
-                                string header = queuedPackets.Split(' ', '^')[1];
-                                TriggerHandler(header, queuedPackets, true);
-                                _waitForPacketList.Clear();
-                                return;
+                                continue;
                             }
+                            _waitForPacketsAmount = null;
+                            string queuedPackets = string.Join(" ", _waitForPacketList.ToArray());
+                            string header = queuedPackets.Split(' ', '^')[1];
+                            TriggerHandler(header, queuedPackets, true);
+                            _waitForPacketList.Clear();
+                            return;
                         }
-                        else
+                        if (packetsplit.Length <= 1)
                         {
-                            if (packetsplit.Length > 1)
-                            {
-                                if (packetsplit[1].Length >= 1 && (packetsplit[1][0] == '/' || packetsplit[1][0] == ':' || packetsplit[1][0] == ';'))
-                                {
-                                    packetsplit[1] = packetsplit[1][0].ToString();
-                                    packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
-                                }
-                                if (packetsplit[1] != "0")
-                                {
-                                    TriggerHandler(packetsplit[1].Replace("#", ""), packetstring, false);
-                                }
-                            }
+                            continue;
+                        }
+                        if (packetsplit[1].Length >= 1 && (packetsplit[1][0] == '/' || packetsplit[1][0] == ':' || packetsplit[1][0] == ';'))
+                        {
+                            packetsplit[1] = packetsplit[1][0].ToString();
+                            packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
+                        }
+                        if (packetsplit[1] != "0")
+                        {
+                            TriggerHandler(packetsplit[1].Replace("#", ""), packetstring, false);
                         }
                     }
                     else
                     {
                         string packetHeader = packetstring.Split(' ')[0];
-
+                        if (string.IsNullOrWhiteSpace(packetHeader))
+                        {
+                            Disconnect();
+                            return;
+                        }
                         // simple messaging
                         if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
                         {
