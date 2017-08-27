@@ -32,6 +32,8 @@ namespace OpenNos.Data
 
         public ScriptedInstanceType Type { get; set; }
 
+        public string Label { get; set; }
+
         #endregion
     }
 }

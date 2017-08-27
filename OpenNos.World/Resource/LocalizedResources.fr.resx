@@ -1613,10 +1613,13 @@ Veux-tu le porter ?</value>
     <value>Le joueur n'est pas sur une map générale.</value>
   </data>
   <data name="ADD_OPTION_ON_STUFF" xml:space="preserve">
-    <value>Souhaites-tu ajouter une option à cet équipement ?Si tu ajoutes une option, aucun autre joueur ne pourra plus l'utiliser, car l'équipement sera lié à toi.</value>
+    <value>Souhaites-tu ajouter une option à cet équipement ?
+Si tu ajoutes une option, aucun autre joueur ne pourra plus l'utiliser, car l'équipement sera lié à toi.</value>
   </data>
   <data name="ADD_OPTION_ON_STUFF_NOT_EMPTY" xml:space="preserve">
-    <value>L'option existante sera supprimée et remplacée par une nouvelle.La probabilité de réussite est actuellement de 50 %.Veux-tu continuer ?</value>
+    <value>L'option existante sera supprimée et remplacée par une nouvelle.
+La probabilité de réussite est actuellement de 50 %.
+Veux-tu continuer ?</value>
   </data>
   <data name="NEED_PARFUM_TO_CHANGE_SHELL" xml:space="preserve">
     <value>Tu ne peux pas changer la rune de cet équipement, l'âme est liée à un autre joueur.</value>
