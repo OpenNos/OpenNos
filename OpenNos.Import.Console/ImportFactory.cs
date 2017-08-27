@@ -1320,7 +1320,7 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 4; i++)
                         {
-                            byte type = (byte)(int.Parse(currentLine[2 + 5 * i]));
+                            byte type = (byte)int.Parse(currentLine[2 + 5 * i]);
                             if (type == 0)
                             {
                                 continue;
@@ -1954,20 +1954,21 @@ namespace OpenNos.Import.Console
                 {
                     for (int i = 2; i < currentPacket.Length - 1; i++)
                     {
-                        if (DAOFactory.MapNpcDAO.LoadById(mapnpcid) != null)
+                        if (DAOFactory.MapNpcDAO.LoadById(mapnpcid) == null)
                         {
-                            recipe = new RecipeDTO
-                            {
-                                ItemVNum = short.Parse(currentPacket[i]),
-                                MapNpcId = mapnpcid
-                            };
-                            if (DAOFactory.RecipeDAO.LoadByNpc(mapnpcid).Any(s => s.ItemVNum == recipe.ItemVNum))
-                            {
-                                continue;
-                            }
-                            DAOFactory.RecipeDAO.Insert(recipe);
-                            count++;
+                            continue;
                         }
+                        recipe = new RecipeDTO
+                        {
+                            ItemVNum = short.Parse(currentPacket[i]),
+                            MapNpcId = mapnpcid
+                        };
+                        if (DAOFactory.RecipeDAO.LoadByNpc(mapnpcid).Any(s => s.ItemVNum == recipe.ItemVNum))
+                        {
+                            continue;
+                        }
+                        DAOFactory.RecipeDAO.Insert(recipe);
+                        count++;
                     }
                     continue;
                 }
@@ -2085,44 +2086,45 @@ namespace OpenNos.Import.Console
             {
                 if (currentPacket[0].Equals("n_inv"))
                 {
-                    if (DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])) != null)
+                    if (DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])) == null)
                     {
-                        for (int i = 5; i < currentPacket.Length; i++)
+                        continue;
+                    }
+                    for (int i = 5; i < currentPacket.Length; i++)
+                    {
+                        string[] item = currentPacket[i].Split('.');
+                        ShopItemDTO sitem = null;
+
+                        if (item.Length == 5)
                         {
-                            string[] item = currentPacket[i].Split('.');
-                            ShopItemDTO sitem = null;
-
-                            if (item.Length == 5)
+                            sitem = new ShopItemDTO
                             {
-                                sitem = new ShopItemDTO
-                                {
-                                    ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
-                                    Type = type,
-                                    Slot = byte.Parse(item[1]),
-                                    ItemVNum = short.Parse(item[2])
-                                };
-                            }
-                            else if (item.Length == 6)
-                            {
-                                sitem = new ShopItemDTO
-                                {
-                                    ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
-                                    Type = type,
-                                    Slot = byte.Parse(item[1]),
-                                    ItemVNum = short.Parse(item[2]),
-                                    Rare = sbyte.Parse(item[3]),
-                                    Upgrade = byte.Parse(item[4])
-                                };
-                            }
-
-                            if (sitem == null || shopitems.Any(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) || DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).Any(s => s.ItemVNum.Equals(sitem.ItemVNum)))
-                            {
-                                continue;
-                            }
-
-                            shopitems.Add(sitem);
-                            itemCounter++;
+                                ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
+                                Type = type,
+                                Slot = byte.Parse(item[1]),
+                                ItemVNum = short.Parse(item[2])
+                            };
                         }
+                        else if (item.Length == 6)
+                        {
+                            sitem = new ShopItemDTO
+                            {
+                                ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
+                                Type = type,
+                                Slot = byte.Parse(item[1]),
+                                ItemVNum = short.Parse(item[2]),
+                                Rare = sbyte.Parse(item[3]),
+                                Upgrade = byte.Parse(item[4])
+                            };
+                        }
+
+                        if (sitem == null || shopitems.Any(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) || DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).Any(s => s.ItemVNum.Equals(sitem.ItemVNum)))
+                        {
+                            continue;
+                        }
+
+                        shopitems.Add(sitem);
+                        itemCounter++;
                     }
                 }
                 else
@@ -2494,11 +2496,12 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 1 && currentLine[1] == "Z_DESC")
                     {
                         // investigate
-                        if (DAOFactory.SkillDAO.LoadById(skill.SkillVNum) == null)
+                        if (DAOFactory.SkillDAO.LoadById(skill.SkillVNum) != null)
                         {
-                            skills.Add(skill);
-                            counter++;
+                            continue;
                         }
+                        skills.Add(skill);
+                        counter++;
                     }
                 }
                 DAOFactory.SkillDAO.Insert(skills);

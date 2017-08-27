@@ -190,241 +190,247 @@ namespace OpenNos.GameObject
         public void AskPVPRevive(long characterId)
         {
             ClientSession session = GetSessionByCharacterId(characterId);
-            if (session != null && session.HasSelectedCharacter)
+            if (session == null || !session.HasSelectedCharacter)
             {
-                if (session.Character.IsVehicled)
-                {
-                    session.Character.RemoveVehicle();
-                }
-                List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad, BuffType.Good, BuffType.Neutral };
-                session.Character.DisableBuffs(bufftodisable);
-                session.SendPacket(session.Character.GenerateStat());
-                session.SendPacket(session.Character.GenerateCond());
-                session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
-                session.SendPacket("eff_ob -1 -1 0 4269");
-                switch (session.CurrentMapInstance.MapInstanceType)
-                {
-                    case MapInstanceType.TalentArenaMapInstance:
-                        ConcurrentBag<ArenaTeamMember> team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == session));
-                        ArenaTeamMember member = team?.FirstOrDefault(s => s.Session == session);
-                        if (member != null)
+                return;
+            }
+            if (session.Character.IsVehicled)
+            {
+                session.Character.RemoveVehicle();
+            }
+            List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad, BuffType.Good, BuffType.Neutral };
+            session.Character.DisableBuffs(bufftodisable);
+            session.SendPacket(session.Character.GenerateStat());
+            session.SendPacket(session.Character.GenerateCond());
+            session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
+            session.SendPacket("eff_ob -1 -1 0 4269");
+            switch (session.CurrentMapInstance.MapInstanceType)
+            {
+                case MapInstanceType.TalentArenaMapInstance:
+                    ConcurrentBag<ArenaTeamMember> team = Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == session));
+                    ArenaTeamMember member = team?.FirstOrDefault(s => s.Session == session);
+                    if (member != null)
+                    {
+                        if (member.LastSummoned == null)
                         {
-                            if (member.LastSummoned == null)
+                            session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
+                            member.Dead = true;
+                            team.ToList().Where(s => s.LastSummoned != null).ToList().ForEach(s =>
                             {
-                                session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
-                                member.Dead = true;
-                                team.ToList().Where(s => s.LastSummoned != null).ToList().ForEach(s =>
-                                {
-                                    s.LastSummoned = null;
-                                    s.Session.Character.PositionX = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
-                                    s.Session.Character.PositionY = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
-                                    session.CurrentMapInstance.Broadcast(s.Session.Character.GenerateTp());
-                                    s.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
-                                });
-                                ArenaTeamMember killer = team.OrderBy(s => s.Order).FirstOrDefault(s => !s.Dead && s.ArenaTeamType != member.ArenaTeamType);
-                                session.CurrentMapInstance.Broadcast(session.Character.GenerateSay(string.Format("WINNER_ARENA_ROUND", killer.Session.Character.Name, killer.ArenaTeamType), 10));
-                                session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format("WINNER_ARENA_ROUND", killer.Session.Character.Name, killer.ArenaTeamType), 0));
-                            }
-
-                            member.Session.Character.PositionX = member.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
-                            member.Session.Character.PositionY = member.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
-                            session.CurrentMapInstance.Broadcast(member.Session, member.Session.Character.GenerateTp());
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
-                            team.Where(friends => friends.ArenaTeamType == member.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(friends.Session.Character.GenerateTaFc()); });
-                            team.ToList().ForEach(arenauser =>
-                            {
-                                arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true));
-                                arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaM(2, 0));
+                                s.LastSummoned = null;
+                                s.Session.Character.PositionX = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
+                                s.Session.Character.PositionY = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
+                                session.CurrentMapInstance.Broadcast(s.Session.Character.GenerateTp());
+                                s.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
                             });
-                            session.Character.Hp = (int)session.Character.HPLoad();
-                            session.Character.Mp = (int)session.Character.MPLoad();
-                            session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRevive());
-                            session.SendPacket(session.Character.GenerateStat());
+                            ArenaTeamMember killer = team.OrderBy(s => s.Order).FirstOrDefault(s => !s.Dead && s.ArenaTeamType != member.ArenaTeamType);
+                            session.CurrentMapInstance.Broadcast(session.Character.GenerateSay(string.Format("WINNER_ARENA_ROUND", killer?.Session.Character.Name, killer?.ArenaTeamType), 10));
+                            session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format("WINNER_ARENA_ROUND", killer?.Session.Character.Name, killer?.ArenaTeamType), 0));
                         }
-                        break;
 
-                    default:
-                        session.Character.LeaveTalentArena(true);
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
-                        Task.Factory.StartNew(async () =>
+                        member.Session.Character.PositionX = member.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
+                        member.Session.Character.PositionY = member.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
+                        session.CurrentMapInstance.Broadcast(member.Session, member.Session.Character.GenerateTp());
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
+                        team.Where(friends => friends.ArenaTeamType == member.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(friends.Session.Character.GenerateTaFc()); });
+                        team.ToList().ForEach(arenauser =>
                         {
-                            bool revive = true;
-                            for (int i = 1; i <= 30; i++)
-                            {
-                                await Task.Delay(1000);
-                                if (session.Character.Hp > 0)
-                                {
-                                    revive = false;
-                                    break;
-                                }
-                            }
-                            if (revive)
-                            {
-                                Instance.ReviveFirstPosition(session.Character.CharacterId);
-                            }
+                            arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true));
+                            arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaM(2, 0));
                         });
-                        break;
-                }
+                        session.Character.Hp = (int)session.Character.HPLoad();
+                        session.Character.Mp = (int)session.Character.MPLoad();
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRevive());
+                        session.SendPacket(session.Character.GenerateStat());
+                    }
+                    break;
+
+                default:
+                    session.Character.LeaveTalentArena(true);
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
+                    Task.Factory.StartNew(async () =>
+                    {
+                        bool revive = true;
+                        for (int i = 1; i <= 30; i++)
+                        {
+                            await Task.Delay(1000);
+                            if (session.Character.Hp <= 0)
+                            {
+                                continue;
+                            }
+                            revive = false;
+                            break;
+                        }
+                        if (revive)
+                        {
+                            Instance.ReviveFirstPosition(session.Character.CharacterId);
+                        }
+                    });
+                    break;
             }
         }
 
         // PacketHandler -> with Callback?
         public void AskRevive(long characterId)
         {
-            ClientSession Session = GetSessionByCharacterId(characterId);
-            if (Session != null && Session.HasSelectedCharacter)
+            ClientSession session = GetSessionByCharacterId(characterId);
+            if (session == null || !session.HasSelectedCharacter)
             {
-                if (Session.Character.IsVehicled)
-                {
-                    Session.Character.RemoveVehicle();
-                }
-                List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad, BuffType.Good, BuffType.Neutral };
-                Session.Character.DisableBuffs(bufftodisable);
-                Session.SendPacket(Session.Character.GenerateStat());
-                Session.SendPacket(Session.Character.GenerateCond());
-                Session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
-                switch (Session.CurrentMapInstance.MapInstanceType)
-                {
-                    case MapInstanceType.BaseMapInstance:
-                        if (Session.Character.Level > 20)
+                return;
+            }
+            if (session.Character.IsVehicled)
+            {
+                session.Character.RemoveVehicle();
+            }
+            List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
+            session.Character.DisableBuffs(bufftodisable);
+            session.SendPacket(session.Character.GenerateStat());
+            session.SendPacket(session.Character.GenerateCond());
+            session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
+            switch (session.CurrentMapInstance.MapInstanceType)
+            {
+                case MapInstanceType.BaseMapInstance:
+                    if (session.Character.Level > 20)
+                    {
+                        session.Character.Dignity -= (short)(session.Character.Level < 50 ? session.Character.Level : 50);
+                        if (session.Character.Dignity < -1000)
                         {
-                            Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
-                            if (Session.Character.Dignity < -1000)
-                            {
-                                Session.Character.Dignity = -1000;
-                            }
-                            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
-                            Session.SendPacket(Session.Character.GenerateFd());
-                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                            session.Character.Dignity = -1000;
                         }
-                        Session.SendPacket("eff_ob -1 -1 0 4269");
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(session.Character.Level < 50 ? session.Character.Level : 50)), 11));
+                        session.SendPacket(session.Character.GenerateFd());
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    }
+                    session.SendPacket("eff_ob -1 -1 0 4269");
 
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
-                        Task.Factory.StartNew(async () =>
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {(session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+                    Task.Factory.StartNew(async () =>
+                    {
+                        bool revive = true;
+                        for (int i = 1; i <= 30; i++)
                         {
-                            bool revive = true;
-                            for (int i = 1; i <= 30; i++)
+                            await Task.Delay(1000);
+                            if (session.Character.Hp <= 0)
                             {
-                                await Task.Delay(1000);
-                                if (Session.Character.Hp > 0)
-                                {
-                                    revive = false;
-                                    break;
-                                }
+                                continue;
                             }
-                            if (revive)
-                            {
-                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                            }
-                        });
-                        break;
-
-                    case MapInstanceType.TimeSpaceInstance:
-                        if (!(Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count() <= 1))
-                        {
-                            Session.Character.Hp = 1;
-                            Session.Character.Mp = 1;
-                            return;
+                            revive = false;
+                            break;
                         }
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE"), Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count() + 1), 0));
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^1 #revival^1 {(Session.Character.Level > 10 ? Language.Instance.GetMessageFromKey("ASK_REVIVE_TS_LOW_LEVEL") : Language.Instance.GetMessageFromKey("ASK_REVIVE_TS"))}"));
-                        Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
-                        Task.Factory.StartNew(async () =>
+                        if (revive)
                         {
-                            bool revive = true;
-                            for (int i = 1; i <= 30; i++)
-                            {
-                                await Task.Delay(1000);
-                                if (Session.Character.Hp > 0)
-                                {
-                                    revive = false;
-                                    break;
-                                }
-                            }
-                            if (revive)
-                            {
-                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                            }
-                        });
-
-                        break;
-
-                    case MapInstanceType.RaidInstance:
-                        List<long> save = Session.CurrentMapInstance.InstanceBag.DeadList.ConvertAll(s => s);
-                        if (Session.CurrentMapInstance.InstanceBag.Lives - Session.CurrentMapInstance.InstanceBag.DeadList.Count() < 0)
-                        {
-                            Session.Character.Hp = 1;
-                            Session.Character.Mp = 1;
+                            Instance.ReviveFirstPosition(session.Character.CharacterId);
                         }
-                        else if (2 - save.Count(s => s == Session.Character.CharacterId) > 0)
-                        {
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"), 2 - Session.CurrentMapInstance.InstanceBag.DeadList.Count(s => s == Session.Character.CharacterId))));
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), Session.Character.Name)));
+                    });
+                    break;
 
-                            Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
-                            Session.Character.Group?.Characters.ToList().ForEach(
-                                session =>
-                                {
-                                    session.SendPacket(session.Character.Group.GeneraterRaidmbf());
-                                    session.SendPacket(session.Character.Group.GenerateRdlst());
-                                });
-                            Task.Factory.StartNew(async () =>
+                case MapInstanceType.TimeSpaceInstance:
+                    if (!(session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count() <= 1))
+                    {
+                        session.Character.Hp = 1;
+                        session.Character.Mp = 1;
+                        return;
+                    }
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE"), session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count() + 1), 0));
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^1 #revival^1 {(session.Character.Level > 10 ? Language.Instance.GetMessageFromKey("ASK_REVIVE_TS_LOW_LEVEL") : Language.Instance.GetMessageFromKey("ASK_REVIVE_TS"))}"));
+                    session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
+                    Task.Factory.StartNew(async () =>
+                    {
+                        bool revive = true;
+                        for (int i = 1; i <= 30; i++)
+                        {
+                            await Task.Delay(1000);
+                            if (session.Character.Hp <= 0)
                             {
-                                await Task.Delay(20000);
-                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                                continue;
+                            }
+                            revive = false;
+                            break;
+                        }
+                        if (revive)
+                        {
+                            Instance.ReviveFirstPosition(session.Character.CharacterId);
+                        }
+                    });
+
+                    break;
+
+                case MapInstanceType.RaidInstance:
+                    List<long> save = session.CurrentMapInstance.InstanceBag.DeadList.ConvertAll(s => s);
+                    if (session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count() < 0)
+                    {
+                        session.Character.Hp = 1;
+                        session.Character.Mp = 1;
+                    }
+                    else if (2 - save.Count(s => s == session.Character.CharacterId) > 0)
+                    {
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"), 2 - session.CurrentMapInstance.InstanceBag.DeadList.Count(s => s == session.Character.CharacterId))));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), session.Character.Name)));
+
+                        session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
+                        session.Character.Group?.Characters.ToList().ForEach(
+                            player =>
+                            {
+                                player.SendPacket(player.Character.Group.GeneraterRaidmbf());
+                                player.SendPacket(player.Character.Group.GenerateRdlst());
                             });
-                        }
-                        else
-                        {
-                            Group grp = Session.Character.Group;
-                            if (grp != null)
-                            {
-                                grp.Characters.ToList().ForEach(s =>
-                                {
-                                    s.SendPacket(s.Character.Group.GeneraterRaidmbf());
-                                    s.SendPacket(s.Character.Group.GenerateRdlst());
-                                });
-                                grp.LeaveGroup(Session);
-                                Session.SendPacket(Session.Character.GenerateRaid(1, true));
-                                Session.SendPacket(Session.Character.GenerateRaid(2, true));
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), 0));
-                            }
-                        }
-                        break;
-
-                    case MapInstanceType.LodInstance:
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_LOD")}"));
                         Task.Factory.StartNew(async () =>
                         {
-                            bool revive = true;
-                            for (int i = 1; i <= 30; i++)
-                            {
-                                await Task.Delay(1000);
-                                if (Session.Character.Hp > 0)
-                                {
-                                    revive = false;
-                                    break;
-                                }
-                            }
-                            if (revive)
-                            {
-                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                            }
+                            await Task.Delay(20000);
+                            Instance.ReviveFirstPosition(session.Character.CharacterId);
                         });
-                        break;
+                    }
+                    else
+                    {
+                        Group grp = session.Character.Group;
+                        if (grp != null)
+                        {
+                            grp.Characters.ToList().ForEach(s =>
+                            {
+                                s.SendPacket(s.Character.Group.GeneraterRaidmbf());
+                                s.SendPacket(s.Character.Group.GenerateRdlst());
+                            });
+                            grp.LeaveGroup(session);
+                            session.SendPacket(session.Character.GenerateRaid(1, true));
+                            session.SendPacket(session.Character.GenerateRaid(2, true));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), 0));
+                        }
+                    }
+                    break;
 
-                    default:
-                        Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                        break;
-                }
+                case MapInstanceType.LodInstance:
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_LOD")}"));
+                    Task.Factory.StartNew(async () =>
+                    {
+                        bool revive = true;
+                        for (int i = 1; i <= 30; i++)
+                        {
+                            await Task.Delay(1000);
+                            if (session.Character.Hp <= 0)
+                            {
+                                continue;
+                            }
+                            revive = false;
+                            break;
+                        }
+                        if (revive)
+                        {
+                            Instance.ReviveFirstPosition(session.Character.CharacterId);
+                        }
+                    });
+                    break;
+
+                default:
+                    Instance.ReviveFirstPosition(session.Character.CharacterId);
+                    break;
             }
         }
 
-        public void BazaarRefresh(long BazaarItemId)
+        public void BazaarRefresh(long bazaarItemId)
         {
             InBazaarRefreshMode = true;
-            CommunicationServiceClient.Instance.UpdateBazaar(ServerGroup, BazaarItemId);
+            CommunicationServiceClient.Instance.UpdateBazaar(ServerGroup, bazaarItemId);
             SpinWait.SpinUntil(() => !InBazaarRefreshMode);
         }
 
