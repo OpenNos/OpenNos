@@ -29,6 +29,8 @@ namespace OpenNos.DAL.EF
 
         public short PositionY { get; set; }
 
+        public string Label { get; set; }
+
         [MaxLength(int.MaxValue)]
         public string Script { get; set; }
 
