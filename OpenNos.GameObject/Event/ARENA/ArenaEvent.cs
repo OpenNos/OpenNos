@@ -458,9 +458,13 @@ namespace OpenNos.GameObject.Event.ARENA
                         }
                         else
                         {
-                            s.Time = 300;
-                            s.Session.SendPacket(s.Session.Character.GenerateBsInfo(0, 2, s.Time, 3));
-                            s.Session.SendPacket(s.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_RIVAL_ARENA_TEAM"), 10));
+                            s.Session.SendPacket(s.Session.Character.GenerateBsInfo(0, 2, -1, 3));
+                            Observable.Timer(TimeSpan.FromSeconds(1)).Subscribe(time =>
+                            {
+                                s.Time = 300;
+                                s.Session.SendPacket(s.Session.Character.GenerateBsInfo(0, 2, s.Time, 1));
+                                s.Session.SendPacket(s.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_RIVAL_ARENA_TEAM"), 10));
+                            });
                         }
                     }
                 });

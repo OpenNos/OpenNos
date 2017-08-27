@@ -5512,6 +5512,7 @@ namespace OpenNos.GameObject
             ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
             if (tmem != null)
             {
+                tmem.Dead = true;
                 if (surrender)
                 {
                     Session.Character.TalentSurrender++;
