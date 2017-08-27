@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Act4RaidType.cs" />
     <Compile Include="BazaarListType.cs" />
     <Compile Include="FactionType.cs" />
     <Compile Include="TalentArenaOptionType.cs" />

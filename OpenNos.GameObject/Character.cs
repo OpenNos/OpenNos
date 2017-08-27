@@ -427,7 +427,7 @@ namespace OpenNos.GameObject
 
         public bool AddPet(Mate mate)
         {
-            if (mate.MateType == MateType.Pet ? MaxMateCount <= Mates.Count() : 3 <= Mates.Count(s => s.MateType == MateType.Partner))
+            if (mate.MateType == MateType.Pet ? MaxMateCount <= Mates.Count : 3 <= Mates.Count(s => s.MateType == MateType.Partner))
             {
                 return false;
             }
@@ -463,14 +463,14 @@ namespace OpenNos.GameObject
             Session.SendPacket("npinfo 0");
             Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
 
-            if (characterClass == (byte)ClassType.Adventurer)
+            if (characterClass == (byte) ClassType.Adventurer)
             {
-                HairStyle = (byte)HairStyle > 1 ? 0 : HairStyle;
+                HairStyle = (byte) HairStyle > 1 ? 0 : HairStyle;
             }
             LoadSpeed();
             Class = characterClass;
-            Hp = (int)HPLoad();
-            Mp = (int)MPLoad();
+            Hp = (int) HPLoad();
+            Mp = (int) MPLoad();
             Session.SendPacket(GenerateTit());
             Session.SendPacket(GenerateStat());
             Session.CurrentMapInstance?.Broadcast(Session, GenerateEq());
@@ -478,7 +478,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
             Session.CurrentMapInstance?.Broadcast(GenerateEff(196), PositionX, PositionY);
             int faction = 1 + ServerManager.Instance.RandomNumber(0, 2);
-            Faction = (FactionType)faction;
+            Faction = (FactionType) faction;
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
             Session.SendPacket("scr 0 0 0 0 0 0");
             Session.SendPacket(GenerateFaction());
@@ -499,9 +499,9 @@ namespace OpenNos.GameObject
                 }
             }
 
-            Skills[(short)(200 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)Class), CharacterId = CharacterId };
-            Skills[(short)(201 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)Class), CharacterId = CharacterId };
-            Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = CharacterId };
+            Skills[(short) (200 + 20 * (byte) Class)] = new CharacterSkill {SkillVNum = (short) (200 + 20 * (byte) Class), CharacterId = CharacterId};
+            Skills[(short) (201 + 20 * (byte) Class)] = new CharacterSkill {SkillVNum = (short) (201 + 20 * (byte) Class), CharacterId = CharacterId};
+            Skills[236] = new CharacterSkill {SkillVNum = 236, CharacterId = CharacterId};
 
             Session.SendPacket(GenerateSki());
 
@@ -511,17 +511,17 @@ namespace OpenNos.GameObject
             }
 
             QuicklistEntries = new List<QuicklistEntryDTO>
+            {
+                new QuicklistEntryDTO
                 {
-                    new QuicklistEntryDTO
-                    {
-                        CharacterId = CharacterId,
-                        Q1 = 0,
-                        Q2 = 9,
-                        Type = 1,
-                        Slot = 3,
-                        Pos = 1
-                    }
-                };
+                    CharacterId = CharacterId,
+                    Q1 = 0,
+                    Q2 = 9,
+                    Type = 1,
+                    Slot = 3,
+                    Pos = 1
+                }
+            };
             if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session) && s.GroupType == GroupType.Group))
             {
                 Session.CurrentMapInstance?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
@@ -639,12 +639,11 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
-                if (specialist == null)
+                if (SpInstance == null)
                 {
                     return;
                 }
-                switch (specialist.Design)
+                switch (SpInstance.Design)
                 {
                     case 6:
                         AddBuff(new Buff(387), false);
@@ -673,15 +672,15 @@ namespace OpenNos.GameObject
                 }
                 byte spType = 0;
 
-                if (specialist.Item.Morph > 1 && specialist.Item.Morph < 8 || specialist.Item.Morph > 9 && specialist.Item.Morph < 16)
+                if (SpInstance.Item.Morph > 1 && SpInstance.Item.Morph < 8 || SpInstance.Item.Morph > 9 && SpInstance.Item.Morph < 16)
                 {
                     spType = 3;
                 }
-                else if (specialist.Item.Morph > 16 && specialist.Item.Morph < 29)
+                else if (SpInstance.Item.Morph > 16 && SpInstance.Item.Morph < 29)
                 {
                     spType = 2;
                 }
-                else if (specialist.Item.Morph == 9)
+                else if (SpInstance.Item.Morph == 9)
                 {
                     spType = 1;
                 }
@@ -716,8 +715,9 @@ namespace OpenNos.GameObject
                                     {
                                         return;
                                     }
-                                    Logger.Debug(GenerateIdentity(), specialist.ItemVNum.ToString());
+                                    Logger.Debug(GenerateIdentity(), SpInstance.ItemVNum.ToString());
                                     UseSp = false;
+                                    SpInstance = null;
                                     LoadSpeed();
                                     Session.SendPacket(GenerateCond());
                                     Session.SendPacket(GenerateLev());
@@ -2024,7 +2024,7 @@ namespace OpenNos.GameObject
                 }
                 fairy = Inventory.LoadBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
             }
-            return $"in 1 {(Authority == AuthorityType.Moderator && !Undercover ? "[Support]" + Name : Name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (Group?.GroupId ?? -1) : -1)} {(fairy != null && !Undercover ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(Family?.FamilyId != null && !Undercover ? Family?.FamilyId : -1)} {(Family?.Name != null && !Undercover ? Family?.Name : "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator && !Undercover ? 500 : Compliment)} {Size} {HeroLevel}";
+            return $"in 1 {(Authority == AuthorityType.Moderator && !Undercover ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + Name : Name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (Group?.GroupId ?? -1) : -1)} {(fairy != null && !Undercover ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(Family?.FamilyId != null && !Undercover ? Family?.FamilyId : -1)} {(Family?.Name != null && !Undercover ? Family?.Name : "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator && !Undercover ? 500 : Compliment)} {Size} {HeroLevel}";
         }
 
         public string GenerateInvisible()
@@ -2259,12 +2259,8 @@ namespace OpenNos.GameObject
 
         public string GenerateLev()
         {
-            SpecialistInstance specialist = null;
-            if (Inventory != null)
-            {
-                specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-            }
-            return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.XP)} {XPLoad()} {(!UseSp || specialist == null ? JobXPLoad() : SPXPLoad())} {Reput} {GetCP()} {HeroXp} {HeroLevel} {HeroXPLoad()} {0}";
+            return
+                $"lev {Level} {LevelXp} {(!UseSp || SpInstance == null ? JobLevel : SpInstance.SpLevel)} {(!UseSp || SpInstance == null ? JobLevelXp : SpInstance.XP)} {XPLoad()} {(!UseSp || SpInstance == null ? JobXPLoad() : SPXPLoad())} {Reput} {GetCP()} {HeroXp} {HeroLevel} {HeroXPLoad()} {0}";
         }
 
         public string GenerateLevelUp()

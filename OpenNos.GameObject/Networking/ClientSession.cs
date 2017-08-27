@@ -230,10 +230,18 @@ namespace OpenNos.GameObject
             GenerateHandlerReferences(packetHandler, isWorldServer);
         }
 
-        public void InitializeAccount(Account account)
+        public void InitializeAccount(Account account, bool crossServer = false)
         {
             Account = account;
-            CommunicationServiceClient.Instance.ConnectAccount(ServerManager.Instance.WorldId, account.AccountId, SessionId);
+            if (crossServer)
+            {
+                CommunicationServiceClient.Instance.ConnectAccountInternal(ServerManager.Instance.WorldId, account.AccountId, SessionId);
+            }
+            else
+            {
+                CommunicationServiceClient.Instance.ConnectAccount(ServerManager.Instance.WorldId, account.AccountId, SessionId);
+
+            }
             IsAuthenticated = true;
         }
 
@@ -395,7 +403,7 @@ namespace OpenNos.GameObject
 
                 string packetConcatenated = _encryptor.Decrypt(packetData, SessionId);
 
-                foreach (string packet in packetConcatenated.Split(new[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (string packet in packetConcatenated.Split(new[] {(char) 0xFF}, StringSplitOptions.RemoveEmptyEntries))
                 {
                     string packetstring = packet.Replace('^', ' ');
                     string[] packetsplit = packetstring.Split(' ');
@@ -483,8 +491,7 @@ namespace OpenNos.GameObject
         /// <param name="e"></param>
         private void OnNetworkClientMessageReceived(object sender, MessageEventArgs e)
         {
-            ScsRawDataMessage message = e.Message as ScsRawDataMessage;
-            if (message == null)
+            if (!(e.Message is ScsRawDataMessage message))
             {
                 return;
             }

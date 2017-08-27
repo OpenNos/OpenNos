@@ -171,8 +171,13 @@ namespace OpenNos.Master.Library.Interface
          * ACT 4
          */
         void RegisterInternalAccountLogin(long accountId, int sessionId);
+
         bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId);
+
         SerializableWorldServer GetPreviousChannelByAccountId(long accountId);
+
         SerializableWorldServer GetAct4ChannelInfo(string worldGroup);
+
+        bool IsCrossServerLoginPermitted(long accountId, int sessionId);
     }
 }

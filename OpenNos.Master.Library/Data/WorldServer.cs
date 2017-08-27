@@ -35,6 +35,8 @@ namespace OpenNos.Master.Library.Data
 
         public string WorldGroup { get; set; }
 
+        public bool IsAct4 { get; set; }
+
         #endregion
     }
 }
