@@ -53,21 +53,14 @@ namespace OpenNos.GameObject.Event
             {
                 _currentBracket = 0;
             }
-            IceBreakerTask task = new IceBreakerTask();
-            Observable.Timer(TimeSpan.FromMinutes(0)).Subscribe(X => task.Run(Map));
-        }
-
-        public class IceBreakerTask
-        {
-            public void Run(MapInstance mapInstance)
+            Observable.Timer(TimeSpan.FromSeconds(10)).Subscribe(c =>
             {
-                Thread.Sleep(10000);
                 ServerManager.Instance.StartedEvents.Remove(EventType.ICEBREAKER);
                 ServerManager.Instance.IceBreakerInWaiting = false;
                 if (Map.Sessions.Count() <= 1)
                 {
                     int goldReward = 15000;  //I STILL DON'T KNOW HOW THE GOLD REWARD IS CALCULATED
-                    mapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_WIN"), 0));
+                    Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_WIN"), 0));
                     Map.Sessions.ToList().ForEach(x =>
                     {
                         x.Character.GetReput(x.Character.Level * 10);
@@ -78,25 +71,25 @@ namespace OpenNos.GameObject.Event
                         x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), x.Character.Level * 10), 10));
                     });
                     Thread.Sleep(5000);
-                    EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10), new EventContainer(mapInstance, EventActionType.DISPOSEMAP, null));
+                    EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10), new EventContainer(Map, EventActionType.DISPOSEMAP, null));
                 }
                 else
                 {
-                    mapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_WARN"), 0));
+                    Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_WARN"), 0));
                     Thread.Sleep(6000);
-                    mapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_WARN"), 0));
+                    Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_WARN"), 0));
                     Thread.Sleep(7000);
-                    mapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_WARN"), 0));
+                    Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_WARN"), 0));
                     Thread.Sleep(1000);
-                    mapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_START"), 0));
-                    mapInstance.IsPVP = true;
+                    Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_START"), 0));
+                    Map.IsPVP = true;
                     while (Map.Sessions.Count() > 1 || AlreadyFrozenPlayers.Count() != Map.Sessions.Count())
                     {
                         Thread.Sleep(1000);
                     }
-                    mapInstance.IsPVP = false;
+                    Map.IsPVP = false;
                     int goldReward = 15000;  //I STILL DON'T KNOW HOW THE GOLD REWARD IS CALCULATED
-                    mapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_WIN"), 0));
+                    Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_WIN"), 0));
                     Map.Sessions.ToList().ForEach(x =>
                     {
                         x.Character.GetReput(x.Character.Level * 10);
@@ -106,9 +99,9 @@ namespace OpenNos.GameObject.Event
                         x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), goldReward), 10));
                         x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), x.Character.Level * 10), 10));
                     });
-                    EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10), new EventContainer(mapInstance, EventActionType.DISPOSEMAP, null));
+                    EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10), new EventContainer(Map, EventActionType.DISPOSEMAP, null));
                 }
-            }
+            });
         }
     }
 }
