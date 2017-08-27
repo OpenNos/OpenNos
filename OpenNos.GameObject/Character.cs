@@ -4384,6 +4384,11 @@ namespace OpenNos.GameObject
 
         public bool ConnectAct4()
         {
+            if (Faction == FactionType.Neutral)
+            {
+                // NEED_FACTION
+                return false;
+            }
             SerializableWorldServer act4ChannelInfo = CommunicationServiceClient.Instance.GetAct4ChannelInfo(ServerManager.Instance.ServerGroup);
             if (act4ChannelInfo == null)
             {
@@ -4392,11 +4397,30 @@ namespace OpenNos.GameObject
             }
             if (ServerManager.Instance.IpAddress != act4ChannelInfo.EndPointIp && ServerManager.Instance.Port != act4ChannelInfo.EndPointPort)
             {
-                ChangeChannel(act4ChannelInfo.EndPointIp, act4ChannelInfo.EndPointPort, 3);
+                ChangeChannel(act4ChannelInfo.EndPointIp, act4ChannelInfo.EndPointPort, 1);
             }
             else
             {
-                Session.SendPacket($"it {3}");
+                Session.SendPacket("it 1");
+                switch (Session.Character.Faction)
+                {
+                    case FactionType.Angel:
+                        Session.Character.MapId = 130;
+                        Session.Character.MapX = 12;
+                        Session.Character.MapY = 40;
+                        break;
+                    case FactionType.Demon:
+                        Session.Character.MapId = 131;
+                        Session.Character.MapX = 12;
+                        Session.Character.MapY = 40;
+                        break;
+                }
+                MapInstance act4Map = ServerManager.Instance.GetMapInstancesByMapInstanceType(MapInstanceType.Act4Instance)?.FirstOrDefault(s => s.Map.MapId == Session.Character.MapId);
+                if (act4Map == null)
+                {
+                    return false;
+                }
+                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, act4Map.MapInstanceId, Session.Character.MapX, Session.Character.MapY);
             }
             return true;
         }

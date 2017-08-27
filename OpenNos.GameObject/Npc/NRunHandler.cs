@@ -559,32 +559,59 @@ namespace OpenNos.GameObject
                     Session.SendPacket($"wopen 32 {Medal} {Time}");
                     break;
 
-                case 5002:
-                    tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
-                    if (tp != null)
+                case 5001:
+                    if (npc != null)
                     {
-                        Session.SendPacket("it 3");
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                        MapInstance map = null;
+                        switch (Session.Character.Faction)
+                        {
+                            case FactionType.Neutral:
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("NEED_FACTION_ACT4"));
+                                return;
+                            case FactionType.Angel:
+                                map = ServerManager.Instance.Act4ShipAngel;
+
+                                break;
+                            case FactionType.Demon:
+                                map = ServerManager.Instance.Act4ShipDemon;
+
+                                break;
+                        }
+                        if (map == null || npc.EffectActivated)
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHIP_NOTARRIVED"), 0));
+                            return;
+                        }
+                        if (3000 > Session.Character.Gold)
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                            return;
+                        }
+                        Session.Character.Gold -= 3000;
+                        MapCell pos = map.Map.GetRandomPosition();
+                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, map.MapInstanceId, pos.X, pos.Y);
                     }
                     break;
 
-                case 5001:
+                case 5002:
                     if (npc != null)
                     {
                         tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
-                            //Session.SendPacket("it 3");
-                            SerializableWorldServer channel = CommunicationServiceClient.Instance.GetPreviousChannelByAccountId(Session.Account.AccountId);
-                            if (channel == null)
+                            Session.SendPacket("it 3");
+                            SerializableWorldServer connection = CommunicationServiceClient.Instance.GetPreviousChannelByAccountId(Session.Account.AccountId);
+
+                            if (connection == null)
                             {
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                                 return;
                             }
+
                             Session.Character.MapId = tp.MapId;
                             Session.Character.MapX = tp.MapX;
                             Session.Character.MapY = tp.MapY;
-                            Session.Character.ChangeChannel(channel.EndPointIp, channel.EndPointPort, 3);
+                            Session.Character.ChangeChannel(connection.EndPointIp, connection.EndPointPort, 3);
                         }
                     }
                     break;
