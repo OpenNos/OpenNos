@@ -62,103 +62,105 @@ namespace OpenNos.Handler
             long accountId = Session.Account.AccountId;
             byte slot = characterCreatePacket.Slot;
             string characterName = characterCreatePacket.Name;
-            if (slot <= 2 && DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) == null)
+            if (slot > 2 || DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) != null)
             {
-                if (characterName.Length > 3 && characterName.Length < 15)
+                return;
+            }
+            if (characterName.Length <= 3 || characterName.Length >= 15)
+            {
+                return;
+            }
+            Regex rg = new Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B\u002E]*$");
+            if (rg.Matches(characterName).Count == 1)
+            {
+                if (DAOFactory.CharacterDAO.LoadByName(characterName) == null)
                 {
-                    Regex rg = new Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B\u002E]*$");
-                    if (rg.Matches(characterName).Count == 1)
+                    if (characterCreatePacket.Slot > 2)
                     {
-                        if (DAOFactory.CharacterDAO.LoadByName(characterName) == null)
-                        {
-                            if (characterCreatePacket.Slot > 2)
-                            {
-                                return;
-                            }
-                            CharacterDTO newCharacter = new CharacterDTO
-                            {
-                                Class = (byte)ClassType.Adventurer,
-                                Gender = characterCreatePacket.Gender,
-                                HairColor = characterCreatePacket.HairColor,
-                                HairStyle = characterCreatePacket.HairStyle,
-                                Hp = 221,
-                                JobLevel = 1,
-                                Level = 1,
-                                MapId = 1,
-                                MapX = (short)ServerManager.Instance.RandomNumber(78, 81),
-                                MapY = (short)ServerManager.Instance.RandomNumber(114, 118),
-                                Mp = 221,
-                                MaxMateCount = 10,
-                                SpPoint = 10000,
-                                SpAdditionPoint = 0,
-                                Name = characterName,
-                                Slot = slot,
-                                AccountId = accountId,
-                                MinilandMessage = "Welcome",
-                                State = CharacterState.Active
-                            };
-
-                            SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
-                            CharacterSkillDTO sk1 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
-                            CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
-                            CharacterSkillDTO sk3 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 209 };
-                            QuicklistEntryDTO qlst1 = new QuicklistEntryDTO
-                            {
-                                CharacterId = newCharacter.CharacterId,
-                                Type = 1,
-                                Slot = 1,
-                                Pos = 1
-                            };
-                            QuicklistEntryDTO qlst2 = new QuicklistEntryDTO
-                            {
-                                CharacterId = newCharacter.CharacterId,
-                                Q2 = 1,
-                                Slot = 2
-                            };
-                            QuicklistEntryDTO qlst3 = new QuicklistEntryDTO
-                            {
-                                CharacterId = newCharacter.CharacterId,
-                                Q2 = 8,
-                                Type = 1,
-                                Slot = 1,
-                                Pos = 16
-                            };
-                            QuicklistEntryDTO qlst4 = new QuicklistEntryDTO
-                            {
-                                CharacterId = newCharacter.CharacterId,
-                                Q2 = 9,
-                                Type = 1,
-                                Slot = 3,
-                                Pos = 1
-                            };
-                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst1);
-                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst2);
-                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst3);
-                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst4);
-                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk1);
-                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk2);
-                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk3);
-
-                            Inventory startupInventory = new Inventory((Character)newCharacter);
-                            startupInventory.AddNewToInventory(1, 1, InventoryType.Wear);
-                            startupInventory.AddNewToInventory(8, 1, InventoryType.Wear);
-                            startupInventory.AddNewToInventory(12, 1, InventoryType.Wear);
-                            startupInventory.AddNewToInventory(2024, 10, InventoryType.Etc);
-                            startupInventory.AddNewToInventory(2081, 1, InventoryType.Etc);
-                            startupInventory.Select(s=>s.Value).ToList().ForEach(i => DAOFactory.IteminstanceDAO.InsertOrUpdate(i));
-
-                            LoadCharacters(characterCreatePacket.OriginalContent);
-                        }
-                        else
-                        {
-                            Session.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
-                        }
+                        return;
                     }
-                    else
+                    CharacterDTO newCharacter = new CharacterDTO
                     {
-                        Session.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("INVALID_CHARNAME")}");
-                    }
+                        Class = (byte) ClassType.Adventurer,
+                        Gender = characterCreatePacket.Gender,
+                        HairColor = characterCreatePacket.HairColor,
+                        HairStyle = characterCreatePacket.HairStyle,
+                        Hp = 221,
+                        JobLevel = 1,
+                        Level = 1,
+                        MapId = 1,
+                        MapX = (short) ServerManager.Instance.RandomNumber(78, 81),
+                        MapY = (short) ServerManager.Instance.RandomNumber(114, 118),
+                        Mp = 221,
+                        MaxMateCount = 10,
+                        SpPoint = 10000,
+                        SpAdditionPoint = 0,
+                        Name = characterName,
+                        Slot = slot,
+                        AccountId = accountId,
+                        MinilandMessage = "Welcome",
+                        State = CharacterState.Active
+                    };
+
+                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+                    CharacterSkillDTO sk1 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 200};
+                    CharacterSkillDTO sk2 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 201};
+                    CharacterSkillDTO sk3 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 209};
+                    QuicklistEntryDTO qlst1 = new QuicklistEntryDTO
+                    {
+                        CharacterId = newCharacter.CharacterId,
+                        Type = 1,
+                        Slot = 1,
+                        Pos = 1
+                    };
+                    QuicklistEntryDTO qlst2 = new QuicklistEntryDTO
+                    {
+                        CharacterId = newCharacter.CharacterId,
+                        Q2 = 1,
+                        Slot = 2
+                    };
+                    QuicklistEntryDTO qlst3 = new QuicklistEntryDTO
+                    {
+                        CharacterId = newCharacter.CharacterId,
+                        Q2 = 8,
+                        Type = 1,
+                        Slot = 1,
+                        Pos = 16
+                    };
+                    QuicklistEntryDTO qlst4 = new QuicklistEntryDTO
+                    {
+                        CharacterId = newCharacter.CharacterId,
+                        Q2 = 9,
+                        Type = 1,
+                        Slot = 3,
+                        Pos = 1
+                    };
+                    DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst1);
+                    DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst2);
+                    DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst3);
+                    DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst4);
+                    DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk1);
+                    DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk2);
+                    DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk3);
+
+                    Inventory startupInventory = new Inventory((Character) newCharacter);
+                    startupInventory.AddNewToInventory(1, 1, InventoryType.Wear);
+                    startupInventory.AddNewToInventory(8, 1, InventoryType.Wear);
+                    startupInventory.AddNewToInventory(12, 1, InventoryType.Wear);
+                    startupInventory.AddNewToInventory(2024, 10, InventoryType.Etc);
+                    startupInventory.AddNewToInventory(2081, 1, InventoryType.Etc);
+                    startupInventory.Select(s => s.Value).ToList().ForEach(i => DAOFactory.IteminstanceDAO.InsertOrUpdate(i));
+
+                    LoadCharacters(characterCreatePacket.OriginalContent);
                 }
+                else
+                {
+                    Session.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
+                }
+            }
+            else
+            {
+                Session.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("INVALID_CHARNAME")}");
             }
         }
 
