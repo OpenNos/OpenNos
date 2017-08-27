@@ -412,13 +412,13 @@ namespace OpenNos.Handler
                     if (Session.Character.Group != null && Session.Character.Group.IsLeader(Session))
                     {
                         ClientSession chartokick = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
-                        if (chartokick.Character?.Group == null)
+                        if (chartokick?.Character?.Group == null)
                         {
                             return;
                         }
 
                         chartokick.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("KICK_RAID")), 0));
-                        grp = chartokick.Character?.Group;
+                        grp = chartokick.Character.Group;
                         chartokick.SendPacket(chartokick.Character.GenerateRaid(1, true));
                         chartokick.SendPacket(chartokick.Character.GenerateRaid(2, true));
                         grp.LeaveGroup(chartokick);
