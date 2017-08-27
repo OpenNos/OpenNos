@@ -1143,15 +1143,25 @@ namespace OpenNos.GameObject
 
                 if (DAOFactory.MapDAO.LoadById(2006) != null)
                 {
-                    Logger.Info("[ARENA] Arena Map Loaded");
+                    Logger.Log.Info("[ARENA] Arena Map Loaded");
                     ArenaInstance = GenerateMapInstance(2006, MapInstanceType.ArenaInstance, new InstanceBag());
                     ArenaInstance.IsPVP = true;
                 }
                 if (DAOFactory.MapDAO.LoadById(2106) != null)
                 {
-                    Logger.Info("[ARENA] Family Arena Map Loaded");
+                    Logger.Log.Info("[ARENA] Family Arena Map Loaded");
                     FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.ArenaInstance, new InstanceBag());
                     FamilyArenaInstance.IsPVP = true;
+                }
+                if (DAOFactory.MapDAO.LoadById(148) != null)
+                {
+                    Logger.Log.Info("[ARENA] Arena Map Loaded");
+                    Act4ShipAngel = GenerateMapInstance(148, MapInstanceType.NormalInstance, null);
+                }
+                if (DAOFactory.MapDAO.LoadById(149) != null)
+                {
+                    Logger.Log.Info("[ARENA] Family Arena Map Loaded");
+                    Act4ShipDemon = GenerateMapInstance(149, MapInstanceType.ArenaInstance, null);
                 }
                 LoadScriptedInstances();
             }
