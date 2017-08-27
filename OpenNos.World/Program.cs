@@ -26,6 +26,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -102,7 +103,7 @@ namespace OpenNos.World
 
             // TODO: initialize ClientLinkManager initialize PacketSerialization
             PacketFactory.Initialize<WalkPacket>();
-
+            string ip = ConfigurationManager.AppSettings["IPADDRESS"];
             try
             {
                 _exitHandler += ExitHandler;
@@ -136,6 +137,8 @@ namespace OpenNos.World
             if (newChannelId.HasValue)
             {
                 ServerManager.Instance.ChannelId = newChannelId.Value;
+                ServerManager.Instance.IpAddress = ip;
+                ServerManager.Instance.Port = port;
                 Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count());
             }
             else

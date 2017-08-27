@@ -404,6 +404,27 @@ namespace OpenNos.GameObject
 
         #region Methods
 
+        public string GenerateFc()
+        {
+            return $"fc {(byte)Faction} {ServerManager.Instance.Act4AngelStat.MinutesUntilReset} {ServerManager.Instance.Act4AngelStat.Percentage / 100} {ServerManager.Instance.Act4AngelStat.Mode}" +
+                   $" {ServerManager.Instance.Act4AngelStat.CurrentTime} {ServerManager.Instance.Act4AngelStat.TotalTime} {Convert.ToByte(ServerManager.Instance.Act4AngelStat.IsMorcos)}" +
+                   $" {Convert.ToByte(ServerManager.Instance.Act4AngelStat.IsHatus)} {Convert.ToByte(ServerManager.Instance.Act4AngelStat.IsCalvina)} {Convert.ToByte(ServerManager.Instance.Act4AngelStat.IsBerios)}" +
+                   $" 0 {ServerManager.Instance.Act4DemonStat.Percentage / 100} {ServerManager.Instance.Act4DemonStat.Mode} {ServerManager.Instance.Act4DemonStat.CurrentTime} {ServerManager.Instance.Act4DemonStat.TotalTime}" +
+                   $" {Convert.ToByte(ServerManager.Instance.Act4DemonStat.IsMorcos)} {Convert.ToByte(ServerManager.Instance.Act4DemonStat.IsHatus)} {Convert.ToByte(ServerManager.Instance.Act4DemonStat.IsCalvina)} " +
+                   $"{Convert.ToByte(ServerManager.Instance.Act4DemonStat.IsBerios)} 0";
+            //return $"fc {Faction} 0 69 0 0 0 1 1 1 1 0 34 0 0 0 1 1 1 1 0";
+        }
+
+        public string GenerateDG()
+        {
+            if (ServerManager.Instance.Act4RaidStart.AddMinutes(60) < DateTime.Now)
+            {
+                ServerManager.Instance.Act4RaidStart = DateTime.Now;
+            }
+            double seconds = (ServerManager.Instance.Act4RaidStart.AddMinutes(60) - DateTime.Now).TotalSeconds;
+            return $"dg {Session?.Character?.Family?.Act4RaidType ?? 0} {(seconds > 1800 ? 1 : 2)} {(int)seconds} 0";
+        }
+
         public bool AddPet(Mate mate)
         {
             if (mate.MateType == MateType.Pet ? MaxMateCount <= Mates.Count() : 3 <= Mates.Count(s => s.MateType == MateType.Partner))
@@ -4373,7 +4394,14 @@ namespace OpenNos.GameObject
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("ACT4_CHANNEL_OFFLINE")));
                 return false;
             }
-            ChangeChannel(act4ChannelInfo.EndPointIp, act4ChannelInfo.EndPointPort, 3);
+            if (ServerManager.Instance.IpAddress != act4ChannelInfo.EndPointIp && ServerManager.Instance.Port != act4ChannelInfo.EndPointPort)
+            {
+                ChangeChannel(act4ChannelInfo.EndPointIp, act4ChannelInfo.EndPointPort, 3);
+            }
+            else
+            {
+                Session.SendPacket($"it {3}");
+            }
             return true;
         }
 
