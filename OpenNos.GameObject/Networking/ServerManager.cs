@@ -130,6 +130,8 @@ namespace OpenNos.GameObject
 
         public int HeroXpRate { get; set; }
 
+        public bool IceBreakerInWaiting { get; set; }
+
         public bool InBazaarRefreshMode { get; set; }
 
         public bool InFamilyRefreshMode { get; set; }

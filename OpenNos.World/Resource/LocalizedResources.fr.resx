@@ -1666,4 +1666,37 @@ Veux-tu le porter ?</value>
   <data name="WINNER_ARENA_ROUND" xml:space="preserve">
     <value>{0} a vaincu {1}.</value>
   </data>
+  <data name="ICEBREAKER_ASK" xml:space="preserve">
+    <value>Veux-tu entrer dans le Brise-glace ? Tu devras verser : {0}Or"</value>
+  </data>
+  <data name="ICEBREAKER_FIGHT_START" xml:space="preserve">
+    <value>Lance l'attaque !</value>
+  </data>
+  <data name="ICEBREAKER_FIGHT_WARN" xml:space="preserve">
+    <value>Le PvP va bientôt commencer.</value>
+  </data>
+  <data name="ICEBREAKER_MINUTES" xml:space="preserve">
+    <value>Dans {0} minutes {1} ~ {2}Le Brise-Glace va commencer pour tous les niveaux.</value>
+  </data>
+  <data name="ICEBREAKER_PLAYER_FROZEN" xml:space="preserve">
+    <value>{0} est congelé.</value>
+  </data>
+  <data name="ICEBREAKER_PLAYER_OUT" xml:space="preserve">
+    <value>{0} est dehors.</value>
+  </data>
+  <data name="ICEBREAKER_PLAYER_UNFROZEN" xml:space="preserve">
+    <value>{0} n'est pas congelé.</value>
+  </data>
+  <data name="ICEBREAKER_SECONDS" xml:space="preserve">
+    <value>Dans {0} secondes {1} ~ {2}Le Brise-Glace va commencer pour tous les niveaux.</value>
+  </data>
+  <data name="ICEBREAKER_STARTED" xml:space="preserve">
+    <value>Le Brise-glace a commencé.</value>
+  </data>
+  <data name="ICEBREAKER_TIMEOUT" xml:space="preserve">
+    <value>Le délai du Brise-glace est écoulé.</value>
+  </data>
+  <data name="ICEBREAKER_WIN" xml:space="preserve">
+    <value>Vous avez gagné l'IceBreaker.</value>
+  </data>
 </root>

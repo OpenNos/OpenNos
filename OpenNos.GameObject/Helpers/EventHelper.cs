@@ -88,6 +88,10 @@ namespace OpenNos.GameObject.Helpers
                             LOD.GenerateLod(35);
                             break;
 
+                        case EventType.ICEBREAKER:
+                            IceBreaker.GenerateIceBreaker();
+                            break;
+
                         case EventType.ACT4SHIP:
                             Act4Ship.GenerateAct4Ship(FactionType.Angel);
                             Act4Ship.GenerateAct4Ship(FactionType.Demon);

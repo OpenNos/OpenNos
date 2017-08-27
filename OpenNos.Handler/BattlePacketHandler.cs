@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
 using System;
@@ -24,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
@@ -299,6 +301,37 @@ namespace OpenNos.Handler
                             target.SendPacket(target.Character.GenerateStat());
                         });
                     }
+                    else if (target?.CurrentMapInstance?.MapInstanceType == MapInstanceType.IceBreakerInstance)
+                    {
+                        if (IceBreaker.AlreadyFrozenPlayers.Contains(target))
+                        {
+                            IceBreaker.AlreadyFrozenPlayers.Remove(target);
+                            target?.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_OUT"), target?.Character?.Name), 0));
+                            target.Character.Hp = 1;
+                            target.Character.Mp = 1;
+                            var respawn = target?.Character?.Respawn;
+                            ServerManager.Instance.ChangeMap(target.Character.CharacterId, respawn.DefaultMapId);
+                        }
+                        else
+                        {
+                            IceBreaker.FrozenPlayers.Add(target);
+                            target?.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_FROZEN"), target?.Character?.Name), 0));
+                            Task.Run(() =>
+                            {
+                                target.Character.Hp = (int)target.Character.HPLoad();
+                                target.Character.Mp = (int)target.Character.MPLoad();
+                                target?.SendPacket(target?.Character?.GenerateStat());
+                                target.Character.NoMove = true;
+                                target.Character.NoAttack = true;
+                                target?.SendPacket(target?.Character?.GenerateCond());
+                                while (IceBreaker.FrozenPlayers.Contains(target))
+                                {
+                                    target?.CurrentMapInstance?.Broadcast(target?.Character?.GenerateEff(35));
+                                    Thread.Sleep(1000);
+                                }
+                            });
+                        }
+                    }
                     else
                     {
                         hitRequest.Session.Character.TalentWin += 1;
@@ -396,9 +429,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
                 return;
             }
-
             IEnumerable<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp?.Select(s => s.Value) : Session.Character.Skills?.Select(s => s.Value);
-
             if (skills != null)
             {
                 CharacterSkill ski = skills.FirstOrDefault(s => s.Skill?.CastId == castingId && s.Skill?.UpgradeSkill == 0);
@@ -411,7 +442,6 @@ namespace OpenNos.Handler
                     Session.SendPacket($"cancel 2 {targetId}");
                     return;
                 }
-
                 if (ski != null && Session.Character.Mp >= ski.Skill.MpCost)
                 {
                     // AOE Target hit
