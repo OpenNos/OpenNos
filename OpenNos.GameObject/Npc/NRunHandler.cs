@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 
 namespace OpenNos.GameObject
 {
@@ -275,7 +277,8 @@ namespace OpenNos.GameObject
                         Session.Character.LastPortal = currentRunningSeconds;
                         Session.Character.Gold -= 500 * (1 + packet.Type);
                         Session.SendPacket(Session.Character.GenerateGold());
-                        ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, packet.Type == 0 ? ServerManager.Instance.ArenaInstance.MapInstanceId : ServerManager.Instance.FamilyArenaInstance.MapInstanceId);
+                        ServerManager.Instance.TeleportOnRandomPlaceInMap(Session,
+                            packet.Type == 0 ? ServerManager.Instance.ArenaInstance.MapInstanceId : ServerManager.Instance.FamilyArenaInstance.MapInstanceId);
                     }
                     else
                     {
@@ -338,17 +341,17 @@ namespace OpenNos.GameObject
                     else
                     {
                         int tickets = 5 - Session.Character.GeneralLogs.Count(s => s.LogType == "TalentArena" && s.Timestamp.Date == DateTime.Today);
-                        if (!ServerManager.Instance.ArenaMembers.Any(s => s.Session == Session) && tickets > 0)
+                        if (ServerManager.Instance.ArenaMembers.All(s => s.Session != Session) && tickets > 0)
                         {
                             if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId))
                             {
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TALENT_ARENA_GROUP"),0));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TALENT_ARENA_GROUP"), 0));
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TALENT_ARENA_GROUP"), 10));
                             }
                             else
                             {
                                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ARENA_TICKET_LEFT"), tickets), 10));
-                                ServerManager.Instance.ArenaMembers.Add(new ArenaMember()
+                                ServerManager.Instance.ArenaMembers.Add(new ArenaMember
                                 {
                                     ArenaType = EventType.TALENTARENA,
                                     Session = Session,
@@ -514,13 +517,10 @@ namespace OpenNos.GameObject
                     {
                         if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
                         {
-                            foreach (ClientSession s in Session.Character.Group.Characters)
+                            if (Session.Character.Group.Characters.Any(s => s.Character.Family != null))
                             {
-                                if (s.Character.Family != null)
-                                {
-                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_MEMBER_ALREADY_IN_FAMILY")));
-                                    return;
-                                }
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_MEMBER_ALREADY_IN_FAMILY")));
+                                return;
                             }
                         }
                         if (Session.Character.Group == null || Session.Character.Group.CharacterCount != 3)
@@ -571,7 +571,21 @@ namespace OpenNos.GameObject
                 case 5001:
                     if (npc != null)
                     {
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 130, 12, 40);
+                        tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                        if (tp != null)
+                        {
+                            //Session.SendPacket("it 3");
+                            SerializableWorldServer channel = CommunicationServiceClient.Instance.GetPreviousChannelByAccountId(Session.Account.AccountId);
+                            if (channel == null)
+                            {
+                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                                return;
+                            }
+                            Session.Character.MapId = tp.MapId;
+                            Session.Character.MapX = tp.MapX;
+                            Session.Character.MapY = tp.MapY;
+                            Session.Character.ChangeChannel(channel.EndPointIp, channel.EndPointPort, 3);
+                        }
                     }
                     break;
 

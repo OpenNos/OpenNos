@@ -230,10 +230,18 @@ namespace OpenNos.GameObject
             GenerateHandlerReferences(packetHandler, isWorldServer);
         }
 
-        public void InitializeAccount(Account account)
+        public void InitializeAccount(Account account, bool crossServer = false)
         {
             Account = account;
-            CommunicationServiceClient.Instance.ConnectAccount(ServerManager.Instance.WorldId, account.AccountId, SessionId);
+            if (crossServer)
+            {
+                CommunicationServiceClient.Instance.ConnectAccountInternal(ServerManager.Instance.WorldId, account.AccountId, SessionId);
+            }
+            else
+            {
+                CommunicationServiceClient.Instance.ConnectAccount(ServerManager.Instance.WorldId, account.AccountId, SessionId);
+
+            }
             IsAuthenticated = true;
         }
 
@@ -365,7 +373,7 @@ namespace OpenNos.GameObject
                     string sessionPacket = _encryptor.DecryptCustomParameter(packetData);
 
                     string[] sessionParts = sessionPacket.Split(' ');
-                    if (!sessionParts.Any())
+                    if (sessionParts.Length == 0)
                     {
                         return;
                     }
@@ -395,7 +403,7 @@ namespace OpenNos.GameObject
 
                 string packetConcatenated = _encryptor.Decrypt(packetData, SessionId);
 
-                foreach (string packet in packetConcatenated.Split(new[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (string packet in packetConcatenated.Split(new[] {(char) 0xFF}, StringSplitOptions.RemoveEmptyEntries))
                 {
                     string packetstring = packet.Replace('^', ' ');
                     string[] packetsplit = packetstring.Split(' ');
@@ -424,41 +432,45 @@ namespace OpenNos.GameObject
 
                         if (_waitForPacketsAmount.HasValue)
                         {
-                            if (_waitForPacketList.Count != _waitForPacketsAmount - 1)
+                            _waitForPacketList.Add(packetstring);
+                            string[] packetssplit = packetstring.Split(' ');
+                            if (packetssplit.Length > 3 && packetsplit[1] == "DAC")
                             {
-                                _waitForPacketList.Add(packetstring);
+                                _waitForPacketList.Add("0 CrossServerAuthenticate");
                             }
-                            else
+                            if (_waitForPacketList.Count != _waitForPacketsAmount)
                             {
-                                _waitForPacketList.Add(packetstring);
-                                _waitForPacketsAmount = null;
-                                string queuedPackets = string.Join(" ", _waitForPacketList.ToArray());
-                                string header = queuedPackets.Split(' ', '^')[1];
-                                TriggerHandler(header, queuedPackets, true);
-                                _waitForPacketList.Clear();
-                                return;
+                                continue;
                             }
+                            _waitForPacketsAmount = null;
+                            string queuedPackets = string.Join(" ", _waitForPacketList.ToArray());
+                            string header = queuedPackets.Split(' ', '^')[1];
+                            TriggerHandler(header, queuedPackets, true);
+                            _waitForPacketList.Clear();
+                            return;
                         }
-                        else
+                        if (packetsplit.Length <= 1)
                         {
-                            if (packetsplit.Length > 1)
-                            {
-                                if (packetsplit[1].Length >= 1 && (packetsplit[1][0] == '/' || packetsplit[1][0] == ':' || packetsplit[1][0] == ';'))
-                                {
-                                    packetsplit[1] = packetsplit[1][0].ToString();
-                                    packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
-                                }
-                                if (packetsplit[1] != "0")
-                                {
-                                    TriggerHandler(packetsplit[1].Replace("#", ""), packetstring, false);
-                                }
-                            }
+                            continue;
+                        }
+                        if (packetsplit[1].Length >= 1 && (packetsplit[1][0] == '/' || packetsplit[1][0] == ':' || packetsplit[1][0] == ';'))
+                        {
+                            packetsplit[1] = packetsplit[1][0].ToString();
+                            packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
+                        }
+                        if (packetsplit[1] != "0")
+                        {
+                            TriggerHandler(packetsplit[1].Replace("#", ""), packetstring, false);
                         }
                     }
                     else
                     {
                         string packetHeader = packetstring.Split(' ')[0];
-
+                        if (string.IsNullOrWhiteSpace(packetHeader))
+                        {
+                            Disconnect();
+                            return;
+                        }
                         // simple messaging
                         if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
                         {
@@ -479,8 +491,7 @@ namespace OpenNos.GameObject
         /// <param name="e"></param>
         private void OnNetworkClientMessageReceived(object sender, MessageEventArgs e)
         {
-            ScsRawDataMessage message = e.Message as ScsRawDataMessage;
-            if (message == null)
+            if (!(e.Message is ScsRawDataMessage message))
             {
                 return;
             }

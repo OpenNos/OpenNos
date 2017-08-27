@@ -210,19 +210,32 @@ namespace OpenNos.Handler
             string[] loginPacketParts = packet.Split(' ');
 
             // Load account by given SessionId
+            bool isCrossServerLogin = false;
             if (Session.Account == null)
             {
                 bool hasRegisteredAccountLogin = true;
                 AccountDTO account = null;
                 if (loginPacketParts.Length > 4)
                 {
-                    account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+                    if (loginPacketParts.Length > 7 && loginPacketParts[4] == "DAC" && loginPacketParts[8] == "CrossServerAuthenticate")
+                    {
+                        isCrossServerLogin = true;
+                        account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[5]);
+                    }
+                    else
+                    {
+                        account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+                    }
                 }
                 try
                 {
                     if (account != null)
                     {
-                        hasRegisteredAccountLogin = CommunicationServiceClient.Instance.IsLoginPermitted(account.AccountId, Session.SessionId);
+                        hasRegisteredAccountLogin = isCrossServerLogin
+                            ? CommunicationServiceClient.Instance.IsCrossServerLoginPermitted(account.AccountId,
+                                Session.SessionId)
+                            : CommunicationServiceClient.Instance.IsLoginPermitted(account.AccountId,
+                                Session.SessionId);
                     }
                 }
                 catch (Exception ex)
@@ -235,8 +248,24 @@ namespace OpenNos.Handler
                 {
                     if (account != null)
                     {
-                        if (account.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])))
+                        if (account.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])) || isCrossServerLogin)
                         {
+                            PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(account.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
+                            if (penalty != null)
+                            {
+                                Session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, penalty.DateEnd.ToString("yyyy-MM-dd-HH:mm"))}");
+                                Logger.Log.Info($"[LOG] {account.Name} connected from {Session.IpAddress} while being banned");
+                                Session.Disconnect();
+                                return;
+                            }
+                            if (ServerManager.Instance.Sessions.Count() >= ServerManager.Instance.AccountLimit)
+                            {
+                                if (account.Authority < AuthorityType.Moderator)
+                                {
+                                    Session.Disconnect();
+                                    return;
+                                }
+                            }
                             Account accountobject = new Account
                             {
                                 AccountId = account.AccountId,
@@ -246,7 +275,7 @@ namespace OpenNos.Handler
                             };
                             accountobject.Initialize();
 
-                            Session.InitializeAccount(accountobject);
+                            Session.InitializeAccount(accountobject, isCrossServerLogin);
                         }
                         else
                         {
@@ -271,34 +300,49 @@ namespace OpenNos.Handler
             }
 
             // TODO: Wrap Database access up to GO
-            IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
-            Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.SessionId);
-
-            // load characterlist packet for each character in CharacterDTO
-            Session.SendPacket("clist_start 0");
-            foreach (CharacterDTO character in characters)
+            if (Session.Account == null)
             {
-                IEnumerable<ItemInstanceDTO> inventory = DAOFactory.IteminstanceDAO.LoadByType(character.CharacterId, InventoryType.Wear);
-
-                WearableInstance[] equipment = new WearableInstance[16];
-                foreach (ItemInstanceDTO equipmentEntry in inventory)
-                {
-                    // explicit load of iteminstance
-                    WearableInstance currentInstance = equipmentEntry as WearableInstance;
-                    equipment[(short)currentInstance.Item.EquipmentSlot] = currentInstance;
-                }
-                string petlist = string.Empty;
-                List<MateDTO> mates = DAOFactory.MateDAO.LoadByCharacterId(character.CharacterId).ToList();
-                for (int i = 0; i < 26; i++)
-                {
-                    //0.2105.1102.319.0.632.0.333.0.318.0.317.0.9.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1
-                    petlist += $"{(i != 0 ? "." : "")}{(mates.Count > i ? $"{mates.ElementAt(i).Skin}.{mates.ElementAt(i).NpcMonsterVNum}" : "-1")}";
-                }
-
-                // 1 1 before long string of -1.-1 = act completion
-                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {equipment[(byte)EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte)EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte)EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 {petlist} {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
+                return;
             }
-            Session.SendPacket("clist_end");
+            if (isCrossServerLogin)
+            {
+                if (byte.TryParse(loginPacketParts[6], out byte slot))
+                {
+                    SelectCharacter(new SelectPacket {Slot = slot});
+                }
+            }
+            else
+            {
+                IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
+                Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.SessionId);
+
+                // load characterlist packet for each character in CharacterDTO
+                Session.SendPacket("clist_start 0");
+                foreach (CharacterDTO character in characters)
+                {
+                    IEnumerable<ItemInstanceDTO> inventory = DAOFactory.IteminstanceDAO.LoadByType(character.CharacterId, InventoryType.Wear);
+
+                    WearableInstance[] equipment = new WearableInstance[16];
+                    foreach (ItemInstanceDTO equipmentEntry in inventory)
+                    {
+                        // explicit load of iteminstance
+                        WearableInstance currentInstance = equipmentEntry as WearableInstance;
+                        equipment[(short) currentInstance.Item.EquipmentSlot] = currentInstance;
+                    }
+                    string petlist = string.Empty;
+                    List<MateDTO> mates = DAOFactory.MateDAO.LoadByCharacterId(character.CharacterId).ToList();
+                    for (int i = 0; i < 26; i++)
+                    {
+                        //0.2105.1102.319.0.632.0.333.0.318.0.317.0.9.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1
+                        petlist += $"{(i != 0 ? "." : "")}{(mates.Count > i ? $"{mates.ElementAt(i).Skin}.{mates.ElementAt(i).NpcMonsterVNum}" : "-1")}";
+                    }
+
+                    // 1 1 before long string of -1.-1 = act completion
+                    Session.SendPacket(
+                        $"clist {character.Slot} {character.Name} 0 {(byte) character.Gender} {(byte) character.HairStyle} {(byte) character.HairColor} 0 {(byte) character.Class} {character.Level} {character.HeroLevel} {equipment[(byte) EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte) EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte) EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 {petlist} {(equipment[(byte) EquipmentType.Hat] != null && equipment[(byte) EquipmentType.Hat].Item.IsColored ? equipment[(byte) EquipmentType.Hat].Design : 0)} 0");
+                }
+                Session.SendPacket("clist_end");
+            }
         }
 
         /// <summary>

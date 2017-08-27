@@ -178,6 +178,22 @@ namespace OpenNos.GameObject
 
         public List<ArenaMember> ArenaMembers { get; set; } = new List<ArenaMember>();
 
+        public MapInstance Act4ShipDemon { get; set; }
+
+        public MapInstance Act4ShipAngel { get; set; }
+
+        public Act4Stat Act4AngelStat { get; set; }
+
+        public Act4Stat Act4DemonStat { get; set; }
+
+        public DateTime Act4RaidStart { get; set; }
+
+        public int AccountLimit { get; set; }
+
+        public string IpAddress { get; set; }
+
+        public short Port { get; set; }
+
         #endregion
 
         #region Methods
@@ -1119,14 +1135,17 @@ namespace OpenNos.GameObject
                 RefreshRanking();
                 CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
                 PenaltyLogs = DAOFactory.PenaltyLogDAO.LoadAll().ToList();
+
                 if (DAOFactory.MapDAO.LoadById(2006) != null)
                 {
-                    ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance, new InstanceBag());
+                    Logger.Info("[ARENA] Arena Map Loaded");
+                    ArenaInstance = GenerateMapInstance(2006, MapInstanceType.ArenaInstance, new InstanceBag());
                     ArenaInstance.IsPVP = true;
                 }
                 if (DAOFactory.MapDAO.LoadById(2106) != null)
                 {
-                    FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance, new InstanceBag());
+                    Logger.Info("[ARENA] Family Arena Map Loaded");
+                    FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.ArenaInstance, new InstanceBag());
                     FamilyArenaInstance.IsPVP = true;
                 }
                 LoadScriptedInstances();
@@ -1494,6 +1513,119 @@ namespace OpenNos.GameObject
             CommunicationServiceClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
             CommunicationServiceClient.Instance.ShutdownEvent += OnShutdown;
             _lastGroupId = 1;
+        }
+
+        private void Act4Process()
+        {
+            /*
+            MapInstance angelMapInstance = GetMapInstance(GetBaseMapInstanceIdByMapId(132));
+            MapInstance demonMapInstance = GetMapInstance(GetBaseMapInstanceIdByMapId(133));
+
+            if (angelMapInstance == null || demonMapInstance == null)
+            {
+                return;
+            }
+            /*
+            void SummonMukraju(MapInstance instance, byte faction)
+            {
+                MapMonster monster = new MapMonster
+                {
+                    MonsterVNum = 556,
+                    MapY = faction == 1 ? (short)92 : (short)95,
+                    MapX = faction == 1 ? (short)114 : (short)20,
+                    MapId = (short)(131 + faction),
+                    IsMoving = true,
+                    MapMonsterId = instance.GetNextMonsterId(),
+                    ShouldRespawn = false
+                };
+                monster.Initialize(instance);
+                instance.AddMonster(monster);
+                instance.Broadcast(monster.GenerateIn());
+            }
+
+            int CreateRaid(byte faction)
+            {
+                Act4RaidType raidType = Act4RaidType.Morcos;
+                int rng = RandomNumber(1, 5);
+                switch (rng)
+                {
+                    case 2:
+                        raidType = Act4RaidType.Hatus;
+                        break;
+                    case 3:
+                        raidType = Act4RaidType.Calvina;
+                        break;
+                    case 4:
+                        raidType = Act4RaidType.Berios;
+                        break;
+                }
+                Event.Act4Raid.GenerateRaid(raidType, faction);
+                return rng;
+            }
+
+            if (Act4AngelStat.Percentage > 10000)
+            {
+                Act4AngelStat.Mode = 1;
+                Act4AngelStat.Percentage = 0;
+                Act4AngelStat.TotalTime = 300;
+                SummonMukraju(angelMapInstance, 1);
+            }
+
+            if (Act4AngelStat.Mode == 1 && angelMapInstance.Monsters.All(s => s.MonsterVNum != 556))
+            {
+                Act4AngelStat.Mode = 3;
+                Act4AngelStat.TotalTime = 3600;
+
+                switch (CreateRaid(1))
+                {
+                    case 1:
+                        Act4AngelStat.IsMorcos = true;
+                        break;
+                    case 2:
+                        Act4AngelStat.IsHatus = true;
+                        break;
+                    case 3:
+                        Act4AngelStat.IsCalvina = true;
+                        break;
+                    case 4:
+                        Act4AngelStat.IsBerios = true;
+                        break;
+                }
+            }
+
+            if (Act4DemonStat.Percentage > 10000)
+            {
+                Act4DemonStat.Mode = 1;
+                Act4DemonStat.Percentage = 0;
+                Act4DemonStat.TotalTime = 300;
+                SummonMukraju(demonMapInstance, 2);
+            }
+
+            if (Act4DemonStat.Mode == 1 && demonMapInstance.Monsters.All(s => s.MonsterVNum != 556))
+            {
+                Act4DemonStat.Mode = 3;
+                Act4DemonStat.TotalTime = 3600;
+
+                switch (CreateRaid(2))
+                {
+                    case 1:
+                        Act4DemonStat.IsMorcos = true;
+                        break;
+                    case 2:
+                        Act4DemonStat.IsHatus = true;
+                        break;
+                    case 3:
+                        Act4DemonStat.IsCalvina = true;
+                        break;
+                    case 4:
+                        Act4DemonStat.IsBerios = true;
+                        break;
+                }
+            }
+
+            Parallel.ForEach(Sessions.Where(s => s.Character != null && s.Character.MapInstance.Map.MapTypes.Any(o => o.MapTypeId == (short) MapTypeEnum.Act4)),
+                sess => sess.SendPacket(sess.Character.GenerateFc()));
+            */
         }
 
         private void LoadBazaar()

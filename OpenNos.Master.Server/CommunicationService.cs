@@ -104,9 +104,25 @@ namespace OpenNos.Master.Server
 
         public SerializableWorldServer GetAct4ChannelInfo(string worldGroup)
         {
-            // TODO CHANNEL TYPE ?
-            WorldServer act4Channel = MSManager.Instance.WorldServers.FirstOrDefault(s => s.ChannelId == 51 && s.WorldGroup == worldGroup);
+            WorldServer act4Channel = MSManager.Instance.WorldServers.FirstOrDefault(s => s.IsAct4 && s.WorldGroup == worldGroup);
+
+            if (act4Channel != null)
+            {
+                return act4Channel.Serializable;
+            }
+            act4Channel = MSManager.Instance.WorldServers.FirstOrDefault(s => s.WorldGroup == worldGroup);
+            if (act4Channel == null)
+            {
+                return null;
+            }
+            act4Channel.IsAct4 = true;
             return act4Channel?.Serializable;
+        }
+
+        public bool IsCrossServerLoginPermitted(long accountId, int sessionId)
+        {
+            return MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)) &&
+                   MSManager.Instance.ConnectedAccounts.Any(s => s.AccountId.Equals(accountId) && s.SessionId.Equals(sessionId) && s.CanSwitchChannel);
         }
 
         public void DisconnectAccount(long accountId)
@@ -281,7 +297,8 @@ namespace OpenNos.Master.Server
                 ServiceClient = CurrentClient,
                 ChannelId = Enumerable.Range(1, 30).Except(MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldServer.WorldGroup)).OrderBy(w => w.ChannelId).Select(w => w.ChannelId))
                     .First(),
-                Serializable = new SerializableWorldServer(worldServer.Id, worldServer.EndPointIp, worldServer.EndPointPort, worldServer.AccountLimit, worldServer.WorldGroup)
+                Serializable = new SerializableWorldServer(worldServer.Id, worldServer.EndPointIp, worldServer.EndPointPort, worldServer.AccountLimit, worldServer.WorldGroup),
+                IsAct4 = false
             };
             MSManager.Instance.WorldServers.Add(ws);
             return ws.ChannelId;
