@@ -46,7 +46,7 @@ namespace OpenNos.Data
 
         public bool ExchangeBlocked { get; set; }
 
-        public int Faction { get; set; }
+        public FactionType Faction { get; set; }
 
         public bool FamilyRequestBlocked { get; set; }
 

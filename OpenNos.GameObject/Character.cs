@@ -457,7 +457,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
             Session.CurrentMapInstance?.Broadcast(GenerateEff(196), PositionX, PositionY);
             int faction = 1 + ServerManager.Instance.RandomNumber(0, 2);
-            Faction = faction;
+            Faction = (FactionType)faction;
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
             Session.SendPacket("scr 0 0 0 0 0 0");
             Session.SendPacket(GenerateFaction());
@@ -1776,7 +1776,7 @@ namespace OpenNos.GameObject
 
         public string GenerateFaction()
         {
-            return $"fs {Faction}";
+            return $"fs {(byte)Faction}";
         }
 
         public string GenerateFamilyMember()

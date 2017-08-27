@@ -2443,7 +2443,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"Dignity: {character.Dignity}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Rage: {character.RagePoint}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Fraction: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Faction: {(character.Faction == FactionType.Demon ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
             Session.SendPacket(Session.Character.GenerateSay("----- --------- -----", 13));
             AccountDTO account = DAOFactory.AccountDAO.LoadById(character.AccountId);
             if (account != null)

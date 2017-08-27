@@ -169,7 +169,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 570:
-                    if (session.Character.Faction == EffectValue)
+                    if (session.Character.Faction == (FactionType)EffectValue)
                     {
                         return;
                     }

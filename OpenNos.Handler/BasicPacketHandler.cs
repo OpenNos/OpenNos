@@ -1245,7 +1245,7 @@ namespace OpenNos.Handler
                                         {
                                             if (Session.Character.Inventory.CountItem(baseVnum + faction) > 0)
                                             {
-                                                Session.Character.Faction = faction;
+                                                Session.Character.Faction = (FactionType)faction;
                                                 Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
                                                 Session.SendPacket("scr 0 0 0 0 0 0 0");
                                                 Session.SendPacket(Session.Character.GenerateFaction());
