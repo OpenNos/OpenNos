@@ -18,6 +18,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.Master.Library.Client;
@@ -1075,6 +1076,23 @@ namespace OpenNos.Handler
                                 }
                             }
                         }
+                        break;
+                    case 501:
+                        if (ServerManager.Instance.IceBreakerInWaiting && IceBreaker.Map.Sessions.Count() < IceBreaker.MAX_ALLOWED_PLAYERS)
+                        {
+                            ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, IceBreaker.Map.MapInstanceId);
+                        }
+                        break;
+                    case 502:
+                        long? charid = guriPacket.User;
+                        if (charid == null)
+                        {
+                            return;
+                        }
+                        var target = ServerManager.Instance.GetSessionByCharacterId(charid.Value);
+                        IceBreaker.FrozenPlayers.Remove(target);
+                        IceBreaker.AlreadyFrozenPlayers.Add(target);
+                        target?.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_UNFROZEN"), target?.Character?.Name), 0));
                         break;
                     case 506:
                         if (ServerManager.Instance.EventInWaiting)

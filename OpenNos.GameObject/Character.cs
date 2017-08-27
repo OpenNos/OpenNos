@@ -250,6 +250,10 @@ namespace OpenNos.GameObject
 
         public int MorphUpgrade2 { get; set; }
 
+        public bool NoAttack { get; set; }
+
+        public bool NoMove { get; set; }
+
         public short PositionX { get; set; }
 
         public short PositionY { get; set; }
@@ -983,7 +987,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCond()
         {
-            return $"cond 1 {CharacterId} 0 0 {Speed}";
+            return $"cond 1 {CharacterId} {(NoAttack ? 1 : 0)} {(NoMove ? 1 : 0)} {Speed}";
         }
 
         public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode)
