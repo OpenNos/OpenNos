@@ -5525,7 +5525,8 @@ namespace OpenNos.GameObject
                     }
                     s.Session.SendPacket(s.Session.Character.GenerateTaP(2, true));
                 });
-
+                List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad, BuffType.Good, BuffType.Neutral };
+                Session.Character.DisableBuffs(bufftodisable);
                 Session.SendPacket(Session.Character.GenerateTaP(1, true));
                 Session.SendPacket(Session.Character.GenerateTaM(1, 0));
                 Session.SendPacket("ta_sv 1");
