@@ -237,13 +237,22 @@ namespace OpenNos.Handler
         {
             if (target.Character.Hp > 0 && hitRequest.Session.Character.Hp > 0)
             {
-                if (target.CurrentMapInstance.MapInstanceType == MapInstanceType.ArenaInstance)
+                switch (target.CurrentMapInstance.MapInstanceType)
                 {
-                    if (!target.Character.MapInstance.Map.IsArenaPVPable(target.Character.PositionX, target.Character.PositionY))
-                    {
-                        Session.SendPacket("cancel 2 0");
-                        return;
-                    }
+                    case MapInstanceType.ArenaInstance:
+                        if (!target.Character.MapInstance.Map.IsArenaPVPable(target.Character.PositionX, target.Character.PositionY))
+                        {
+                            Session.SendPacket("cancel 2 0");
+                            return;
+                        }
+                        break;
+                    case MapInstanceType.Act4Instance:
+                        if (target.Character.Faction == Session.Character.Faction)
+                        {
+                            Session.SendPacket("cancel 2 0");
+                            return;
+                        }
+                        break;
                 }
                 if (target.Character.IsSitting)
                 {

@@ -118,8 +118,9 @@ namespace OpenNos.GameObject
                 Gift gift = GiftItems.ElementAtOrDefault(i);
                 bonusitems += $"{(i == 0 ? "" : " ")}{(gift == null ? "-1.0" : $"{gift.VNum}.{gift.Amount}")}";
             }
-            int WinnerScore = 0;
-            string Winner = "";
+            // TODO FINISH THIS
+            const int WinnerScore = 0;
+            const string Winner = "";
             return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} {RequieredItems.Sum(s => s.Amount)} {drawgift} {specialitems} {bonusitems} {WinnerScore}.{(WinnerScore > 0 ? Winner : "")} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{Label}";
         }
 

@@ -1143,7 +1143,19 @@ namespace OpenNos.Handler
                                         }
                                         else
                                         {
-                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("USER_ON_INSTANCEMAP"), 0));
+                                            if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance && session.Character.Faction == Session.Character.Faction)
+                                            {
+                                                short mapy = session.Character.PositionY;
+                                                short mapx = session.Character.PositionX;
+                                                Guid mapId = session.CurrentMapInstance.MapInstanceId;
+
+                                                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, mapId, mapx, mapy);
+                                                Session.Character.Inventory.RemoveItemAmount(vnumToUse);
+                                            }
+                                            else
+                                            {
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("USER_ON_INSTANCEMAP"), 0));
+                                            }
                                         }
                                     }
                                 }
@@ -2053,6 +2065,12 @@ namespace OpenNos.Handler
                 // character should have been selected in SelectCharacter
                 return;
             }
+
+            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short) MapTypeEnum.Act4))
+            {
+                Session.Character.ConnectAct4();
+            }
+
             Session.CurrentMapInstance = Session.Character.MapInstance;
             if (ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType == "Connection") < 2)
             {
@@ -2061,7 +2079,7 @@ namespace OpenNos.Handler
             if (ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
             {
                 Assembly assembly = Assembly.GetEntryAssembly();
-                string productVersion = assembly != null && assembly.Location != null ? FileVersionInfo.GetVersionInfo(assembly.Location).ProductVersion : "1337";
+                string productVersion = assembly != null ? FileVersionInfo.GetVersionInfo(assembly.Location).ProductVersion : "1337";
                 Session.SendPacket(Session.Character.GenerateSay("----------[World Information]----------", 10));
                 Session.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion : v{productVersion}", 11));
                 Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));

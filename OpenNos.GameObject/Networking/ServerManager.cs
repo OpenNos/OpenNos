@@ -701,6 +701,11 @@ namespace OpenNos.GameObject
             return _mapinstances.ContainsKey(id) ? _mapinstances[id] : null;
         }
 
+        public IEnumerable<MapInstance> GetMapInstancesByMapInstanceType(MapInstanceType type)
+        {
+            return _mapinstances.Values.Where(s => s.MapInstanceType == type);
+        }
+
         public long GetNextGroupId()
         {
             _lastGroupId++;
@@ -1468,21 +1473,18 @@ namespace OpenNos.GameObject
         private void LaunchEvents()
         {
             GroupsThreadSafe = new ConcurrentDictionary<long, Group>();
+            
+            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { SaveAllProcess(); });
 
-            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
-            {
-                SaveAllProcess();
-            });
+            Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { Act4Process(); });
 
-            Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x =>
-            {
-                GroupProcess();
-            });
+            Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { GroupProcess(); });
 
-            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
-            {
-                BotProcess();
-            });
+            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x => { BotProcess(); });
+
+            Observable.Interval(TimeSpan.FromSeconds(90)).Subscribe(x => { MailProcess(); });
+
+            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x => { RemoveItemProcess(); });
 
             EventHelper.Instance.RunEvent(new EventContainer(Instance.GetMapInstance(Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
             foreach (Schedule schedule in Schedules)
@@ -1493,17 +1495,8 @@ namespace OpenNos.GameObject
                 });
             }
 
-            Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
-            {
-                MailProcess();
-            });
 
-            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
-            {
-                RemoveItemProcess();
-            });
-
-
+            EventHelper.Instance.GenerateEvent(EventType.ACT4SHIP);
 
             CommunicationServiceClient.Instance.SessionKickedEvent += OnSessionKicked;
             CommunicationServiceClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;

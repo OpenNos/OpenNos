@@ -183,10 +183,14 @@ namespace OpenNos.Master.Library.Client
             return _client.ServiceProxy.GetPreviousChannelByAccountId(accountId);
         }
 
-
         public SerializableWorldServer GetAct4ChannelInfo(string worldGroup)
         {
             return _client.ServiceProxy.GetAct4ChannelInfo(worldGroup);
+        }
+
+        public bool IsCrossServerLoginPermitted(long accountId, int sessionId)
+        {
+            return _client.ServiceProxy.IsCrossServerLoginPermitted(accountId, sessionId);
         }
 
         public int? SendMessageToCharacter(SCSCharacterMessage message)
