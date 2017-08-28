@@ -359,29 +359,36 @@ namespace OpenNos.GameObject.Event.ARENA
                                         friends.Session.SendPacket(friends.Session.Character.GenerateTaM(2));
                                         friends.Session.SendPacket(friends.Session.Character.GenerateTaM(3));
                                     });
-                                  obs6=  Observable.Timer(TimeSpan.FromSeconds(map.InstanceBag.Clock.BasesSecondRemaining)).Subscribe(start4 =>
+                                    map.Sessions.Except(arenaTeam.Select(ss => ss.Session)).ToList().ForEach(o =>
                                     {
-                                        if (tm2 != null && tm != null)
-                                        {
-                                            tm.Dead = true;
-                                            tm2.Dead = true;
-                                            tm.Session.Character.PositionX = 120;
-                                            tm.Session.Character.PositionY = 39;
-                                            tm2.Session.Character.PositionX = 19;
-                                            tm2.Session.Character.PositionY = 40;
-                                            map.Broadcast(tm2.Session, tm.Session.Character.GenerateTp());
-                                            map.Broadcast(tm2.Session, tm2.Session.Character.GenerateTp());
-                                            tm.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
-                                            tm2.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
-                                            arenaTeam.Where(friends => friends.ArenaTeamType == tm.ArenaTeamType).ToList().ForEach(friends =>
-                                            {
-                                                friends.Session.SendPacket(friends.Session.Character.GenerateTaFc(0));
-                                            });
-                                        }
-                                        newround1 = true;
-                                        newround2 = true;
-                                        arenaTeam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true)); });
+                                        o.SendPacket(tm.Session.Character.GenerateTaM(2));
+                                        o.SendPacket(tm.Session.Character.GenerateTaM(3));
                                     });
+
+                                    obs6.Dispose();
+                                    obs6 = Observable.Timer(TimeSpan.FromSeconds(map.InstanceBag.Clock.BasesSecondRemaining)).Subscribe(start4 =>
+                                     {
+                                         if (tm2 != null && tm != null)
+                                         {
+                                             tm.Dead = true;
+                                             tm2.Dead = true;
+                                             tm.Session.Character.PositionX = 120;
+                                             tm.Session.Character.PositionY = 39;
+                                             tm2.Session.Character.PositionX = 19;
+                                             tm2.Session.Character.PositionY = 40;
+                                             map.Broadcast(tm2.Session, tm.Session.Character.GenerateTp());
+                                             map.Broadcast(tm2.Session, tm2.Session.Character.GenerateTp());
+                                             tm.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
+                                             tm2.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
+                                             arenaTeam.Where(friends => friends.ArenaTeamType == tm.ArenaTeamType).ToList().ForEach(friends =>
+                                             {
+                                                 friends.Session.SendPacket(friends.Session.Character.GenerateTaFc(0));
+                                             });
+                                         }
+                                         newround1 = true;
+                                         newround2 = true;
+                                         arenaTeam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true)); });
+                                     });
 
                                     if (tm != null && tm2 != null)
                                     {
