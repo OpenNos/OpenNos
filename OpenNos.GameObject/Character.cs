@@ -5565,6 +5565,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateBsInfo(2, 2, 0, 0));
             }
             ConcurrentBag<ArenaTeamMember> tm = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
+            Session.SendPacket(Session.Character.GenerateTaM(1));
             if (tm == null)
             {
                 return;
@@ -5586,7 +5587,6 @@ namespace OpenNos.GameObject
                     s.Session.SendPacket(s.Session.Character.GenerateTaP(2, true));
                 });
                 Session.SendPacket(Session.Character.GenerateTaP(1, true));
-                Session.SendPacket(Session.Character.GenerateTaM(1));
                 Session.SendPacket("ta_sv 1");
                 Session.SendPacket("taw_sv 1");
             }
