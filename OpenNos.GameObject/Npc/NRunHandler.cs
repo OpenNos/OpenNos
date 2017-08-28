@@ -334,6 +334,11 @@ namespace OpenNos.GameObject
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                     }
                     break;
+
+                case 137:
+                    Session.SendPacket("taw_open");
+                    break;
+
                 case 138:
                     ConcurrentBag<ArenaTeamMember> at = ServerManager.Instance.ArenaTeams.OrderBy(s => rand.Next()).FirstOrDefault();
                     if (at != null)

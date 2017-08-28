@@ -1067,7 +1067,7 @@ namespace OpenNos.Handler
                                 {
                                     if (guriPacket.Value.Length == 1)
                                     {
-                                        box.Item.Use(Session, ref box, 1, new[] {guriPacket.Value});
+                                        box.Item.Use(Session, ref box, 1, new[] { guriPacket.Value });
                                     }
                                     else
                                     {
@@ -1103,7 +1103,7 @@ namespace OpenNos.Handler
                     default:
                         if (guriPacket.Type == 199 && guriPacket.Argument == 2)
                         {
-                            short[] listWingOfFriendship = {2160, 2312, 10048};
+                            short[] listWingOfFriendship = { 2160, 2312, 10048 };
                             short vnumToUse = -1;
                             foreach (short vnum in listWingOfFriendship)
                             {
@@ -1186,7 +1186,7 @@ namespace OpenNos.Handler
                                             NpcMonster mapobject = ServerManager.Instance.GetNpc(npc.NpcVNum);
 
                                             int rateDrop = ServerManager.Instance.DropRate;
-                                            int delay = (int) Math.Round((3 + mapobject.RespawnTime / 1000d) * Session.Character.TimesUsed);
+                                            int delay = (int)Math.Round((3 + mapobject.RespawnTime / 1000d) * Session.Character.TimesUsed);
                                             delay = delay > 11 ? 8 : delay;
                                             if (Session.Character.LastMapObject.AddSeconds(delay) < DateTime.Now)
                                             {
@@ -1204,7 +1204,7 @@ namespace OpenNos.Handler
                                                 if (drop != null)
                                                 {
                                                     int dropChance = drop.DropChance;
-                                                    if (randomAmount <= (double) dropChance * rateDrop / 5000.000)
+                                                    if (randomAmount <= (double)dropChance * rateDrop / 5000.000)
                                                     {
                                                         short vnum = drop.ItemVNum;
                                                         ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(vnum).FirstOrDefault();
@@ -1236,7 +1236,7 @@ namespace OpenNos.Handler
                                             {
                                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
                                                     string.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"),
-                                                        (int) (Session.Character.LastMapObject.AddSeconds(delay) - DateTime.Now).TotalSeconds), 0));
+                                                        (int)(Session.Character.LastMapObject.AddSeconds(delay) - DateTime.Now).TotalSeconds), 0));
                                             }
                                         }
                                     }
@@ -1400,7 +1400,7 @@ namespace OpenNos.Handler
                                                 else if (guriPacket.Type == 203 && guriPacket.Argument == 0)
                                                 {
                                                     // SP points initialization
-                                                    int[] listPotionResetVNums = {1366, 1427, 5115, 9040};
+                                                    int[] listPotionResetVNums = { 1366, 1427, 5115, 9040 };
                                                     int vnumToUse = -1;
                                                     foreach (int vnum in listPotionResetVNums)
                                                     {
@@ -1414,7 +1414,7 @@ namespace OpenNos.Handler
                                                         if (Session.Character.UseSp)
                                                         {
                                                             SpecialistInstance specialistInstance =
-                                                                Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
+                                                                Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                                                             if (specialistInstance != null)
                                                             {
                                                                 specialistInstance.SlDamage = 0;
@@ -1442,8 +1442,8 @@ namespace OpenNos.Handler
                                                                 specialistInstance.MP = 0;
 
                                                                 Session.Character.Inventory.RemoveItemAmount(vnumToUse);
-                                                                Session.Character.Inventory.DeleteFromSlotAndType((byte) EquipmentType.Sp, InventoryType.Wear);
-                                                                Session.Character.Inventory.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Wear, (byte) EquipmentType.Sp);
+                                                                Session.Character.Inventory.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Wear);
+                                                                Session.Character.Inventory.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Wear, (byte)EquipmentType.Sp);
                                                                 Session.SendPacket(Session.Character.GenerateCond());
                                                                 Session.SendPacket(specialistInstance.GenerateSlInfo());
                                                                 Session.SendPacket(Session.Character.GenerateLev());
@@ -1783,14 +1783,11 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Gender == GenderType.Female)
                 {
-                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
+                    ConcurrentBag<ArenaTeamMember> member = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(e => e.Session == Session));
+                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance && member != null)
                     {
-                        ConcurrentBag<ArenaTeamMember> member = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(e => e.Session == Session));
-                        if (member != null)
-                        {
-                            ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
-                            member.Where(s => s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session).ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1)));
-                        }
+                        ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
+                        member.Where(s => s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session).ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1)));
                     }
                     else
                     {
@@ -1801,14 +1798,11 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
+                    ConcurrentBag<ArenaTeamMember> member = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(e => e.Session == Session));
+                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance && member != null)
                     {
-                        ConcurrentBag<ArenaTeamMember> member = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(e => e.Session == Session));
-                        if (member != null)
-                        {
-                            ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
-                            member.Where(s => s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session).ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1)));
-                        }
+                        ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
+                        member.Where(s => s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session).ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1)));
                     }
                     else
                     {
@@ -1830,17 +1824,14 @@ namespace OpenNos.Handler
                 };
                 DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
                 byte type = 0;
+                ConcurrentBag<ArenaTeamMember> member = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(e => e.Session == Session));
                 if (Session.Character.Authority == AuthorityType.Moderator)
                 {
                     type = 12;
-                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
+                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance && member != null)
                     {
-                        ConcurrentBag<ArenaTeamMember> member = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(e => e.Session == Session));
-                        if (member != null)
-                        {
-                            ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
-                            member.Where(s => s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session).ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(message.Trim(), 1)));
-                        }
+                        ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
+                        member.Where(s => s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session).ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(message.Trim(), 1)));
                     }
                     else
                     {
@@ -1848,14 +1839,9 @@ namespace OpenNos.Handler
                     }
                     message = $"[{Language.Instance.GetMessageFromKey("SUPPORT")} {Session.Character.Name}]: " + message;
                 }
-                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
+                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance && member != null)
                 {
-                    ConcurrentBag<ArenaTeamMember> member = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(e => e.Session == Session));
-                    if (member == null)
-                    {
-                        return;
-                    }
-                        ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
+                    ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
                     member.Where(s => s.ArenaTeamType == member2?.ArenaTeamType && s != member2).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(message.Trim(), type)));
                 }
                 else
@@ -2066,7 +2052,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short) MapTypeEnum.Act4))
+            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4))
             {
                 Session.Character.ConnectAct4();
             }

@@ -50,6 +50,29 @@ namespace OpenNos.Handler
             }
         }
 
+        public void SearchName(TawPacket packet)
+        {
+            ConcurrentBag<ArenaTeamMember> at = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session.Character.Name == packet.Username));
+            if (at != null)
+            {
+                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, at.FirstOrDefault(s => s.Session != null).Session.CurrentMapInstance.MapInstanceId, 69, 100);
+
+                ArenaTeamMember zenas = at.OrderBy(s => s.Order).FirstOrDefault(s => s.Session != null && !s.Dead && s.ArenaTeamType == ArenaTeamType.ZENAS);
+                ArenaTeamMember erenia = at.OrderBy(s => s.Order).FirstOrDefault(s => s.Session != null && !s.Dead && s.ArenaTeamType == ArenaTeamType.ERENIA);
+                Session.SendPacket(Session.Character.GenerateTaM(0));
+                Session.SendPacket(Session.Character.GenerateTaM(3));
+                Session.SendPacket("taw_sv 0");
+                Session.SendPacket(zenas.Session.Character.GenerateTaP(0, true));
+                Session.SendPacket(erenia.Session.Character.GenerateTaP(2, true));
+                Session.SendPacket(zenas.Session.Character.GenerateTaFc(0));
+                Session.SendPacket(erenia.Session.Character.GenerateTaFc(1));
+            }
+            else
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_FOUND_IN_ARENA")));
+            }
+        }
+
         public void Call(TaCallPacket packet)
         {
             ConcurrentBag<ArenaTeamMember> arenateam = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));

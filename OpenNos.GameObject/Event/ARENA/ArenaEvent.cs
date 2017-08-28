@@ -107,7 +107,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                     MapY = (short)(i > 2 ? 35 + i % 3 * 4 : 36 + i % 3 * 4),
                                 });
                             }
-                            map.InstanceBag.Clock.BasesSecondRemaining = 600;
+                            map.InstanceBag.Clock.BasesSecondRemaining = 60;
                             map.InstanceBag.Clock.DeciSecondRemaining = 600;
                             map.InstanceBag.Clock.StartClock();
                             IDisposable obs4 = null;
@@ -351,7 +351,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                     {
                                         return;
                                     }
-                                    map.InstanceBag.Clock.BasesSecondRemaining = 3000;
+                                    map.InstanceBag.Clock.BasesSecondRemaining = 300;
                                     map.InstanceBag.Clock.DeciSecondRemaining = 3000;
                                     arenaTeam.ToList().ForEach(friends =>
                                     {
