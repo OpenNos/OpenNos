@@ -380,7 +380,7 @@ namespace OpenNos.GameObject
                     return;
                 }
             }
-            if (rnd < rare7 && !(protection == RarifyProtection.Scroll && Rare >= 7))
+                if (rnd < rare7 && !(protection == RarifyProtection.Scroll && Rare >= 7))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -470,6 +470,10 @@ namespace OpenNos.GameObject
                 }
                 Rare = -2;
                 SetRarityPoint();
+            }
+            else if (this.Rare < 1 && Item.ItemType == ItemType.Shell)
+            {
+                this.Rare = 1;
             }
             else
             {
