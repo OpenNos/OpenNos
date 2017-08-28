@@ -242,7 +242,7 @@ namespace OpenNos.GameObject
                             ArenaTeamMember killer = team.OrderBy(s => s.Order).FirstOrDefault(s => !s.Dead && s.ArenaTeamType != member.ArenaTeamType);
                             session.CurrentMapInstance.Broadcast(session.Character.GenerateSay(string.Format("TEAM_WINNER_ARENA_ROUND", killer?.Session.Character.Name, killer?.ArenaTeamType), 10));
                             session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format("TEAM_WINNER_ARENA_ROUND", killer?.Session.Character.Name, killer?.ArenaTeamType), 0));
-                            session.CurrentMapInstance.Sessions.Except(team.Select(s => s.Session)).ToList().ForEach(o =>
+                            session.CurrentMapInstance.Sessions.Except(team.Where(s => s.ArenaTeamType == killer?.ArenaTeamType).Select(s => s.Session)).ToList().ForEach(o =>
                             {
                                 o.SendPacket(killer.Session.Character.GenerateTaM(2));
                                 o.SendPacket(killer.Session.Character.GenerateTaP(2, true));
