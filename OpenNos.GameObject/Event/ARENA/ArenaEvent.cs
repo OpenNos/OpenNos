@@ -114,6 +114,7 @@ namespace OpenNos.GameObject.Event.ARENA
                             IDisposable obs5 = null;
                             IDisposable obs2 = null;
                             IDisposable obs3 = null;
+                            IDisposable obs6 = null;
                             Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(time2 =>
                             {
                                 obs3 = Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(effect =>
@@ -320,7 +321,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                     });
                                 });
                             });
-                            Observable.Timer(TimeSpan.FromSeconds(map.InstanceBag.Clock.BasesSecondRemaining + 6)).Subscribe(start =>
+                            Observable.Timer(TimeSpan.FromSeconds(map.InstanceBag.Clock.BasesSecondRemaining)).Subscribe(start =>
                             {
                                 bool newround1 = true;
                                 bool newround2 = true;
@@ -358,7 +359,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                         friends.Session.SendPacket(friends.Session.Character.GenerateTaM(2));
                                         friends.Session.SendPacket(friends.Session.Character.GenerateTaM(3));
                                     });
-                                    Observable.Timer(TimeSpan.FromSeconds(map.InstanceBag.Clock.BasesSecondRemaining)).Subscribe(start4 =>
+                                  obs6=  Observable.Timer(TimeSpan.FromSeconds(map.InstanceBag.Clock.BasesSecondRemaining)).Subscribe(start4 =>
                                     {
                                         if (tm2 != null && tm != null)
                                         {
