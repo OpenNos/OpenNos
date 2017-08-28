@@ -115,8 +115,9 @@ namespace OpenNos.Master.Server
             {
                 return null;
             }
+            Logger.Log.Info($"[{act4Channel.WorldGroup}] ACT4 Channel elected on ChannelId : {act4Channel.ChannelId} ");
             act4Channel.IsAct4 = true;
-            return act4Channel?.Serializable;
+            return act4Channel.Serializable;
         }
 
         public bool IsCrossServerLoginPermitted(long accountId, int sessionId)
@@ -309,7 +310,7 @@ namespace OpenNos.Master.Server
             string lastGroup = string.Empty;
             byte worldCount = 0;
             string channelPacket = $"NsTeST {sessionId} ";
-            foreach (WorldServer world in MSManager.Instance.WorldServers.OrderBy(w => w.WorldGroup).Where(s => s.ChannelId != 51))
+            foreach (WorldServer world in MSManager.Instance.WorldServers.OrderBy(w => w.WorldGroup))
             {
                 if (lastGroup != world.WorldGroup)
                 {

@@ -539,14 +539,25 @@ namespace OpenNos.GameObject
                 session.SendPacket(session.CurrentMapInstance.GenerateMapDesignObjects());
                 session.SendPackets(session.CurrentMapInstance.GetMapDesignObjectEffects());
 
-                Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm), visibleSession =>
+                Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character?.InvisibleGm == false), visibleSession =>
                 {
-                    session.SendPacket(visibleSession.Character.GenerateIn());
-                    session.SendPacket(visibleSession.Character.GenerateGidx());
-                    visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(mate =>
+                    if (session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance || session.Character.Faction == visibleSession.Character.Faction)
                     {
-                        session.SendPacket(mate.GenerateIn());
-                    });
+                        session.SendPacket(visibleSession.Character.GenerateIn());
+                        session.SendPacket(visibleSession.Character.GenerateGidx());
+                        visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(mate =>
+                        {
+                            session.SendPacket(mate.GenerateIn(false, session.CurrentMapInstance.MapInstanceType.Equals(MapInstanceType.Act4Instance)));
+                        });
+                    }
+                    else
+                    {
+                        session.SendPacket(visibleSession.Character.GenerateIn(true));
+                        visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(m =>
+                        {
+                            session.SendPacket(m.GenerateIn(true, true));
+                        });
+                    }
                 });
 
 
@@ -1055,8 +1066,7 @@ namespace OpenNos.GameObject
             ConcurrentDictionary<short, Skill> _skill = new ConcurrentDictionary<short, Skill>();
             Parallel.ForEach(DAOFactory.SkillDAO.LoadAll(), skill =>
             {
-                Skill skillObj = skill as Skill;
-                if (skillObj == null)
+                if (!(skill is Skill skillObj))
                 {
                     return;
                 }
@@ -1162,6 +1172,10 @@ namespace OpenNos.GameObject
                 {
                     Logger.Log.Info("[ARENA] Family Arena Map Loaded");
                     Act4ShipDemon = GenerateMapInstance(149, MapInstanceType.ArenaInstance, null);
+                }
+                foreach (Map m in _maps.Where(s => s.MapTypes.Any(o => o.MapTypeId == (short) MapTypeEnum.Act4)))
+                {
+                    GenerateMapInstance(m.MapId, MapInstanceType.Act4Instance, null);
                 }
                 LoadScriptedInstances();
             }

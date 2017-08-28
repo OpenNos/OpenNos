@@ -49,6 +49,36 @@ namespace OpenNos.Handler
 
         #region Methods
 
+        public void Act4Connect(Act4ConnectPacket act4ConnectPacket)
+        {
+            ClientSession player = ServerManager.Instance
+                .GetSessionByCharacterName(act4ConnectPacket.Name ?? Session.Character.Name);
+            if (player == null)
+            {
+                return;
+            }
+            switch (player.Character.Faction)
+            {
+                case 0:
+                    ServerManager.Instance.ChangeMap(player.Character.CharacterId, 145, 51, 41);
+                    player.SendPacket(
+                        UserInterfaceHelper.Instance.GenerateInfo(
+                            "You need to be part of a faction to join Act 4"));
+                    return;
+                case FactionType.Angel:
+                    player.Character.MapId = 130;
+                    player.Character.MapX = 12;
+                    player.Character.MapY = 40;
+                    break;
+                case FactionType.Demon:
+                    player.Character.MapId = 131;
+                    player.Character.MapX = 12;
+                    player.Character.MapY = 40;
+                    break;
+            }
+            player.Character.ConnectAct4();
+        }
+
         /// <summary>
         /// $AddMonster Command
         /// </summary>

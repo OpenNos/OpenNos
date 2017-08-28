@@ -137,9 +137,19 @@ namespace OpenNos.GameObject
             return $"e_info 10 {NpcMonsterVNum} {Level} {Monster.Element} {Monster.AttackClass} {Monster.ElementRate} {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Monster.MaxHP} {Monster.MaxMP} -1 {Name.Replace(' ', '^')}";
         }
 
-        public string GenerateIn()
+        public string GenerateIn(bool foe = false, bool isAct4 = false)
         {
-            return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)((float)Hp / (float)MaxHp * 100)} {(int)(float)(Mp / (float)MaxMp * 100)} 0 0 3 {CharacterId} 1 0 {(Skin != 0 ? Skin : -1)} {Name.Replace(' ', '^')} 0 -1 0 0 0 0 0 0 0 0";
+            string name = Name.Replace(' ', '^');
+            if (foe)
+            {
+                name = "!§$%&/()=?*+~#";
+            }
+            int faction = 0;
+            if (isAct4)
+            {
+                faction = (byte)Owner.Faction + 2;
+            }
+            return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 {faction} 3 {CharacterId} 1 0 {(Skin != 0 ? Skin : -1)} {name} 0 -1 0 0 0 0 0 0 0 0";
         }
 
         public string GenerateOut()

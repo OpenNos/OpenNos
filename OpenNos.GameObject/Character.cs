@@ -2011,20 +2011,32 @@ namespace OpenNos.GameObject
             return $"Character: {Name}";
         }
 
-        public string GenerateIn()
+        public string GenerateIn(bool foe = false)
         {
+            string name = Name;
+            if (foe)
+            {
+                name = "!§$%&/()=?*+~#";
+            }
+            int faction = 0;
+            if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance)
+            {
+                faction = (byte)Faction + 2;
+            }
             int color = (byte)HairColor;
             ItemInstance fairy = null;
-            if (Inventory != null)
+            if (Inventory == null)
             {
-                WearableInstance headWearable = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
-                if (headWearable != null && headWearable.Item.IsColored)
-                {
-                    color = headWearable.Design;
-                }
-                fairy = Inventory.LoadBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
+                return
+                    $"in 1 {(Authority == AuthorityType.Moderator ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + name : name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (long)Group?.GroupId : -1)} {(fairy != null ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(foe ? -1 : Family?.FamilyId ?? -1)} {(foe ? name : Family?.Name ?? "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} {faction} {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
             }
-            return $"in 1 {(Authority == AuthorityType.Moderator && !Undercover ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + Name : Name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (Group?.GroupId ?? -1) : -1)} {(fairy != null && !Undercover ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(Family?.FamilyId != null && !Undercover ? Family?.FamilyId : -1)} {(Family?.Name != null && !Undercover ? Family?.Name : "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator && !Undercover ? 500 : Compliment)} {Size} {HeroLevel}";
+            WearableInstance headWearable = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+            if (headWearable?.Item.IsColored == true)
+            {
+                color = headWearable.Design;
+            }
+            fairy = Inventory.LoadBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
+            return $"in 1 {(Authority == AuthorityType.Moderator ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + name : name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (long)Group?.GroupId : -1)} {(fairy != null ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(foe ? -1 : Family?.FamilyId ?? -1)} {(foe ? name : Family?.Name ?? "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} {faction} {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
         }
 
         public string GenerateInvisible()
@@ -4395,26 +4407,26 @@ namespace OpenNos.GameObject
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("ACT4_CHANNEL_OFFLINE")));
                 return false;
             }
+            switch (Session.Character.Faction)
+            {
+                case FactionType.Angel:
+                    Session.Character.MapId = 130;
+                    Session.Character.MapX = 12;
+                    Session.Character.MapY = 40;
+                    break;
+                case FactionType.Demon:
+                    Session.Character.MapId = 131;
+                    Session.Character.MapX = 12;
+                    Session.Character.MapY = 40;
+                    break;
+            }
             if (ServerManager.Instance.IpAddress != act4ChannelInfo.EndPointIp && ServerManager.Instance.Port != act4ChannelInfo.EndPointPort)
             {
                 ChangeChannel(act4ChannelInfo.EndPointIp, act4ChannelInfo.EndPointPort, 1);
             }
             else
             {
-                Session.SendPacket("it 1");
-                switch (Session.Character.Faction)
-                {
-                    case FactionType.Angel:
-                        Session.Character.MapId = 130;
-                        Session.Character.MapX = 12;
-                        Session.Character.MapY = 40;
-                        break;
-                    case FactionType.Demon:
-                        Session.Character.MapId = 131;
-                        Session.Character.MapX = 12;
-                        Session.Character.MapY = 40;
-                        break;
-                }
+                Session.SendPacket("it 3");
                 MapInstance act4Map = ServerManager.Instance.GetMapInstancesByMapInstanceType(MapInstanceType.Act4Instance)?.FirstOrDefault(s => s.Map.MapId == Session.Character.MapId);
                 if (act4Map == null)
                 {
