@@ -584,10 +584,28 @@ namespace OpenNos.GameObject
                     {
                         mate.PositionX = (short)(session.Character.PositionX + (mate.MateType == MateType.Partner ? -1 : 1));
                         mate.PositionY = (short)(session.Character.PositionY + 1);
-                        session.CurrentMapInstance.Broadcast(mate.GenerateIn());
                     });
-                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+
+                    Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character != null), s =>
+                    {
+                        if (session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance || session.Character.Faction == s.Character.Faction)
+                        {
+                            s.SendPacket(session.Character.GenerateIn());
+                            s.SendPacket(session.Character.GenerateGidx());
+                            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m =>
+                            {
+                                s.SendPacket(m.GenerateIn());
+                            });
+                        }
+                        else
+                        {
+                            s.SendPacket(session.Character.GenerateIn(true));
+                            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m =>
+                            {
+                                s.SendPacket(m.GenerateIn(true));
+                            });
+                        }
+                    });
                 }
                 if (session.Character.Size != 10)
                 {
@@ -628,11 +646,12 @@ namespace OpenNos.GameObject
                 session.SendPacket(session.Character.GenerateMinimapPosition());
                 session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>
                 {
-                    if (!e.Item2.Contains(session.Character.CharacterId))
+                    if (e.Item2.Contains(session.Character.CharacterId))
                     {
-                        e.Item2.Add(session.Character.CharacterId);
-                        EventHelper.Instance.RunEvent(e.Item1, session);
+                        return;
                     }
+                    e.Item2.Add(session.Character.CharacterId);
+                    EventHelper.Instance.RunEvent(e.Item1, session);
                 });
             }
             catch (Exception)
@@ -644,11 +663,12 @@ namespace OpenNos.GameObject
 
         public sealed override void Dispose()
         {
-            if (!_disposed)
+            if (_disposed)
             {
-                GC.SuppressFinalize(this);
-                _disposed = true;
+                return;
             }
+            GC.SuppressFinalize(this);
+            _disposed = true;
         }
 
         public void FamilyRefresh(long familyId)
