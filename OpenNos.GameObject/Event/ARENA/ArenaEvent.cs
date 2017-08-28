@@ -361,11 +361,11 @@ namespace OpenNos.GameObject.Event.ARENA
                                     });
                                     map.Sessions.Except(arenaTeam.Select(ss => ss.Session)).ToList().ForEach(o =>
                                     {
-                                        o.SendPacket(tm.Session.Character.GenerateTaM(2));
-                                        o.SendPacket(tm.Session.Character.GenerateTaM(3));
+                                        o.SendPacket(tm2.Session.Character.GenerateTaM(2));
+                                        o.SendPacket(tm2.Session.Character.GenerateTaM(3));
                                     });
 
-                                    obs6.Dispose();
+                                    obs6?.Dispose();
                                     obs6 = Observable.Timer(TimeSpan.FromSeconds(map.InstanceBag.Clock.BasesSecondRemaining)).Subscribe(start4 =>
                                      {
                                          if (tm2 != null && tm != null)
