@@ -463,14 +463,14 @@ namespace OpenNos.GameObject
             Session.SendPacket("npinfo 0");
             Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
 
-            if (characterClass == (byte) ClassType.Adventurer)
+            if (characterClass == (byte)ClassType.Adventurer)
             {
-                HairStyle = (byte) HairStyle > 1 ? 0 : HairStyle;
+                HairStyle = (byte)HairStyle > 1 ? 0 : HairStyle;
             }
             LoadSpeed();
             Class = characterClass;
-            Hp = (int) HPLoad();
-            Mp = (int) MPLoad();
+            Hp = (int)HPLoad();
+            Mp = (int)MPLoad();
             Session.SendPacket(GenerateTit());
             Session.SendPacket(GenerateStat());
             Session.CurrentMapInstance?.Broadcast(Session, GenerateEq());
@@ -478,7 +478,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
             Session.CurrentMapInstance?.Broadcast(GenerateEff(196), PositionX, PositionY);
             int faction = 1 + ServerManager.Instance.RandomNumber(0, 2);
-            Faction = (FactionType) faction;
+            Faction = (FactionType)faction;
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
             Session.SendPacket("scr 0 0 0 0 0 0");
             Session.SendPacket(GenerateFaction());
@@ -499,9 +499,9 @@ namespace OpenNos.GameObject
                 }
             }
 
-            Skills[(short) (200 + 20 * (byte) Class)] = new CharacterSkill {SkillVNum = (short) (200 + 20 * (byte) Class), CharacterId = CharacterId};
-            Skills[(short) (201 + 20 * (byte) Class)] = new CharacterSkill {SkillVNum = (short) (201 + 20 * (byte) Class), CharacterId = CharacterId};
-            Skills[236] = new CharacterSkill {SkillVNum = 236, CharacterId = CharacterId};
+            Skills[(short)(200 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)Class), CharacterId = CharacterId };
+            Skills[(short)(201 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)Class), CharacterId = CharacterId };
+            Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = CharacterId };
 
             Session.SendPacket(GenerateSki());
 
@@ -573,12 +573,12 @@ namespace OpenNos.GameObject
                         Session.SendPacket(Session.Character.GenerateRaid(3, false));
                     }
 
-                    WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Amulet, InventoryType.Wear);
+                    WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
                     if (amulet != null)
                     {
                         if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
                         {
-                            Session.CurrentMapInstance?.Broadcast(GenerateEff(amulet.Item.EffectValue + (Class == ClassType.Adventurer ? 0 : (byte) Class - 1)), PositionX, PositionY);
+                            Session.CurrentMapInstance?.Broadcast(GenerateEff(amulet.Item.EffectValue + (Class == ClassType.Adventurer ? 0 : (byte)Class - 1)), PositionX, PositionY);
                         }
                         else
                         {
@@ -690,7 +690,7 @@ namespace OpenNos.GameObject
                 }
                 else if (SpPoint < spType && SpPoint != 0)
                 {
-                    spType -= (byte) SpPoint;
+                    spType -= (byte)SpPoint;
                     SpPoint = 0;
                     SpAdditionPoint -= spType;
                 }
@@ -729,7 +729,7 @@ namespace OpenNos.GameObject
                                             short time = ski.Skill.Cooldown;
                                             double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
                                             temp /= 1000;
-                                            SpCooldown = temp > SpCooldown ? (int) temp : SpCooldown;
+                                            SpCooldown = temp > SpCooldown ? (int)temp : SpCooldown;
                                         }
                                     }
                                     Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), SpCooldown), 11));
@@ -795,9 +795,9 @@ namespace OpenNos.GameObject
             return change;
         }
 
-        public string GenerateTaFc()
+        public string GenerateTaFc(byte type)
         {
-            return $"ta_fc 0 {CharacterId}";
+            return $"ta_fc {type} {CharacterId}";
         }
 
         public void CloseExchangeOrTrade()
@@ -4881,10 +4881,10 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if ((int) (LevelXp / (XPLoad() / 10)) < (int) ((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
+            if ((int)(LevelXp / (XPLoad() / 10)) < (int)((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
             {
-                Hp = (int) HPLoad();
-                Mp = (int) MPLoad();
+                Hp = (int)HPLoad();
+                Mp = (int)MPLoad();
                 Session.SendPacket(GenerateStat());
                 Session.SendPacket(GenerateEff(5));
             }
@@ -4892,32 +4892,32 @@ namespace OpenNos.GameObject
             {
                 if (isMonsterOwner)
                 {
-                    LevelXp += (int) (GetXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                    LevelXp += (int)(GetXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                 }
                 else
                 {
-                    LevelXp += (int) (GetXP(monsterinfo, grp) / 3D * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                    LevelXp += (int)(GetXP(monsterinfo, grp) / 3D * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                 }
             }
             if (Class == 0 && JobLevel < 20 || Class != 0 && JobLevel < ServerManager.Instance.MaxJobLevel)
             {
                 if (SpInstance != null && UseSp && SpInstance.SpLevel < ServerManager.Instance.MaxSPLevel && SpInstance.SpLevel > 19)
                 {
-                    JobLevelXp += (int) (GetJXP(monsterinfo, grp) / 2D * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                    JobLevelXp += (int)(GetJXP(monsterinfo, grp) / 2D * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                 }
                 else
                 {
-                    JobLevelXp += (int) (GetJXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                    JobLevelXp += (int)(GetJXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                 }
             }
             if (SpInstance != null && UseSp && SpInstance.SpLevel < ServerManager.Instance.MaxSPLevel)
             {
                 int multiplier = SpInstance.SpLevel < 10 ? 10 : SpInstance.SpLevel < 19 ? 5 : 1;
-                SpInstance.XP += (int) (GetJXP(monsterinfo, grp) * (multiplier + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                SpInstance.XP += (int)(GetJXP(monsterinfo, grp) * (multiplier + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
             }
             if (HeroLevel > 0 && HeroLevel < ServerManager.Instance.MaxHeroLevel)
             {
-                HeroXp += (int) (GetHXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                HeroXp += (int)(GetHXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
             }
 
             GenerateLevelXpLevelUp();
@@ -5365,7 +5365,7 @@ namespace OpenNos.GameObject
             {
                 Buff = Buff.Where(s => s.Card.CardId != id);
             }
-            if (indicator.Card.BCards.All(s => s.Type != (byte) CardType.Move))
+            if (indicator.Card.BCards.All(s => s.Type != (byte)CardType.Move))
             {
                 return;
             }
@@ -5389,7 +5389,7 @@ namespace OpenNos.GameObject
                 if (arenamembers != null)
                 {
                     groups +=
-                        $"{arenamembers.Session.Character.CharacterId}.{(int) (arenamembers.Session.Character.Hp / arenamembers.Session.Character.HPLoad() * 100)}.{(int) (arenamembers.Session.Character.Mp / arenamembers.Session.Character.MPLoad() * 100)}.0 ";
+                        $"{arenamembers.Session.Character.CharacterId}.{(int)(arenamembers.Session.Character.Hp / arenamembers.Session.Character.HPLoad() * 100)}.{(int)(arenamembers.Session.Character.Mp / arenamembers.Session.Character.MPLoad() * 100)}.0 ";
                 }
                 else
                 {
@@ -5407,7 +5407,7 @@ namespace OpenNos.GameObject
             if (arenateam == null)
             {
                 return
-                    $"ta_p {tatype} {(byte) type} {5} {5} {groups.TrimEnd(' ')}";
+                    $"ta_p {tatype} {(byte)type} {5} {5} {groups.TrimEnd(' ')}";
             }
             type = arenateam.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType ?? ArenaTeamType.ERENIA;
 
@@ -5417,7 +5417,7 @@ namespace OpenNos.GameObject
                 if (arenamembers != null && (i <= 2 || showOponent))
                 {
                     groups +=
-                        $"{(arenamembers.Dead ? 0 : 1)}.{arenamembers.Session.Character.CharacterId}.{(byte) arenamembers.Session.Character.Class}.{(byte) arenamembers.Session.Character.Gender}.{(byte) arenamembers.Session.Character.Morph} ";
+                        $"{(arenamembers.Dead ? 0 : 1)}.{arenamembers.Session.Character.CharacterId}.{(byte)arenamembers.Session.Character.Class}.{(byte)arenamembers.Session.Character.Gender}.{(byte)arenamembers.Session.Character.Morph} ";
                 }
                 else
                 {
@@ -5425,7 +5425,7 @@ namespace OpenNos.GameObject
                 }
             }
             return
-                $"ta_p {tatype} {(byte) type} {5 - arenateam.Where(s => s.ArenaTeamType == type).Sum(s => s.SummonCount)} {5 - arenateam.Where(s => s.ArenaTeamType != type).Sum(s => s.SummonCount)} {groups.TrimEnd(' ')}";
+                $"ta_p {tatype} {(byte)type} {5 - arenateam.Where(s => s.ArenaTeamType == type).Sum(s => s.SummonCount)} {5 - arenateam.Where(s => s.ArenaTeamType != type).Sum(s => s.SummonCount)} {groups.TrimEnd(' ')}";
         }
 
         public void DisableBuffs(List<BuffType> types, int level = 100)
@@ -5499,20 +5499,20 @@ namespace OpenNos.GameObject
             return new[] { value1, value2 };
         }
 
-        public string GenerateTaM(int type, int timer)
+        public string GenerateTaM(int type)
         {
             ConcurrentBag<ArenaTeamMember> tm = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
             int score1 = 0;
             int score2 = 0;
             if (tm == null)
             {
-                return $"ta_m {type} {score1} {score2} {timer} 0";
+                return $"ta_m {type} {score1} {score2} {(type == 3 ? (MapInstance.InstanceBag.Clock.DeciSecondRemaining / 10) : 0)} 0";
             }
             ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
             IEnumerable<long> ids = tm.Where(s => tmem != null && tmem.ArenaTeamType != s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
             score1 = MapInstance.InstanceBag.DeadList.Count(s => ids.Contains(s));
             score2 = MapInstance.InstanceBag.DeadList.Count(s => !ids.Contains(s));
-            return $"ta_m {type} {score1} {score2} {timer} 0";
+            return $"ta_m {type} {score1} {score2} {(type == 3 ? (MapInstance.InstanceBag.Clock.DeciSecondRemaining / 10) : 0)} 0";
         }
 
         public string GenerateTaF(byte victoriousteam)
@@ -5527,7 +5527,7 @@ namespace OpenNos.GameObject
             ArenaTeamType atype = ArenaTeamType.ERENIA;
             if (tm == null)
             {
-                return $"ta_f 0 {victoriousteam} {(byte) atype} {score1} {life1} {call1} {score2} {life2} {call2}";
+                return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
             }
             ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
             atype = tmem.ArenaTeamType;
@@ -5540,7 +5540,7 @@ namespace OpenNos.GameObject
             life2 = 3 - oposit.Count(s => s.Dead);
             call1 = 5 - own.Sum(s => s.SummonCount);
             call2 = 5 - oposit.Sum(s => s.SummonCount);
-            return $"ta_f 0 {victoriousteam} {(byte) atype} {score1} {life1} {call1} {score2} {life2} {call2}";
+            return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
         }
 
         public void LeaveTalentArena(bool surrender = false)
@@ -5586,7 +5586,7 @@ namespace OpenNos.GameObject
                     s.Session.SendPacket(s.Session.Character.GenerateTaP(2, true));
                 });
                 Session.SendPacket(Session.Character.GenerateTaP(1, true));
-                Session.SendPacket(Session.Character.GenerateTaM(1, 0));
+                Session.SendPacket(Session.Character.GenerateTaM(1));
                 Session.SendPacket("ta_sv 1");
                 Session.SendPacket("taw_sv 1");
             }

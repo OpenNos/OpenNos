@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Linq;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
+using System.Collections.Concurrent;
 
 namespace OpenNos.GameObject
 {
@@ -38,6 +39,7 @@ namespace OpenNos.GameObject
             }
             MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == packet.NpcId);
             TeleporterDTO tp;
+            Random rand = new Random();
             switch (packet.Runner)
             {
                 case 1:
@@ -332,7 +334,27 @@ namespace OpenNos.GameObject
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                     }
                     break;
+                case 138:
+                    ConcurrentBag<ArenaTeamMember> at = ServerManager.Instance.ArenaTeams.OrderBy(s => rand.Next()).FirstOrDefault();
+                    if (at != null)
+                    {
+                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, at.FirstOrDefault(s => s.Session != null).Session.CurrentMapInstance.MapInstanceId, 69, 100);
 
+                        ArenaTeamMember zenas = at.OrderBy(s => s.Order).FirstOrDefault(s => s.Session != null && !s.Dead && s.ArenaTeamType == ArenaTeamType.ZENAS);
+                        ArenaTeamMember erenia = at.OrderBy(s => s.Order).FirstOrDefault(s => s.Session != null && !s.Dead && s.ArenaTeamType == ArenaTeamType.ERENIA);
+                        Session.SendPacket(Session.Character.GenerateTaM(0));
+                        Session.SendPacket(Session.Character.GenerateTaM(3));
+                        Session.SendPacket("taw_sv 0");
+                        Session.SendPacket(zenas.Session.Character.GenerateTaP(0, true));
+                        Session.SendPacket(erenia.Session.Character.GenerateTaP(2, true));
+                        Session.SendPacket(zenas.Session.Character.GenerateTaFc(0));
+                        Session.SendPacket(erenia.Session.Character.GenerateTaFc(1));
+                    }
+                    else
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_TALENT_ARENA")));
+                    }
+                    break;
                 case 135:
                     if (!ServerManager.Instance.StartedEvents.Contains(EventType.TALENTARENA))
                     {

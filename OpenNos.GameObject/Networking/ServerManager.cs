@@ -248,11 +248,11 @@ namespace OpenNos.GameObject
                         member.Session.Character.PositionY = member.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
                         session.CurrentMapInstance.Broadcast(member.Session, member.Session.Character.GenerateTp());
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
-                        team.Where(friends => friends.ArenaTeamType == member.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(friends.Session.Character.GenerateTaFc()); });
+                        team.Where(friends => friends.ArenaTeamType == member.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(friends.Session.Character.GenerateTaFc(0)); });
                         team.ToList().ForEach(arenauser =>
                         {
                             arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true));
-                            arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaM(2, 0));
+                            arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaM(2));
                         });
                         session.Character.Hp = (int)session.Character.HPLoad();
                         session.Character.Mp = (int)session.Character.MPLoad();
