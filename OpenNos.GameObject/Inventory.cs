@@ -402,13 +402,13 @@ namespace OpenNos.GameObject
             T retItem = null;
             try
             {
-                retItem = (T)this.Select(s => s.Value).SingleOrDefault(i => i != null && i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type);
+                retItem = (T)this.Select(s => s.Value).SingleOrDefault(i => i != null && i.GetType() == typeof(T) && i.Slot == slot && i.Type == type);
             }
             catch (InvalidOperationException ioEx)
             {
                 Logger.Error(ioEx);
                 bool isFirstItem = true;
-                foreach (ItemInstance item in this.Select(s => s.Value).Where(i => i != null && i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type))
+                foreach (ItemInstance item in this.Select(s => s.Value).Where(i => i != null && i.GetType() == typeof(T) && i.Slot == slot && i.Type == type))
                 {
                     if (isFirstItem)
                     {
@@ -416,7 +416,7 @@ namespace OpenNos.GameObject
                         isFirstItem = false;
                         continue;
                     }
-                    ItemInstance iteminstance = this.Select(s => s.Value).FirstOrDefault(i => i != null && i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type);
+                    ItemInstance iteminstance = this.Select(s => s.Value).FirstOrDefault(i => i != null && i.GetType() == typeof(T) && i.Slot == slot && i.Type == type);
                     if (iteminstance != null)
                     {
                         TryRemove(iteminstance.Id, out ItemInstance value);

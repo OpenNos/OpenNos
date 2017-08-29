@@ -189,16 +189,16 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateEquipment());
                         session.CurrentMapInstance?.Broadcast(session.Character.GeneratePairy());
 
-                        if (EquipmentSlot == EquipmentType.Fairy)
+                        switch (EquipmentSlot)
                         {
-                            WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, equipment);
-                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXPData(fairy.ElementRate + fairy.Item.ElementRate)), 10));
-                        }
-
-                        if (EquipmentSlot == EquipmentType.Amulet)
-                        {
-                            session.SendPacket(session.Character.GenerateEff(39));
-                            inv.BoundCharacterId = session.Character.CharacterId;
+                            case EquipmentType.Fairy:
+                                WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, equipment);
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXPData(fairy.ElementRate + fairy.Item.ElementRate)), 10));
+                                break;
+                            case EquipmentType.Amulet:
+                                session.SendPacket(session.Character.GenerateEff(39));
+                                inv.BoundCharacterId = session.Character.CharacterId;
+                                break;
                         }
                     }
                     else if (mate != null)
