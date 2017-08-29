@@ -1786,15 +1786,22 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
+            if (!Session.HasCurrentMapInstance || Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value != null)
             {
-                ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(wearPacket.InventorySlot, InventoryType.Equipment);
-                if (inv?.Item != null)
-                {
-                    inv.Item.Use(Session, ref inv, wearPacket.Type);
-                    Session.SendPacket(Session.Character.GenerateEff(123));
-                }
+                return;
             }
+            ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(wearPacket.InventorySlot, InventoryType.Equipment);
+            if (inv?.Item == null)
+            {
+                return;
+            }
+            if (Session.Character.HasShopOpened || Session.Character.InExchangeOrTrade || Session.Character.IsExchanging)
+            {
+                // TODO ADD A MESSAGE CAN'T USE ITEM
+                return;
+            }
+            inv.Item.Use(Session, ref inv, wearPacket.Type);
+            Session.SendPacket(Session.Character.GenerateEff(123));
         }
 
         /// <summary>
