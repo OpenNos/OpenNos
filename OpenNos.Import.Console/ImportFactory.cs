@@ -2660,7 +2660,8 @@ namespace OpenNos.Import.Console
         {
             short map = 0;
             List<ScriptedInstanceDTO> listtimespace = new List<ScriptedInstanceDTO>();
-            List<ScriptedInstanceDTO> bddlist = new List<ScriptedInstanceDTO>(); ;
+            List<ScriptedInstanceDTO> bddlist = new List<ScriptedInstanceDTO>();
+            ;
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("wp") || o[0].Equals("gp") || o[0].Equals("rbr")))
             {
                 if (currentPacket.Length > 5 && currentPacket[0] == "at")
@@ -2669,9 +2670,9 @@ namespace OpenNos.Import.Console
                     bddlist = DAOFactory.ScriptedInstanceDAO.LoadByMap(map).ToList();
                     continue;
                 }
-                else if (currentPacket.Length > 6 && currentPacket[0] == "wp")
+                if (currentPacket.Length > 6 && currentPacket[0] == "wp")
                 {
-                    ScriptedInstanceDTO ts = new ScriptedInstanceDTO()
+                    ScriptedInstanceDTO ts = new ScriptedInstanceDTO
                     {
                         PositionX = short.Parse(currentPacket[1]),
                         PositionY = short.Parse(currentPacket[2]),
@@ -2688,9 +2689,9 @@ namespace OpenNos.Import.Console
                     switch (currentPacket[0])
                     {
                         case "gp":
-                            if (sbyte.Parse(currentPacket[4]) == (byte)PortalType.Raid)
+                            if (sbyte.Parse(currentPacket[4]) == (byte) PortalType.Raid)
                             {
-                                ScriptedInstanceDTO ts = new ScriptedInstanceDTO()
+                                ScriptedInstanceDTO ts = new ScriptedInstanceDTO
                                 {
                                     PositionX = short.Parse(currentPacket[1]),
                                     PositionY = short.Parse(currentPacket[2]),
@@ -2710,6 +2711,38 @@ namespace OpenNos.Import.Console
                     }
                 }
             }
+            listtimespace.Add(new ScriptedInstanceDTO
+            {
+                Name = "Hatus",
+                MapId = 134,
+                PositionX = 53,
+                PositionY = 53,
+                Type = ScriptedInstanceType.RaidAct4
+            });
+            listtimespace.Add(new ScriptedInstanceDTO
+            {
+                Name = "Berios",
+                MapId = 134,
+                PositionX = 53,
+                PositionY = 53,
+                Type = ScriptedInstanceType.RaidAct4
+            });
+            listtimespace.Add(new ScriptedInstanceDTO
+            {
+                Name = "Calvina",
+                MapId = 134,
+                PositionX = 53,
+                PositionY = 53,
+                Type = ScriptedInstanceType.RaidAct4
+            });
+            listtimespace.Add(new ScriptedInstanceDTO
+            {
+                Name = "Morcos",
+                MapId = 134,
+                PositionX = 53,
+                PositionY = 53,
+                Type = ScriptedInstanceType.RaidAct4
+            });
             DAOFactory.ScriptedInstanceDAO.Insert(listtimespace);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TIMESPACES_PARSED"), listtimespace.Count));
         }

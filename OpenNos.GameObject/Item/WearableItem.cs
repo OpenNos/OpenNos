@@ -164,6 +164,24 @@ namespace OpenNos.GameObject
                     }
                     session.Character.EquipmentBCards.AddRange(inv.Item.BCards);
 
+                    if (inv is WearableInstance wearableInstance)
+                    {
+                        if (wearableInstance.EquipmentOptions != null)
+                        {
+                            switch (wearableInstance.Item.ItemType)
+                            {
+                                case ItemType.Armor:
+                                case ItemType.Weapon:
+                                    session.Character.EquipmentBCards.AddRange(EquipmentOptionHelper.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum));
+                                    break;
+                                case ItemType.Jewelery:
+                                    session.Character.EquipmentBCards.AddRange(EquipmentOptionHelper.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum));
+                                    break;
+                            }
+
+                        }
+                    }
+
                     if (option == 0)
                     {
                         session.SendPacket(session.Character.GenerateStatChar());

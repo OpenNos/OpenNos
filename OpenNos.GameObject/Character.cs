@@ -3334,6 +3334,20 @@ namespace OpenNos.GameObject
                             {
                                 if (inv is WearableInstance wearableInstance)
                                 {
+                                    if (wearableInstance.EquipmentOptions != null)
+                                    {
+                                        switch (wearableInstance.Item.ItemType)
+                                        {
+                                            case ItemType.Armor:
+                                            case ItemType.Weapon:
+                                                EquipmentBCards.AddRange(EquipmentOptionHelper.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum));
+                                                break;
+                                            case ItemType.Jewelery:
+                                                EquipmentBCards.AddRange(EquipmentOptionHelper.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum));
+                                                break;
+                                        }
+
+                                    }
                                     inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
                                 }
                             }
@@ -3352,16 +3366,14 @@ namespace OpenNos.GameObject
                             break;
 
                         case InventoryType.Specialist:
-                            SpecialistInstance specialist = inv as SpecialistInstance;
-                            if (specialist != null)
+                            if (inv is SpecialistInstance specialist)
                             {
                                 inv6 += $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
                             }
                             break;
 
                         case InventoryType.Costume:
-                            WearableInstance costumeInstance = inv as WearableInstance;
-                            if (costumeInstance != null)
+                            if (inv is WearableInstance costumeInstance)
                             {
                                 inv7 += $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
                             }

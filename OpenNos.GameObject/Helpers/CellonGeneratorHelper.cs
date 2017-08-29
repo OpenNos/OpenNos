@@ -10,49 +10,6 @@ namespace OpenNos.GameObject.Helpers
 {
     public static class CellonGeneratorHelper
     {
-        public static BCard EquipmentOptionToBcard(EquipmentOptionDTO option, short itemVnum)
-        {
-            BCard bcard = new BCard();
-            switch (option.Type)
-            {
-                case (byte)CellonType.Hp:
-                    bcard.Type = (byte)BCardType.CardType.MaxHPMP;
-                    bcard.SubType = (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumHP;
-                    bcard.FirstData = option.Value;
-                    break;
-                case (byte)CellonType.Mp:
-                    bcard.Type = (byte)BCardType.CardType.MaxHPMP;
-                    bcard.SubType = (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP;
-                    bcard.FirstData = option.Value;
-                    break;
-                case (byte)CellonType.HpRecovery:
-                    bcard.Type = (byte)BCardType.CardType.Recovery;
-                    bcard.SubType = (byte)AdditionalTypes.Recovery.HPRecoveryIncreased;
-                    bcard.FirstData = option.Value;
-                    break;
-                case (byte)CellonType.MpRecovery:
-                    bcard.Type = (byte)BCardType.CardType.Recovery;
-                    bcard.SubType = (byte)AdditionalTypes.Recovery.MPRecoveryIncreased;
-                    bcard.FirstData = option.Value;
-                    break;
-                case (byte)CellonType.MpConsumption:
-                    //TODO FIND Correct Bcard or settle in the code.
-                    break;
-                case (byte)CellonType.CriticalDamageDecrease:
-                    bcard.Type = (byte)BCardType.CardType.Critical;
-                    bcard.SubType = (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased;
-                    bcard.FirstData = option.Value;
-                    break;
-            }
-            bcard.ItemVNum = itemVnum;
-            return bcard;
-        }
-
-        public static List<BCard> EquipmentOptionsToBCards(List<EquipmentOptionDTO> options, short itemVnum)
-        {
-            return options.Select(i => EquipmentOptionToBcard(i, itemVnum)).ToList();
-        }
-
         private class CellonGenerator
         {
             public int Min { get; set; }
