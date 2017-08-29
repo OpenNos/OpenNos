@@ -124,21 +124,18 @@ namespace OpenNos.GameObject
         {
             int freepoint = CharacterHelper.SPPoint(SpLevel, Upgrade) - SlDamage - SlHP - SlElement - SlDefence;
 
-            int slElement = CharacterHelper.SlPoint(SlElement, 2);
-            int slHp = CharacterHelper.SlPoint(SlHP, 3);
-            int slDefence = CharacterHelper.SlPoint(SlDefence, 1);
-            int slHit = CharacterHelper.SlPoint(SlDamage, 0);
+            int slHit = CharacterHelper.SlPoint(SlDamage, 0) + Session.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack, false)[0] + Session.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
+            int slDefence = CharacterHelper.SlPoint(SlDefence, 1) + Session.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense, false)[0] + +Session.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
+            int slElement = CharacterHelper.SlPoint(SlElement, 2) + Session.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Element, false)[0] + +Session.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
+            int slHp = CharacterHelper.SlPoint(SlHP, 3) + Session.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP, false)[0] + Session.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
 
             string skill = string.Empty;
-            List<CharacterSkill> skillsSp = new List<CharacterSkill>();
-            foreach (Skill ski in ServerManager.Instance.GetAllSkill().Where(ski => ski.Class == Item.Morph + 31 && ski.LevelMinimum <= SpLevel))
-            {
-                skillsSp.Add(new CharacterSkill
+            List<CharacterSkill> skillsSp = ServerManager.Instance.GetAllSkill().Where(ski => ski.Class == Item.Morph + 31 && ski.LevelMinimum <= SpLevel).Select(ski => new CharacterSkill
                 {
                     SkillVNum = ski.SkillVNum,
                     CharacterId = CharacterId
-                });
-            }
+                })
+                .ToList();
             byte spdestroyed = 0;
             if (Rare == -2)
             {
@@ -152,12 +149,13 @@ namespace OpenNos.GameObject
 
             for (int i = 1; i < 11; i++)
             {
-                if (skillsSp.Count >= i + 1)
+                if (skillsSp.Count < i + 1)
                 {
-                    if (skillsSp[i].SkillVNum <= firstskillvnum + 10)
-                    {
-                        skill += $"{skillsSp[i].SkillVNum}.";
-                    }
+                    continue;
+                }
+                if (skillsSp[i].SkillVNum <= firstskillvnum + 10)
+                {
+                    skill += $"{skillsSp[i].SkillVNum}.";
                 }
             }
 
@@ -167,7 +165,7 @@ namespace OpenNos.GameObject
             return $"slinfo {(Type == InventoryType.Wear || Type == InventoryType.Specialist || Type == InventoryType.Equipment ? "0" : "2")} {ItemVNum} {Item.Morph} {SpLevel} {Item.LevelJobMinimum} {Item.ReputationMinimum} 0 0 0 0 0 0 0 {Item.SpType} {Item.FireResistance} {Item.WaterResistance} {Item.LightResistance} {Item.DarkResistance} {XP} {CharacterHelper.SPXPData[SpLevel - 1]} {skill} {TransportId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {Upgrade} 0 0 {spdestroyed} 0 0 0 0 {SpStoneUpgrade} {SpDamage} {SpDefence} {SpElement} {SpHP} {SpFire} {SpWater} {SpLight} {SpDark}";
         }
 
-        public void PerfectSP(ClientSession Session)
+        public void PerfectSP()
         {
             short[] upsuccess = { 50, 40, 30, 20, 10 };
 
@@ -394,7 +392,7 @@ namespace OpenNos.GameObject
             Session.SendPacket("shop_end 1");
         }
 
-        public void UpgradeSp(ClientSession Session, UpgradeProtection protect)
+        public void UpgradeSp(UpgradeProtection protect)
         {
             if (Upgrade >= 15)
             {

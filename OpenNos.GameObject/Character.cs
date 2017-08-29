@@ -3474,31 +3474,45 @@ namespace OpenNos.GameObject
             if (UseSp)
             {
                 // handle specialist
-                SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-                if (specialist != null)
+                if (SpInstance != null)
                 {
-                    MinHit += specialist.DamageMinimum + specialist.SpDamage * 10;
-                    MaxHit += specialist.DamageMaximum + specialist.SpDamage * 10;
-                    MinDistance += specialist.DamageMinimum;
-                    MaxDistance += specialist.DamageMaximum;
-                    HitCriticalRate += specialist.CriticalLuckRate;
-                    HitCritical += specialist.CriticalRate;
-                    DistanceCriticalRate += specialist.CriticalLuckRate;
-                    DistanceCritical += specialist.CriticalRate;
-                    HitRate += specialist.HitRate;
-                    DistanceRate += specialist.HitRate;
-                    DefenceRate += specialist.DefenceDodge;
-                    DistanceDefenceRate += specialist.DistanceDefenceDodge;
-                    FireResistance += specialist.Item.FireResistance + specialist.SpFire;
-                    WaterResistance += specialist.Item.WaterResistance + specialist.SpWater;
-                    LightResistance += specialist.Item.LightResistance + specialist.SpLight;
-                    DarkResistance += specialist.Item.DarkResistance + specialist.SpDark;
-                    ElementRateSP += specialist.ElementRate + specialist.SpElement;
-                    Defence += specialist.CloseDefence + specialist.SpDefence * 10;
-                    DistanceDefence += specialist.DistanceDefence + specialist.SpDefence * 10;
-                    MagicalDefence += specialist.MagicDefence + specialist.SpDefence * 10;
+                    int shellSlAttack = SpInstance.SlDamage + Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack, false)[0] +
+                                        Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
+                    int shellSlDefense = SpInstance.SlDefence + Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense, false)[0] +
+                                        Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
+                    int shellSlElement = SpInstance.SlElement + Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Element, false)[0] +
+                                        Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
+                    int shellSlHpMp = SpInstance.SlHP + Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP, false)[0] +
+                                        Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
 
-                    int point = CharacterHelper.SlPoint(specialist.SlDamage, 0);
+
+                    shellSlAttack = shellSlAttack > 100 ? 100 : shellSlAttack;
+                    shellSlDefense = shellSlDefense > 100 ? 100 : shellSlDefense;
+                    shellSlElement = shellSlElement > 100 ? 100 : shellSlElement;
+                    shellSlHpMp = shellSlHpMp > 100 ? 100 : shellSlHpMp;
+
+                    MinHit += SpInstance.DamageMinimum + shellSlAttack * 10;
+                    MaxHit += SpInstance.DamageMaximum + shellSlAttack * 10;
+                    MinDistance += SpInstance.DamageMinimum;
+                    MaxDistance += SpInstance.DamageMaximum;
+                    HitCriticalRate += SpInstance.CriticalLuckRate;
+                    HitCritical += SpInstance.CriticalRate;
+                    DistanceCriticalRate += SpInstance.CriticalLuckRate;
+                    DistanceCritical += SpInstance.CriticalRate;
+                    HitRate += SpInstance.HitRate;
+                    DistanceRate += SpInstance.HitRate;
+                    DefenceRate += SpInstance.DefenceDodge;
+                    DistanceDefenceRate += SpInstance.DistanceDefenceDodge;
+                    FireResistance += SpInstance.Item.FireResistance + SpInstance.SpFire;
+                    WaterResistance += SpInstance.Item.WaterResistance + SpInstance.SpWater;
+                    LightResistance += SpInstance.Item.LightResistance + SpInstance.SpLight;
+                    DarkResistance += SpInstance.Item.DarkResistance + SpInstance.SpDark;
+                    ElementRateSP += SpInstance.ElementRate + SpInstance.SpElement;
+                    Defence += SpInstance.CloseDefence + shellSlDefense * 10;
+                    DistanceDefence += SpInstance.DistanceDefence + shellSlDefense * 10;
+                    MagicalDefence += SpInstance.MagicDefence + shellSlDefense * 10;
+
+                    int point = CharacterHelper.SlPoint((short)shellSlAttack, 0);
 
                     int p = 0;
                     if (point <= 10)
@@ -3558,7 +3572,7 @@ namespace OpenNos.GameObject
                     MaxDistance += p;
                     MinDistance += p;
 
-                    point = CharacterHelper.SlPoint(specialist.SlDefence, 1);
+                    point = CharacterHelper.SlPoint((short)shellSlDefense, 1);
                     p = 0;
                     if (point <= 10)
                     {
@@ -3604,7 +3618,7 @@ namespace OpenNos.GameObject
                     MagicalDefence += p;
                     DistanceDefence += p;
 
-                    point = CharacterHelper.SlPoint(specialist.SlElement, 2);
+                    point = CharacterHelper.SlPoint((short)shellSlElement, 2);
                     if (point <= 50)
                     {
                         p = point;
@@ -3664,23 +3678,25 @@ namespace OpenNos.GameObject
             for (short i = 1; i < 14; i++)
             {
                 WearableInstance item = Inventory?.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
-                if (item != null)
+                if (item == null)
                 {
-                    if (item.Item.EquipmentSlot != EquipmentType.MainWeapon
-                        && item.Item.EquipmentSlot != EquipmentType.SecondaryWeapon
-                        && item.Item.EquipmentSlot != EquipmentType.Armor
-                        && item.Item.EquipmentSlot != EquipmentType.Sp)
-                    {
-                        FireResistance += item.FireResistance + item.Item.FireResistance;
-                        LightResistance += item.LightResistance + item.Item.LightResistance;
-                        WaterResistance += item.WaterResistance + item.Item.WaterResistance;
-                        DarkResistance += item.DarkResistance + item.Item.DarkResistance;
-                        Defence += item.CloseDefence + item.Item.CloseDefence;
-                        DefenceRate += item.DefenceDodge + item.Item.DefenceDodge;
-                        DistanceDefence += item.DistanceDefence + item.Item.DistanceDefence;
-                        DistanceDefenceRate += item.DistanceDefenceDodge + item.Item.DistanceDefenceDodge;
-                    }
+                    continue;
                 }
+                if (item.Item.EquipmentSlot == EquipmentType.MainWeapon || 
+                    item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon || 
+                    item.Item.EquipmentSlot == EquipmentType.Armor ||
+                    item.Item.EquipmentSlot == EquipmentType.Sp)
+                {
+                    continue;
+                }
+                FireResistance += item.FireResistance + item.Item.FireResistance;
+                LightResistance += item.LightResistance + item.Item.LightResistance;
+                WaterResistance += item.WaterResistance + item.Item.WaterResistance;
+                DarkResistance += item.DarkResistance + item.Item.DarkResistance;
+                Defence += item.CloseDefence + item.Item.CloseDefence;
+                DefenceRate += item.DefenceDodge + item.Item.DefenceDodge;
+                DistanceDefence += item.DistanceDefence + item.Item.DistanceDefence;
+                DistanceDefenceRate += item.DistanceDefenceDodge + item.Item.DistanceDefenceDodge;
             }
             return $"sc {type} {weaponUpgrade} {MinHit} {MaxHit} {HitRate} {HitCriticalRate} {HitCritical} {type2} {secondaryUpgrade} {MinDistance} {MaxDistance} {DistanceRate} {DistanceCriticalRate} {DistanceCritical} {armorUpgrade} {Defence} {DefenceRate} {DistanceDefence} {DistanceDefenceRate} {MagicalDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance}";
         }
@@ -3999,15 +4015,17 @@ namespace OpenNos.GameObject
             {
                 return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
             }
-
-            SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-
-            if (specialist == null)
+            
+            if (SpInstance == null)
             {
                 return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
             }
 
-            int point = CharacterHelper.SlPoint(specialist.SlHP, 3);
+
+            int shellSlHpMp = SpInstance.SlHP + Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP, false)[0] +
+                              Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
+
+            int point = CharacterHelper.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
 
             if (point <= 50)
             {
@@ -4017,7 +4035,7 @@ namespace OpenNos.GameObject
             {
                 multiplicator += 0.5 + (point - 50.00) / 50.00;
             }
-            hp = specialist.HP + specialist.SpHP * 100;
+            hp = SpInstance.HP + SpInstance.SpHP * 100;
             return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
         }
 
@@ -4151,16 +4169,11 @@ namespace OpenNos.GameObject
 
         public void LearnSPSkill()
         {
-            SpecialistInstance specialist = null;
-            if (Inventory != null)
-            {
-                specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-            }
             byte skillSpCount = (byte)SkillsSp.Count;
             SkillsSp = new ConcurrentDictionary<int, CharacterSkill>();
             foreach (Skill ski in ServerManager.Instance.GetAllSkill())
             {
-                if (specialist != null && ski.Class == (Morph + 31) && specialist.SpLevel >= ski.LevelMinimum)
+                if (SpInstance != null && ski.Class == (Morph + 31) && SpInstance.SpLevel >= ski.LevelMinimum)
                 {
                     SkillsSp[ski.SkillVNum] = new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = CharacterId };
                 }
@@ -4230,10 +4243,9 @@ namespace OpenNos.GameObject
 
                 if (UseSp)
                 {
-                    SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-                    if (specialist != null)
+                    if (SpInstance != null)
                     {
-                        Speed += specialist.Item.Speed;
+                        Speed += SpInstance.Item.Speed;
                     }
                 }
             }

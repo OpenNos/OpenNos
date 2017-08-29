@@ -40,6 +40,7 @@ namespace OpenNos.GameObject
             Amount = amount;
             Type = Item.Type;
             _random = new Random();
+            Session = ServerManager.Instance.GetSessionByCharacterId(CharacterId);
         }
 
         #endregion
@@ -61,6 +62,9 @@ namespace OpenNos.GameObject
                 return item ?? (item = ServerManager.Instance.GetItem(ItemVNum));
             }
         }
+
+        public ClientSession Session { get; }
+
 
         #endregion
 

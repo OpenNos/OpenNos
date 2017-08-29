@@ -977,28 +977,29 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), specialistHolderPacket.ToString());
             SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(specialistHolderPacket.Slot, InventoryType.Equipment);
             BoxInstance holder = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(specialistHolderPacket.HolderSlot, InventoryType.Equipment);
-            if (specialist != null && holder != null)
+            if (specialist == null || holder == null)
             {
-                holder.HoldingVNum = specialist.ItemVNum;
-                holder.SlDamage = specialist.SlDamage;
-                holder.SlDefence = specialist.SlDefence;
-                holder.SlElement = specialist.SlElement;
-                holder.SlHP = specialist.SlHP;
-                holder.SpDamage = specialist.SpDamage;
-                holder.SpDark = specialist.SpDark;
-                holder.SpDefence = specialist.SpDefence;
-                holder.SpElement = specialist.SpElement;
-                holder.SpFire = specialist.SpFire;
-                holder.SpHP = specialist.SpHP;
-                holder.SpLevel = specialist.SpLevel;
-                holder.SpLight = specialist.SpLight;
-                holder.SpStoneUpgrade = specialist.SpStoneUpgrade;
-                holder.SpWater = specialist.SpWater;
-                holder.Upgrade = specialist.Upgrade;
-                holder.XP = specialist.XP;
-                Session.SendPacket("shop_end 2");
-                Session.Character.Inventory.RemoveItemAmountFromInventory(1, specialist.Id);
+                return;
             }
+            holder.HoldingVNum = specialist.ItemVNum;
+            holder.SlDamage = specialist.SlDamage;
+            holder.SlDefence = specialist.SlDefence;
+            holder.SlElement = specialist.SlElement;
+            holder.SlHP = specialist.SlHP;
+            holder.SpDamage = specialist.SpDamage;
+            holder.SpDark = specialist.SpDark;
+            holder.SpDefence = specialist.SpDefence;
+            holder.SpElement = specialist.SpElement;
+            holder.SpFire = specialist.SpFire;
+            holder.SpHP = specialist.SpHP;
+            holder.SpLevel = specialist.SpLevel;
+            holder.SpLight = specialist.SpLight;
+            holder.SpStoneUpgrade = specialist.SpStoneUpgrade;
+            holder.SpWater = specialist.SpWater;
+            holder.Upgrade = specialist.Upgrade;
+            holder.XP = specialist.XP;
+            Session.SendPacket("shop_end 2");
+            Session.Character.Inventory.RemoveItemAmountFromInventory(1, specialist.Id);
         }
 
         /// <summary>
@@ -1659,7 +1660,7 @@ namespace OpenNos.Handler
                         {
                             if (specialist.Item.EquipmentSlot == EquipmentType.Sp)
                             {
-                                specialist.UpgradeSp(Session, UpgradeProtection.None);
+                                specialist.UpgradeSp(UpgradeProtection.None);
                             }
                         }
                         else
@@ -1699,7 +1700,7 @@ namespace OpenNos.Handler
                         {
                             if (specialist.Item.EquipmentSlot == EquipmentType.Sp)
                             {
-                                specialist.UpgradeSp(Session, UpgradeProtection.Protected);
+                                specialist.UpgradeSp(UpgradeProtection.Protected);
                             }
                         }
                         else
@@ -1717,7 +1718,7 @@ namespace OpenNos.Handler
                         {
                             if (specialist.Item.EquipmentSlot == EquipmentType.Sp)
                             {
-                                specialist.UpgradeSp(Session, UpgradeProtection.Protected);
+                                specialist.UpgradeSp(UpgradeProtection.Protected);
                             }
                         }
                         else
@@ -1735,7 +1736,7 @@ namespace OpenNos.Handler
                         {
                             if (specialist.Item.EquipmentSlot == EquipmentType.Sp)
                             {
-                                specialist.PerfectSP(Session);
+                                specialist.PerfectSP();
                             }
                         }
                         else
