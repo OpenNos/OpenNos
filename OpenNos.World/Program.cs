@@ -73,7 +73,7 @@ namespace OpenNos.World
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
 
-            Console.Title = string.Format(LocalizedResources.WORLD_SERVER_CONSOLE_TITLE, 0, 0);
+            Console.Title = string.Format(LocalizedResources.WORLD_SERVER_CONSOLE_TITLE, 0, 0, 0, 0);
             short port = Convert.ToInt16(ConfigurationManager.AppSettings["WorldPort"]);
             const string text = "OpenNos - World Server";
             int offset = Console.WindowWidth / 2 + text.Length / 2;
@@ -132,14 +132,14 @@ namespace OpenNos.World
 
             ServerManager.Instance.ServerGroup = ConfigurationManager.AppSettings["ServerGroup"];
             int sessionLimit = Convert.ToInt32(ConfigurationManager.AppSettings["SessionLimit"]);
-            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ConfigurationManager.AppSettings["IPADDRESS"], (short)port, sessionLimit, ServerManager.Instance.ServerGroup));
+            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ip, (short)port, sessionLimit, ServerManager.Instance.ServerGroup));
 
             if (newChannelId.HasValue)
             {
                 ServerManager.Instance.ChannelId = newChannelId.Value;
                 ServerManager.Instance.IpAddress = ip;
                 ServerManager.Instance.Port = port;
-                Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count());
+                Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
             }
             else
             {
@@ -150,8 +150,6 @@ namespace OpenNos.World
 
         private static bool ExitHandler(CtrlType sig)
         {
-            string serverGroup = ConfigurationManager.AppSettings["ServerGroup"];
-            int port = Convert.ToInt32(ConfigurationManager.AppSettings["WorldPort"]);
             CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
