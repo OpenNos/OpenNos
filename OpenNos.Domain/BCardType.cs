@@ -116,7 +116,9 @@ namespace OpenNos.Domain
 
             AngerSkill = 82,
             MeteoriteTeleport = 83,
-            StealBuff = 84
+            StealBuff = 84,
+
+            SPSL = 200,
         }
     }
 
@@ -1087,6 +1089,16 @@ namespace OpenNos.Domain
             ChanceSummonOnyxDragonNegated = 32,
             StealGoodEffect = 41,
             StealGoodEffectNegated = 42
+        }
+
+
+        public enum SPSL : byte
+        {
+            Attack,
+            Defense,
+            Element,
+            HPMP,
+            All
         }
 
         // end!
