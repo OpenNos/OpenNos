@@ -1596,14 +1596,16 @@ namespace OpenNos.Handler
                         if (portal.DestinationMapId == 131)
                         {
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
+                            return;
                         }
-                        return;
+                        break;
                     case FactionType.Demon:
                         if (portal.DestinationMapId == 130)
                         {
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
+                            return;
                         }
-                        return;
+                        break;
                 }
                 portal.OnTraversalEvents.ForEach(e =>
                 {
