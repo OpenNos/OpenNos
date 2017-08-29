@@ -632,24 +632,30 @@ namespace OpenNos.Handler
                                             int count = 0;
                                             foreach (ClientSession character in playersInAOERange)
                                             {
-                                                if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
+                                                if (Session.CurrentMapInstance == null || !Session.CurrentMapInstance.IsPVP)
                                                 {
-                                                    ConcurrentBag<ArenaTeamMember> team = null;
-                                                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
-                                                    {
-                                                        team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
-                                                    }
-
-                                                    if ((team == null || team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType ==
-                                                         team.FirstOrDefault(s => s.Session == character)?.ArenaTeamType) &&
-                                                        (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance ||
-                                                         (Session.Character.Group != null && Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))))
-                                                    {
-                                                        continue;
-                                                    }
-                                                    count++;
-                                                    PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
+                                                    continue;
                                                 }
+                                                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance && Session.Character.Faction == character.Character.Faction)
+                                                {
+                                                    continue;
+                                                }
+
+                                                ConcurrentBag<ArenaTeamMember> team = null;
+                                                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
+                                                {
+                                                    team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
+                                                }
+
+                                                if ((team == null || team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType ==
+                                                     team.FirstOrDefault(s => s.Session == character)?.ArenaTeamType) &&
+                                                    (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance ||
+                                                     (Session.Character.Group != null && Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))))
+                                                {
+                                                    continue;
+                                                }
+                                                count++;
+                                                PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
                                             }
                                             if (playerToAttack.Character.Hp <= 0 || count == 0)
                                             {

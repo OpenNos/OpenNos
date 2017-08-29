@@ -501,7 +501,7 @@ namespace OpenNos.GameObject
             }
             try
             {
-                if (session.Character.IsExchanging)
+                if (session.Character.IsExchanging || session.Character.InExchangeOrTrade)
                 {
                     session.Character.CloseExchangeOrTrade();
                 }
@@ -656,7 +656,8 @@ namespace OpenNos.GameObject
                     {
                         foreach (ClientSession groupSession in @group.Characters)
                         {
-                            ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMapInstance == groupSession.CurrentMapInstance);
+                            ClientSession chara = Sessions.FirstOrDefault(s =>
+                                s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMapInstance == groupSession.CurrentMapInstance);
                             if (chara == null)
                             {
                                 continue;
@@ -1226,7 +1227,9 @@ namespace OpenNos.GameObject
                 }
                 foreach (Map m in _maps.Where(s => s.MapTypes.Any(o => o.MapTypeId == (short)MapTypeEnum.Act4 || o.MapTypeId == (short)MapTypeEnum.Act42)))
                 {
-                    Act4Maps.Add(GenerateMapInstance(m.MapId, MapInstanceType.Act4Instance, null));
+                    MapInstance act4Map = GenerateMapInstance(m.MapId, MapInstanceType.Act4Instance, null);
+                    act4Map.IsPVP = true;
+                    Act4Maps.Add(act4Map);
                 }
 
                 foreach (MapInstance m in Act4Maps)
