@@ -380,7 +380,7 @@ namespace OpenNos.GameObject
                     return;
                 }
             }
-                if (rnd < rare7 && !(protection == RarifyProtection.Scroll && Rare >= 7))
+            if (rnd < rare7 && !(protection == RarifyProtection.Scroll && Rare >= 7))
             {
                 if (mode != RarifyMode.Drop)
                 {

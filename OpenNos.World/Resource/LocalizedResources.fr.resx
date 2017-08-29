@@ -926,7 +926,7 @@ Veux-tu le porter ?</value>
     <value>Une nouvelle note est arrivée.</value>
   </data>
   <data name="GIFTED" xml:space="preserve">
-    <value>Tu as reçu {0} paquet(s).</value>
+    <value>Noveaux paquets arrivés : {0} </value>
   </data>
   <data name="ITEM_GIFTED" xml:space="preserve">
     <value>Paquet reçu &gt;&gt;</value>
@@ -995,7 +995,7 @@ Veux-tu le porter ?</value>
     <value>Tu subis une sanction. par conséquant, tu ne peux pas utiliser cet objet.</value>
   </data>
   <data name="ACT4_PVP_DIE" xml:space="preserve">
-    <value>La malédiction de la Courrone de Glace t'a transformé en phoque pour 30 secondes !</value>
+    <value>La malédiction de la Couronne de Glace t'a transformé en phoque pour 30 secondes !</value>
   </data>
   <data name="ALREADY_FRIEND" xml:space="preserve">
     <value>Vous êtes déjà amis.</value>
@@ -1701,5 +1701,14 @@ Veux-tu continuer ?</value>
   </data>
   <data name="ICEBREAKER_WIN" xml:space="preserve">
     <value>Vous avez gagné l'IceBreaker.</value>
+  </data>
+  <data name="ARENA_TALENT_LEFT" xml:space="preserve">
+    <value>{0} a quitté l'arène d'équipe.</value>
+  </data>
+  <data name="NEED_FACTION_ACT4" xml:space="preserve">
+    <value>Seuls ceux qui possèdent le pouvoir de protection peuvent entrer dans la Couronne de glace.</value>
+  </data>
+  <data name="TEAM_WINNER_ARENA_ROUND" xml:space="preserve">
+    <value>Vainqueur ! {0}  {1} !</value>
   </data>
 </root>
