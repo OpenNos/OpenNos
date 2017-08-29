@@ -70,6 +70,7 @@
     <Compile Include="Act4RaidType.cs" />
     <Compile Include="BazaarListType.cs" />
     <Compile Include="FactionType.cs" />
+    <Compile Include="ShellOptionType.cs" />
     <Compile Include="TalentArenaOptionType.cs" />
     <Compile Include="BuffType.cs" />
     <Compile Include="CellonType.cs" />
