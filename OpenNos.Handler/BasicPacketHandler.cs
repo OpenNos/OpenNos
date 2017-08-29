@@ -1551,6 +1551,14 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"), 1));
                         }
                         return;
+                    case (sbyte)PortalType.BlueRaid:
+                    case (sbyte)PortalType.DarkRaid:
+                        if ((byte) Session.Character.Faction == (portal.Type - 9) && Session.Character.Family?.Act4Raid != null)
+                        {
+                            Session.Character.LastPortal = currentRunningSeconds;
+                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.Act4Raid.MapInstanceId, portal.DestinationX, portal.DestinationY);
+                        }
+                        break;
                     default:
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                         return;
