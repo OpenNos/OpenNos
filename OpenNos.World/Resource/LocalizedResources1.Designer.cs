@@ -88,6 +88,24 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Do you want to add an option on this stuff ? If yes, this item will be link to you only..
+        /// </summary>
+        internal static string ADD_OPTION_ON_STUFF {
+            get {
+                return ResourceManager.GetString("ADD_OPTION_ON_STUFF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The option will be replace by the new. You&apos;ve 50% of chance to win, else the item will be destroyed. Do you want to continue ?.
+        /// </summary>
+        internal static string ADD_OPTION_ON_STUFF_NOT_EMPTY {
+            get {
+                return ResourceManager.GetString("ADD_OPTION_ON_STUFF_NOT_EMPTY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Administrator.
         /// </summary>
         internal static string ADMINISTRATOR {
@@ -232,11 +250,29 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à A participant has called : {0}.
+        /// </summary>
+        internal static string ARENA_CALLED {
+            get {
+                return ResourceManager.GetString("ARENA_CALLED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Arena talent is open at 18:00 - 22:00.
         /// </summary>
         internal static string ARENA_NOT_OPEN {
             get {
                 return ResourceManager.GetString("ARENA_NOT_OPEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à If you cancel the inscription you will suffered a penality..
+        /// </summary>
+        internal static string ARENA_PENALITY_NOTICE {
+            get {
+                return ResourceManager.GetString("ARENA_PENALITY_NOTICE", resourceCulture);
             }
         }
         
@@ -250,7 +286,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à remaining participation(s) {0}.
+        ///   Recherche une chaîne localisée semblable à Remaining participation(s) {0}.
         /// </summary>
         internal static string ARENA_TICKET_LEFT {
             get {
@@ -264,6 +300,15 @@ namespace OpenNos.World.Resource {
         internal static string ASK_BIND {
             get {
                 return ResourceManager.GetString("ASK_BIND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Do you want to change the respawn town?.
+        /// </summary>
+        internal static string ASK_CHANGE_SPAWNLOCATION {
+            get {
+                return ResourceManager.GetString("ASK_CHANGE_SPAWNLOCATION", resourceCulture);
             }
         }
         
@@ -646,6 +691,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The family head cannot exit the family..
+        /// </summary>
+        internal static string CANNOT_LEAVE_FAMILY {
+            get {
+                return ResourceManager.GetString("CANNOT_LEAVE_FAMILY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You can&apos;t attack right now..
         /// </summary>
         internal static string CANT_ATTACK {
@@ -687,6 +741,15 @@ namespace OpenNos.World.Resource {
         internal static string CANT_UPGRADE_DESTROYED_SP {
             get {
                 return ResourceManager.GetString("CANT_UPGRADE_DESTROYED_SP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You cannot do it now..
+        /// </summary>
+        internal static string CANT_USE_THAT {
+            get {
+                return ResourceManager.GetString("CANT_USE_THAT", resourceCulture);
             }
         }
         
@@ -1047,6 +1110,24 @@ namespace OpenNos.World.Resource {
         internal static string EQ_NOT_EMPTY {
             get {
                 return ResourceManager.GetString("EQ_NOT_EMPTY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Equality!.
+        /// </summary>
+        internal static string EQUALITY {
+            get {
+                return ResourceManager.GetString("EQUALITY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You are on the Erenia team..
+        /// </summary>
+        internal static string ERENIA {
+            get {
+                return ResourceManager.GetString("ERENIA", resourceCulture);
             }
         }
         
@@ -2446,6 +2527,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à You cannot change the shell, the soul is not yours..
+        /// </summary>
+        internal static string NEED_PARFUM_TO_CHANGE_SHELL {
+            get {
+                return ResourceManager.GetString("NEED_PARFUM_TO_CHANGE_SHELL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Client connected. ClientId = .
         /// </summary>
         internal static string NEW_CONNECT {
@@ -3238,6 +3328,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The town has been changed!.
+        /// </summary>
+        internal static string RESPAWNLOCATION_CHANGED {
+            get {
+                return ResourceManager.GetString("RESPAWNLOCATION_CHANGED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You&apos;ve restored some of your dignity!.
         /// </summary>
         internal static string RESTORE_DIGNITY {
@@ -3261,6 +3360,15 @@ namespace OpenNos.World.Resource {
         internal static string RETRY_SEARCH_ARENA_TEAM {
             get {
                 return ResourceManager.GetString("RETRY_SEARCH_ARENA_TEAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enemy team found..
+        /// </summary>
+        internal static string RIVAL_ARENA_TEAM_FOUND {
+            get {
+                return ResourceManager.GetString("RIVAL_ARENA_TEAM_FOUND", resourceCulture);
             }
         }
         
@@ -3310,6 +3418,24 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Choice the order of participation or it will be determinated randomly!.
+        /// </summary>
+        internal static string SELECT_ORDER_ARENA {
+            get {
+                return ResourceManager.GetString("SELECT_ORDER_ARENA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à One minut remaning before the begin of the fight. Good luck!.
+        /// </summary>
+        internal static string SELECT_ORDER_ARENA_TIME {
+            get {
+                return ResourceManager.GetString("SELECT_ORDER_ARENA_TIME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Sold: {0} &lt;{1} : piece &gt;.
         /// </summary>
         internal static string SELL_ITEM_VALIDE {
@@ -3351,6 +3477,87 @@ namespace OpenNos.World.Resource {
         internal static string SHARING_BY_ORDER {
             get {
                 return ResourceManager.GetString("SHARING_BY_ORDER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Options of this object are already identified..
+        /// </summary>
+        internal static string SHELL_ALREADY_IDENTIFIED {
+            get {
+                return ResourceManager.GetString("SHELL_ALREADY_IDENTIFIED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The shell is broken because it has failed..
+        /// </summary>
+        internal static string SHELL_BROKEN {
+            get {
+                return ResourceManager.GetString("SHELL_BROKEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The option has been erased..
+        /// </summary>
+        internal static string SHELL_ERASED {
+            get {
+                return ResourceManager.GetString("SHELL_ERASED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You can only use this shell on armor..
+        /// </summary>
+        internal static string SHELL_FOR_ARMOR_ONLY {
+            get {
+                return ResourceManager.GetString("SHELL_FOR_ARMOR_ONLY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You can only use this shell on weapon..
+        /// </summary>
+        internal static string SHELL_FOR_WEAPON_ONLY {
+            get {
+                return ResourceManager.GetString("SHELL_FOR_WEAPON_ONLY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The level of the shell is too high..
+        /// </summary>
+        internal static string SHELL_LEVEL_TOO_HIGH {
+            get {
+                return ResourceManager.GetString("SHELL_LEVEL_TOO_HIGH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The shell must be identified before use..
+        /// </summary>
+        internal static string SHELL_MUST_BE_IDENTIFIED {
+            get {
+                return ResourceManager.GetString("SHELL_MUST_BE_IDENTIFIED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à A new option has been added..
+        /// </summary>
+        internal static string SHELL_OPTION_SET {
+            get {
+                return ResourceManager.GetString("SHELL_OPTION_SET", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The shell rarity is too high..
+        /// </summary>
+        internal static string SHELL_RARITY_TOO_HIGH {
+            get {
+                return ResourceManager.GetString("SHELL_RARITY_TOO_HIGH", resourceCulture);
             }
         }
         
@@ -3904,11 +4111,38 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The player is not on a general map..
+        /// </summary>
+        internal static string USER_ON_INSTANCEMAP {
+            get {
+                return ResourceManager.GetString("USER_ON_INSTANCEMAP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à User has blocked private messages!.
         /// </summary>
         internal static string USER_WHISPER_BLOCKED {
             get {
                 return ResourceManager.GetString("USER_WHISPER_BLOCKED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Winner!  Erenia.
+        /// </summary>
+        internal static string VICTORIOUS_ERENIA {
+            get {
+                return ResourceManager.GetString("VICTORIOUS_ERENIA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Winner! Zenas.
+        /// </summary>
+        internal static string VICTORIOUS_ZENAS {
+            get {
+                return ResourceManager.GetString("VICTORIOUS_ZENAS", resourceCulture);
             }
         }
         
@@ -3994,7 +4228,16 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à WORLD SERVER - ID : {0} | Players : {1}.
+        ///   Recherche une chaîne localisée semblable à {0} as kill {1}..
+        /// </summary>
+        internal static string WINNER_ARENA_ROUND {
+            get {
+                return ResourceManager.GetString("WINNER_ARENA_ROUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à WORLD SERVER - ID : {0} | Players : {1} | IP : {2}:{3}.
         /// </summary>
         internal static string WORLD_SERVER_CONSOLE_TITLE {
             get {
@@ -4062,6 +4305,15 @@ namespace OpenNos.World.Resource {
         internal static string YOU_REFUSED {
             get {
                 return ResourceManager.GetString("YOU_REFUSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You are on the Zenas team..
+        /// </summary>
+        internal static string ZENAS {
+            get {
+                return ResourceManager.GetString("ZENAS", resourceCulture);
             }
         }
     }

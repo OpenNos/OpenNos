@@ -1451,7 +1451,7 @@
     <value>Searching opposing team</value>
   </data>
   <data name="WORLD_SERVER_CONSOLE_TITLE" xml:space="preserve">
-    <value>WORLD SERVER - ID : {0} | Players : {1}</value>
+    <value>WORLD SERVER - ID : {0} | Players : {1} | IP : {2}:{3}</value>
   </data>
   <data name="EQUALITY" xml:space="preserve">
     <value>Equality!</value>
