@@ -1530,16 +1530,32 @@ namespace OpenNos.Handler
                 }
                 switch (portal.Type)
                 {
-                    case (sbyte)PortalType.MapPortal:
-                    case (sbyte)PortalType.TSNormal:
-                    case (sbyte)PortalType.Open:
-                    case (sbyte)PortalType.Miniland:
-                    case (sbyte)PortalType.TSEnd:
-                    case (sbyte)PortalType.Exit:
-                    case (sbyte)PortalType.Effect:
-                    case (sbyte)PortalType.ShopTeleport:
+                    case (sbyte) PortalType.MapPortal:
+                        switch (Session.Character.Faction)
+                        {
+                            case FactionType.Angel:
+                                if (portal.DestinationMapId == 131)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
+                                }
+                                return;
+                            case FactionType.Demon:
+                                if (portal.DestinationMapId == 130)
+                                {
+
+                                }
+                                return;
+                        }
                         break;
-                    case (sbyte)PortalType.Raid:
+                    case (sbyte) PortalType.TSNormal:
+                    case (sbyte) PortalType.Open:
+                    case (sbyte) PortalType.Miniland:
+                    case (sbyte) PortalType.TSEnd:
+                    case (sbyte) PortalType.Exit:
+                    case (sbyte) PortalType.Effect:
+                    case (sbyte) PortalType.ShopTeleport:
+                        break;
+                    case (sbyte) PortalType.Raid:
                         if (Session.Character.Group?.Raid != null)
                         {
                             Session.SendPacket(Session.Character.Group.IsLeader(Session)
@@ -1551,40 +1567,44 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"), 1));
                         }
                         return;
-                    case (sbyte)PortalType.BlueRaid:
-                    case (sbyte)PortalType.DarkRaid:
+                    case (sbyte) PortalType.BlueRaid:
+                    case (sbyte) PortalType.DarkRaid:
                         if ((byte) Session.Character.Faction == (portal.Type - 9) && Session.Character.Family?.Act4Raid != null)
                         {
                             Session.Character.LastPortal = currentRunningSeconds;
                             ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.Act4Raid.MapInstanceId, portal.DestinationX, portal.DestinationY);
                         }
-                        break;
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
+                        }
+                        return;
                     default:
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                         return;
                 }
 
-                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance && !Session.CurrentMapInstance.InstanceBag.Lock)
+                switch (Session.CurrentMapInstance.MapInstanceType)
                 {
-                    if (Session.Character.CharacterId == Session.CurrentMapInstance.InstanceBag.Creator)
-                    {
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#rstart^1 rstart {Language.Instance.GetMessageFromKey("ASK_ENTRY_IN_FIRST_ROOM")}"));
-                    }
-                    return;
-                }
-                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
-                {
-                    ClientSession leader = Session?.Character?.Group?.Characters?.ElementAt(0);
-                    if (leader != null)
-                    {
-                        if (Session.Character.CharacterId != leader.Character.CharacterId)
+                    case MapInstanceType.TimeSpaceInstance when !Session.CurrentMapInstance.InstanceBag.Lock:
+                        if (Session.Character.CharacterId == Session.CurrentMapInstance.InstanceBag.Creator)
                         {
-                            if (leader.CurrentMapInstance.MapInstanceId != portal.DestinationMapInstanceId)
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#rstart^1 rstart {Language.Instance.GetMessageFromKey("ASK_ENTRY_IN_FIRST_ROOM")}"));
+                        }
+                        return;
+                    case MapInstanceType.RaidInstance:
+                        ClientSession leader = Session?.Character?.Group?.Characters?.ElementAt(0);
+                        if (leader != null)
+                        {
+                            if (Session.Character.CharacterId != leader.Character.CharacterId)
                             {
-                                ServerManager.Instance.ChangeMapInstance(leader.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
+                                if (leader.CurrentMapInstance.MapInstanceId != portal.DestinationMapInstanceId)
+                                {
+                                    ServerManager.Instance.ChangeMapInstance(leader.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
+                                }
                             }
                         }
-                    }
+                        break;
                 }
                 portal.OnTraversalEvents.ForEach(e =>
                 {
