@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -21,7 +17,6 @@ namespace OpenNos.GameObject
             DateTime olddate = DateTime.Now.AddMonths(1);
             _nextMonth = new DateTime(olddate.Year, olddate.Month, 1, 0, 0, 0, olddate.Kind);
             _latestUpdate = DateTime.Now;
-
         }
 
         public int MinutesUntilReset
@@ -33,18 +28,18 @@ namespace OpenNos.GameObject
 
         public int Percentage
         {
-            get { return (Mode == 0 ? _percentage : 0); }
+            get { return Mode == 0 ? _percentage : 0; }
             set { _percentage = value; }
         }
 
         public short CurrentTime
         {
-            get { return (Mode == 0 ? (short) 0 : (short) (_latestUpdate.AddSeconds(_totalTime) - DateTime.Now).TotalSeconds); }
+            get { return Mode == 0 ? (short) 0 : (short) (_latestUpdate.AddSeconds(_totalTime) - DateTime.Now).TotalSeconds; }
         }
 
         public short TotalTime
         {
-            get { return (Mode == 0 ? (short) 0 : _totalTime); }
+            get { return Mode == 0 ? (short) 0 : _totalTime; }
             set
             {
                 _latestUpdate = DateTime.Now;

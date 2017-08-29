@@ -182,6 +182,8 @@ namespace OpenNos.GameObject
 
         public MapInstance Act4ShipAngel { get; set; }
 
+        public List<MapInstance> Act4Maps { get; set; }
+
         public Act4Stat Act4AngelStat { get; set; }
 
         public Act4Stat Act4DemonStat { get; set; }
@@ -553,6 +555,17 @@ namespace OpenNos.GameObject
                 session.SendPackets(session.Character.GeneratePst());
                 session.SendPacket(session.Character.GenerateAct());
                 session.SendPacket(session.Character.GenerateScpStc());
+
+                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance)
+                {
+                    session.SendPacket(session.Character.GenerateFc());
+
+                    if (mapInstanceId == session.Character.Family?.Act4Raid?.MapInstanceId || mapInstanceId == session.Character.Family?.Act4RaidBossMap?.MapInstanceId)
+                    {
+                        session.SendPacket(session.Character.GenerateDG());
+                    }
+                }
+
                 session.SendPacket(session.CurrentMapInstance.GenerateMapDesignObjects());
                 session.SendPackets(session.CurrentMapInstance.GetMapDesignObjectEffects());
 
@@ -1202,18 +1215,40 @@ namespace OpenNos.GameObject
                 }
                 if (DAOFactory.MapDAO.LoadById(148) != null)
                 {
-                    Logger.Log.Info("[ARENA] Arena Map Loaded");
+                    Logger.Log.Info("[ACT4] Demon Ship Loaded");
+                    Act4ShipDemon = GenerateMapInstance(148, MapInstanceType.ArenaInstance, null);
+                    Logger.Log.Info("[ACT4] Angel Ship Loaded");
                     Act4ShipAngel = GenerateMapInstance(148, MapInstanceType.NormalInstance, null);
                 }
-                if (DAOFactory.MapDAO.LoadById(149) != null)
+                if (Act4Maps == null)
                 {
-                    Logger.Log.Info("[ARENA] Family Arena Map Loaded");
-                    Act4ShipDemon = GenerateMapInstance(149, MapInstanceType.ArenaInstance, null);
+                    Act4Maps = new List<MapInstance>();
                 }
-                foreach (Map m in _maps.Where(s => s.MapTypes.Any(o => o.MapTypeId == (short)MapTypeEnum.Act4)))
+                foreach (Map m in _maps.Where(s => s.MapTypes.Any(o => o.MapTypeId == (short)MapTypeEnum.Act4 || o.MapTypeId == (short)MapTypeEnum.Act42)))
                 {
-                    GenerateMapInstance(m.MapId, MapInstanceType.Act4Instance, null);
+                    Act4Maps.Add(GenerateMapInstance(m.MapId, MapInstanceType.Act4Instance, null));
                 }
+
+                foreach (MapInstance m in Act4Maps)
+                {
+                    foreach (Portal portal in m.Portals)
+                    {
+                        MapInstance mapInstance = Act4Maps.FirstOrDefault(s => s.Map.MapId == portal.DestinationMapId);
+                        if (mapInstance != null)
+                        {
+                            portal.DestinationMapInstanceId = mapInstance.MapInstanceId;
+                        }
+                        else
+                        {
+                            m.Portals.RemoveAll(s => s.DestinationMapId == portal.DestinationMapId);
+                            Logger.Log.Error($"Could not find Act4Map with Id {portal.DestinationMapId}");
+                        }
+                    }
+                }
+                Act4RaidStart = DateTime.Now;
+                Act4AngelStat = new Act4Stat();
+                Act4DemonStat = new Act4Stat();
+                Logger.Log.Info($"[ACT4] Initialized");
                 LoadScriptedInstances();
             }
             catch (Exception ex)
@@ -1571,7 +1606,6 @@ namespace OpenNos.GameObject
 
         private void Act4Process()
         {
-            /*
             MapInstance angelMapInstance = GetMapInstance(GetBaseMapInstanceIdByMapId(132));
             MapInstance demonMapInstance = GetMapInstance(GetBaseMapInstanceIdByMapId(133));
 
@@ -1579,15 +1613,15 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            /*
+
             void SummonMukraju(MapInstance instance, byte faction)
             {
                 MapMonster monster = new MapMonster
                 {
                     MonsterVNum = 556,
-                    MapY = faction == 1 ? (short)92 : (short)95,
-                    MapX = faction == 1 ? (short)114 : (short)20,
-                    MapId = (short)(131 + faction),
+                    MapY = faction == 1 ? (short) 92 : (short) 95,
+                    MapX = faction == 1 ? (short) 114 : (short) 20,
+                    MapId = (short) (131 + faction),
                     IsMoving = true,
                     MapMonsterId = instance.GetNextMonsterId(),
                     ShouldRespawn = false
@@ -1597,24 +1631,12 @@ namespace OpenNos.GameObject
                 instance.Broadcast(monster.GenerateIn());
             }
 
-            int CreateRaid(byte faction)
+            Act4RaidType CreateRaid(FactionType faction)
             {
-                Act4RaidType raidType = Act4RaidType.Morcos;
-                int rng = RandomNumber(1, 5);
-                switch (rng)
-                {
-                    case 2:
-                        raidType = Act4RaidType.Hatus;
-                        break;
-                    case 3:
-                        raidType = Act4RaidType.Calvina;
-                        break;
-                    case 4:
-                        raidType = Act4RaidType.Berios;
-                        break;
-                }
-                Event.Act4Raid.GenerateRaid(raidType, faction);
-                return rng;
+                IEnumerable<MapInstance> maps = Instance.GetMapInstancesByMapInstanceType(MapInstanceType.Act4Instance);
+                Act4RaidType raid = (Act4RaidType) random.Value.Next(0, 5);
+                //MapInstance middleAct4Map = maps?.FirstOrDefault(s => s.Map.MapId == );
+                return raid;
             }
 
             if (Act4AngelStat.Percentage > 10000)
@@ -1630,18 +1652,18 @@ namespace OpenNos.GameObject
                 Act4AngelStat.Mode = 3;
                 Act4AngelStat.TotalTime = 3600;
 
-                switch (CreateRaid(1))
+                switch (CreateRaid(FactionType.Angel))
                 {
-                    case 1:
+                    case Act4RaidType.Morcos:
                         Act4AngelStat.IsMorcos = true;
                         break;
-                    case 2:
+                    case Act4RaidType.Hatus:
                         Act4AngelStat.IsHatus = true;
                         break;
-                    case 3:
+                    case Act4RaidType.Calvina:
                         Act4AngelStat.IsCalvina = true;
                         break;
-                    case 4:
+                    case Act4RaidType.Berios:
                         Act4AngelStat.IsBerios = true;
                         break;
                 }
@@ -1660,26 +1682,25 @@ namespace OpenNos.GameObject
                 Act4DemonStat.Mode = 3;
                 Act4DemonStat.TotalTime = 3600;
 
-                switch (CreateRaid(2))
+                switch (CreateRaid(FactionType.Demon))
                 {
-                    case 1:
-                        Act4DemonStat.IsMorcos = true;
+                    case Act4RaidType.Morcos:
+                        Act4AngelStat.IsMorcos = true;
                         break;
-                    case 2:
-                        Act4DemonStat.IsHatus = true;
+                    case Act4RaidType.Hatus:
+                        Act4AngelStat.IsHatus = true;
                         break;
-                    case 3:
-                        Act4DemonStat.IsCalvina = true;
+                    case Act4RaidType.Calvina:
+                        Act4AngelStat.IsCalvina = true;
                         break;
-                    case 4:
-                        Act4DemonStat.IsBerios = true;
+                    case Act4RaidType.Berios:
+                        Act4AngelStat.IsBerios = true;
                         break;
                 }
             }
 
-            Parallel.ForEach(Sessions.Where(s => s.Character != null && s.Character.MapInstance.Map.MapTypes.Any(o => o.MapTypeId == (short) MapTypeEnum.Act4)),
+            Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.Character.MapInstance.Map.MapTypes.Any(o => o.MapTypeId == (short) MapTypeEnum.Act4)),
                 sess => sess.SendPacket(sess.Character.GenerateFc()));
-            */
         }
 
         private void LoadBazaar()

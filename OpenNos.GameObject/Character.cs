@@ -4383,14 +4383,15 @@ namespace OpenNos.GameObject
 
         public void ChangeChannel(string ip, short port, byte mode)
         {
-            Session.SendPacket(new MzPacket { Ip = ip, Port = port, Slot = Session.Character.Slot });
+            Logger.Log.Info($"ChangeChannel : ip = {ip} port {port}");
+            Session.SendPacket($"mz {ip} {port} {Session.Character.Slot}");
             Session.SendPacket($"it {mode}");
 
             Session.IsDisposing = true;
 
             CommunicationServiceClient.Instance.RegisterInternalAccountLogin(Session.Account.AccountId, Session.SessionId);
 
-            Save();
+            Session.Character.Save();
             Session.Disconnect();
         }
 
@@ -4407,27 +4408,27 @@ namespace OpenNos.GameObject
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("ACT4_CHANNEL_OFFLINE")));
                 return false;
             }
-            switch (Session.Character.Faction)
+            if (ServerManager.Instance.IpAddress != act4ChannelInfo.EndPointIp || ServerManager.Instance.Port != act4ChannelInfo.EndPointPort)
             {
-                case FactionType.Angel:
-                    Session.Character.MapId = 130;
-                    Session.Character.MapX = 12;
-                    Session.Character.MapY = 40;
-                    break;
-                case FactionType.Demon:
-                    Session.Character.MapId = 131;
-                    Session.Character.MapX = 12;
-                    Session.Character.MapY = 40;
-                    break;
-            }
-            if (ServerManager.Instance.IpAddress != act4ChannelInfo.EndPointIp && ServerManager.Instance.Port != act4ChannelInfo.EndPointPort)
-            {
+                switch (Session.Character.Faction)
+                {
+                    case FactionType.Angel:
+                        Session.Character.MapId = 130;
+                        Session.Character.MapX = 12;
+                        Session.Character.MapY = 40;
+                        break;
+                    case FactionType.Demon:
+                        Session.Character.MapId = 131;
+                        Session.Character.MapX = 12;
+                        Session.Character.MapY = 40;
+                        break;
+                }
                 ChangeChannel(act4ChannelInfo.EndPointIp, act4ChannelInfo.EndPointPort, 1);
             }
             else
             {
-                Session.SendPacket("it 3");
-                MapInstance act4Map = ServerManager.Instance.GetMapInstancesByMapInstanceType(MapInstanceType.Act4Instance)?.FirstOrDefault(s => s.Map.MapId == Session.Character.MapId);
+                Session.SendPacket("it 1");
+                MapInstance act4Map = ServerManager.Instance.Act4Maps.FirstOrDefault(s => s.Map.MapId == Session.Character.MapId);
                 if (act4Map == null)
                 {
                     return false;

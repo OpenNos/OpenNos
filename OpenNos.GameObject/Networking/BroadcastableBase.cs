@@ -139,6 +139,7 @@ namespace OpenNos.GameObject
             {
                 session.CurrentMapInstance.IsSleeping = false;
             }
+            Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
         }
 
         public void UnregisterSession(long characterId)
@@ -152,7 +153,7 @@ namespace OpenNos.GameObject
             {
                 session.CurrentMapInstance.IsSleeping = true;
             }
-            Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count());
+            Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
             LastUnregister = DateTime.Now;
         }
 

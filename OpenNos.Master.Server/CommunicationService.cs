@@ -20,6 +20,7 @@ using OpenNos.Domain;
 using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -132,8 +133,18 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-
-            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(c => !c.AccountId.Equals(accountId));
+            if (MSManager.Instance.ConnectedAccounts.Any(s => s.AccountId.Equals(accountId) && s.CanSwitchChannel))
+            {
+                return;
+            }
+            lock (MSManager.Instance.ConnectedAccounts)
+            {
+                AccountConnection bite = MSManager.Instance.ConnectedAccounts.FirstOrDefault(s => s.AccountId.Equals(accountId));
+                if (bite != null)
+                {
+                    MSManager.Instance.ConnectedAccounts.TryTake(out bite);
+                }
+            }
         }
 
         public void DisconnectCharacter(Guid worldId, long characterId)
@@ -148,6 +159,10 @@ namespace OpenNos.Master.Server
                 foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(account.ConnectedWorld.WorldGroup)))
                 {
                     world.ServiceClient.GetClientProxy<ICommunicationClient>().CharacterDisconnected(characterId);
+                }
+                if (account.CanSwitchChannel)
+                {
+                    continue;
                 }
                 account.CharacterId = 0;
                 account.ConnectedWorld = null;

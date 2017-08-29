@@ -629,7 +629,7 @@ namespace OpenNos.GameObject
                             Session.SendPacket("it 3");
                             SerializableWorldServer connection = CommunicationServiceClient.Instance.GetPreviousChannelByAccountId(Session.Account.AccountId);
 
-                            if (connection == null)
+                            if (connection == null || connection.EndPointIp.Equals(ServerManager.Instance.IpAddress) && connection.EndPointPort.Equals(ServerManager.Instance.Port))
                             {
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                                 return;
