@@ -1699,8 +1699,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.Character.MapInstance.Map.MapTypes.Any(o => o.MapTypeId == (short) MapTypeEnum.Act4)),
-                sess => sess.SendPacket(sess.Character.GenerateFc()));
+            Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance), sess => sess.SendPacket(sess.Character.GenerateFc()));
         }
 
         private void LoadBazaar()

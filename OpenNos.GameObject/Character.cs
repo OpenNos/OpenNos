@@ -413,6 +413,7 @@ namespace OpenNos.GameObject
                    $" {Convert.ToByte(ServerManager.Instance.Act4DemonStat.IsMorcos)} {Convert.ToByte(ServerManager.Instance.Act4DemonStat.IsHatus)} {Convert.ToByte(ServerManager.Instance.Act4DemonStat.IsCalvina)} " +
                    $"{Convert.ToByte(ServerManager.Instance.Act4DemonStat.IsBerios)} 0";
             //return $"fc {Faction} 0 69 0 0 0 1 1 1 1 0 34 0 0 0 1 1 1 1 0";
+            // "fc 1 3729 0 3 976 3600 0 0 0 0 0 93 0 0 0 0 0 0 0 0"
         }
 
         public string GenerateDG()

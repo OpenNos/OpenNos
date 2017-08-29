@@ -137,14 +137,7 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-            lock (MSManager.Instance.ConnectedAccounts)
-            {
-                AccountConnection bite = MSManager.Instance.ConnectedAccounts.FirstOrDefault(s => s.AccountId.Equals(accountId));
-                if (bite != null)
-                {
-                    MSManager.Instance.ConnectedAccounts.TryTake(out bite);
-                }
-            }
+            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(s => s.AccountId != accountId);
         }
 
         public void DisconnectCharacter(Guid worldId, long characterId)
