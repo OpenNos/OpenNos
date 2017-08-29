@@ -214,7 +214,7 @@ namespace OpenNos.Domain
             WaterIncreased = 21,
             WaterDecreased = 22,
             LightIncreased = 31,
-            Light5Decreased = 32,
+            LightDecreased = 32,
             DarkIncreased = 41,
             DarkDecreased = 42,
             AllIncreased = 51,

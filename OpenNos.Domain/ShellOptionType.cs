@@ -150,7 +150,7 @@ namespace OpenNos.Domain
         ChampionPvpIgnoreAttackDark = 92,
         AbsorbDamagePercentageA = 93,
         AbsorbDamagePercentageB = 94,
-        AbsormDamagePercentageC = 95,
+        AbsorbDamagePercentageC = 95,
         IncreaseEvasiveness = 96
     }
 }
