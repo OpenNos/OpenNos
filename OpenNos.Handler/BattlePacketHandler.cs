@@ -281,84 +281,119 @@ namespace OpenNos.Handler
                 bool isAlive = target.Character.Hp > 0;
                 if (!isAlive)
                 {
-                    if (target?.CurrentMapInstance?.Map?.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) == true)
+                    switch (target?.CurrentMapInstance?.MapInstanceType)
                     {
-                        hitRequest.Session.Character.Act4Kill += 1;
-                        target.Character.Act4Dead += 1;
-                        target.Character.GetAct4Points(-1);
-                        if (target.Character.Level + 10 >= hitRequest.Session.Character.Level && hitRequest.Session.Character.Level <= target.Character.Level - 10)
-                        {
-                            hitRequest.Session.Character.GetAct4Points(2);
-                        }
-                        if (target.Character.Reput < 50000)
-                        {
-                            target.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), 0), 11));
-                        }
-                        else
-                        {
-                            target.Character.Reput -= target.Character.Level * 50;
-                            hitRequest.Session.Character.Reput += target.Character.Level * 50;
-                            hitRequest.Session.SendPacket(hitRequest.Session.Character.GenerateLev());
-                            target.SendPacket(target.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), (short)(target.Character.Level * 50)), 11));
-                        }
-                        target.SendPacket(target.Character.GenerateFd());
-                        List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
-                        target.Character.DisableBuffs(bufftodisable);
-                        target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                        target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                        target.SendPacket(target.Character.GenerateSay(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 11));
-                        target.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 0));
-                        Observable.Timer(TimeSpan.FromMilliseconds(30000)).Subscribe(o =>
-                        {
-                            target.Character.Hp = (int)target.Character.HPLoad();
-                            target.Character.Mp = (int)target.Character.MPLoad();
-                            short x = (short)(39 + ServerManager.Instance.RandomNumber(-2, 3));
-                            short y = (short)(42 + ServerManager.Instance.RandomNumber(-2, 3));
-                            ServerManager.Instance.ChangeMap(target.Character.CharacterId, 130, x, y);
-                            target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateTp());
-                            target.CurrentMapInstance?.Broadcast(target.Character.GenerateRevive());
-                            target.SendPacket(target.Character.GenerateStat());
-                        });
-                    }
-                    else if (target?.CurrentMapInstance?.MapInstanceType == MapInstanceType.IceBreakerInstance)
-                    {
-                        if (IceBreaker.AlreadyFrozenPlayers.Contains(target))
-                        {
-                            IceBreaker.AlreadyFrozenPlayers.Remove(target);
-                            target?.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_OUT"), target?.Character?.Name), 0));
-                            target.Character.Hp = 1;
-                            target.Character.Mp = 1;
-                            var respawn = target?.Character?.Respawn;
-                            ServerManager.Instance.ChangeMap(target.Character.CharacterId, respawn.DefaultMapId);
-                        }
-                        else
-                        {
-                            IceBreaker.FrozenPlayers.Add(target);
-                            target?.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_FROZEN"), target?.Character?.Name), 0));
-                            Task.Run(() =>
+                        case MapInstanceType.Act4Instance:
+                            if (ServerManager.Instance.Act4DemonStat.Mode == 0 && ServerManager.Instance.Act4AngelStat.Mode == 0)
+                            {
+                                switch (Session.Character.Faction)
+                                {
+                                    case FactionType.Angel:
+                                        ServerManager.Instance.Act4AngelStat.Percentage += 100;
+                                        break;
+                                    case FactionType.Demon:
+                                        ServerManager.Instance.Act4DemonStat.Percentage += 100;
+                                        break;
+                                }
+                            }
+                            if (hitRequest.Session.IpAddress != target.IpAddress)
+                            {
+                                hitRequest.Session.Character.Act4Kill += 1;
+                                target.Character.Act4Dead += 1;
+                                target.Character.GetAct4Points(-1);
+                                if (target.Character.Level + 10 >= hitRequest.Session.Character.Level && hitRequest.Session.Character.Level <= target.Character.Level - 10)
+                                {
+                                    hitRequest.Session.Character.GetAct4Points(2);
+                                }
+                                if (target.Character.Reput < 50000)
+                                {
+                                    target.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), 0), 11));
+                                }
+                                else
+                                {
+                                    target.Character.Reput -= target.Character.Level * 50;
+                                    hitRequest.Session.Character.Reput += target.Character.Level * 50;
+                                    hitRequest.Session.SendPacket(hitRequest.Session.Character.GenerateLev());
+                                    target.SendPacket(target.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), (short) (target.Character.Level * 50)), 11));
+                                }
+                            }
+                            foreach (ClientSession sess in ServerManager.Instance.Sessions.Where(s => s.HasSelectedCharacter && s.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance))
+                            {
+                                if (sess.Character.Faction == Session.Character.Faction)
+                                {
+                                    sess.SendPacket(sess.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey($"ACT4_PVP_KILL{target.Character.Faction}"), Session.Character.Name), 12));
+                                }
+                                else if (sess.Character.Faction == target.Character.Faction)
+                                {
+                                    sess.SendPacket(sess.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey($"ACT4_PVP_DEATH{target.Character.Faction}"), target.Character.Name), 11));
+                                }
+                            }
+                            target.SendPacket(target.Character.GenerateFd());
+                            List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
+                            target.Character.DisableBuffs(bufftodisable);
+                            target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                            target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                            target.SendPacket(target.Character.GenerateSay(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 11));
+                            target.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 0));
+                            Observable.Timer(TimeSpan.FromMilliseconds(2000)).Subscribe(o =>
+                            {
+                                target.CurrentMapInstance?.Broadcast(target, $"c_mode 1 {target.Character.CharacterId} 1564 0 0 0");
+                                target.CurrentMapInstance?.Broadcast(target.Character.GenerateRevive());
+                            });
+                            Observable.Timer(TimeSpan.FromMilliseconds(30000)).Subscribe(o =>
                             {
                                 target.Character.Hp = (int)target.Character.HPLoad();
                                 target.Character.Mp = (int)target.Character.MPLoad();
-                                target?.SendPacket(target?.Character?.GenerateStat());
-                                target.Character.NoMove = true;
-                                target.Character.NoAttack = true;
-                                target?.SendPacket(target?.Character?.GenerateCond());
-                                while (IceBreaker.FrozenPlayers.Contains(target))
+                                short x = (short)(39 + ServerManager.Instance.RandomNumber(-2, 3));
+                                short y = (short)(42 + ServerManager.Instance.RandomNumber(-2, 3));
+                                MapInstance citadel = ServerManager.Instance.Act4Maps.FirstOrDefault(s => s.Map.MapId == (target.Character.Faction == FactionType.Angel ? 130 : 131));
+                                if (citadel != null)
                                 {
-                                    target?.CurrentMapInstance?.Broadcast(target?.Character?.GenerateEff(35));
-                                    Thread.Sleep(1000);
+                                    ServerManager.Instance.ChangeMapInstance(target.Character.CharacterId, citadel.MapInstanceId, x, y);
                                 }
+                                target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateTp());
+                                target.CurrentMapInstance?.Broadcast(target.Character.GenerateRevive());
+                                target.SendPacket(target.Character.GenerateStat());
                             });
-                        }
-                    }
-                    else
-                    {
-                        hitRequest.Session.Character.TalentWin += 1;
-                        target.Character.TalentLose += 1;
-                        Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o =>
-                        {
-                            ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
-                        });
+                            break;
+                        case MapInstanceType.IceBreakerInstance:
+                            if (IceBreaker.AlreadyFrozenPlayers.Contains(target))
+                            {
+                                IceBreaker.AlreadyFrozenPlayers.Remove(target);
+                                target?.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_OUT"), target?.Character?.Name), 0));
+                                target.Character.Hp = 1;
+                                target.Character.Mp = 1;
+                                RespawnMapTypeDTO respawn = target?.Character?.Respawn;
+                                ServerManager.Instance.ChangeMap(target.Character.CharacterId, respawn.DefaultMapId);
+                            }
+                            else
+                            {
+                                IceBreaker.FrozenPlayers.Add(target);
+                                target?.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_FROZEN"), target?.Character?.Name), 0));
+                                Task.Run(() =>
+                                {
+                                    target.Character.Hp = (int)target.Character.HPLoad();
+                                    target.Character.Mp = (int)target.Character.MPLoad();
+                                    target?.SendPacket(target?.Character?.GenerateStat());
+                                    target.Character.NoMove = true;
+                                    target.Character.NoAttack = true;
+                                    target?.SendPacket(target?.Character?.GenerateCond());
+                                    while (IceBreaker.FrozenPlayers.Contains(target))
+                                    {
+                                        target?.CurrentMapInstance?.Broadcast(target?.Character?.GenerateEff(35));
+                                        Thread.Sleep(1000);
+                                    }
+                                });
+                            }
+                            break;
+                        default:
+                            hitRequest.Session.Character.TalentWin += 1;
+                            target.Character.TalentLose += 1;
+                            Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o =>
+                            {
+                                ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
+                            });
+                            break;
                     }
                 }
                 switch (hitRequest.TargetHitType)
