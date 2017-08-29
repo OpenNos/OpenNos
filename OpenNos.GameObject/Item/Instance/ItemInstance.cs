@@ -32,6 +32,7 @@ namespace OpenNos.GameObject
         public ItemInstance()
         {
             _random = new Random();
+            Session = ServerManager.Instance.GetSessionByCharacterId(CharacterId);
         }
 
         public ItemInstance(short vNum, byte amount)
