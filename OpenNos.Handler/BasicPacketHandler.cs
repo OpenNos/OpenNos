@@ -1531,22 +1531,6 @@ namespace OpenNos.Handler
                 switch (portal.Type)
                 {
                     case (sbyte) PortalType.MapPortal:
-                        switch (Session.Character.Faction)
-                        {
-                            case FactionType.Angel:
-                                if (portal.DestinationMapId == 131)
-                                {
-                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
-                                }
-                                return;
-                            case FactionType.Demon:
-                                if (portal.DestinationMapId == 130)
-                                {
-
-                                }
-                                return;
-                        }
-                        break;
                     case (sbyte) PortalType.TSNormal:
                     case (sbyte) PortalType.Open:
                     case (sbyte) PortalType.Miniland:
@@ -1605,6 +1589,21 @@ namespace OpenNos.Handler
                             }
                         }
                         break;
+                }
+                switch (Session.Character.Faction)
+                {
+                    case FactionType.Angel:
+                        if (portal.DestinationMapId == 131)
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
+                        }
+                        return;
+                    case FactionType.Demon:
+                        if (portal.DestinationMapId == 130)
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
+                        }
+                        return;
                 }
                 portal.OnTraversalEvents.ForEach(e =>
                 {

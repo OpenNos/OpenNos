@@ -378,12 +378,13 @@ namespace OpenNos.GameObject
                 Owner.Session.SendPacket(item != null ? item.GenerateInventoryAdd()
                     : UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory, slot));
 
-                if (itemdest != null)
+                if (itemdest == null)
                 {
-                    Owner.Session.SendPacket(itemdest.GenerateFStash());
-                    Owner.Family?.InsertFamilyLog(FamilyLogType.WareHouseAdded, Owner.Name, message: $"{itemdest.ItemVNum}|{amount}");
-                    DeleteById(itemdest.Id);
+                    return;
                 }
+                Owner.Session.SendPacket(itemdest.GenerateFStash());
+                Owner.Family?.InsertFamilyLog(FamilyLogType.WareHouseAdded, Owner.Name, message: $"{itemdest.ItemVNum}|{amount}");
+                DeleteById(itemdest.Id);
             }
         }
 
