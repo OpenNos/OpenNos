@@ -1378,8 +1378,8 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    int? Hp = ServerManager.Instance.GetProperty<int?>((long)id, nameof(Character.Hp));
-                    if (Hp == 0)
+                    int? hp = ServerManager.Instance.GetProperty<int?>((long)id, nameof(Character.Hp));
+                    if (hp == 0)
                     {
                         return;
                     }

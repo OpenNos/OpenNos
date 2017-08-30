@@ -684,7 +684,7 @@ namespace OpenNos.GameObject.Helpers
 
         public static List<EquipmentOptionDTO> GenerateShell(int shellType, int shellRarity, int shellLevel)
         {
-            int w = 1;
+            int w;
             List<int> factor;
             int letterMultiplier = 1;
             List<EquipmentOptionDTO> shellOptions = new List<EquipmentOptionDTO>();
@@ -746,6 +746,11 @@ namespace OpenNos.GameObject.Helpers
                     break;
                 default:
                     throw new Exception("Incorrect shellType");
+            }
+
+            if (!ShellType.ContainsKey(w))
+            {
+                return shellOptions;
             }
 
             for (int g = 3; g <= 23; g += 2)

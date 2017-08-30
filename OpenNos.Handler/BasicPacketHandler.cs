@@ -1017,6 +1017,13 @@ namespace OpenNos.Handler
 
                         List<EquipmentOptionDTO> shellOptions = ShellGeneratorHelper.GenerateShell(shellType, shell.Rare, shell.Upgrade);
 
+                        if (!shellOptions.Any())
+                        {
+                            Session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("STOP_SPAWNING_BROKEN_SHELL"), 0));
+                            return;
+                        }
+
                         shell.EquipmentOptions.AddRange(shellOptions);
 
                         Session.Character.Inventory.RemoveItemAmount(pearls.ItemVNum, perlsNeeded);
@@ -1739,6 +1746,8 @@ namespace OpenNos.Handler
                         case MapInstanceType.RaidInstance:
                             break;
                         case MapInstanceType.FamilyRaidInstance:
+                            break;
+                        case MapInstanceType.Act4Instance:
                             break;
                         case MapInstanceType.TalentArenaMapInstance:
                             break;
