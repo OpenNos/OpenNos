@@ -1342,4 +1342,7 @@
   <data name="SUPPORT" xml:space="preserve">
     <value>Support</value>
   </data>
+  <data name="INSTANTBATTLE_NOT_ENOUGH_PLAYERS" xml:space="preserve">
+    <value />
+  </data>
 </root>
