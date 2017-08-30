@@ -51,8 +51,7 @@ namespace OpenNos.Handler
 
         public void Act4Connect(Act4ConnectPacket act4ConnectPacket)
         {
-            ClientSession player = ServerManager.Instance
-                .GetSessionByCharacterName(act4ConnectPacket.Name ?? Session.Character.Name);
+            ClientSession player = ServerManager.Instance.GetSessionByCharacterName(act4ConnectPacket.Name ?? Session.Character.Name);
             if (player == null)
             {
                 return;
@@ -61,9 +60,7 @@ namespace OpenNos.Handler
             {
                 case 0:
                     ServerManager.Instance.ChangeMap(player.Character.CharacterId, 145, 51, 41);
-                    player.SendPacket(
-                        UserInterfaceHelper.Instance.GenerateInfo(
-                            "You need to be part of a faction to join Act 4"));
+                    player.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("ACT4_NEED_FACTION"));
                     return;
                 case FactionType.Angel:
                     player.Character.MapId = 130;

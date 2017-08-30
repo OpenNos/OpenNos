@@ -48,7 +48,7 @@ namespace OpenNos.GameObject.Event
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_STARTED"), 1));
             ServerManager.Instance.Sessions.Where(s => s.Character != null && !s.Character.IsWaitingForEvent).ToList().ForEach(s => s.SendPacket("esf"));
             ServerManager.Instance.EventInWaiting = false;
-            IEnumerable<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.IsWaitingForEvent && s.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance);
+            IEnumerable<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.IsWaitingForEvent && s.CurrentMapInstance?.MapInstanceType == MapInstanceType.BaseMapInstance);
             List<Tuple<MapInstance, byte>> maps = new List<Tuple<MapInstance, byte>>();
             MapInstance map = null;
             int i = -1;

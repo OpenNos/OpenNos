@@ -2090,12 +2090,8 @@ namespace OpenNos.Handler
                 return;
             }
 
-            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4))
-            {
-                Session.Character.ConnectAct4();
-            }
-
             Session.CurrentMapInstance = Session.Character.MapInstance;
+
             if (ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType == "Connection") < 2)
             {
                 Session.SendPacket("scene 40");
@@ -2225,6 +2221,10 @@ namespace OpenNos.Handler
             {
                 Session.Character.AddStaticBuff(sb);
             }
+            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4 || m.MapTypeId == (short)MapTypeEnum.Act42))
+            {
+                Session.Character.ConnectAct4();
+            }
         }
 
         /// <summary>
@@ -2244,14 +2244,14 @@ namespace OpenNos.Handler
             }
             if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(1) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
             {
-                if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || Session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance)
                 {
                     Session.Character.MapX = walkPacket.XCoordinate;
                     Session.Character.MapY = walkPacket.YCoordinate;
                 }
                 Session.Character.PositionX = walkPacket.XCoordinate;
                 Session.Character.PositionY = walkPacket.YCoordinate;
-                Session.Character.BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
+                Session.Character.BrushFire = BestFirstSearch.LoadBrushFire(new GridPos
                 {
                     X = Session.Character.PositionX,
                     Y = Session.Character.PositionY

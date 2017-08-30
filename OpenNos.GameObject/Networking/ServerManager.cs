@@ -685,7 +685,7 @@ namespace OpenNos.GameObject
                     EventHelper.Instance.RunEvent(e.Item1, session);
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
                 session.Character.IsChangingMapInstance = false;
@@ -1227,7 +1227,7 @@ namespace OpenNos.GameObject
                 }
                 foreach (Map m in _maps.Where(s => s.MapTypes.Any(o => o.MapTypeId == (short)MapTypeEnum.Act4 || o.MapTypeId == (short)MapTypeEnum.Act42)))
                 {
-                    MapInstance act4Map = GenerateMapInstance(m.MapId, MapInstanceType.Act4Instance, null);
+                    MapInstance act4Map = GenerateMapInstance(m.MapId, MapInstanceType.Act4Instance, new InstanceBag());
                     act4Map.IsPVP = true;
                     Act4Maps.Add(act4Map);
                 }
