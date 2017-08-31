@@ -4026,8 +4026,9 @@ namespace OpenNos.GameObject
             }
 
 
-            int shellSlHpMp = SpInstance.SlHP + Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP, false)[0] +
-                              Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
+            int shellSlHpMp = SpInstance.SlHP +
+                              Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte) AdditionalTypes.SPSL.HPMP) +
+                              Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte) AdditionalTypes.SPSL.All);
 
             int point = CharacterHelper.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
 

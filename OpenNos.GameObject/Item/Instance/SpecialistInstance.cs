@@ -124,18 +124,30 @@ namespace OpenNos.GameObject
         {
             int freepoint = CharacterHelper.SPPoint(SpLevel, Upgrade) - SlDamage - SlHP - SlElement - SlDefence;
 
-            int slHit = CharacterHelper.SlPoint(SlDamage, 0)
-                        + Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.Attack) +
-                        Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.All);
-            int slDefence = CharacterHelper.SlPoint(SlDamage, 0)
-                            + Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense) +
-                            Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-            int slElement = CharacterHelper.SlPoint(SlDamage, 0)
-                            + Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Element) +
-                            Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-            int slHp = CharacterHelper.SlPoint(SlDamage, 0)
-                            + Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
-                            Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+            int slHit = CharacterHelper.SlPoint(SlDamage, 0);
+            int slDefence = CharacterHelper.SlPoint(SlDefence, 0);
+            int slElement = CharacterHelper.SlPoint(SlElement, 0);
+            int slHp = CharacterHelper.SlPoint(SlHP, 0);
+
+            if (CharacterSession != null)
+            {
+                slHit += CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack) +
+                         CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+                slDefence += CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense) +
+                             CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+                slElement += CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Element) +
+                             CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+                slHp += CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
+                        CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+                slHit = slHit > 100 ? 100 : slHit;
+                slDefence = slDefence > 100 ? 100 : slDefence;
+                slElement = slElement > 100 ? 100 : slElement;
+                slHp = slHp > 100 ? 100 : slHp;
+            }
 
             string skill = string.Empty;
             List<CharacterSkill> skillsSp = ServerManager.Instance.GetAllSkill().Where(ski => ski.Class == Item.Morph + 31 && ski.LevelMinimum <= SpLevel).Select(ski => new CharacterSkill
@@ -313,16 +325,16 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if (Session.Character.Gold < goldprice[upmode - 1])
+            if (CharacterSession.Character.Gold < goldprice[upmode - 1])
             {
                 return;
             }
-            if (Session.Character.Inventory.CountItem(stonevnum) < stoneprice[upmode - 1])
+            if (CharacterSession.Character.Inventory.CountItem(stonevnum) < stoneprice[upmode - 1])
             {
                 return;
             }
 
-            SpecialistInstance specialist = Session.Character.Inventory.LoadByItemInstance<SpecialistInstance>(Id);
+            SpecialistInstance specialist = CharacterSession.Character.Inventory.LoadByItemInstance<SpecialistInstance>(Id);
 
             int rnd = ServerManager.Instance.RandomNumber();
             if (rnd < upsuccess[upmode - 1])
@@ -337,68 +349,68 @@ namespace OpenNos.GameObject
                     count = (byte)ServerManager.Instance.RandomNumber(3, 6);
                 }
 
-                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
+                CharacterSession.CurrentMapInstance.Broadcast(CharacterSession.Character.GenerateEff(3005), CharacterSession.Character.MapX, CharacterSession.Character.MapY);
 
                 if (type < 3)
                 {
                     specialist.SpDamage += count;
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 12));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 0));
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 12));
+                    CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 0));
                 }
                 else if (type < 6)
                 {
                     specialist.SpDefence += count;
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 12));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 0));
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 12));
+                    CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 0));
                 }
                 else if (type < 9)
                 {
                     specialist.SpElement += count;
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 12));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 0));
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 12));
+                    CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 0));
                 }
                 else if (type < 12)
                 {
                     specialist.SpHP += count;
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 12));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 0));
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 12));
+                    CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 0));
                 }
                 else if (type == 12)
                 {
                     specialist.SpFire += count;
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 12));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 0));
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 12));
+                    CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 0));
                 }
                 else if (type == 13)
                 {
                     specialist.SpWater += count;
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 12));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 0));
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 12));
+                    CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 0));
                 }
                 else if (type == 14)
                 {
                     specialist.SpLight += count;
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 12));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 0));
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 12));
+                    CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 0));
                 }
                 else if (type == 15)
                 {
                     specialist.SpDark += count;
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 12));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 0));
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 12));
+                    CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 0));
                 }
                 specialist.SpStoneUpgrade++;
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 11));
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 0));
+                CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 11));
+                CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 0));
             }
-            Session.SendPacket(specialist.GenerateInventoryAdd());
-            Session.Character.Gold -= goldprice[upmode - 1];
-            Session.SendPacket(Session.Character.GenerateGold());
-            Session.Character.Inventory.RemoveItemAmount(stonevnum, stoneprice[upmode - 1]);
-            Session.SendPacket("shop_end 1");
+            CharacterSession.SendPacket(specialist.GenerateInventoryAdd());
+            CharacterSession.Character.Gold -= goldprice[upmode - 1];
+            CharacterSession.SendPacket(CharacterSession.Character.GenerateGold());
+            CharacterSession.Character.Inventory.RemoveItemAmount(stonevnum, stoneprice[upmode - 1]);
+            CharacterSession.SendPacket("shop_end 1");
         }
 
         public void UpgradeSp(UpgradeProtection protect)
@@ -426,23 +438,23 @@ namespace OpenNos.GameObject
             const short blueScrollVnum = 1363;
             const short redScrollVnum = 1364;
 
-            if (!Session.HasCurrentMapInstance)
+            if (!CharacterSession.HasCurrentMapInstance)
             {
                 return;
             }
-            if (Session.Character.Inventory.CountItem(fullmoonVnum) < fullmoon[Upgrade])
+            if (CharacterSession.Character.Inventory.CountItem(fullmoonVnum) < fullmoon[Upgrade])
             {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(fullmoonVnum).Name, fullmoon[Upgrade])), 10));
+                CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(fullmoonVnum).Name, fullmoon[Upgrade])), 10));
                 return;
             }
-            if (Session.Character.Inventory.CountItem(featherVnum) < feather[Upgrade])
+            if (CharacterSession.Character.Inventory.CountItem(featherVnum) < feather[Upgrade])
             {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(featherVnum).Name, feather[Upgrade])), 10));
+                CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(featherVnum).Name, feather[Upgrade])), 10));
                 return;
             }
-            if (Session.Character.Gold < goldprice[Upgrade])
+            if (CharacterSession.Character.Gold < goldprice[Upgrade])
             {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                 return;
             }
 
@@ -452,44 +464,44 @@ namespace OpenNos.GameObject
                 {
                     if (Item.Morph <= 16)
                     {
-                        if (Session.Character.Inventory.CountItem(greenSoulVnum) < soul[Upgrade])
+                        if (CharacterSession.Character.Inventory.CountItem(greenSoulVnum) < soul[Upgrade])
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(greenSoulVnum).Name, soul[Upgrade])), 10));
+                            CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(greenSoulVnum).Name, soul[Upgrade])), 10));
                             return;
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
-                            if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
+                            if (CharacterSession.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(blueScrollVnum).Name, 1)), 10));
+                                CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(blueScrollVnum).Name, 1)), 10));
                                 return;
                             }
-                            Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
-                            Session.SendPacket("shop_end 2");
+                            CharacterSession.Character.Inventory.RemoveItemAmount(blueScrollVnum);
+                            CharacterSession.SendPacket("shop_end 2");
                         }
                     }
                     else
                     {
-                        if (Session.Character.Inventory.CountItem(dragonSkinVnum) < soul[Upgrade])
+                        if (CharacterSession.Character.Inventory.CountItem(dragonSkinVnum) < soul[Upgrade])
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(dragonSkinVnum).Name, soul[Upgrade])), 10));
+                            CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(dragonSkinVnum).Name, soul[Upgrade])), 10));
                             return;
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
-                            if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
+                            if (CharacterSession.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(blueScrollVnum).Name, 1)), 10));
+                                CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(blueScrollVnum).Name, 1)), 10));
                                 return;
                             }
-                            Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
-                            Session.SendPacket("shop_end 2");
+                            CharacterSession.Character.Inventory.RemoveItemAmount(blueScrollVnum);
+                            CharacterSession.SendPacket("shop_end 2");
                         }
                     }
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 21), 11));
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 21), 11));
                     return;
                 }
             }
@@ -499,44 +511,44 @@ namespace OpenNos.GameObject
                 {
                     if (Item.Morph <= 16)
                     {
-                        if (Session.Character.Inventory.CountItem(redSoulVnum) < soul[Upgrade])
+                        if (CharacterSession.Character.Inventory.CountItem(redSoulVnum) < soul[Upgrade])
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(redSoulVnum).Name, soul[Upgrade])), 10));
+                            CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(redSoulVnum).Name, soul[Upgrade])), 10));
                             return;
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
-                            if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
+                            if (CharacterSession.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(blueScrollVnum).Name, 1)), 10));
+                                CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(blueScrollVnum).Name, 1)), 10));
                                 return;
                             }
-                            Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
-                            Session.SendPacket("shop_end 2");
+                            CharacterSession.Character.Inventory.RemoveItemAmount(blueScrollVnum);
+                            CharacterSession.SendPacket("shop_end 2");
                         }
                     }
                     else
                     {
-                        if (Session.Character.Inventory.CountItem(dragonBloodVnum) < soul[Upgrade])
+                        if (CharacterSession.Character.Inventory.CountItem(dragonBloodVnum) < soul[Upgrade])
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(dragonBloodVnum).Name, soul[Upgrade])), 10));
+                            CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(dragonBloodVnum).Name, soul[Upgrade])), 10));
                             return;
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
-                            if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
+                            if (CharacterSession.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(blueScrollVnum).Name, 1)), 10));
+                                CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(blueScrollVnum).Name, 1)), 10));
                                 return;
                             }
-                            Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
-                            Session.SendPacket("shop_end 2");
+                            CharacterSession.Character.Inventory.RemoveItemAmount(blueScrollVnum);
+                            CharacterSession.SendPacket("shop_end 2");
                         }
                     }
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 41), 11));
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 41), 11));
                     return;
                 }
             }
@@ -546,132 +558,111 @@ namespace OpenNos.GameObject
                 {
                     if (Item.Morph <= 16)
                     {
-                        if (Session.Character.Inventory.CountItem(blueSoulVnum) < soul[Upgrade])
+                        if (CharacterSession.Character.Inventory.CountItem(blueSoulVnum) < soul[Upgrade])
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(blueSoulVnum).Name, soul[Upgrade])), 10));
+                            CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(blueSoulVnum).Name, soul[Upgrade])), 10));
                             return;
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
-                            if (Session.Character.Inventory.CountItem(redScrollVnum) < 1)
+                            if (CharacterSession.Character.Inventory.CountItem(redScrollVnum) < 1)
                             {
                                 return;
                             }
-                            Session.Character.Inventory.RemoveItemAmount(redScrollVnum);
-                            Session.SendPacket("shop_end 2");
+                            CharacterSession.Character.Inventory.RemoveItemAmount(redScrollVnum);
+                            CharacterSession.SendPacket("shop_end 2");
                         }
                     }
                     else
                     {
-                        if (Session.Character.Inventory.CountItem(dragonHeartVnum) < soul[Upgrade])
+                        if (CharacterSession.Character.Inventory.CountItem(dragonHeartVnum) < soul[Upgrade])
                         {
                             return;
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
-                            if (Session.Character.Inventory.CountItem(redScrollVnum) < 1)
+                            if (CharacterSession.Character.Inventory.CountItem(redScrollVnum) < 1)
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(redScrollVnum).Name, 1)), 10));
+                                CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(redScrollVnum).Name, 1)), 10));
                                 return;
                             }
-                            Session.Character.Inventory.RemoveItemAmount(redScrollVnum);
-                            Session.SendPacket("shop_end 2");
+                            CharacterSession.Character.Inventory.RemoveItemAmount(redScrollVnum);
+                            CharacterSession.SendPacket("shop_end 2");
                         }
                     }
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 51), 11));
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 51), 11));
                     return;
                 }
             }
 
-            Session.Character.Gold -= goldprice[Upgrade];
+            CharacterSession.Character.Gold -= goldprice[Upgrade];
 
             // remove feather and fullmoon before upgrading
-            Session.Character.Inventory.RemoveItemAmount(featherVnum, feather[Upgrade]);
-            Session.Character.Inventory.RemoveItemAmount(fullmoonVnum, fullmoon[Upgrade]);
+            CharacterSession.Character.Inventory.RemoveItemAmount(featherVnum, feather[Upgrade]);
+            CharacterSession.Character.Inventory.RemoveItemAmount(fullmoonVnum, fullmoon[Upgrade]);
 
-            WearableInstance wearable = Session.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
-            ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(Id);
+            WearableInstance wearable = CharacterSession.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
+            ItemInstance inventory = CharacterSession.Character.Inventory.GetItemInstanceById(Id);
             int rnd = ServerManager.Instance.RandomNumber();
             if (rnd < destroy[Upgrade])
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 11));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 0));
+                    CharacterSession.CurrentMapInstance.Broadcast(CharacterSession.Character.GenerateEff(3004), CharacterSession.Character.MapX, CharacterSession.Character.MapY);
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 11));
+                    CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 0));
                 }
                 else
                 {
                     wearable.Rare = -2;
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 11));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 0));
-                    Session.SendPacket(wearable.GenerateInventoryAdd());
+                    CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 11));
+                    CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 0));
+                    CharacterSession.SendPacket(wearable.GenerateInventoryAdd());
                 }
             }
             else if (rnd < upfail[Upgrade])
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
+                    CharacterSession.CurrentMapInstance.Broadcast(CharacterSession.Character.GenerateEff(3004), CharacterSession.Character.MapX, CharacterSession.Character.MapY);
                 }
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 11));
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 0));
+                CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 11));
+                CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 0));
             }
             else
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
+                    CharacterSession.CurrentMapInstance.Broadcast(CharacterSession.Character.GenerateEff(3004), CharacterSession.Character.MapX, CharacterSession.Character.MapY);
                 }
-                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
+                CharacterSession.CurrentMapInstance.Broadcast(CharacterSession.Character.GenerateEff(3005), CharacterSession.Character.MapX, CharacterSession.Character.MapY);
+                CharacterSession.SendPacket(CharacterSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
+                CharacterSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
                 if (Upgrade < 5)
                 {
-                    if (Item.Morph <= 16)
-                    {
-                        Session.Character.Inventory.RemoveItemAmount(greenSoulVnum, soul[Upgrade]);
-                    }
-                    else
-                    {
-                        Session.Character.Inventory.RemoveItemAmount(dragonSkinVnum, soul[Upgrade]);
-                    }
+                    CharacterSession.Character.Inventory.RemoveItemAmount(Item.Morph <= 16 ? greenSoulVnum : dragonSkinVnum, soul[Upgrade]);
                 }
                 else if (Upgrade < 10)
                 {
-                    if (Item.Morph <= 16)
-                    {
-                        Session.Character.Inventory.RemoveItemAmount(redSoulVnum, soul[Upgrade]);
-                    }
-                    else
-                    {
-                        Session.Character.Inventory.RemoveItemAmount(dragonBloodVnum, soul[Upgrade]);
-                    }
+                    CharacterSession.Character.Inventory.RemoveItemAmount(Item.Morph <= 16 ? redSoulVnum : dragonBloodVnum, soul[Upgrade]);
                 }
                 else if (Upgrade < 15)
                 {
-                    if (Item.Morph <= 16)
-                    {
-                        Session.Character.Inventory.RemoveItemAmount(blueSoulVnum, soul[Upgrade]);
-                    }
-                    else
-                    {
-                        Session.Character.Inventory.RemoveItemAmount(dragonHeartVnum, soul[Upgrade]);
-                    }
+                    CharacterSession.Character.Inventory.RemoveItemAmount(Item.Morph <= 16 ? blueSoulVnum : dragonHeartVnum, soul[Upgrade]);
                 }
                 wearable.Upgrade++;
                 if (wearable.Upgrade > 8)
                 {
-                    Session.Character.Family?.InsertFamilyLog(FamilyLogType.ItemUpgraded, Session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
+                    CharacterSession.Character.Family?.InsertFamilyLog(FamilyLogType.ItemUpgraded, CharacterSession.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
                 }
-                Session.SendPacket(wearable.GenerateInventoryAdd());
+                CharacterSession.SendPacket(wearable.GenerateInventoryAdd());
             }
-            Session.SendPacket(Session.Character.GenerateGold());
-            Session.SendPacket(Session.Character.GenerateEq());
-            Session.SendPacket("shop_end 1");
+            CharacterSession.SendPacket(CharacterSession.Character.GenerateGold());
+            CharacterSession.SendPacket(CharacterSession.Character.GenerateEq());
+            CharacterSession.SendPacket("shop_end 1");
         }
 
         #endregion

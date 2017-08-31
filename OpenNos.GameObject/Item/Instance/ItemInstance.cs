@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
         public ItemInstance()
         {
             _random = new Random();
-            Session = ServerManager.Instance.GetSessionByCharacterId(CharacterId);
+            CharacterSession = ServerManager.Instance.GetSessionByCharacterId(CharacterId);
         }
 
         public ItemInstance(short vNum, byte amount)
@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
             Amount = amount;
             Type = Item.Type;
             _random = new Random();
-            Session = ServerManager.Instance.GetSessionByCharacterId(CharacterId);
+            CharacterSession = ServerManager.Instance.GetSessionByCharacterId(CharacterId);
         }
 
         #endregion
@@ -64,7 +64,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public ClientSession Session { get; }
+        public ClientSession CharacterSession { get; set; }
 
 
         #endregion
