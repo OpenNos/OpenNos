@@ -2097,7 +2097,7 @@ namespace OpenNos.GameObject
                     {
                         continue;
                     }
-                    if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                    if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                     {
                         List<long> alreadyGifted = new List<long>();
                         foreach (long charId in monsterToAttack.DamageList.Keys)
@@ -2165,7 +2165,7 @@ namespace OpenNos.GameObject
                     };
                     if (Session.CurrentMapInstance != null)
                     {
-                        if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                        if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42)|| monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                         {
                             List<long> alreadyGifted = new List<long>();
                             foreach (long charId in monsterToAttack.DamageList.Keys)

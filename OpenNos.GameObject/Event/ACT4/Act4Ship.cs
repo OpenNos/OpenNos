@@ -85,13 +85,13 @@ namespace OpenNos.GameObject.Event
                         return;
                     case FactionType.Angel:
                         s.Character.MapId = 130;
-                        s.Character.MapX = 12;
-                        s.Character.MapY = 40;
+                        s.Character.MapX = (short)(12 + ServerManager.Instance.RandomNumber(-2, 3));
+                        s.Character.MapY = (short)(40 + ServerManager.Instance.RandomNumber(-2, 3));
                         break;
                     case FactionType.Demon:
                         s.Character.MapId = 131;
-                        s.Character.MapX = 12;
-                        s.Character.MapY = 40;
+                        s.Character.MapX = (short)(12 + ServerManager.Instance.RandomNumber(-2, 3));
+                        s.Character.MapY = (short)(40 + ServerManager.Instance.RandomNumber(-2, 3));
                         break;
                 }
                 //todo: get act4 channel dynamically
