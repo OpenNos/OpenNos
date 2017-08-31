@@ -129,12 +129,12 @@ namespace OpenNos.Handler
 
                 case 2:
                     isNpcShopItem = true;
-                    if (ServerManager.Instance.GetItem(equipmentInfoPacket.Slot) != null)
+                    if (ServerManager.Instance.GetItem(equipmentInfoPacket.Slot) == null)
                     {
-                        inventory = new WearableInstance(equipmentInfoPacket.Slot, 1);
-                        break;
+                        return;
                     }
-                    return;
+                    inventory = new WearableInstance(equipmentInfoPacket.Slot, 1);
+                    break;
 
                 case 5:
                     if (Session.Character.ExchangeInfo != null)
@@ -850,24 +850,25 @@ namespace OpenNos.Handler
             double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
             if (removePacket.Type == 0)
             {
-                if (removePacket.InventorySlot == (byte)EquipmentType.Sp && Session.Character.UseSp)
+                switch (removePacket.InventorySlot)
                 {
-                    if (Session.Character.IsVehicled)
-                    {
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
+                    case (byte) EquipmentType.Sp when Session.Character.UseSp:
+                        if (Session.Character.IsVehicled)
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
+                            return;
+                        }
+                        if (Session.Character.LastSkillUse.AddSeconds(2) > DateTime.Now)
+                        {
+                            return;
+                        }
+                        Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+                        RemoveSP(inventory.ItemVNum);
+                        break;
+                    case (byte) EquipmentType.Sp when !Session.Character.UseSp && timeSpanSinceLastSpUsage <= Session.Character.SpCooldown:
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                            string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int) Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                         return;
-                    }
-                    if (Session.Character.LastSkillUse.AddSeconds(2) > DateTime.Now)
-                    {
-                        return;
-                    }
-                    Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-                    RemoveSP(inventory.ItemVNum);
-                }
-                else if (removePacket.InventorySlot == (byte)EquipmentType.Sp && !Session.Character.UseSp && timeSpanSinceLastSpUsage <= Session.Character.SpCooldown)
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
-                    return;
                 }
                 Session.Character.EquipmentBCards.RemoveAll(o => o.ItemVNum == inventory.ItemVNum);
             }
@@ -949,19 +950,21 @@ namespace OpenNos.Handler
                     for (short x = 0; x < 44; x++)
                     {
                         InventoryType type = i == 0 ? InventoryType.Specialist : InventoryType.Costume;
-                        if (Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(x, type) == null)
+                        if (Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(x, type) != null)
                         {
-                            if (Session.Character.Inventory.LoadBySlotAndType<ItemInstance>((short)(x + 1), type) != null)
-                            {
-                                Session.Character.Inventory.MoveItem(type, type, (short)(x + 1), 1, x, out ItemInstance inv, out ItemInstance invdest);
-                                if (invdest is WearableInstance wearableInstance)
-                                {
-                                    Session.SendPacket(invdest.GenerateInventoryAdd());
-                                }
-                                Session.Character.DeleteItem(type, (short)(x + 1));
-                                gravity = true;
-                            }
+                            continue;
                         }
+                        if (Session.Character.Inventory.LoadBySlotAndType<ItemInstance>((short) (x + 1), type) == null)
+                        {
+                            continue;
+                        }
+                        Session.Character.Inventory.MoveItem(type, type, (short)(x + 1), 1, x, out ItemInstance inv, out ItemInstance invdest);
+                        if (invdest is WearableInstance wearableInstance)
+                        {
+                            Session.SendPacket(invdest.GenerateInventoryAdd());
+                        }
+                        Session.Character.DeleteItem(type, (short)(x + 1));
+                        gravity = true;
                     }
                     Session.Character.Inventory.Reorder(Session, i == 0 ? InventoryType.Specialist : InventoryType.Costume);
                 }

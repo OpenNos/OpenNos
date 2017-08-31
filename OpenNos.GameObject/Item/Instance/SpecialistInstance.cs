@@ -124,14 +124,18 @@ namespace OpenNos.GameObject
         {
             int freepoint = CharacterHelper.SPPoint(SpLevel, Upgrade) - SlDamage - SlHP - SlElement - SlDefence;
 
-            int slHit = CharacterHelper.SlPoint(SlDamage, 0) + (Session?.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.Attack, false)[0] +
-                                                                Session?.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.All, false)[0] ?? 0);
-            int slDefence = CharacterHelper.SlPoint(SlDefence, 1) + (Session?.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.Defense, false)[0] +
-                                                                     +Session?.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.All, false)[0] ?? 0);
-            int slElement = CharacterHelper.SlPoint(SlElement, 2) + (Session?.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.Element, false)[0] +
-                                                                     +Session?.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.All, false)[0] ?? 0);
-            int slHp = CharacterHelper.SlPoint(SlHP, 3) + (Session?.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.HPMP, false)[0] +
-                                                           Session?.Character.GetStuffBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.All, false)[0] ?? 0);
+            int slHit = CharacterHelper.SlPoint(SlDamage, 0)
+                        + Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.Attack) +
+                        Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.All);
+            int slDefence = CharacterHelper.SlPoint(SlDamage, 0)
+                            + Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense) +
+                            Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+            int slElement = CharacterHelper.SlPoint(SlDamage, 0)
+                            + Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Element) +
+                            Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+            int slHp = CharacterHelper.SlPoint(SlDamage, 0)
+                            + Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
+                            Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
             string skill = string.Empty;
             List<CharacterSkill> skillsSp = ServerManager.Instance.GetAllSkill().Where(ski => ski.Class == Item.Morph + 31 && ski.LevelMinimum <= SpLevel).Select(ski => new CharacterSkill

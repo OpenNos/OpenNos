@@ -3108,7 +3108,7 @@ namespace OpenNos.GameObject
             {
                 totalDamage = ServerManager.Instance.RandomNumber(1, 6);
             }
-
+            
             #endregion
 
             #endregion
@@ -5460,6 +5460,11 @@ namespace OpenNos.GameObject
                 Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level < level).ToList()
                     .ForEach(s => RemoveBuff(s.Card.CardId));
             }
+        }
+
+        public int GetMostValueEquipmentBuff(CardType type, byte subtype)
+        {
+            return EquipmentBCards.Where(s => s.Type == (byte) type && s.SubType.Equals(subtype)).OrderByDescending(s => s.FirstData).FirstOrDefault()?.FirstData ?? 0;
         }
 
         /// <summary>
