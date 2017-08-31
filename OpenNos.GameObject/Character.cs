@@ -3480,23 +3480,33 @@ namespace OpenNos.GameObject
                 // handle specialist
                 if (SpInstance != null)
                 {
-                    int shellSlAttack = SpInstance.SlDamage + Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack, false)[0] +
-                                        Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
-                    int shellSlDefense = SpInstance.SlDefence + Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense, false)[0] +
-                                        Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
-                    int shellSlElement = SpInstance.SlElement + Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Element, false)[0] +
-                                        Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
-                    int shellSlHpMp = SpInstance.SlHP + Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP, false)[0] +
-                                        Session.Character.GetStuffBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All, false)[0];
+                    int slHit = CharacterHelper.SlPoint(SpInstance.SlDamage, 0);
+                    int slDefence = CharacterHelper.SlPoint(SpInstance.SlDefence, 0);
+                    int slElement = CharacterHelper.SlPoint(SpInstance.SlElement, 0);
+                    int slHp = CharacterHelper.SlPoint(SpInstance.SlHP, 0);
 
+                    if (Session != null)
+                    {
+                        slHit += Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack) +
+                                 Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
-                    shellSlAttack = shellSlAttack > 100 ? 100 : shellSlAttack;
-                    shellSlDefense = shellSlDefense > 100 ? 100 : shellSlDefense;
-                    shellSlElement = shellSlElement > 100 ? 100 : shellSlElement;
-                    shellSlHpMp = shellSlHpMp > 100 ? 100 : shellSlHpMp;
+                        slDefence += Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense) +
+                                     Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
-                    MinHit += SpInstance.DamageMinimum + shellSlAttack * 10;
-                    MaxHit += SpInstance.DamageMaximum + shellSlAttack * 10;
+                        slElement += Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Element) +
+                                     Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+                        slHp += Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
+                                Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+                        slHit = slHit > 100 ? 100 : slHit;
+                        slDefence = slDefence > 100 ? 100 : slDefence;
+                        slElement = slElement > 100 ? 100 : slElement;
+                        slHp = slHp > 100 ? 100 : slHp;
+                    }
+
+                    MinHit += SpInstance.DamageMinimum + slHit * 10;
+                    MaxHit += SpInstance.DamageMaximum + slHit * 10;
                     MinDistance += SpInstance.DamageMinimum;
                     MaxDistance += SpInstance.DamageMaximum;
                     HitCriticalRate += SpInstance.CriticalLuckRate;
@@ -3512,11 +3522,11 @@ namespace OpenNos.GameObject
                     LightResistance += SpInstance.Item.LightResistance + SpInstance.SpLight;
                     DarkResistance += SpInstance.Item.DarkResistance + SpInstance.SpDark;
                     ElementRateSP += SpInstance.ElementRate + SpInstance.SpElement;
-                    Defence += SpInstance.CloseDefence + shellSlDefense * 10;
-                    DistanceDefence += SpInstance.DistanceDefence + shellSlDefense * 10;
-                    MagicalDefence += SpInstance.MagicDefence + shellSlDefense * 10;
+                    Defence += SpInstance.CloseDefence + slDefence * 10;
+                    DistanceDefence += SpInstance.DistanceDefence + slDefence * 10;
+                    MagicalDefence += SpInstance.MagicDefence + slDefence * 10;
 
-                    int point = CharacterHelper.SlPoint((short)shellSlAttack, 0);
+                    int point = CharacterHelper.SlPoint((short)slHit, 0);
 
                     int p = 0;
                     if (point <= 10)
@@ -3576,7 +3586,7 @@ namespace OpenNos.GameObject
                     MaxDistance += p;
                     MinDistance += p;
 
-                    point = CharacterHelper.SlPoint((short)shellSlDefense, 1);
+                    point = CharacterHelper.SlPoint((short)slDefence, 1);
                     p = 0;
                     if (point <= 10)
                     {
@@ -3622,7 +3632,7 @@ namespace OpenNos.GameObject
                     MagicalDefence += p;
                     DistanceDefence += p;
 
-                    point = CharacterHelper.SlPoint((short)shellSlElement, 2);
+                    point = CharacterHelper.SlPoint((short)slElement, 2);
                     if (point <= 50)
                     {
                         p = point;
@@ -3712,7 +3722,7 @@ namespace OpenNos.GameObject
 
         public TalkPacket GenerateTalk(string message)
         {
-            return new TalkPacket()
+            return new TalkPacket
             {
                 CharacterId = CharacterId,
                 Message = message
