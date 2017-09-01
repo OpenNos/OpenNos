@@ -285,8 +285,8 @@ namespace OpenNos.GameObject.Helpers
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.SDefenseAllPercentage:
-                    bCard.Type = (byte)BCardType.CardType.MultDefence;
-                    bCard.SubType = (byte)AdditionalTypes.MultDefence.AllDefenceDecreased;
+                    bCard.Type = (byte)BCardType.CardType.Defence;
+                    bCard.SubType = (byte)AdditionalTypes.MultDefence.AllDefenceIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.ReducedMinorBleeding:

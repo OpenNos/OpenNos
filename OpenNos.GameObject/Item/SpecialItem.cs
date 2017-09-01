@@ -152,7 +152,7 @@ namespace OpenNos.GameObject
                         return;
                     }
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                    session.Character.AddStaticBuff(new StaticBuffDTO { CardId = 121, CharacterId = session.Character.CharacterId, RemainingTime = 3600 });
+                    session.Character.AddStaticBuff(new StaticBuffDTO {CardId = 121, CharacterId = session.Character.CharacterId, RemainingTime = 3600});
                     break;
 
                 case 301:
@@ -439,7 +439,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 69:
-                    session.Character.GetReput((int)ReputPrice);
+                    session.Character.GetReput(ReputPrice);
                     session.SendPacket(session.Character.GenerateFd());
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;

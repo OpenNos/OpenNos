@@ -281,7 +281,7 @@ namespace OpenNos.Handler
                 bool isAlive = target.Character.Hp > 0;
                 if (!isAlive)
                 {
-                    switch (target?.CurrentMapInstance?.MapInstanceType)
+                    switch (target.CurrentMapInstance?.MapInstanceType)
                     {
                         case MapInstanceType.Act4Instance:
                             if (ServerManager.Instance.Act4DemonStat.Mode == 0 && ServerManager.Instance.Act4AngelStat.Mode == 0)

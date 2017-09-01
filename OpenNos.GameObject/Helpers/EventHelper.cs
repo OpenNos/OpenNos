@@ -307,6 +307,23 @@ namespace OpenNos.GameObject.Helpers
                                         {
                                             continue;
                                         }
+                                        if (grp.Raid.Reputation > 0)
+                                        {
+                                            sess.Character.GetReput(grp.Raid.Reputation);
+                                        }
+                                        if (sess.Character.Dignity < 0)
+                                        {
+                                            sess.Character.Dignity += 100;
+                                        }
+                                        else
+                                        {
+                                            sess.Character.Dignity = 100;
+                                        }
+                                        if (sess.Character.Level > grp.Raid.LevelMaximum)
+                                        {
+                                            // RAID CERTIFICATE
+                                            sess.Character.GiftAdd(2320, 1);
+                                        }
                                         foreach (Gift gift in grp.Raid?.GiftItems)
                                         {
                                             byte rare = 0;
@@ -318,11 +335,10 @@ namespace OpenNos.GameObject.Helpers
                                             sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
                                         }
                                     }
-                                    ServerManager.Instance.Broadcast(
-                                        UserInterfaceHelper.Instance.GenerateMsg(
-                                            string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
+                                    ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(
+                                        string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
 
-                                    Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(o =>
+                                    Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(obj =>
                                     {
                                         ClientSession[] grpmembers = new ClientSession[40];
                                         grp.Characters.ToList().CopyTo(grpmembers);

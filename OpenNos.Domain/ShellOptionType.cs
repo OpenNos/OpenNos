@@ -24,7 +24,6 @@ namespace OpenNos.Domain
     public enum ShellOptionType
     {
         /* WEAPON OPTIONS */
-
         // INCREASE DAMAGES
         IncreaseDamage = 1,
         SDamagePercentage = 2,

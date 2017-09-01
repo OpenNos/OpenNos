@@ -13,9 +13,9 @@ namespace OpenNos.GameObject.Event
 {
     public class IceBreaker
     {
-        public const int MAX_ALLOWED_PLAYERS = 50;
+        public const int MaxAllowedPlayers = 50;
 
-        private static readonly Tuple<int, int>[] _levelBrackets =
+        private static readonly Tuple<int, int>[] LevelBrackets =
         {
             new Tuple<int, int>(1, 25),
             new Tuple<int, int>(20, 40),
@@ -43,11 +43,11 @@ namespace OpenNos.GameObject.Event
             Thread.Sleep(1 * 60 * 1000);
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_SECONDS"), 30, _levelBrackets[_currentBracket].Item1, _levelBrackets[_currentBracket].Item2), 1));
             Thread.Sleep(30 * 1000);*/
-            ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_SECONDS"), 10, _levelBrackets[_currentBracket].Item1, _levelBrackets[_currentBracket].Item2), 1));
+            ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_SECONDS"), 10, LevelBrackets[_currentBracket].Item1, LevelBrackets[_currentBracket].Item2), 1));
             Thread.Sleep(10 * 1000);
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_STARTED"), 1));
             ServerManager.Instance.IceBreakerInWaiting = true;
-            ServerManager.Instance.Sessions.Where(x => x.Character.Level >= _levelBrackets[_currentBracket].Item1 && x.Character.Level <= _levelBrackets[_currentBracket].Item2 && x.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance).ToList().ForEach(x => x.SendPacket($"qnaml 2 #guri^501 {string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_ASK"), 500)}"));
+            ServerManager.Instance.Sessions.Where(x => x.Character.Level >= LevelBrackets[_currentBracket].Item1 && x.Character.Level <= LevelBrackets[_currentBracket].Item2 && x.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance).ToList().ForEach(x => x.SendPacket($"qnaml 2 #guri^501 {string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_ASK"), 500)}"));
             _currentBracket++;
             if (_currentBracket > 5)
             {
