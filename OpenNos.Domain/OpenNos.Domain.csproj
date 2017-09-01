@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Act4RaidType.cs" />
     <Compile Include="BazaarListType.cs" />
+    <Compile Include="ChatType.cs" />
     <Compile Include="FactionType.cs" />
     <Compile Include="ShellOptionType.cs" />
     <Compile Include="TalentArenaOptionType.cs" />

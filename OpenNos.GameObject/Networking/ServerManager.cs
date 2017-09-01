@@ -1654,9 +1654,9 @@ namespace OpenNos.GameObject
                 IEnumerable<MapNpc> npcs = map.Npcs.Where(s => s.IsOut);
                 foreach (MapNpc i in npcs)
                 {
-                    MapCell bite = map.Map.GetRandomPosition();
-                    i.MapX = bite.X;
-                    i.MapY = bite.Y;
+                    MapCell randomPos = map.Map.GetRandomPosition();
+                    i.MapX = randomPos.X;
+                    i.MapY = randomPos.Y;
                     i.MapInstance.Broadcast(i.GenerateIn());
                 }
             }
