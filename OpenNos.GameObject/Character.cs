@@ -3139,12 +3139,12 @@ namespace OpenNos.GameObject
             #region Critical Damage
 
             baseDamage -= monsterDefence;
-            if (GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingDecreased, true)[0] == 0
-                && target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingDecreased, true, true)[0] == 0)
+            if (GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.ReceivingDecreased, true)[0] == 0
+                && target.GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.ReceivingDecreased, true, true)[0] == 0)
             {
                 if (ServerManager.Instance.RandomNumber() <= mainCritChance
-                    || GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingIncreased, true)[0] != 0
-                    || target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingIncreased, true, true)[0] != 0)
+                    || GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.ReceivingIncreased, true)[0] != 0
+                    || target.GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.ReceivingIncreased, true, true)[0] != 0)
                 {
                     if (skill.Type == 2)
                     {
@@ -3156,7 +3156,7 @@ namespace OpenNos.GameObject
                         {
                             multiplier = 3;
                         }
-                        baseDamage += (int)(baseDamage * multiplier);
+                        baseDamage += (int) (baseDamage * multiplier);
                         hitmode = 3;
                     }
                     else
@@ -3166,7 +3166,7 @@ namespace OpenNos.GameObject
                         {
                             multiplier = 3;
                         }
-                        baseDamage += (int)(baseDamage * multiplier);
+                        baseDamage += (int) (baseDamage * multiplier);
                         hitmode = 3;
                     }
                 }
@@ -5386,7 +5386,7 @@ namespace OpenNos.GameObject
             switch (type)
             {
                 case 0:
-                    result = $"raid 0";
+                    result = "raid 0";
                     Group?.Characters?.ToList().ForEach(s => { result += $" {s.Character?.CharacterId}"; });
                     break;
                 case 2:
@@ -5396,15 +5396,22 @@ namespace OpenNos.GameObject
                     result = $"raid 1 {(exit ? 0 : 1)}";
                     break;
                 case 3:
-                    result = $"raid 3";
-                    Group?.Characters?.Where(p => p.Character != null).ToList().ForEach(s => { result += $" {s.Character?.CharacterId}.{(int)(s.Character.Hp / s.Character.HPLoad() * 100)}.{(int)(s.Character.Mp / s.Character.MPLoad() * 100)}"; });
+                    result = "raid 3";
+                    Group?.Characters?.Where(p => p.Character != null).ToList().ForEach(s =>
+                    {
+                        if (s.Character != null)
+                        {
+                            result += $" {s.Character?.CharacterId}.{(int) (s.Character?.Hp / s.Character?.HPLoad() * 100)}.{(int) (s.Character.Mp / s.Character.MPLoad() * 100)}";
+                        }
+                    });
                     break;
                 case 4:
-                    result = $"raid 4";
+                    result = "raid 4";
                     break;
                 case 5:
-                    result = $"raid 5 1";
+                    result = "raid 5 1";
                     break;
+                    
             }
             return result;
         }
@@ -5615,6 +5622,11 @@ namespace OpenNos.GameObject
                 $"ta_p {tatype} {(byte)type} {5 - arenateam.Where(s => s.ArenaTeamType == type).Sum(s => s.SummonCount)} {5 - arenateam.Where(s => s.ArenaTeamType != type).Sum(s => s.SummonCount)} {groups.TrimEnd(' ')}";
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="types"></param>
+        /// <param name="level"></param>
         public void DisableBuffs(List<BuffType> types, int level = 100)
         {
             lock (Buff)
@@ -5624,6 +5636,12 @@ namespace OpenNos.GameObject
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="subtype"></param>
+        /// <returns></returns>
         public int GetMostValueEquipmentBuff(CardType type, byte subtype)
         {
             return EquipmentBCards.Where(s => s.Type == (byte) type && s.SubType.Equals(subtype)).OrderByDescending(s => s.FirstData).FirstOrDefault()?.FirstData ?? 0;
@@ -5659,6 +5677,14 @@ namespace OpenNos.GameObject
             return new[] { value1, value2 };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="subtype"></param>
+        /// <param name="pvp"></param>
+        /// <param name="affectingOpposite"></param>
+        /// <returns></returns>
         public int[] GetBuff(CardType type, byte subtype, bool pvp, bool affectingOpposite = false)
         {
             int value1 = 0;
@@ -5668,12 +5694,10 @@ namespace OpenNos.GameObject
             {
                 foreach (Buff buff in Buff)
                 {
-                    // THIS ONE DOES NOT FOR STUFFS
-                    foreach (BCard entry in buff.Card.BCards.Concat(EquipmentBCards).Where(
-                        s => s.Type.Equals((byte)type)
-                             && s.SubType.Equals((byte)(subtype / 10)) &&
-                             (s.CastType != 1 || s.CastType == 1 &&
-                              buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
+                    // THIS ONE DOES NOT WORK FOR STUFFS
+                    foreach (BCard entry in buff.Card.BCards.Concat(EquipmentBCards).Where(s =>
+                        s.Type.Equals((byte) type) && s.SubType.Equals((byte) (subtype / 10)) &&
+                        (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
                     {
                         if (entry.IsLevelScaled)
                         {
@@ -5691,6 +5715,11 @@ namespace OpenNos.GameObject
             return new[] { value1, value2 };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public string GenerateTaM(int type)
         {
             ConcurrentBag<ArenaTeamMember> tm = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));

@@ -146,7 +146,7 @@ namespace OpenNos.Import.Console
                             {
                                 CardId = card.CardId,
                                 Type = Convert.ToByte(currentLine[2 + i * 6]),
-                                SubType = Convert.ToByte(currentLine[3 + i * 6]),
+                                SubType = (byte)(Convert.ToByte(currentLine[3 + i * 6]) * 10),
                                 ThirdData = Convert.ToByte(currentLine[5 + i * 6]),
                                 FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
                                 SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
