@@ -1823,7 +1823,7 @@ namespace OpenNos.Handler
                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance && member != null)
                     {
                         ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
-                        member.Where(s => s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session).ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1)));
+                        member.Where(s => member2 != null && s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session)?.ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1)));
                     }
                     else
                     {
@@ -1838,7 +1838,7 @@ namespace OpenNos.Handler
                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance && member != null)
                     {
                         ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
-                        member.Where(s => s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session).ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1)));
+                        member.Where(s => member2 != null && (s.ArenaTeamType == member2.ArenaTeamType && s != member2)).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session)?.ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1)));
                     }
                     else
                     {
@@ -1867,7 +1867,7 @@ namespace OpenNos.Handler
                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance && member != null)
                     {
                         ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
-                        member.Where(s => s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session).ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(message.Trim(), 1)));
+                        member.Where(s => member2 != null && (s.ArenaTeamType == member2.ArenaTeamType && s != member2)).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session)?.ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(message.Trim(), 1)));
                     }
                     else
                     {

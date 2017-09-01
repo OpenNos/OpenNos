@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using OpenNos.GameObject.CommandPackets;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -275,18 +276,22 @@ namespace OpenNos.GameObject.Helpers
                                 MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
                                 ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
                                 byte penalty = 0;
-                                if (penalty > (client.Character.Level - si.LevelMinimum) * 2)
+                                if (si != null && penalty > (client.Character.Level - si.LevelMinimum) * 2)
                                 {
                                     penalty = penalty > 100 ? (byte)100 : penalty;
                                     client.SendPacket(client.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("TS_PENALTY"), penalty), 10));
                                 }
                                 int point = evt.MapInstance.InstanceBag.Point * (100 - penalty) / 100;
                                 string perfection = string.Empty;
-                                perfection += evt.MapInstance.InstanceBag.MonstersKilled >= si.MonsterAmount ? 1 : 0;
+                                perfection += si != null && evt.MapInstance.InstanceBag.MonstersKilled >= si.MonsterAmount ? 1 : 0;
                                 perfection += evt.MapInstance.InstanceBag.NpcsKilled == 0 ? 1 : 0;
-                                perfection += evt.MapInstance.InstanceBag.RoomsVisited >= si.RoomAmount ? 1 : 0;
+                                perfection += si != null && evt.MapInstance.InstanceBag.RoomsVisited >= si.RoomAmount ? 1 : 0;
 
-                                evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} { si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
+                                if (si != null)
+                                {
+                                    evt.MapInstance.Broadcast(
+                                        $"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} {si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
+                                }
                             }
                             break;
                         case MapInstanceType.RaidInstance:
@@ -364,7 +369,7 @@ namespace OpenNos.GameObject.Helpers
                                             grp.LeaveGroup(targetSession);
                                         }
                                         ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                                        ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId, out Group value);
+                                        ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId, out Group _);
                                         mapinstances.ForEach(s => s.Dispose());
                                     });
                                 }
