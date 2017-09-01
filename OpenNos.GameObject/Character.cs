@@ -2257,8 +2257,7 @@ namespace OpenNos.GameObject
                                         session.Character.Gold = maxGold;
                                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                                     }
-                                    session.SendPacket(session.Character.GenerateSay(
-                                        $"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
+                                    session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
                                     session.SendPacket(session.Character.GenerateGold());
                                 }
                                 alreadyGifted.Add(charId);
@@ -3941,6 +3940,18 @@ namespace OpenNos.GameObject
             Reput -= val;
             Session.SendPacket(GenerateFd());
             Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_DECREASE"), val), 11));
+        }
+
+        public void GetGold(long val)
+        {
+            Session.Character.Gold += val;
+            if (Session.Character.Gold > ServerManager.Instance.MaxGold)
+            {
+                Session.Character.Gold = ServerManager.Instance.MaxGold;
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+            }
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(1046).Name} x {val}", 10));
+            Session.SendPacket(Session.Character.GenerateGold());
         }
 
         [SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Readability")]

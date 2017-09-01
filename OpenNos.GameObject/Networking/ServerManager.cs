@@ -246,7 +246,7 @@ namespace OpenNos.GameObject
                             session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format("TEAM_WINNER_ARENA_ROUND", killer?.Session.Character.Name, killer?.ArenaTeamType), 0));
                             session.CurrentMapInstance.Sessions.Except(team.Where(s => s.ArenaTeamType == killer?.ArenaTeamType).Select(s => s.Session)).ToList().ForEach(o =>
                             {
-                                if (killer.ArenaTeamType == ArenaTeamType.ERENIA)
+                                if (killer?.ArenaTeamType == ArenaTeamType.ERENIA)
                                 {
                                     o.SendPacket(killer.Session.Character.GenerateTaM(2));
                                     o.SendPacket(killer.Session.Character.GenerateTaP(2, true));
@@ -1235,6 +1235,16 @@ namespace OpenNos.GameObject
                         act4Map.Portals.Add(new Portal {DestinationMapId = 134, DestinationX = 46, DestinationY = 171, SourceMapId = 153, IsDisabled = false, Type = (short) PortalType.MapPortal});
                         // DEMON
                         act4Map.Portals.Add(new Portal {DestinationMapId = 134, DestinationX = 50, DestinationY = 171, SourceMapId = 153, IsDisabled = false, Type = (short) PortalType.MapPortal});
+                    }
+                    // TODO REMOVE THAT FOR RELEASE
+                    if (act4Map.Map.MapId == 134)
+                    {
+                        Portal portal = act4Map.Portals.FirstOrDefault(s => s.DestinationMapId == 153);
+                        if (portal != null)
+                        {
+                            portal.SourceX = 140;
+                            portal.SourceY = 186;
+                        }
                     }
                     act4Map.IsPVP = true;
                     Act4Maps.Add(act4Map);
