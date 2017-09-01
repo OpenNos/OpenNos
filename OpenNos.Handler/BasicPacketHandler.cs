@@ -452,7 +452,7 @@ namespace OpenNos.Handler
                             grp.LeaveGroup(targetSession);
                         }
                         ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                        ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId, out Group value);
+                        ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId, out Group _);
                     }
 
                     break;
@@ -490,7 +490,7 @@ namespace OpenNos.Handler
                     {
                         ServerManager.Instance.GroupList.Add(Session.Character.Group);
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_REGISTERED")));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("RAID_REGISTERED"));
                         ServerManager.Instance.Broadcast(Session, $"qnaml 100 #rl {string.Format(Language.Instance.GetMessageFromKey("SEARCH_TEAM_MEMBERS"), Session.Character.Name, Session.Character.Group.Raid?.Label)}", ReceiverType.AllExceptGroup);
                     }
                     break;
@@ -499,7 +499,7 @@ namespace OpenNos.Handler
                     {
                         ServerManager.Instance.GroupList.Remove(Session.Character.Group);
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(2));
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format("RAID_UNREGISTERED")));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("RAID_UNREGISTERED"));
                     }
                     break;
                 case 3:
@@ -573,14 +573,14 @@ namespace OpenNos.Handler
                         Session.Character.GroupSentRequestCharacterIds.Add(targetSession.Character.CharacterId);
                         if (Session.Character.Group == null || Session.Character.Group.GroupType == GroupType.Group)
                         {
-                            if (targetSession?.Character?.Group == null || targetSession?.Character?.Group.GroupType == GroupType.Group)
+                            if (targetSession.Character?.Group == null || targetSession.Character?.Group.GroupType == GroupType.Group)
                             {
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), targetSession.Character.Name)));
                                 targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"));
                             }
                             else
                             {
-                                //can't invite raid member
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_CANT_INVITE"), targetSession.Character.Name)));
                             }
                         }
                         else
@@ -680,15 +680,15 @@ namespace OpenNos.Handler
                         if (createNewGroup)
                         {
                             Group group = new Group(GroupType.Group);
-                            @group.JoinGroup(pjoinPacket.CharacterId);
+                            group.JoinGroup(pjoinPacket.CharacterId);
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), targetSession.Character.Name)));
-                            @group.JoinGroup(Session.Character.CharacterId);
-                            ServerManager.Instance.AddGroup(@group);
+                            group.JoinGroup(Session.Character.CharacterId);
+                            ServerManager.Instance.AddGroup(group);
                             targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_ADMIN")));
 
                             // set back reference to group
-                            Session.Character.Group = @group;
-                            targetSession.Character.Group = @group;
+                            Session.Character.Group = group;
+                            targetSession.Character.Group = group;
                         }
                     }
                     if (Session.Character.Group.GroupType != GroupType.Group)
@@ -770,10 +770,20 @@ namespace OpenNos.Handler
         /// <param name="groupSayPacket"></param>
         public void GroupTalk(GroupSayPacket groupSayPacket)
         {
-            if (!string.IsNullOrEmpty(groupSayPacket.Message))
+            if (string.IsNullOrEmpty(groupSayPacket.Message))
             {
-                ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(groupSayPacket.Message, 3), ReceiverType.Group);
+                return;
             }
+            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(groupSayPacket.Message, 3), ReceiverType.Group);
+            LogChatDTO log = new LogChatDTO
+            {
+                CharacterId = Session.Character.CharacterId,
+                ChatMessage = groupSayPacket.Message,
+                ChatType = (byte)ChatType.Party,
+                IpAddress = Session.IpAddress,
+                Timestamp = DateTime.Now,
+            };
+            DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
         }
 
         /// <summary>
@@ -810,6 +820,18 @@ namespace OpenNos.Handler
             if (!sentChannelId.HasValue) //character is even offline on different world
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_OFFLINE")));
+            }
+            else
+            {
+                LogChatDTO log = new LogChatDTO
+                {
+                    CharacterId = Session.Character.CharacterId,
+                    ChatMessage = message,
+                    ChatType = (byte)ChatType.Friend,
+                    IpAddress = Session.IpAddress,
+                    Timestamp = DateTime.Now,
+                };
+                DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
             }
         }
 
@@ -1094,10 +1116,10 @@ namespace OpenNos.Handler
                         {
                             return;
                         }
-                        var target = ServerManager.Instance.GetSessionByCharacterId(charid.Value);
+                        ClientSession target = ServerManager.Instance.GetSessionByCharacterId(charid.Value);
                         IceBreaker.FrozenPlayers.Remove(target);
                         IceBreaker.AlreadyFrozenPlayers.Add(target);
-                        target?.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_UNFROZEN"), target?.Character?.Name), 0));
+                        target?.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_UNFROZEN"), target.Character?.Name), 0));
                         break;
                     case 506:
                         if (ServerManager.Instance.EventInWaiting)
@@ -1326,10 +1348,7 @@ namespace OpenNos.Handler
                                         {
                                             string message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
                                             string[] valuesplit = guriPacket.Value.Split(' ');
-                                            foreach (string t in valuesplit)
-                                            {
-                                                message += t + " ";
-                                            }
+                                            message = valuesplit.Aggregate(message, (current, t) => current + t + " ");
                                             if (message.Length > 120)
                                             {
                                                 message = message.Substring(0, 120);
@@ -1846,7 +1865,7 @@ namespace OpenNos.Handler
                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance && member != null)
                     {
                         ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
-                        member.Where(s => member2 != null && (s.ArenaTeamType == member2.ArenaTeamType && s != member2)).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session)?.ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1)));
+                        member.Where(s => member2 != null && s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session)?.ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1)));
                     }
                     else
                     {
@@ -1875,7 +1894,7 @@ namespace OpenNos.Handler
                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance && member != null)
                     {
                         ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
-                        member.Where(s => member2 != null && (s.ArenaTeamType == member2.ArenaTeamType && s != member2)).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session)?.ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(message.Trim(), 1)));
+                        member.Where(s => member2 != null && s.ArenaTeamType == member2.ArenaTeamType && s != member2).Where(s => s.ArenaTeamType == member.FirstOrDefault(o => o.Session == Session)?.ArenaTeamType).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(message.Trim(), 1)));
                     }
                     else
                     {
@@ -2332,6 +2351,18 @@ namespace OpenNos.Handler
                 if (sentChannelId == null)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
+                }
+                else
+                {
+                    LogChatDTO log = new LogChatDTO
+                    {
+                        CharacterId = Session.Character.CharacterId,
+                        ChatMessage = message,
+                        ChatType = (byte)ChatType.Whisper,
+                        IpAddress = Session.IpAddress,
+                        Timestamp = DateTime.Now,
+                    };
+                    DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
                 }
             }
             catch (Exception e)
