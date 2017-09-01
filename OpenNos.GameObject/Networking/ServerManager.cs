@@ -1648,19 +1648,17 @@ namespace OpenNos.GameObject
         private void Act4FlowerProcess()
         {
             // FIND THE REAL VALUES
-            foreach (MapInstance map in Act4Maps.Where(s => s.Map.MapId != 131 && s.Map.MapId != 130 && s.Npcs.Count(o => o.NpcVNum == 2004) < 7))
+            foreach (MapInstance map in Act4Maps.Where(s => s.Map.MapId != 131 && s.Map.MapId != 130 && s.Npcs.Count(o => o.NpcVNum == 2004 && o.IsOut) < 7))
             {
                 // TODO PROPERTY
-                MapCell bite = map.Map.GetRandomPosition();
-                map.Npcs.Add(new MapNpc
+                IEnumerable<MapNpc> npcs = map.Npcs.Where(s => s.IsOut);
+                foreach (MapNpc i in npcs)
                 {
-                    MapId = map.Map.MapId,
-                    MapX = bite.X,
-                    MapY = bite.Y,
-                    Dialog = 1,
-                    EffectDelay = 4750,
-                    Position = (byte) RandomNumber(1, 6)
-                });
+                    MapCell bite = map.Map.GetRandomPosition();
+                    i.MapX = bite.X;
+                    i.MapY = bite.Y;
+                    i.MapInstance.Broadcast(i.GenerateIn());
+                }
             }
         }
 

@@ -69,7 +69,10 @@ namespace OpenNos.GameObject
         public long Target { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
+
         public IDisposable Life { get; private set; }
+
+        public bool IsOut { get; set; }
 
         #endregion
 
@@ -92,11 +95,23 @@ namespace OpenNos.GameObject
         public string GenerateIn()
         {
             NpcMonster npcinfo = ServerManager.Instance.GetNpc(NpcVNum);
-            if (npcinfo != null && !IsDisabled)
+            if (npcinfo == null || IsDisabled)
             {
-                return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
+                return string.Empty;
             }
-            return string.Empty;
+            IsOut = true;
+            return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
+        }
+
+        public string GenerateOut()
+        {
+            NpcMonster npcinfo = ServerManager.Instance.GetNpc(NpcVNum);
+            if (npcinfo == null || IsDisabled)
+            {
+                return string.Empty;
+            }
+            IsOut = true;
+            return $"out 2 {MapNpcId}";
         }
 
         public string GetNpcDialog()
