@@ -174,11 +174,11 @@ namespace OpenNos.GameObject
             {
                 case MateType.Partner:
                     List<ItemInstance> items = GetInventory();
-                    ItemInstance Weapon = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.MainWeapon);
-                    ItemInstance Armor = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Armor);
-                    ItemInstance Gloves = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Gloves);
-                    ItemInstance Boots = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Boots);
-                    return $"sc_n {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(Weapon != null ? $"{Weapon.ItemVNum}.{Weapon.Rare}.{Weapon.Upgrade}" : "-1")} {(Armor != null ? $"{Armor.ItemVNum}.{Armor.Rare}.{Armor.Upgrade}" : "-1")} {(Gloves != null ? $"{Gloves.ItemVNum}.0.0" : "-1")} {(Boots != null ? $"{Boots.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} {(Skin != 0 ? Skin : -1)} {(IsSummonable ? 1 : 0)} -1 -1 -1 -1";
+                    ItemInstance weapon = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.MainWeapon);
+                    ItemInstance armor = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Armor);
+                    ItemInstance gloves = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Gloves);
+                    ItemInstance boots = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Boots);
+                    return $"sc_n {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(weapon != null ? $"{weapon.ItemVNum}.{weapon.Rare}.{weapon.Upgrade}" : "-1")} {(armor != null ? $"{armor.ItemVNum}.{armor.Rare}.{armor.Upgrade}" : "-1")} {(gloves != null ? $"{gloves.ItemVNum}.0.0" : "-1")} {(boots != null ? $"{boots.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} {(Skin != 0 ? Skin : -1)} {(IsSummonable ? 1 : 0)} -1 -1 -1 -1";
 
                 case MateType.Pet:
                     return $"sc_p {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(IsSummonable ? 1 : 0)}";

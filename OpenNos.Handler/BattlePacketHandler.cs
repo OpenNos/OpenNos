@@ -311,10 +311,9 @@ namespace OpenNos.Handler
                                 }
                                 else
                                 {
-                                    target.Character.Reput -= target.Character.Level * 50;
-                                    hitRequest.Session.Character.Reput += target.Character.Level * 50;
+                                    target.Character.LoseReput(target.Character.Level * 50);
+                                    hitRequest.Session.Character.GetReput(target.Character.Level * 50);
                                     hitRequest.Session.SendPacket(hitRequest.Session.Character.GenerateLev());
-                                    target.SendPacket(target.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), (short) (target.Character.Level * 50)), 11));
                                 }
                             }
                             foreach (ClientSession sess in ServerManager.Instance.Sessions.Where(s => s.HasSelectedCharacter && s.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance))

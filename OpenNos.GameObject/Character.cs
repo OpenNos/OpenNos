@@ -604,7 +604,7 @@ namespace OpenNos.GameObject
                 // PERMA BUFFS (Mates, Maps..)
                 if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act52) == true)
                 {
-                    if (Buff.All(s => s.Card.CardId != 340))
+                    if (Buff.All(s => s.Card.CardId != 340 && s.Card.CardId != 339))
                     {
                         Session.Character.AddStaticBuff(new StaticBuffDTO
                         {
@@ -3882,11 +3882,18 @@ namespace OpenNos.GameObject
             return mlobjstring;
         }
 
-        public void GetReput(int val)
+        public void GetReput(long val)
         {
             Reput += val;
             Session.SendPacket(GenerateFd());
             Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), val), 11));
+        }
+
+        public void LoseReput(long val)
+        {
+            Reput -= val;
+            Session.SendPacket(GenerateFd());
+            Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_DECREASE"), val), 11));
         }
 
         [SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Readability")]
@@ -5344,6 +5351,51 @@ namespace OpenNos.GameObject
             return result;
         }
 
+        /// <summary>
+        /// Remove buff from bufflist
+        /// </summary>
+        /// <param name="cardId"></param>
+        public void RemoveBuff(short cardId)
+        {
+            Buff indicator = Buff.First(s => s.Card.CardId == cardId);
+            if (indicator == null)
+            {
+                return;
+            }
+            if (indicator.StaticBuff)
+            {
+                Session.SendPacket($"vb {indicator.Card.CardId} 0 {(indicator.Card.Duration == -1 ? 0 : indicator.Card.Duration)}");
+                Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 11));
+            }
+            else
+            {
+                Session.SendPacket($"bf 1 {CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
+                Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 20));
+            }
+
+            if (Buff.Contains(indicator))
+            {
+                Buff = Buff.Where(s => s != indicator);
+            }
+            if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move && !s.SubType.Equals((byte)AdditionalTypes.Move.MovementImpossible / 10)))
+            {
+                LastSpeedChange = DateTime.Now;
+                LoadSpeed();
+                Session.SendPacket(GenerateCond());
+            }
+            if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.SpecialAttack && s.SubType.Equals((byte)AdditionalTypes.SpecialAttack.NoAttack / 10)))
+            {
+                NoAttack = false;
+                Session.SendPacket(GenerateCond());
+            }
+            if (!indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move && s.SubType.Equals((byte)AdditionalTypes.Move.MovementImpossible / 10)))
+            {
+                return;
+            }
+            NoMove = false;
+            Session.SendPacket(GenerateCond());
+        }
+
         public void AddStaticBuff(StaticBuffDTO staticBuff)
         {
             Buff bf = new Buff(staticBuff.CardId, Session.Character.Level)
@@ -5352,6 +5404,11 @@ namespace OpenNos.GameObject
                 StaticBuff = true
             };
             Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
+            if (staticBuff.RemainingTime == -1)
+            {
+                bf.RemainingTime = staticBuff.RemainingTime;
+                Buff.Add(bf);
+            }
             if (staticBuff.RemainingTime > 0)
             {
                 bf.RemainingTime = staticBuff.RemainingTime;
@@ -5370,18 +5427,21 @@ namespace OpenNos.GameObject
                 Buff.Add(bf);
             }
             bf.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
-            Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime)).Subscribe(o =>
+            if (bf.RemainingTime > 0)
             {
-                RemoveBuff(bf.Card.CardId);
-                if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
-                    bf.Card.TimeoutBuffChance)
+                Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime)).Subscribe(o =>
                 {
-                    AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
-                }
-            });
+                    RemoveBuff(bf.Card.CardId);
+                    if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
+                        bf.Card.TimeoutBuffChance)
+                    {
+                        AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
+                    }
+                });
+            }
 
             Session.SendPacket(bf.RemainingTime == -1 ? $"vb {bf.Card.CardId} 1 -1" : $"vb {bf.Card.CardId} 1 {bf.RemainingTime * 10}");
-            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 12));
+            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), bf.Card.Name), 12));
         }
 
         public void AddBuff(Buff indicator, bool notify = true)
@@ -5400,7 +5460,7 @@ namespace OpenNos.GameObject
             Buff.Add(indicator);
 
             Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
-            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 20));
+            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>
@@ -5423,16 +5483,12 @@ namespace OpenNos.GameObject
             if (indicator.StaticBuff)
             {
                 Session.SendPacket($"vb {indicator.Card.CardId} 0 {indicator.Card.Duration}");
-                Session.SendPacket(
-                    Session.Character.GenerateSay(
-                        string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 11));
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 11));
             }
             else
             {
                 Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
-                Session.SendPacket(
-                    Session.Character.GenerateSay(
-                        string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
             }
             if (Buff.Contains(indicator))
             {
