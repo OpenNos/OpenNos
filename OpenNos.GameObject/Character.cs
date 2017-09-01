@@ -272,31 +272,34 @@ namespace OpenNos.GameObject
                     RespawnMapTypeId = -1
                 };
 
-                if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.Map.MapTypes.Any())
+                if (!Session.HasCurrentMapInstance || !Session.CurrentMapInstance.Map.MapTypes.Any())
                 {
-                    long? respawnmaptype = Session.CurrentMapInstance.Map.MapTypes.ElementAt(0).RespawnMapTypeId;
-                    if (respawnmaptype != null)
+                    return respawn;
+                }
+                long? respawnmaptype = Session.CurrentMapInstance.Map.MapTypes.ElementAt(0).RespawnMapTypeId;
+                if (respawnmaptype == null)
+                {
+                    return respawn;
+                }
+                RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                if (resp == null)
+                {
+                    RespawnMapTypeDTO defaultresp = Session.CurrentMapInstance.Map.DefaultRespawn;
+                    if (defaultresp == null)
                     {
-                        RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
-                        if (resp == null)
-                        {
-                            RespawnMapTypeDTO defaultresp = Session.CurrentMapInstance.Map.DefaultRespawn;
-                            if (defaultresp != null)
-                            {
-                                respawn.DefaultX = defaultresp.DefaultX;
-                                respawn.DefaultY = defaultresp.DefaultY;
-                                respawn.DefaultMapId = defaultresp.DefaultMapId;
-                                respawn.RespawnMapTypeId = (long)respawnmaptype;
-                            }
-                        }
-                        else
-                        {
-                            respawn.DefaultX = resp.X;
-                            respawn.DefaultY = resp.Y;
-                            respawn.DefaultMapId = resp.MapId;
-                            respawn.RespawnMapTypeId = (long)respawnmaptype;
-                        }
+                        return respawn;
                     }
+                    respawn.DefaultX = defaultresp.DefaultX;
+                    respawn.DefaultY = defaultresp.DefaultY;
+                    respawn.DefaultMapId = defaultresp.DefaultMapId;
+                    respawn.RespawnMapTypeId = (long)respawnmaptype;
+                }
+                else
+                {
+                    respawn.DefaultX = resp.X;
+                    respawn.DefaultY = resp.Y;
+                    respawn.DefaultMapId = resp.MapId;
+                    respawn.RespawnMapTypeId = (long)respawnmaptype;
                 }
                 return respawn;
             }
@@ -309,31 +312,34 @@ namespace OpenNos.GameObject
             get
             {
                 RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
-                if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.Map.MapTypes.Any())
+                if (!Session.HasCurrentMapInstance || !Session.CurrentMapInstance.Map.MapTypes.Any())
                 {
-                    long? respawnmaptype = Session.CurrentMapInstance.Map.MapTypes.ElementAt(0).ReturnMapTypeId;
-                    if (respawnmaptype != null)
+                    return respawn;
+                }
+                long? respawnmaptype = Session.CurrentMapInstance.Map.MapTypes.ElementAt(0).ReturnMapTypeId;
+                if (respawnmaptype == null)
+                {
+                    return respawn;
+                }
+                RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                if (resp == null)
+                {
+                    RespawnMapTypeDTO defaultresp = Session.CurrentMapInstance.Map.DefaultReturn;
+                    if (defaultresp == null)
                     {
-                        RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
-                        if (resp == null)
-                        {
-                            RespawnMapTypeDTO defaultresp = Session.CurrentMapInstance.Map.DefaultReturn;
-                            if (defaultresp != null)
-                            {
-                                respawn.DefaultX = defaultresp.DefaultX;
-                                respawn.DefaultY = defaultresp.DefaultY;
-                                respawn.DefaultMapId = defaultresp.DefaultMapId;
-                                respawn.RespawnMapTypeId = (long)respawnmaptype;
-                            }
-                        }
-                        else
-                        {
-                            respawn.DefaultX = resp.X;
-                            respawn.DefaultY = resp.Y;
-                            respawn.DefaultMapId = resp.MapId;
-                            respawn.RespawnMapTypeId = (long)respawnmaptype;
-                        }
+                        return respawn;
                     }
+                    respawn.DefaultX = defaultresp.DefaultX;
+                    respawn.DefaultY = defaultresp.DefaultY;
+                    respawn.DefaultMapId = defaultresp.DefaultMapId;
+                    respawn.RespawnMapTypeId = (long)respawnmaptype;
+                }
+                else
+                {
+                    respawn.DefaultX = resp.X;
+                    respawn.DefaultY = resp.Y;
+                    respawn.DefaultMapId = resp.MapId;
+                    respawn.RespawnMapTypeId = (long)respawnmaptype;
                 }
                 return respawn;
             }
@@ -594,6 +600,37 @@ namespace OpenNos.GameObject
                     Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateEff(3007)));
                     LastEffect = DateTime.Now;
                 }
+                
+                // PERMA BUFFS (Mates, Maps..)
+                if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act52) == true)
+                {
+                    if (Buff.All(s => s.Card.CardId != 340))
+                    {
+                        Session.Character.AddStaticBuff(new StaticBuffDTO
+                        {
+                            CardId = 339,
+                            CharacterId = CharacterId,
+                            RemainingTime = -1
+                        });
+                    }
+                }
+
+                // TODO NEED TO FIND A WAY TO APPLY BUFFS PROPERLY THROUGH MONSTER SKILLS
+                IEnumerable<Mate> equipMates = Mates.Where(s => s.IsTeamMember);
+                IEnumerable<Mate> mates = equipMates as IList<Mate> ?? equipMates.ToList();
+                if (mates.Any(s => s.Monster.NpcMonsterVNum == 670) && Buff.All(s => s.Card.CardId != 374))
+                {
+                    Session.Character.AddBuff(new Buff(374), false);
+                }
+                if (mates.Any(s => s.Monster.NpcMonsterVNum == 836) && Buff.All(s => s.Card.CardId != 381))
+                {
+                    Session.Character.AddBuff(new Buff(381), false);
+                }
+                if (mates.Any(s => s.Monster.NpcMonsterVNum == 2105) && Buff.All(s => s.Card.CardId != 383))
+                {
+                    Session.Character.AddBuff(new Buff(383), false);
+                }
+
 
                 if (LastHealth.AddSeconds(3) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
                 {
@@ -3800,32 +3837,32 @@ namespace OpenNos.GameObject
         public List<string> GetFamilyHistory()
         {
             //TODO: Fix some bugs(missing history etc)
-            if (Family != null)
+            if (Family == null)
             {
-                string packetheader = "ghis";
-                List<string> packetList = new List<string>();
-                string packet = string.Empty;
-                int i = 0;
-                int amount = 0;
-                foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s => s.FamilyLogType != FamilyLogType.WareHouseAdded && s.FamilyLogType != FamilyLogType.WareHouseRemoved).OrderByDescending(s => s.Timestamp).Take(100))
-                {
-                    packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(int)(DateTime.Now - log.Timestamp).TotalHours}";
-                    i++;
-                    if (i == 50)
-                    {
-                        i = 0;
-                        packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
-                        amount++;
-                    }
-                    else if ((i + 50 * amount) == Family.FamilyLogs.Count)
-                    {
-                        packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
-                    }
-                }
-
-                return packetList;
+                return new List<string>();
             }
-            return new List<string>();
+            string packetheader = "ghis";
+            List<string> packetList = new List<string>();
+            string packet = string.Empty;
+            int i = 0;
+            int amount = 0;
+            foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s => s.FamilyLogType != FamilyLogType.WareHouseAdded && s.FamilyLogType != FamilyLogType.WareHouseRemoved).OrderByDescending(s => s.Timestamp).Take(100))
+            {
+                packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(int)(DateTime.Now - log.Timestamp).TotalHours}";
+                i++;
+                if (i == 50)
+                {
+                    i = 0;
+                    packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
+                    amount++;
+                }
+                else if ((i + 50 * amount) == Family.FamilyLogs.Count)
+                {
+                    packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
+                }
+            }
+
+            return packetList;
         }
 
         public string GetMinilandObjectList()
@@ -5343,7 +5380,7 @@ namespace OpenNos.GameObject
                 }
             });
 
-            Session.SendPacket($"vb {bf.Card.CardId} 1 {bf.RemainingTime * 10}");
+            Session.SendPacket(bf.RemainingTime == -1 ? $"vb {bf.Card.CardId} 1 -1" : $"vb {bf.Card.CardId} 1 {bf.RemainingTime * 10}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), Name), 12));
         }
 

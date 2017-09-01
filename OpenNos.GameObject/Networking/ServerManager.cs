@@ -1728,7 +1728,7 @@ namespace OpenNos.GameObject
         {
             // TODO: Parallelization of family load
             FamilyList = new List<Family>();
-            ConcurrentDictionary<long, Family> _family = new ConcurrentDictionary<long, Family>();
+            ConcurrentDictionary<long, Family> families = new ConcurrentDictionary<long, Family>();
             Parallel.ForEach(DAOFactory.FamilyDAO.LoadAll(), familyDTO =>
             {
                 Family family = (Family)familyDTO;
@@ -1748,9 +1748,9 @@ namespace OpenNos.GameObject
                     }
                 }
                 family.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(family.FamilyId).ToList();
-                _family[family.FamilyId] = family;
+                families[family.FamilyId] = family;
             });
-            FamilyList.AddRange(_family.Select(s => s.Value));
+            FamilyList.AddRange(families.Select(s => s.Value));
         }
 
         private void LoadScriptedInstances()
