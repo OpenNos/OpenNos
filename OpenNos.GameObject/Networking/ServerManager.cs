@@ -1345,24 +1345,41 @@ namespace OpenNos.GameObject
         public void ReviveFirstPosition(long characterId)
         {
             ClientSession session = GetSessionByCharacterId(characterId);
-            if (session != null && session.Character.Hp <= 0)
+            if (session == null || session.Character.Hp > 0)
             {
-                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance || session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
-                {
-                    session.Character.Hp = (int)session.Character.HPLoad();
-                    session.Character.Mp = (int)session.Character.MPLoad();
+                return;
+            }
+            short x;
+            short y;
+            switch (session.CurrentMapInstance.MapInstanceType)
+            {
+                case MapInstanceType.TimeSpaceInstance:
+                case MapInstanceType.RaidInstance:
+                    session.Character.Hp = (int) session.Character.HPLoad();
+                    session.Character.Mp = (int) session.Character.MPLoad();
                     session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRevive());
                     session.SendPacket(session.Character.GenerateStat());
-                }
-                else
-                {
+                    break;
+                case MapInstanceType.Act4Instance:
+                    x = (short) (39 + Instance.RandomNumber(-2, 3));
+                    y = (short) (42 + Instance.RandomNumber(-2, 3));
+                    MapInstance citadel = Instance.Act4Maps.FirstOrDefault(s => s.Map.MapId == (session.Character.Faction == FactionType.Angel ? 130 : 131));
+                    if (citadel != null)
+                    {
+                        Instance.ChangeMapInstance(session.Character.CharacterId, citadel.MapInstanceId, x, y);
+                    }
+                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateTp());
+                    session.CurrentMapInstance?.Broadcast(session.Character.GenerateRevive());
+                    session.SendPacket(session.Character.GenerateStat());
+                    break;
+                default:
                     session.Character.Hp = 1;
                     session.Character.Mp = 1;
                     if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                     {
                         RespawnMapTypeDTO resp = session.Character.Respawn;
-                        short x = (short)(resp.DefaultX + RandomNumber(-3, 3));
-                        short y = (short)(resp.DefaultY + RandomNumber(-3, 3));
+                        x = (short) (resp.DefaultX + RandomNumber(-3, 3));
+                        y = (short) (resp.DefaultY + RandomNumber(-3, 3));
                         ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
                     }
                     else
@@ -1372,7 +1389,7 @@ namespace OpenNos.GameObject
                     session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateTp());
                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateRevive());
                     session.SendPacket(session.Character.GenerateStat());
-                }
+                    break;
             }
         }
 

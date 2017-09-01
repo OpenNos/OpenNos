@@ -1850,7 +1850,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                LogChatDTO log = new LogChatDTO()
+                LogChatDTO log = new LogChatDTO
                 {
                     CharacterId = Session.Character.CharacterId,
                     ChatMessage = message,

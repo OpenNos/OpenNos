@@ -73,7 +73,8 @@ namespace OpenNos.Handler
             Regex rg = new Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B\u002E]*$");
             if (rg.Matches(characterName).Count == 1)
             {
-                if (DAOFactory.CharacterDAO.LoadByName(characterName) == null)
+                CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
+                if (character == null || character.State == CharacterState.Inactive)
                 {
                     if (characterCreatePacket.Slot > 2)
                     {

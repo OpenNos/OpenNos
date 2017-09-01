@@ -297,6 +297,7 @@ namespace OpenNos.GameObject.Helpers
                         case MapInstanceType.RaidInstance:
                             evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
                             client = evt.MapInstance.Sessions.FirstOrDefault();
+                            List<ClientSession> toBan = new List<ClientSession>();
                             if (client != null)
                             {
                                 Group grp = client.Character?.Group;
@@ -308,6 +309,12 @@ namespace OpenNos.GameObject.Helpers
                                 {
                                     foreach (ClientSession sess in grp.Characters.Where(s => s.CurrentMapInstance.Monsters.Any(e => e.IsBoss)))
                                     {
+                                        // TODO REMOTE THAT FOR PUBLIC RELEASE
+                                        if (grp.Characters.Count(s => s.IpAddress.Equals(sess.IpAddress)) > 2)
+                                        {
+                                            toBan.Add(sess);
+                                            continue;
+                                        }
                                         if (grp.Raid?.GiftItems == null)
                                         {
                                             continue;

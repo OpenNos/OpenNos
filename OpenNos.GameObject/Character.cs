@@ -614,6 +614,13 @@ namespace OpenNos.GameObject
                         });
                     }
                 }
+                else
+                {
+                    if (Buff.Any(s => s.Card.CardId == 339))
+                    {
+                        Session.Character.RemoveBuff(339);
+                    }
+                }
 
                 // TODO NEED TO FIND A WAY TO APPLY BUFFS PROPERLY THROUGH MONSTER SKILLS
                 IEnumerable<Mate> equipMates = Mates.Where(s => s.IsTeamMember);
@@ -630,8 +637,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.AddBuff(new Buff(383), false);
                 }
-
-
+                
                 if (LastHealth.AddSeconds(3) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
                 {
                     LastHealth = DateTime.Now;
