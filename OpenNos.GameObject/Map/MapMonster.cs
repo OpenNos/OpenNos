@@ -815,8 +815,37 @@ namespace OpenNos.GameObject
                     int hitmode = 0;
 
                     // calculate damage
-                    int damage = hitRequest.Session.Character.GenerateDamage(this, hitRequest.Skill, ref hitmode);
+                    bool onyxWings = false;
+                    int damage = hitRequest.Session.Character.GenerateDamage(this, hitRequest.Skill, ref hitmode, ref onyxWings);
 
+                    if (onyxWings && MapInstance != null)
+                    {
+                        short onyxX = (short)(hitRequest.Session.Character.PositionX + 2);
+                        short onyxY = (short)(hitRequest.Session.Character.PositionY + 2);
+                        int onyxId = MapInstance.GetNextMonsterId();
+                        MapMonster onyx = new MapMonster
+                        {
+                            MonsterVNum = 2371,
+                            MapX = onyxX,
+                            MapY = onyxY,
+                            MapMonsterId = onyxId,
+                            IsHostile = false,
+                            IsMoving = false,
+                            ShouldRespawn = false
+                        };
+                        MapInstance.Broadcast($"guri 31 1 {hitRequest.Session.Character.CharacterId} {onyxX} {onyxY}");
+                        onyx.Initialize(MapInstance);
+                        MapInstance.AddMonster(onyx);
+                        MapInstance.Broadcast(onyx.GenerateIn());
+                        CurrentHp -= damage / 2;
+                        HitRequest request = hitRequest;
+                        Observable.Timer(TimeSpan.FromMilliseconds(350)).Subscribe(o =>
+                        {
+                            MapInstance.Broadcast($"su 3 {onyxId} 3 {MapMonsterId} -1 0 -1 {request.Skill.Effect} -1 -1 1 92 {damage / 2} 0 0");
+                            MapInstance.RemoveMonster(onyx);
+                            MapInstance.Broadcast(onyx.GenerateOut());
+                        });
+                    }
                     switch (hitRequest.TargetHitType)
                     {
                         case TargetHitType.SingleTargetHit:

@@ -1055,7 +1055,7 @@ namespace OpenNos.GameObject
             return $"cond 1 {CharacterId} {(NoAttack ? 1 : 0)} {(NoMove ? 1 : 0)} {Speed}";
         }
 
-        public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode)
+        public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
             #region Definitions
 
@@ -1451,6 +1451,8 @@ namespace OpenNos.GameObject
                 case 1:
                     elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.FireIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.FireResistance;
+                    monsterResistance -= (short)GetBuff(CardType.EnemyElementResistance, (byte)AdditionalTypes.EnemyElementResistance.AllDecreased, false)[0];
+                    monsterResistance -= (short)GetBuff(CardType.EnemyElementResistance, (byte)AdditionalTypes.EnemyElementResistance.FireDecreased, false)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
@@ -1478,6 +1480,8 @@ namespace OpenNos.GameObject
                 case 2:
                     elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.WaterIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.WaterResistance;
+                    monsterResistance -= (short)GetBuff(CardType.EnemyElementResistance, (byte)AdditionalTypes.EnemyElementResistance.AllDecreased, false)[0];
+                    monsterResistance -= (short)GetBuff(CardType.EnemyElementResistance, (byte)AdditionalTypes.EnemyElementResistance.WaterDecreased, false)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
@@ -1505,6 +1509,8 @@ namespace OpenNos.GameObject
                 case 3:
                     elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.LightIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.LightResistance;
+                    monsterResistance -= (short)GetBuff(CardType.EnemyElementResistance, (byte)AdditionalTypes.EnemyElementResistance.AllDecreased, false)[0];
+                    monsterResistance -= (short)GetBuff(CardType.EnemyElementResistance, (byte)AdditionalTypes.EnemyElementResistance.WaterDecreased, false)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
@@ -1532,6 +1538,8 @@ namespace OpenNos.GameObject
                 case 4:
                     elementalDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.DarkIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.DarkResistance;
+                    monsterResistance -= (short)GetBuff(CardType.EnemyElementResistance, (byte)AdditionalTypes.EnemyElementResistance.AllDecreased, false)[0];
+                    monsterResistance -= (short)GetBuff(CardType.EnemyElementResistance, (byte)AdditionalTypes.EnemyElementResistance.DarkDecreased, false)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
@@ -1632,6 +1640,17 @@ namespace OpenNos.GameObject
 
             #endregion
 
+
+            #region Soft-Damage
+
+            int[] soft = GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false);
+            if (ServerManager.Instance.RandomNumber() < soft[0])
+            {
+                baseDamage += baseDamage * (int)(soft[1] / 100D);
+                Session?.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(15));
+            }
+
+            #endregion
             #region Total Damage
 
             int totalDamage = baseDamage + elementalDamage;
@@ -1693,6 +1712,18 @@ namespace OpenNos.GameObject
                 nearestDistance = distance;
                 monsterToAttack.Target = session.Character.CharacterId;
             }
+
+
+            #region Onyx Wings
+
+            int[] onyxBuff = GetBuff(CardType.StealBuff, (byte)AdditionalTypes.StealBuff.ChanceSummonOnyxDragon, false);
+            if (onyxBuff[0] > ServerManager.Instance.RandomNumber())
+            {
+                onyxEffect = true;
+            }
+
+            #endregion
+
             return damage;
         }
 
@@ -2494,7 +2525,7 @@ namespace OpenNos.GameObject
             return Inventory.Select(s => s.Value).Where(s => s.Type == InventoryType.PetWarehouse).Aggregate(stash, (current, item) => current + $" {item.GenerateStashPacket()}");
         }
 
-        public int GeneratePVPDamage(Character target, Skill skill, ref int hitmode)
+        public int GeneratePVPDamage(Character target, Skill skill, ref int hitmode, ref bool onyx)
         {
             #region Definitions
 
@@ -3151,7 +3182,17 @@ namespace OpenNos.GameObject
             {
                 totalDamage = ServerManager.Instance.RandomNumber(1, 6);
             }
-            
+
+            #endregion
+
+            #region Onyx Wings
+
+            int[] onyxBuff = GetBuff(CardType.StealBuff, (byte)AdditionalTypes.StealBuff.ChanceSummonOnyxDragon, false);
+            if (onyxBuff[0] > ServerManager.Instance.RandomNumber())
+            {
+                onyx = true;
+            }
+
             #endregion
 
             #endregion

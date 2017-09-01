@@ -1603,12 +1603,20 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                         }
+                        else if (portal.DestinationMapId == 152)
+                        {
+                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, 52, 53);
+                        }
                         break;
                     case FactionType.Demon:
                         if (portal.DestinationMapId == 130)
                         {
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
+                        }
+                        else if (portal.DestinationMapId == 152)
+                        {
+                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, 52, 53);
                         }
                         break;
                 }

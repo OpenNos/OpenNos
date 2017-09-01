@@ -1059,18 +1059,18 @@ namespace OpenNos.GameObject
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED"), _monsterSkills.Sum(i => i.Value.Count)));
 
             // initialize npcmonsters
-            ConcurrentDictionary<short, NpcMonster> _npcMonsters = new ConcurrentDictionary<short, NpcMonster>();
+            ConcurrentDictionary<short, NpcMonster> npcMonsters = new ConcurrentDictionary<short, NpcMonster>();
             Parallel.ForEach(DAOFactory.NpcMonsterDAO.LoadAll(), npcMonster =>
             {
-                _npcMonsters[npcMonster.NpcMonsterVNum] = npcMonster as NpcMonster;
-                NpcMonster monster = _npcMonsters[npcMonster.NpcMonsterVNum];
+                npcMonsters[npcMonster.NpcMonsterVNum] = npcMonster as NpcMonster;
+                NpcMonster monster = npcMonsters[npcMonster.NpcMonsterVNum];
                 if (monster != null)
                 {
                     monster.BCards = new List<BCard>();
                 }
-                DAOFactory.BCardDAO.LoadByNpcMonsterVNum(npcMonster.NpcMonsterVNum).ToList().ForEach(s => _npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard)s));
+                DAOFactory.BCardDAO.LoadByNpcMonsterVNum(npcMonster.NpcMonsterVNum).ToList().ForEach(s => npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard)s));
             });
-            _npcs.AddRange(_npcMonsters.Select(s => s.Value));
+            _npcs.AddRange(npcMonsters.Select(s => s.Value));
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count));
 
             // intialize recipes
@@ -1228,6 +1228,14 @@ namespace OpenNos.GameObject
                 foreach (Map m in _maps.Where(s => s.MapTypes.Any(o => o.MapTypeId == (short)MapTypeEnum.Act4 || o.MapTypeId == (short)MapTypeEnum.Act42)))
                 {
                     MapInstance act4Map = GenerateMapInstance(m.MapId, MapInstanceType.Act4Instance, new InstanceBag());
+                    if (act4Map.Map.MapId == 153)
+                    {
+                        act4Map.Portals.Clear();
+                        // ANGEL
+                        act4Map.Portals.Add(new Portal {DestinationMapId = 134, DestinationX = 46, DestinationY = 171, SourceMapId = 153, IsDisabled = false, Type = (short) PortalType.MapPortal});
+                        // DEMON
+                        act4Map.Portals.Add(new Portal {DestinationMapId = 134, DestinationX = 50, DestinationY = 171, SourceMapId = 153, IsDisabled = false, Type = (short) PortalType.MapPortal});
+                    }
                     act4Map.IsPVP = true;
                     Act4Maps.Add(act4Map);
                 }
@@ -1334,11 +1342,12 @@ namespace OpenNos.GameObject
         public void RemoveMapInstance(Guid mapId)
         {
             KeyValuePair<Guid, MapInstance> map = _mapinstances.FirstOrDefault(s => s.Key == mapId);
-            if (!map.Equals(default(KeyValuePair<Guid, MapInstance>)))
+            if (map.Equals(default(KeyValuePair<Guid, MapInstance>)))
             {
-                map.Value.Dispose();
-                ((IDictionary)_mapinstances).Remove(map.Key);
+                return;
             }
+            map.Value.Dispose();
+            ((IDictionary)_mapinstances).Remove(map.Key);
         }
 
         // Map
@@ -1596,6 +1605,8 @@ namespace OpenNos.GameObject
 
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { GroupProcess(); });
 
+            Observable.Interval(TimeSpan.FromMinutes(1)).Subscribe(x => { Act4FlowerProcess(); });
+
             Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x => { BotProcess(); });
 
             Observable.Interval(TimeSpan.FromSeconds(90)).Subscribe(x => { MailProcess(); });
@@ -1622,6 +1633,25 @@ namespace OpenNos.GameObject
             CommunicationServiceClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
             CommunicationServiceClient.Instance.ShutdownEvent += OnShutdown;
             _lastGroupId = 1;
+        }
+
+        private void Act4FlowerProcess()
+        {
+            // FIND THE REAL VALUES
+            foreach (MapInstance map in Act4Maps.Where(s => s.Map.MapId != 131 && s.Map.MapId != 130 && s.Npcs.Count(o => o.NpcVNum == 2004) < 7))
+            {
+                // TODO PROPERTY
+                MapCell bite = map.Map.GetRandomPosition();
+                map.Npcs.Add(new MapNpc
+                {
+                    MapId = map.Map.MapId,
+                    MapX = bite.X,
+                    MapY = bite.Y,
+                    Dialog = 1,
+                    EffectDelay = 4750,
+                    Position = (byte) RandomNumber(1, 6)
+                });
+            }
         }
 
         private void Act4Process()
@@ -2006,12 +2036,13 @@ namespace OpenNos.GameObject
                         {
                             Parallel.ForEach(Instance.Sessions, session =>
                             {
-                                if (session.HasSelectedCharacter && session.Character.Family != null)
+                                if (!session.HasSelectedCharacter || session.Character.Family == null)
                                 {
-                                    if (session.Character.Family.FamilyId == message.DestinationCharacterId)
-                                    {
-                                        session.SendPacket($"say 1 0 6 <{Language.Instance.GetMessageFromKey("CHANNEL")}: {CommunicationServiceClient.Instance.GetChannelIdByWorldId(message.SourceWorldId)}>{message.Message}");
-                                    }
+                                    return;
+                                }
+                                if (session.Character.Family.FamilyId == message.DestinationCharacterId)
+                                {
+                                    session.SendPacket($"say 1 0 6 <{Language.Instance.GetMessageFromKey("CHANNEL")}: {CommunicationServiceClient.Instance.GetChannelIdByWorldId(message.SourceWorldId)}>{message.Message}");
                                 }
                             });
                         }
@@ -2046,7 +2077,6 @@ namespace OpenNos.GameObject
             {
                 if (rel != null)
                 {
-                    rel = reldto;
                 }
                 else
                 {
@@ -2071,7 +2101,6 @@ namespace OpenNos.GameObject
                 {
                     if (rel != null)
                     {
-                        rel = reldto;
                     }
                     else
                     {

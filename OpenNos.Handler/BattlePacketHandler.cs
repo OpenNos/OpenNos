@@ -264,7 +264,10 @@ namespace OpenNos.Handler
 
                 // calculate damage
                 //int damage = hitRequest.Session.Character.GenerateDamage(this, hitRequest.Skill, ref hitmode);
-                int damage = hitRequest.Session.Character.GeneratePVPDamage(target.Character, hitRequest.Skill, ref hitmode);
+
+                bool onyxWings = false;
+                int damage = hitRequest.Session.Character.GeneratePVPDamage(target.Character, hitRequest.Skill, ref hitmode, ref onyxWings);
+
                 if (target.Character.HasGodMode)
                 {
                     damage = 0;
@@ -274,6 +277,35 @@ namespace OpenNos.Handler
                 {
                     damage = 0;
                     hitmode = 1;
+                }
+                // TODO IMPROVE THAT
+                if (onyxWings && target.CurrentMapInstance != null)
+                {
+                    short onyxX = (short)(hitRequest.Session.Character.PositionX + 2);
+                    short onyxY = (short)(hitRequest.Session.Character.PositionY + 2);
+                    int onyxId = target.CurrentMapInstance.GetNextMonsterId();
+                    MapMonster onyx = new MapMonster
+                    {
+                        MonsterVNum = 2371,
+                        MapX = onyxX,
+                        MapY = onyxY,
+                        MapMonsterId = onyxId,
+                        IsHostile = false,
+                        IsMoving = false,
+                        ShouldRespawn = false
+                    };
+                    target.CurrentMapInstance.Broadcast($"guri 31 1 {hitRequest.Session.Character.CharacterId} {onyxX} {onyxY}");
+                    onyx.Initialize(target.CurrentMapInstance);
+                    target.CurrentMapInstance.AddMonster(onyx);
+                    target.CurrentMapInstance.Broadcast(onyx.GenerateIn());
+                    target.Character.Hp -= (damage / 2);
+                    HitRequest request = hitRequest;
+                    Observable.Timer(TimeSpan.FromMilliseconds(350)).Subscribe(o =>
+                    {
+                        target.CurrentMapInstance.Broadcast($"su 3 {onyxId} 3 {target.Character.CharacterId} -1 0 -1 {request.Skill.Effect} -1 -1 1 92 {damage / 2} 0 0");
+                        target.CurrentMapInstance.RemoveMonster(onyx);
+                        target.CurrentMapInstance.Broadcast(onyx.GenerateOut());
+                    });
                 }
                 target.Character.GetDamage(damage / 2);
                 target.Character.LastDefence = DateTime.Now;
