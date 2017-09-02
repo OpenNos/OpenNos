@@ -251,11 +251,7 @@ namespace OpenNos.GameObject
 
         public string GenerateRsfn(bool isInit = false)
         {
-            if (MapInstanceType == MapInstanceType.TimeSpaceInstance)
-            {
-                return $"rsfn {MapIndexX} {MapIndexY} {(isInit ? 1 : (Monsters.Where(s => s.IsAlive).ToList().Count == 0 ? 0 : 1))}";
-            }
-            return string.Empty;
+            return MapInstanceType == MapInstanceType.TimeSpaceInstance ? $"rsfn {MapIndexX} {MapIndexY} {(isInit ? 1 : (Monsters.Where(s => s.IsAlive).ToList().Count == 0 ? 0 : 1))}" : string.Empty;
         }
 
         public IEnumerable<string> GenerateUserShops()
@@ -323,7 +319,10 @@ namespace OpenNos.GameObject
             OrderablePartitioner<MapMonsterDTO> partitioner = Partitioner.Create(DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
             Parallel.ForEach(partitioner, monster =>
             {
-                MapMonster mapMonster = monster as MapMonster;
+                if (!(monster is MapMonster mapMonster))
+                {
+                    return;
+                }
                 mapMonster.Initialize(this);
                 int mapMonsterId = mapMonster.MapMonsterId;
                 _monsters[mapMonsterId] = mapMonster;
@@ -336,7 +335,10 @@ namespace OpenNos.GameObject
             OrderablePartitioner<MapNpcDTO> partitioner = Partitioner.Create(DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
             Parallel.ForEach(partitioner, npc =>
             {
-                MapNpc mapNpc = npc as MapNpc;
+                if (!(npc is MapNpc mapNpc))
+                {
+                    return;
+                }
                 mapNpc.Initialize(this);
                 int mapNpcId = mapNpc.MapNpcId;
                 _npcs[mapNpcId] = mapNpc;
@@ -350,8 +352,7 @@ namespace OpenNos.GameObject
             ConcurrentDictionary<int, Portal> portalList = new ConcurrentDictionary<int, Portal>();
             Parallel.ForEach(partitioner, portal =>
             {
-                Portal portal2 = portal as Portal;
-                if (portal2 == null)
+                if (!(portal is Portal portal2))
                 {
                     return;
                 }

@@ -16,14 +16,12 @@ using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.Import.Console
 {
@@ -76,7 +74,6 @@ namespace OpenNos.Import.Console
             List<CardDTO> cards = new List<CardDTO>();
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             CardDTO card = new CardDTO();
-            BCardDTO bcard;
             List<BCardDTO> bcards = new List<BCardDTO>();
             string line;
             int counter = 0;
@@ -134,59 +131,62 @@ namespace OpenNos.Import.Console
                         card.Duration = Convert.ToInt32(currentLine[2]);
                         card.Delay = Convert.ToInt32(currentLine[3]);
                     }
-                    else if (currentLine.Length > 3 && currentLine[1] == "1ST")
+                    else
                     {
-                        for (int i = 0; i < 3; i++)
+                        BCardDTO bcard;
+                        if (currentLine.Length > 3 && currentLine[1] == "1ST")
                         {
-                            if (currentLine[2 + i * 6] == "-1" || currentLine[2 + i * 6] == "0")
+                            for (int i = 0; i < 3; i++)
                             {
-                                continue;
+                                if (currentLine[2 + i * 6] == "-1" || currentLine[2 + i * 6] == "0")
+                                {
+                                    continue;
+                                }
+                                bcard = new BCardDTO
+                                {
+                                    CardId = card.CardId,
+                                    Type = Convert.ToByte(currentLine[2 + i * 6]),
+                                    SubType = (byte)((Convert.ToByte(currentLine[3 + i * 6]) + 1) * 10 + 1),
+                                    ThirdData = Convert.ToByte(currentLine[5 + i * 6]),
+                                    FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
+                                    SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
+                                };
+                                bcards.Add(bcard);
                             }
-                            bcard = new BCardDTO()
-                            {
-                                CardId = card.CardId,
-                                Type = Convert.ToByte(currentLine[2 + i * 6]),
-                                SubType = (byte)(Convert.ToByte(currentLine[3 + i * 6]) * 10),
-                                ThirdData = Convert.ToByte(currentLine[5 + i * 6]),
-                                FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
-                                SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
-                            };
-                            bcards.Add(bcard);
                         }
-                    }
-                    else if (currentLine.Length > 3 && currentLine[1] == "2ST")
-                    {
-                        for (int i = 0; i < 2; i++)
+                        else if (currentLine.Length > 3 && currentLine[1] == "2ST")
                         {
-                            if (currentLine[2 + i * 6] == "0" || currentLine[2 + i * 6] == "-1")
+                            for (int i = 0; i < 2; i++)
                             {
-                                continue;
+                                if (currentLine[2 + i * 6] == "-1" || currentLine[2 + i * 6] == "0")
+                                {
+                                    continue;
+                                }
+                                bcard = new BCardDTO
+                                {
+                                    CardId = card.CardId,
+                                    Type = Convert.ToByte(currentLine[2 + i * 6]),
+                                    SubType = (byte)((Convert.ToByte(currentLine[3 + i * 6]) + 1) * 10 + 1),
+                                    ThirdData = Convert.ToByte(currentLine[5 + i * 6]),
+                                    FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
+                                    SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
+                                };
+                                bcards.Add(bcard);
                             }
-                            bcard = new BCardDTO()
-                            {
-                                CastType = 1,
-                                CardId = card.CardId,
-                                Type = byte.Parse(currentLine[2 + i * 6]),
-                                SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
-                                FirstData = (short)(int.Parse(currentLine[5]) / 4),
-                                SecondData = (short)(int.Parse(currentLine[6]) / 4),
-                                ThirdData = (short)(int.Parse(currentLine[7]) / 4),
-                            };
-                            bcards.Add(bcard);
                         }
-                    }
-                    else if (currentLine.Length > 3 && currentLine[1] == "LAST")
-                    {
-                        card.TimeoutBuff = Convert.ToInt16(currentLine[2]);
-                        card.TimeoutBuffChance = Convert.ToByte(currentLine[3]);
+                        else if (currentLine.Length > 3 && currentLine[1] == "LAST")
+                        {
+                            card.TimeoutBuff = short.Parse(currentLine[2]);
+                            card.TimeoutBuffChance = byte.Parse(currentLine[3]);
 
-                        // investigate
-                        if (DAOFactory.CardDAO.LoadById(card.CardId) == null)
-                        {
-                            cards.Add(card);
-                            counter++;
+                            // investigate
+                            if (DAOFactory.CardDAO.LoadById(card.CardId) == null)
+                            {
+                                cards.Add(card);
+                                counter++;
+                            }
+                            itemAreaBegin = false;
                         }
-                        itemAreaBegin = false;
                     }
                 }
                 DAOFactory.CardDAO.Insert(cards);
@@ -237,39 +237,40 @@ namespace OpenNos.Import.Console
                     map = short.Parse(currentPacket[2]);
                     continue;
                 }
-                if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "2")
+                if (currentPacket.Length <= 7 || currentPacket[0] != "in" || currentPacket[1] != "2")
                 {
-                    MapNpcDTO npctest = new MapNpcDTO
-                    {
-                        MapX = short.Parse(currentPacket[4]),
-                        MapY = short.Parse(currentPacket[5]),
-                        MapId = map,
-                        NpcVNum = short.Parse(currentPacket[2])
-                    };
-                    if (long.Parse(currentPacket[3]) > 20000)
-                    {
-                        continue;
-                    }
-                    npctest.MapNpcId = short.Parse(currentPacket[3]);
-                    if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
-                    {
-                        npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
-                    }
-                    npctest.EffectDelay = 4750;
-                    npctest.IsMoving = npcMvPacketsList.Contains(npctest.MapNpcId);
-                    npctest.Position = byte.Parse(currentPacket[6]);
-                    npctest.Dialog = short.Parse(currentPacket[9]);
-                    npctest.IsSitting = currentPacket[13] != "1";
-                    npctest.IsDisabled = false;
-
-                    if (DAOFactory.NpcMonsterDAO.LoadByVNum(npctest.NpcVNum) == null || DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null || npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0)
-                    {
-                        continue;
-                    }
-
-                    npcs.Add(npctest);
-                    npcCounter++;
+                    continue;
                 }
+                MapNpcDTO npctest = new MapNpcDTO
+                {
+                    MapX = short.Parse(currentPacket[4]),
+                    MapY = short.Parse(currentPacket[5]),
+                    MapId = map,
+                    NpcVNum = short.Parse(currentPacket[2])
+                };
+                if (long.Parse(currentPacket[3]) > 20000)
+                {
+                    continue;
+                }
+                npctest.MapNpcId = short.Parse(currentPacket[3]);
+                if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
+                {
+                    npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
+                }
+                npctest.EffectDelay = 4750;
+                npctest.IsMoving = npcMvPacketsList.Contains(npctest.MapNpcId);
+                npctest.Position = byte.Parse(currentPacket[6]);
+                npctest.Dialog = short.Parse(currentPacket[9]);
+                npctest.IsSitting = currentPacket[13] != "1";
+                npctest.IsDisabled = false;
+
+                if (DAOFactory.NpcMonsterDAO.LoadByVNum(npctest.NpcVNum) == null || DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null || npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0)
+                {
+                    continue;
+                }
+
+                npcs.Add(npctest);
+                npcCounter++;
             }
             DAOFactory.MapNpcDAO.Insert(npcs);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
@@ -1321,8 +1322,8 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 4; i++)
                         {
-                            byte type = (byte)(int.Parse(currentLine[2 + 5 * i]));
-                            if (type == 0)
+                            byte type = (byte)int.Parse(currentLine[5 * i + 2]);
+                            if (type == 0 || type == 255)
                             {
                                 continue;
                             }
@@ -1330,10 +1331,12 @@ namespace OpenNos.Import.Console
                             {
                                 NpcMonsterVNum = npc.NpcMonsterVNum,
                                 Type = type,
-                                SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10),
-                                FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
-                                SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                                SubType = (byte)(int.Parse(currentLine[5 * i + 5]) * 10 + 1),
+                                IsLevelScaled = Convert.ToBoolean(int.Parse(currentLine[5 * i + 3]) % 4),
+                                IsLevelDivided = (int.Parse(currentLine[5 * i + 3]) % 4) == 2,
+                                FirstData = (short)(int.Parse(currentLine[5 * i + 3]) / 4),
+                                SecondData = (short)(int.Parse(currentLine[5 * i + 4]) / 4),
+                                ThirdData = (short)(int.Parse(currentLine[5 * i + 6]) / 4),
                             };
                             monstercards.Add(itemCard);
                         }
@@ -1342,7 +1345,7 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 4; i++)
                         {
-                            byte type = (byte)int.Parse(currentLine[2 + 5 * i]);
+                            byte type = (byte)int.Parse(currentLine[5 * i + 2]);
                             if (type == 0)
                             {
                                 continue;
@@ -1351,11 +1354,13 @@ namespace OpenNos.Import.Console
                             {
                                 NpcMonsterVNum = npc.NpcMonsterVNum,
                                 Type = type,
-                                SubType = (byte)(int.Parse(currentLine[6 + 5 * i])* 10),
-                                FirstData = (short)int.Parse(currentLine[5 + 5]),
-                                SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                ThirdData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
-                                CastType = 1
+                                SubType = (byte) ((int.Parse(currentLine[5 * i + 6]) + 1) * 10 + 1),
+                                FirstData = (short) (int.Parse(currentLine[5 * i + 5]) / 4),
+                                SecondData = (short) (int.Parse(currentLine[5 * i + 4]) / 4),
+                                ThirdData = (short) (int.Parse(currentLine[5 * i + 3]) / 4),
+                                CastType = 1,
+                                IsLevelScaled = false,
+                                IsLevelDivided = false
                             };
                             monstercards.Add(itemCard);
                         }
@@ -2335,7 +2340,7 @@ namespace OpenNos.Import.Console
 
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             SkillDTO skill = new SkillDTO();
-            List<ComboDTO> Combo = new List<ComboDTO>();
+            List<ComboDTO> combo = new List<ComboDTO>();
             List<BCardDTO> skillCards = new List<BCardDTO>();
             string line;
             int counter = 0;
@@ -2395,7 +2400,7 @@ namespace OpenNos.Import.Console
                             }
                             if (!DAOFactory.ComboDAO.LoadByVNumHitAndEffect(comb.SkillVNum, comb.Hit, comb.Effect).Any())
                             {
-                                Combo.Add(comb);
+                                combo.Add(comb);
                             }
                         }
                     }
@@ -2550,16 +2555,18 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
                     {
-                        int type = Int32.Parse(currentLine[3]);
-                        if (type == 0 || type == -1)
+                        byte type = (byte)int.Parse(currentLine[3]);
+                        if (type == 0 || type == 255)
                         {
                             continue;
                         }
                         BCardDTO itemCard = new BCardDTO
                         {
                             SkillVNum = skill.SkillVNum,
-                            Type = (byte)type,
-                            SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
+                            Type = type,
+                            SubType = (byte)(int.Parse(currentLine[4]) + 1),
+                            IsLevelScaled = Convert.ToBoolean(int.Parse(currentLine[5]) % 4),
+                            IsLevelDivided = (int.Parse(currentLine[5]) % 4) == 2,
                             FirstData = (short)(int.Parse(currentLine[5]) / 4),
                             SecondData = (short)(int.Parse(currentLine[6]) / 4),
                             ThirdData = (short)(int.Parse(currentLine[7]) / 4),
@@ -2606,7 +2613,7 @@ namespace OpenNos.Import.Console
                     }
                 }
                 DAOFactory.SkillDAO.Insert(skills);
-                DAOFactory.ComboDAO.Insert(Combo);
+                DAOFactory.ComboDAO.Insert(combo);
                 DAOFactory.BCardDAO.Insert(skillCards);
 
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_PARSED"), counter));
@@ -2661,7 +2668,6 @@ namespace OpenNos.Import.Console
             short map = 0;
             List<ScriptedInstanceDTO> listtimespace = new List<ScriptedInstanceDTO>();
             List<ScriptedInstanceDTO> bddlist = new List<ScriptedInstanceDTO>();
-            ;
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("wp") || o[0].Equals("gp") || o[0].Equals("rbr")))
             {
                 if (currentPacket.Length > 5 && currentPacket[0] == "at")
@@ -3843,7 +3849,7 @@ namespace OpenNos.Import.Console
                             item.Height = Convert.ToByte(currentLine[10]);
                         }
 
-                        if ((item.EquipmentSlot != EquipmentType.Boots && item.EquipmentSlot != EquipmentType.Gloves) || item.Type != 0)
+                        if (item.EquipmentSlot != EquipmentType.Boots && item.EquipmentSlot != EquipmentType.Gloves || item.Type != 0)
                         {
                             continue;
                         }
@@ -3856,17 +3862,20 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 5; i++)
                         {
-                            int type = int.Parse(currentLine[2 + 5 * i]);
-                            if (type == 0 || type == -1)
+                            byte type = (byte)int.Parse(currentLine[2 + 5 * i]);
+                            if (type == 0 || type == 255)
                             {
                                 continue;
                             }
+                            int first = int.Parse(currentLine[3 + 5 * i]);
                             BCardDTO itemCard = new BCardDTO
                             {
                                 ItemVNum = item.VNum,
-                                Type = (byte)type,
-                                SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1)),
-                                FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
+                                Type = type,
+                                SubType = (byte)(int.Parse(currentLine[5 + 5 * i]) * 10 + 1),
+                                IsLevelScaled = Convert.ToBoolean(first % 4),
+                                IsLevelDivided = (first % 4) == 2,
+                                FirstData = (short)(first / 4),
                                 SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
                                 ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
                             };
