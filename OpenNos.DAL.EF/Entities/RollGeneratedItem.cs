@@ -24,11 +24,6 @@ namespace OpenNos.DAL.EF
     {
         #region Instantiation
 
-        public RollGeneratedItem()
-        {
-
-        }
-
         #endregion
 
         #region Properties
@@ -55,6 +50,8 @@ namespace OpenNos.DAL.EF
         public byte MaximumOriginalItemRare { get; set; }
 
         public virtual Item ItemGenerated { get; set; }
+
+        public bool IsSuperReward { get; set; }
 
         #endregion
     }

@@ -40,6 +40,8 @@ namespace OpenNos.Data
 
         public byte MaximumOriginalItemRare { get; set; }
 
+        public bool IsSuperReward { get; set; }
+
         #endregion
     }
 }
