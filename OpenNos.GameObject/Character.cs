@@ -3371,7 +3371,7 @@ namespace OpenNos.GameObject
             string skibase = string.Empty;
             if (!UseSp)
             {
-                skibase = $"{200 + 20 * (byte)Class} {201 + 20 * (byte)Class}";
+                skibase = $"{200 + 20 * (byte) Class} {201 + 20 * (byte) Class}";
             }
             else if (characterSkills.Any())
             {
@@ -3474,11 +3474,7 @@ namespace OpenNos.GameObject
         public string GenerateStashAll()
         {
             string stash = $"stash_all {WareHouseSize}";
-            foreach (ItemInstance item in Inventory.Where(s => s.Value.Type == InventoryType.Warehouse).Select(s => s.Value))
-            {
-                stash += $" {item.GenerateStashPacket()}";
-            }
-            return stash;
+            return Inventory.Where(s => s.Value.Type == InventoryType.Warehouse).Select(s => s.Value).Aggregate(stash, (current, item) => current + $" {item.GenerateStashPacket()}");
         }
 
         public string GenerateStat()
@@ -3564,17 +3560,17 @@ namespace OpenNos.GameObject
 
                     if (Session != null)
                     {
-                        slHit += Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack) +
-                                 Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+                        slHit += Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack) +
+                                 Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
-                        slDefence += Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense) +
-                                     Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+                        slDefence += Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense) +
+                                     Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
-                        slElement += Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Element) +
-                                     Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+                        slElement += Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Element) +
+                                     Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
-                        slHp += Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
-                                Session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+                        slHp += Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
+                                Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
                         slHit = slHit > 100 ? 100 : slHit;
                         slDefence = slDefence > 100 ? 100 : slDefence;
@@ -4588,9 +4584,7 @@ namespace OpenNos.GameObject
                         IEnumerable<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
                         IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
                         currentlySavedInventoryIds = characters.Where(s => s.CharacterId != CharacterId)
-                            .Aggregate(currentlySavedInventoryIds,
-                                (current, characteraccount) => current.Concat(DAOFactory.IteminstanceDAO.LoadByCharacterId(characteraccount.CharacterId).Where(s => s.Type == InventoryType.Warehouse)
-                                    .Select(i => i.Id).ToList()));
+                            .Aggregate(currentlySavedInventoryIds, (current, characteraccount) => current.Concat(DAOFactory.IteminstanceDAO.LoadByCharacterId(characteraccount.CharacterId).Where(s => s.Type == InventoryType.Warehouse).Select(i => i.Id).ToList()));
 
                         IEnumerable<MinilandObjectDTO> currentlySavedMinilandObjectEntries = DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId).ToList();
                         foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Miniland.MapDesignObjects))
@@ -4599,7 +4593,8 @@ namespace OpenNos.GameObject
                         }
 
                         // remove all which are saved but not in our current enumerable
-                        foreach (Guid inventoryToDeleteId in currentlySavedInventoryIds.Except(inventories.Select(i => i.Id)))
+                        IEnumerable<ItemInstance> itemInstances = inventories as IList<ItemInstance> ?? inventories.ToList();
+                        foreach (Guid inventoryToDeleteId in currentlySavedInventoryIds.Except(itemInstances.Select(i => i.Id)))
                         {
                             try
                             {
@@ -4613,7 +4608,7 @@ namespace OpenNos.GameObject
                         }
 
                         // create or update all which are new or do still exist
-                        foreach (ItemInstance itemInstance in inventories.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse))
+                        foreach (ItemInstance itemInstance in itemInstances.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse))
                         {
                             DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
                             WearableInstance instance = itemInstance as WearableInstance;
@@ -5741,9 +5736,13 @@ namespace OpenNos.GameObject
             ArenaTeamType atype = ArenaTeamType.ERENIA;
             if (tm == null)
             {
-                return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
+                return $"ta_f 0 {victoriousteam} {(byte) atype} {score1} {life1} {call1} {score2} {life2} {call2}";
             }
             ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
+            if (tmem == null)
+            {
+                return $"ta_f 0 {victoriousteam} {(byte) atype} {score1} {life1} {call1} {score2} {life2} {call2}";
+            }
             atype = tmem.ArenaTeamType;
             IEnumerable<long> ids = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
             ConcurrentBag<ArenaTeamMember> oposit = tm.Where(s => tmem.ArenaTeamType != s.ArenaTeamType);
@@ -5754,7 +5753,7 @@ namespace OpenNos.GameObject
             life2 = 3 - oposit.Count(s => s.Dead);
             call1 = 5 - own.Sum(s => s.SummonCount);
             call2 = 5 - oposit.Sum(s => s.SummonCount);
-            return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
+            return $"ta_f 0 {victoriousteam} {(byte) atype} {score1} {life1} {call1} {score2} {life2} {call2}";
         }
 
         public void LeaveTalentArena(bool surrender = false)

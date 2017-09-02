@@ -121,6 +121,8 @@ namespace OpenNos.GameObject
 
         public int GoldRate { get; set; }
 
+        public int ReputRate { get; set; }
+
         public List<Group> Groups
         {
             get { return GroupsThreadSafe.Select(s => s.Value).ToList(); }
@@ -913,6 +915,7 @@ namespace OpenNos.GameObject
             XPRate = int.Parse(ConfigurationManager.AppSettings["RateXp"]);
             HeroXpRate = int.Parse(ConfigurationManager.AppSettings["RateXpHero"]);
             FairyXpRate = int.Parse(ConfigurationManager.AppSettings["RateXpFairy"]);
+            ReputRate = int.Parse(ConfigurationManager.AppSettings["RateReput"]);
             DropRate = int.Parse(ConfigurationManager.AppSettings["RateDrop"]);
             MaxGold = long.Parse(ConfigurationManager.AppSettings["MaxGold"]);
             GoldDropRate = int.Parse(ConfigurationManager.AppSettings["GoldRateDrop"]);

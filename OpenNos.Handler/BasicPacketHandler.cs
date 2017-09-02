@@ -1316,6 +1316,11 @@ namespace OpenNos.Handler
                                     {
                                         case 1:
                                             Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == guriPacket.Data);
+                                            if (guriPacket.Value.Length > 15)
+                                            {
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_NAME_PET_MAX_LENGTH")));
+                                                return;
+                                            }
                                             if (mate != null)
                                             {
                                                 mate.Name = guriPacket.Value;
