@@ -285,7 +285,6 @@ namespace OpenNos.GameObject
             {
                 return null;
             }
-            Logger.Debug(Owner.Session.GenerateIdentity(), id.ToString());
             Tuple<short, InventoryType> removedPlace;
             ItemInstance inv = this[id];
 
@@ -309,7 +308,6 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            Logger.Debug(Owner.Session.GenerateIdentity(), $"Slot: {slot} Type: {type}");
             ItemInstance inv = this.Select(s => s.Value).FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
 
             if (inv != null)
@@ -624,7 +622,6 @@ namespace OpenNos.GameObject
             {
                 if (remainingAmount > 0)
                 {
-                    Logger.Debug(Owner.Session.GenerateIdentity(), $"Remaining {remainingAmount}/{amount}, removing item {inventory.ItemVNum} from Slot {inventory.Slot} with amount {inventory.Amount}");
                     if (inventory.Amount > remainingAmount)
                     {
                         // amount completely removed

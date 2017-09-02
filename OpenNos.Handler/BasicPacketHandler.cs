@@ -165,7 +165,6 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Logger.Debug(Session.Character.GenerateIdentity(), "Compliment Packet");
             long complimentedCharacterId = complimentPacket.CharacterId;
             if (Session.Character.Level >= 30)
             {
@@ -230,7 +229,6 @@ namespace OpenNos.Handler
         /// <param name="getGiftPacket"></param>
         public void GetGift(GetGiftPacket getGiftPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), "GetGift packet");
             int giftId = getGiftPacket.GiftId;
             if (!Session.Character.MailList.ContainsKey(giftId))
             {
@@ -519,7 +517,6 @@ namespace OpenNos.Handler
         /// <param name="pjoinPacket"></param>
         public void GroupJoin(PJoinPacket pjoinPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), "Joining group");
             bool createNewGroup = true;
             ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(pjoinPacket.CharacterId);
 
@@ -1712,7 +1709,6 @@ namespace OpenNos.Handler
         /// <param name="reqInfoPacket"></param>
         public void ReqInfo(ReqInfoPacket reqInfoPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), reqInfoPacket.ToString());
             switch (reqInfoPacket.Type)
             {
                 case 6:
@@ -1760,7 +1756,6 @@ namespace OpenNos.Handler
         /// <param name="revivalPacket"></param>
         public void Revive(RevivalPacket revivalPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), revivalPacket.ToString());
             if (Session.Character.Hp > 0)
             {
                 return;
@@ -1945,7 +1940,6 @@ namespace OpenNos.Handler
         /// <param name="pstpacket"></param>
         public void SendMail(PstPacket pstpacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), pstpacket.ToString());
             if (pstpacket.Data != null)
             {
                 CharacterDTO receiver = DAOFactory.CharacterDAO.LoadByName(pstpacket.Receiver);
@@ -2050,7 +2044,6 @@ namespace OpenNos.Handler
         /// <param name="qSetPacket"></param>
         public void SetQuicklist(QSetPacket qSetPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), qSetPacket.ToString());
             short data1 = 0, data2 = 0, type = qSetPacket.Type, q1 = qSetPacket.Q1, q2 = qSetPacket.Q2;
             if (qSetPacket.Data1.HasValue)
             {

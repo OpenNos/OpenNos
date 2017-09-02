@@ -223,7 +223,6 @@ namespace OpenNos.Handler
                     Session.SendPacket("cancel 0 0");
                     return;
                 }
-                Logger.Debug(Session.Character.GenerateIdentity(), useAoeSkillPacket.ToString());
                 if (Session.Character.CanFight && Session.Character.Hp > 0)
                 {
                     ZoneHit(useAoeSkillPacket.CastId, useAoeSkillPacket.MapX, useAoeSkillPacket.MapY);

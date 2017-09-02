@@ -53,7 +53,6 @@ namespace OpenNos.Handler
         /// <param name="characterCreatePacket"></param>
         public void CreateCharacter(CharacterCreatePacket characterCreatePacket)
         {
-            Logger.Debug(Session.GenerateIdentity(), characterCreatePacket.ToString());
             if (Session.HasCurrentMapInstance)
             {
                 return;
@@ -171,7 +170,6 @@ namespace OpenNos.Handler
         /// <param name="characterDeletePacket"></param>
         public void DeleteCharacter(CharacterDeletePacket characterDeletePacket)
         {
-            Logger.Debug(Session.GenerateIdentity(), characterDeletePacket.ToString());
 
             if (Session.HasCurrentMapInstance)
             {

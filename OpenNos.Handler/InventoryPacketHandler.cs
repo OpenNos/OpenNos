@@ -1504,7 +1504,6 @@ namespace OpenNos.Handler
         /// <param name="upgradePacket"></param>
         public void Upgrade(UpgradePacket upgradePacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), upgradePacket.ToString());
             if (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.Speed == 0)
             {
                 return;
@@ -1755,7 +1754,6 @@ namespace OpenNos.Handler
         /// <param name="useItemPacket"></param>
         public void UseItem(UseItemPacket useItemPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), useItemPacket.ToString());
             if ((byte)useItemPacket.Type >= 9)
             {
                 return;
@@ -1771,7 +1769,6 @@ namespace OpenNos.Handler
         /// <param name="wearPacket"></param>
         public void Wear(WearPacket wearPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), wearPacket.ToString());
             if (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.Speed == 0)
             {
                 return;
@@ -1950,7 +1947,6 @@ namespace OpenNos.Handler
             List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
             Session.Character.DisableBuffs(bufftodisable);
             Session.Character.EquipmentBCards.RemoveAll(s => s.ItemVNum.Equals(vnum));
-            Logger.Debug(Session.Character.GenerateIdentity(), vnum.ToString());
             Session.Character.UseSp = false;
             Session.Character.LoadSpeed();
             Session.SendPacket(Session.Character.GenerateCond());

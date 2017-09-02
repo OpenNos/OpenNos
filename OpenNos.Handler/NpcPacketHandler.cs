@@ -664,7 +664,6 @@ namespace OpenNos.Handler
         /// <param name="sellPacket"></param>
         public void SellShop(SellPacket sellPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), sellPacket.ToString());
             if (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
             {
                 return;
