@@ -181,6 +181,7 @@ namespace OpenNos.GameObject
             DamageList = new Dictionary<long, long>();
             _random = new Random(MapMonsterId);
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
+            Monster.BCards.ForEach(s => s.ApplyBCards(this));
         }
 
         /// <summary>
@@ -243,20 +244,22 @@ namespace OpenNos.GameObject
 
         internal void GetNearestOponent()
         {
-            if (Target == -1)
+            if (Target != -1)
             {
-                const int maxDistance = 100;
-                int distance = 100;
-                List<ClientSession> sess = new List<ClientSession>();
-                DamageList.Keys.ToList().ForEach(s => sess.Add(MapInstance.GetSessionByCharacterId(s)));
-                ClientSession session = sess.OrderBy(s => distance = Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY })).FirstOrDefault();
-                if (distance < maxDistance)
-                {
-                    if (session != null)
-                    {
-                        Target = session.Character.CharacterId;
-                    }
-                }
+                return;
+            }
+            const int maxDistance = 100;
+            int distance = 100;
+            List<ClientSession> sess = new List<ClientSession>();
+            DamageList.Keys.ToList().ForEach(s => sess.Add(MapInstance.GetSessionByCharacterId(s)));
+            ClientSession session = sess.OrderBy(s => distance = Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY })).FirstOrDefault();
+            if (distance >= maxDistance)
+            {
+                return;
+            }
+            if (session != null)
+            {
+                Target = session.Character.CharacterId;
             }
         }
 
@@ -386,10 +389,8 @@ namespace OpenNos.GameObject
             switch (Monster.AttackClass)
             {
                 case 0:
-                    playerDefense += targetCharacter.Defence
-                        + targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.MeleeDecreased, false)[0];
-                    playerDodge += targetCharacter.DefenceRate
-                        + targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedDecreased, false)[0];
+                    playerDefense += targetCharacter.Defence + targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.MeleeDecreased, false)[0];
+                    playerDodge += targetCharacter.DefenceRate + targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedDecreased, false)[0];
                     boostpercentage = targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.MeleeDecreased, false)[0];
                     playerDefense = (int)(playerDefense * (1 + boostpercentage / 100D));
                     boostpercentage = targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.MagicalDecreased, false)[0];
@@ -397,10 +398,8 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1:
-                    playerDefense += targetCharacter.DistanceDefence
-                        + targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedIncreased, false)[0];
-                    playerDodge += targetCharacter.DistanceDefenceRate
-                        + targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedIncreased, false)[0];
+                    playerDefense += targetCharacter.DistanceDefence + targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedIncreased, false)[0];
+                    playerDodge += targetCharacter.DistanceDefenceRate+ targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedIncreased, false)[0];
                     boostpercentage = targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedIncreased, false)[0];
                     playerDefense = (int)(playerDefense * (1 + boostpercentage / 100D));
                     boostpercentage = targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedIncreased, false)[0];

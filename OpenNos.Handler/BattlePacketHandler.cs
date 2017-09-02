@@ -136,7 +136,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                Logger.Debug(Session.Character.GenerateIdentity(), useSkillPacket.ToString());
+                Logger.Debug(Session.Character.GenerateIdentity(), useSkillPacket.OriginalContent);
 
                 if (useSkillPacket.MapX.HasValue && useSkillPacket.MapY.HasValue)
                 {
@@ -193,8 +193,8 @@ namespace OpenNos.Handler
         /// <summary>
         /// u_as packet
         /// </summary>
-        /// <param name="useAOESkillPacket"></param>
-        public void UseZonesSkill(UseAOESkillPacket useAOESkillPacket)
+        /// <param name="useAoeSkillPacket"></param>
+        public void UseZonesSkill(UseAOESkillPacket useAoeSkillPacket)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted() && penalty != null)
@@ -227,10 +227,10 @@ namespace OpenNos.Handler
                     Session.SendPacket("cancel 0 0");
                     return;
                 }
-                Logger.Debug(Session.Character.GenerateIdentity(), useAOESkillPacket.ToString());
+                Logger.Debug(Session.Character.GenerateIdentity(), useAoeSkillPacket.ToString());
                 if (Session.Character.CanFight && Session.Character.Hp > 0)
                 {
-                    ZoneHit(useAOESkillPacket.CastId, useAOESkillPacket.MapX, useAOESkillPacket.MapY);
+                    ZoneHit(useAoeSkillPacket.CastId, useAoeSkillPacket.MapX, useAoeSkillPacket.MapY);
                 }
             }
         }
@@ -391,7 +391,7 @@ namespace OpenNos.Handler
                             if (IceBreaker.AlreadyFrozenPlayers.Contains(target))
                             {
                                 IceBreaker.AlreadyFrozenPlayers.Remove(target);
-                                target?.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_OUT"), target?.Character?.Name), 0));
+                                target.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_OUT"), target?.Character?.Name), 0));
                                 target.Character.Hp = 1;
                                 target.Character.Mp = 1;
                                 RespawnMapTypeDTO respawn = target?.Character?.Respawn;
@@ -400,7 +400,7 @@ namespace OpenNos.Handler
                             else
                             {
                                 IceBreaker.FrozenPlayers.Add(target);
-                                target?.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_FROZEN"), target?.Character?.Name), 0));
+                                target.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_FROZEN"), target?.Character?.Name), 0));
                                 Task.Run(() =>
                                 {
                                     target.Character.Hp = (int)target.Character.HPLoad();
@@ -514,7 +514,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
                 return;
             }
-            IEnumerable<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp?.Select(s => s.Value) : Session.Character.Skills?.Select(s => s.Value);
+            IEnumerable<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp?.Values.ToList() : Session.Character.Skills?.Values.ToList();
             if (skills != null)
             {
                 CharacterSkill ski = skills.FirstOrDefault(s => s.Skill?.CastId == castingId && s.Skill?.UpgradeSkill == 0);
@@ -529,6 +529,7 @@ namespace OpenNos.Handler
                 }
                 if (ski != null && Session.Character.Mp >= ski.Skill.MpCost)
                 {
+                    Logger.Log.Info($"Skill casted : {ski.SkillVNum}");
                     // AOE Target hit
                     if (ski.Skill.TargetType == 1 && ski.Skill.HitType == 1)
                     {
@@ -694,9 +695,9 @@ namespace OpenNos.Handler
                                             {
                                                 ski.Hit = 0;
                                             }
-                                            IEnumerable<ClientSession> playersInAOERange = ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
+                                            IEnumerable<ClientSession> playersInAoeRange = ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
                                             int count = 0;
-                                            foreach (ClientSession character in playersInAOERange)
+                                            foreach (ClientSession character in playersInAoeRange)
                                             {
                                                 if (Session.CurrentMapInstance == null || !Session.CurrentMapInstance.IsPVP)
                                                 {
@@ -1052,12 +1053,13 @@ namespace OpenNos.Handler
                         }
                         foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(x, y, characterSkill.Skill.TargetRange)))
                         {
-                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
+                            if (Session.CurrentMapInstance == null || !Session.CurrentMapInstance.IsPVP)
                             {
-                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
-                                {
-                                    PVPHit(new HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y), character);
-                                }
+                                continue;
+                            }
+                            if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                            {
+                                PVPHit(new HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y), character);
                             }
                         }
                     });

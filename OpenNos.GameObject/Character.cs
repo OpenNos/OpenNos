@@ -1026,12 +1026,8 @@ namespace OpenNos.GameObject
 
         public string GenerateBlinit()
         {
-            string result = "blinit";
-            foreach (CharacterRelationDTO relation in CharacterRelations.Where(s => s.CharacterId == CharacterId && s.RelationType == CharacterRelationType.Blocked))
-            {
-                result += $" {relation.RelatedCharacterId}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
-            }
-            return result;
+            return CharacterRelations.Where(s => s.CharacterId == CharacterId && s.RelationType == CharacterRelationType.Blocked).Aggregate("blinit",
+                (current, relation) => current + $" {relation.RelatedCharacterId}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}");
         }
 
         public string GenerateCInfo()
@@ -3371,19 +3367,17 @@ namespace OpenNos.GameObject
 
         public string GenerateSki()
         {
-            IEnumerable<CharacterSkill> characterSkills = UseSp ? SkillsSp.Select(s => s.Value) : Skills.Select(s => s.Value);
+            List<CharacterSkill> characterSkills = UseSp ? SkillsSp.Values.OrderBy(s => s.Skill.LevelMinimum).ToList() : Skills.Values.OrderBy(s => s.Skill.LevelMinimum).ToList();
             string skibase = string.Empty;
-            IEnumerable<CharacterSkill> enumerable = characterSkills as IList<CharacterSkill> ?? characterSkills.ToList();
             if (!UseSp)
             {
                 skibase = $"{200 + 20 * (byte)Class} {201 + 20 * (byte)Class}";
             }
-            else if (enumerable.Any())
+            else if (characterSkills.Any())
             {
-                skibase = $"{enumerable.ElementAt(0).SkillVNum} {enumerable.ElementAt(0).SkillVNum}";
+                skibase = $"{characterSkills.ElementAt(0).SkillVNum} {characterSkills.ElementAt(0).SkillVNum}";
             }
-            string generatedSkills = enumerable.Aggregate(string.Empty, (current, ski) => current + $" {ski.SkillVNum}");
-
+            string generatedSkills = characterSkills.Aggregate(string.Empty, (current, ski) => current + $" {ski.SkillVNum}");
             return $"ski {skibase}{generatedSkills}";
         }
 
@@ -4525,7 +4519,6 @@ namespace OpenNos.GameObject
 
         public void ChangeChannel(string ip, short port, byte mode)
         {
-            Logger.Log.Info($"ChangeChannel : ip = {ip} port {port}");
             Session.SendPacket($"mz {ip} {port} {Session.Character.Slot}");
             Session.SendPacket($"it {mode}");
 

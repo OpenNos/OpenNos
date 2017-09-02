@@ -54,8 +54,7 @@ namespace OpenNos.GameObject
                 case BCardType.CardType.Move:
                     if (session.GetType() == typeof(Character))
                     {
-                        Character character = session as Character;
-                        if (character != null)
+                        if (session is Character character)
                         {
                             character.LastSpeedChange = DateTime.Now;
                         }
@@ -89,15 +88,13 @@ namespace OpenNos.GameObject
                             switch (SubType)
                             {
                                 case 2:
-                                    MapMonster monster = session as MapMonster;
-                                    if (monster != null)
+                                    if (session is MapMonster monster)
                                     {
                                         EventHelper.Instance.RunEvent(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     }
                                     break;
                                 default:
-                                    MapMonster mapMonster = session as MapMonster;
-                                    if (mapMonster != null && mapMonster.OnDeathEvents.All(s => s.EventActionType != EventActionType.SPAWNMONSTERS))
+                                    if (session is MapMonster mapMonster && mapMonster.OnDeathEvents.All(s => s.EventActionType != EventActionType.SPAWNMONSTERS))
                                     {
                                         ((MapMonster) session).OnDeathEvents.Add(new EventContainer(((MapMonster) session).MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     }
