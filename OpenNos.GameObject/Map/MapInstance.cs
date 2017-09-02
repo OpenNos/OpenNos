@@ -386,7 +386,6 @@ namespace OpenNos.GameObject
 
         public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
         {
-            Logger.Debug(session.GenerateIdentity(), $"type: {type} slot: {slot} amount: {amount}");
             Guid random2 = Guid.NewGuid();
             MapItem droppedItem = null;
             List<GridPos> possibilities = new List<GridPos>();

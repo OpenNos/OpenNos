@@ -82,7 +82,6 @@ namespace OpenNos.Handler
         /// <param name="addMonsterPacket"></param>
         public void AddMonster(AddMonsterPacket addMonsterPacket)
         {
-            Logger.Debug("Add Monster Command", Session.Character.GenerateIdentity());
             if (addMonsterPacket != null)
             {
                 if (!Session.HasCurrentMapInstance)
@@ -160,7 +159,6 @@ namespace OpenNos.Handler
         /// <param name="addSkillPacket"></param>
         public void AddSkill(AddSkillPacket addSkillPacket)
         {
-            Logger.Debug("Add Skill Command", Session.Character.GenerateIdentity());
             if (addSkillPacket != null)
             {
                 short skillVNum = addSkillPacket.SkillVnum;
@@ -215,7 +213,6 @@ namespace OpenNos.Handler
         /// <param name="arenaWinner"></param>
         public void ArenaWinner(ArenaWinner arenaWinner)
         {
-            Logger.Debug("Arena Winner Command", Session.Character.GenerateIdentity());
             Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
@@ -229,8 +226,6 @@ namespace OpenNos.Handler
         {
             if (banPacket != null)
             {
-                Logger.Debug(banPacket.ToString(), Session.Character.GenerateIdentity());
-
                 banPacket.Reason = banPacket.Reason?.Trim();
                 CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(banPacket.CharacterName);
                 if (character != null)
@@ -267,7 +262,6 @@ namespace OpenNos.Handler
         {
             if (blockExpPacket != null)
             {
-                Logger.Debug(blockExpPacket.ToString(), Session.Character.GenerateIdentity());
                 if (blockExpPacket.Duration == 0)
                 {
                     blockExpPacket.Duration = 60;
@@ -310,7 +304,6 @@ namespace OpenNos.Handler
         {
             if (blockFExpPacket != null)
             {
-                Logger.Debug(blockFExpPacket.ToString(), Session.Character.GenerateIdentity());
                 if (blockFExpPacket.Duration == 0)
                 {
                     blockFExpPacket.Duration = 60;
@@ -351,7 +344,6 @@ namespace OpenNos.Handler
         /// <param name="blockPMPacket"></param>
         public void BlockPM(BlockPMPacket blockPMPacket)
         {
-            Logger.Debug("BlockPM Command", Session.Character.GenerateIdentity());
             if (!Session.Character.GmPvtBlock)
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_ENABLE"), 10));
@@ -372,7 +364,6 @@ namespace OpenNos.Handler
         {
             if (blockRepPacket != null)
             {
-                Logger.Debug(blockRepPacket.ToString(), Session.Character.GenerateIdentity());
                 if (blockRepPacket.Duration == 0)
                 {
                     blockRepPacket.Duration = 60;
@@ -848,7 +839,6 @@ namespace OpenNos.Handler
         {
             if (createItemPacket != null)
             {
-                Logger.Debug(createItemPacket.ToString(), Session.Character.GenerateIdentity());
                 short vnum = createItemPacket.VNum;
                 sbyte rare = 0;
                 byte upgrade = 0, amount = 1, design = 0;
@@ -949,21 +939,22 @@ namespace OpenNos.Handler
             Logger.Debug("PortalTo Command", Session.Character.GenerateIdentity());
             if (portalToPacket != null)
             {
-                if (Session.HasCurrentMapInstance)
+                if (!Session.HasCurrentMapInstance)
                 {
-                    Portal portal = new Portal
-                    {
-                        SourceMapId = Session.Character.MapId,
-                        SourceX = Session.Character.PositionX,
-                        SourceY = Session.Character.PositionY,
-                        DestinationMapId = portalToPacket.DestinationMapId,
-                        DestinationX = portalToPacket.DestinationX,
-                        DestinationY = portalToPacket.DestinationY,
-                        Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
-                    };
-                    Session.CurrentMapInstance.Portals.Add(portal);
-                    Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
+                    return;
                 }
+                Portal portal = new Portal
+                {
+                    SourceMapId = Session.Character.MapId,
+                    SourceX = Session.Character.PositionX,
+                    SourceY = Session.Character.PositionY,
+                    DestinationMapId = portalToPacket.DestinationMapId,
+                    DestinationX = portalToPacket.DestinationX,
+                    DestinationY = portalToPacket.DestinationY,
+                    Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
+                };
+                Session.CurrentMapInstance.Portals.Add(portal);
+                Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
             }
             else
             {

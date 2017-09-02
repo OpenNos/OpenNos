@@ -1562,7 +1562,6 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void Preq(PreqPacket packet)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet.ToString());
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstance)

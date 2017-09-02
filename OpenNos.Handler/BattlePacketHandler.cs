@@ -76,7 +76,6 @@ namespace OpenNos.Handler
                 Session.SendPacket("cancel 0 0");
                 return;
             }
-            Logger.Debug(Session.Character.GenerateIdentity(), mutliTargetListPacket.ToString());
             if (mutliTargetListPacket.TargetsAmount <= 0 || mutliTargetListPacket.TargetsAmount != mutliTargetListPacket.Targets.Count)
             {
                 return;
@@ -135,9 +134,6 @@ namespace OpenNos.Handler
                     }
                     return;
                 }
-
-                Logger.Debug(Session.Character.GenerateIdentity(), useSkillPacket.OriginalContent);
-
                 if (useSkillPacket.MapX.HasValue && useSkillPacket.MapY.HasValue)
                 {
                     Session.Character.PositionX = useSkillPacket.MapX.Value;
@@ -529,7 +525,6 @@ namespace OpenNos.Handler
                 }
                 if (ski != null && Session.Character.Mp >= ski.Skill.MpCost)
                 {
-                    Logger.Log.Info($"Skill casted : {ski.SkillVNum}");
                     // AOE Target hit
                     if (ski.Skill.TargetType == 1 && ski.Skill.HitType == 1)
                     {

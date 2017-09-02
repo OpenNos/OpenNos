@@ -759,7 +759,6 @@ namespace OpenNos.GameObject
                                     {
                                         return;
                                     }
-                                    Logger.Debug(GenerateIdentity(), SpInstance.ItemVNum.ToString());
                                     UseSp = false;
                                     SpInstance = null;
                                     LoadSpeed();
@@ -3920,7 +3919,7 @@ namespace OpenNos.GameObject
 
         public void GetReput(long val)
         {
-            Reput += val;
+            Reput += val * ServerManager.Instance.ReputRate;
             Session.SendPacket(GenerateFd());
             Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), val), 11));
         }
@@ -5678,18 +5677,46 @@ namespace OpenNos.GameObject
             int value1 = 0;
             int value2 = 0;
 
+            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
+            {
+                if (entry.IsLevelScaled)
+                {
+                    if (entry.IsLevelDivided)
+                    {
+                        value1 += Level / entry.FirstData;
+                    }
+                    else
+                    {
+                        value1 += entry.FirstData * Level;
+                    }
+                }
+                else
+                {
+                    value1 += entry.FirstData;
+                }
+                value2 += entry.SecondData;
+            }
+
             lock (Buff)
             {
                 foreach (Buff buff in Buff)
                 {
-                    // THIS ONE DOES NOT WORK FOR STUFFS
-                    foreach (BCard entry in buff.Card.BCards.Concat(EquipmentBCards).Where(s =>
-                        s.Type.Equals((byte) type) && s.SubType.Equals((byte) (subtype / 10)) &&
+                    // THIS ONE DOES NOT FOR STUFFS
+
+                    foreach (BCard entry in buff.Card.BCards.Where(s =>
+                        s.Type.Equals((byte) type) && s.SubType.Equals(subtype) &&
                         (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
                     {
                         if (entry.IsLevelScaled)
                         {
-                            value1 += entry.FirstData * buff.Level;
+                            if (entry.IsLevelDivided)
+                            {
+                                value1 += buff.Level / entry.FirstData;
+                            }
+                            else
+                            {
+                                value1 += entry.FirstData * buff.Level;
+                            }
                         }
                         else
                         {
@@ -5700,7 +5727,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            return new[] { value1, value2 };
+            return new[] {value1, value2};
         }
 
         /// <summary>

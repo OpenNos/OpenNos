@@ -60,7 +60,6 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Logger.Debug(Session.Character.GenerateIdentity(), buyPacket.ToString());
 
             byte amount = buyPacket.Amount;
 
@@ -345,7 +344,6 @@ namespace OpenNos.Handler
         [Packet("m_shop")]
         public void CreateShop(string packet)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             InventoryType[] type = new InventoryType[20];
             long[] gold = new long[20];
@@ -498,7 +496,6 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void NpcRunFunction(NRunPacket packet)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet.ToString());
             Session.Character.LastNRunId = packet.NpcId;
             if (Session.Character.Hp > 0)
             {
@@ -512,94 +509,95 @@ namespace OpenNos.Handler
         /// <param name="pdtsePacket"></param>
         public void Pdtse(PdtsePacket pdtsePacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), pdtsePacket.ToString());
             if (!Session.HasCurrentMapInstance)
             {
                 return;
             }
-            short VNum = pdtsePacket.VNum;
+            short vNum = pdtsePacket.VNum;
             if (pdtsePacket.Type == 1)
             {
                 MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-                if (npc != null)
+                if (npc == null)
                 {
-                    int distance = Map.GetDistance(new MapCell
-                    {
-                        X = Session.Character.PositionX,
-                        Y = Session.Character.PositionY
-                    }, new MapCell
-                    {
-                        X = npc.MapX,
-                        Y = npc.MapY
-                    });
-                    if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
-                    {
-                        Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
-                        if (rec != null && rec.Amount > 0)
-                        {
-                            string rece = $"m_list 3 {rec.Amount}";
-                            foreach (RecipeItemDTO ite in rec.Items)
-                            {
-                                if (ite.Amount > 0)
-                                {
-                                    rece = rece + $" {ite.ItemVNum} {ite.Amount}";
-                                }
-                            }
-                            rece += " -1";
-                            Session.SendPacket(rece);
-                        }
-                    }
+                    return;
                 }
+                int distance = Map.GetDistance(new MapCell
+                {
+                    X = Session.Character.PositionX,
+                    Y = Session.Character.PositionY
+                }, new MapCell
+                {
+                    X = npc.MapX,
+                    Y = npc.MapY
+                });
+                if (npc.MapInstance != Session.CurrentMapInstance || distance > 5)
+                {
+                    return;
+                }
+                Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == vNum);
+                if (rec == null || rec.Amount <= 0)
+                {
+                    return;
+                }
+                string rece = $"m_list 3 {rec.Amount}";
+                rece = rec.Items.Where(ite => ite.Amount > 0).Aggregate(rece, (current, ite) => current + $" {ite.ItemVNum} {ite.Amount}");
+                rece += " -1";
+                Session.SendPacket(rece);
             }
             else
             {
                 MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-                if (npc != null)
+                if (npc == null)
                 {
-                    int distance = Map.GetDistance(new MapCell
-                    {
-                        X = Session.Character.PositionX,
-                        Y = Session.Character.PositionY
-                    }, new MapCell
-                    {
-                        X = npc.MapX,
-                        Y = npc.MapY
-                    });
-                    if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
-                    {
-                        Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
-                        if (rec != null)
-                        {
-                            if (rec.Amount <= 0)
-                            {
-                                return;
-                            }
-                            if (rec.Items.Any(ite => Session.Character.Inventory.CountItem(ite.ItemVNum) < ite.Amount))
-                            {
-                                return;
-                            }
+                    return;
+                }
+                int distance = Map.GetDistance(new MapCell
+                {
+                    X = Session.Character.PositionX,
+                    Y = Session.Character.PositionY
+                }, new MapCell
+                {
+                    X = npc.MapX,
+                    Y = npc.MapY
+                });
+                if (npc.MapInstance != Session.CurrentMapInstance || distance > 5)
+                {
+                    return;
+                }
+                Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == vNum);
+                if (rec == null)
+                {
+                    return;
+                }
+                if (rec.Amount <= 0)
+                {
+                    return;
+                }
+                if (rec.Items.Any(ite => Session.Character.Inventory.CountItem(ite.ItemVNum) < ite.Amount))
+                {
+                    return;
+                }
 
-                            ItemInstance inv = Session.Character.Inventory.AddNewToInventory(rec.ItemVNum, rec.Amount).FirstOrDefault();
-                            if (inv != null)
-                            {
-                                if (inv.GetType() == typeof(WearableInstance))
-                                {
-                                    if (inv is WearableInstance item && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
-                                    {
-                                        item.SetRarityPoint();
-                                    }
-                                }
-                                foreach (RecipeItemDTO ite in rec.Items)
-                                {
-                                    Session.Character.Inventory.RemoveItemAmount(ite.ItemVNum, ite.Amount);
-                                }
-                                Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, Session.Character.CharacterId, 1324));
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
-                            }
-                        }
+                ItemInstance inv = Session.Character.Inventory.AddNewToInventory(rec.ItemVNum, rec.Amount).FirstOrDefault();
+                if (inv == null)
+                {
+                    return;
+                }
+                if (inv.GetType() == typeof(WearableInstance))
+                {
+                    if (inv is WearableInstance item && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon ||
+                                                         item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
+                    {
+                        item.SetRarityPoint();
                     }
                 }
+                foreach (RecipeItemDTO ite in rec.Items)
+                {
+                    Session.Character.Inventory.RemoveItemAmount(ite.ItemVNum, ite.Amount);
+                }
+                Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, Session.Character.CharacterId, 1324));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
             }
         }
 
@@ -612,20 +610,22 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.PacketEnd.Split(' ');
             for (int i = 0; i < packet.Amount * 3; i += 3)
             {
-                if (packetsplit.Count() >= packet.Amount * 3)
+                if (packetsplit.Length < packet.Amount * 3)
                 {
-                    int PetId = int.Parse(packetsplit[i]);
-                    short PositionX = short.Parse(packetsplit[i + 1]);
-                    short PositionY = short.Parse(packetsplit[i + 2]);
-
-                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
-                    if (mate != null)
-                    {
-                        mate.PositionX = PositionX;
-                        mate.PositionY = PositionY;
-                        Session.CurrentMapInstance.Broadcast($"mv 2 {PetId} {PositionX} {PositionY} {mate.Monster.Speed}");
-                    }
+                    continue;
                 }
+                int petId = int.Parse(packetsplit[i]);
+                short positionX = short.Parse(packetsplit[i + 1]);
+                short positionY = short.Parse(packetsplit[i + 2]);
+
+                Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == petId);
+                if (mate == null)
+                {
+                    continue;
+                }
+                mate.PositionX = positionX;
+                mate.PositionY = positionY;
+                Session.CurrentMapInstance.Broadcast($"mv 2 {petId} {positionX} {positionY} {mate.Monster.Speed}");
             }
             /*
             packet.Users.ForEach(u =>
@@ -738,14 +738,13 @@ namespace OpenNos.Handler
         /// <param name="shoppingPacket"></param>
         public void Shopping(ShoppingPacket shoppingPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), shoppingPacket.ToString());
             byte type = shoppingPacket.Type, typeshop = 0;
-            int NpcId = shoppingPacket.NpcId;
+            int npcId = shoppingPacket.NpcId;
             if (Session.Character.IsShopping || !Session.HasCurrentMapInstance)
             {
                 return;
             }
-            MapNpc mapnpc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(NpcId));
+            MapNpc mapnpc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(npcId));
             if (mapnpc?.Shop == null)
             {
                 return;
@@ -852,7 +851,6 @@ namespace OpenNos.Handler
         /// <param name="requestNpcPacket"></param>
         public void ShowShop(RequestNpcPacket requestNpcPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), requestNpcPacket.ToString());
             long owner = requestNpcPacket.Owner;
             if (!Session.HasCurrentMapInstance)
             {
