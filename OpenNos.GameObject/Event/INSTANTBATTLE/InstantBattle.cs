@@ -118,14 +118,11 @@ namespace OpenNos.GameObject.Event
                                 foreach (ClientSession cli in mapinstance.Item1.Sessions.Where(s => s.Character != null).ToList())
                                 {
                                     cli.Character.GetReput(cli.Character.Level * 50);
-                                    cli.Character.Gold += cli.Character.Level * 1000;
-                                    cli.Character.Gold = cli.Character.Gold > maxGold ? maxGold : cli.Character.Gold;
+                                    cli.Character.GetGold(cli.Character.Level * 1000);
                                     cli.Character.SpAdditionPoint += cli.Character.Level * 100;
                                     cli.Character.SpAdditionPoint = cli.Character.SpAdditionPoint > 1000000 ? 1000000 : cli.Character.SpAdditionPoint;
                                     cli.SendPacket(cli.Character.GenerateSpPoint());
                                     cli.SendPacket(cli.Character.GenerateGold());
-                                    cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), cli.Character.Level * 1000), 10));
-                                    cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), cli.Character.Level * 50), 10));
                                     cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_SP_POINT"), cli.Character.Level * 100), 10));
                                 }
                                 break;
