@@ -43,6 +43,8 @@ namespace OpenNos.DAL.EF
 
         public short ItemGeneratedVNum { get; set; }
 
+        public byte ItemGeneratedUpgrade { get; set; }
+
         public bool IsRareRandom { get; set; }
 
         public byte MinimumOriginalItemRare { get; set; }
