@@ -362,7 +362,7 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                //Raid stonecase 300:
+                //Raid stone
                 case 300:
                     if (session.Character.Group != null && session.Character.Group.GroupType != GroupType.Group && session.Character.Group.IsLeader(session) && session.CurrentMapInstance.Portals.Any(s => s.Type == (short)PortalType.Raid))
                     {
