@@ -2209,23 +2209,23 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        if (@group != null && @group.GroupType == GroupType.Group)
+                        if (group != null && group.GroupType == GroupType.Group)
                         {
-                            if (@group.SharingMode == (byte)GroupSharingType.ByOrder)
+                            if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                             {
-                                dropOwner = @group.GetNextOrderedCharacterId(this);
+                                dropOwner = group.GetNextOrderedCharacterId(this);
                                 if (dropOwner.HasValue)
                                 {
-                                    @group.Characters.ToList()
+                                    group.Characters.ToList()
                                         .ForEach(s => s.SendPacket(
                                             s.Character.GenerateSay(
                                                 string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop.ItemVNum).Name,
-                                                    @group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop.Amount), 10)));
+                                                    group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop.Amount), 10)));
                                 }
                             }
                             else
                             {
-                                @group.Characters.ToList()
+                                group.Characters.ToList()
                                     .ForEach(s => s.SendPacket(s.Character.GenerateSay(
                                         string.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.Instance.GetItem(drop.ItemVNum).Name, drop.Amount), 10)));
                             }
@@ -2287,23 +2287,23 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            if (@group != null && MapInstance.MapInstanceType != MapInstanceType.LodInstance)
+                            if (group != null && MapInstance.MapInstanceType != MapInstanceType.LodInstance)
                             {
-                                if (@group.SharingMode == (byte)GroupSharingType.ByOrder)
+                                if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                                 {
-                                    dropOwner = @group.GetNextOrderedCharacterId(this);
+                                    dropOwner = group.GetNextOrderedCharacterId(this);
 
                                     if (dropOwner.HasValue)
                                     {
-                                        @group.Characters.ToList()
-                                            .ForEach(s => s.SendPacket(s.Character.GenerateSay(
+                                        group.Characters.ToList().ForEach(s =>
+                                            s.SendPacket(s.Character.GenerateSay(
                                                 string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop2.ItemVNum).Name,
-                                                    @group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop2.Amount), 10)));
+                                                    group.Characters.Single(c => c.Character.CharacterId == (long) dropOwner).Character.Name, drop2.Amount), 10)));
                                     }
                                 }
                                 else
                                 {
-                                    @group.Characters.ToList()
+                                    group.Characters.ToList()
                                         .ForEach(s => s.SendPacket(s.Character.GenerateSay(
                                             string.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.Instance.GetItem(drop2.ItemVNum).Name, drop2.Amount), 10)));
                                 }
@@ -2331,7 +2331,7 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
+                Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId) && g.GroupType == GroupType.Group);
                 if (grp != null)
                 {
                     foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceId == MapInstanceId))
@@ -2830,10 +2830,10 @@ namespace OpenNos.GameObject
 
             #region Basic Damage Data Calculation
 
-            mainCritChance += GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageIncreasingPropability, true)[0];
-            mainCritChance -= GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, true)[0];
-            mainCritChance += target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageIncreasingPropability, true)[0];
             mainCritChance -= target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalIncreased, true)[0];
+            mainCritChance -= GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, true)[0];
+            mainCritChance += GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageIncreasingPropability, true)[0];
+            mainCritChance += target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageIncreasingPropability, true)[0];
             mainCritHit += GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalIncreased, true)[0];
             mainCritHit -= GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, true)[0];
             mainCritHit += target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalIncreased, true)[0];
@@ -5026,7 +5026,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
+            Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId) && g.GroupType == GroupType.Group);
             if (Hp <= 0)
             {
                 return;
@@ -5298,7 +5298,7 @@ namespace OpenNos.GameObject
             int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(JobLevel, monster.Level) * ServerManager.Instance.XPRate * MapInstance.XpRate);
 
             // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
-            if (partySize > 1 && @group != null)
+            if (partySize > 1 && group != null)
             {
                 jobxp = (int)Math.Round(jobxp / (JobLevel * partyPenalty));
             }
@@ -5346,7 +5346,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            if (partySize > 1 && @group != null)
+            if (partySize > 1 && group != null)
             {
                 xp = (long)Math.Round(xp / (Level * partyPenalty));
             }

@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 {
+    /// <inheritdoc cref="" />
     /// <summary>
     /// This class adds SendMessageAndWaitForResponse(...) and SendAndReceiveMessage methods to a
     /// IMessenger for synchronous request/response style messaging. It also adds queued processing
@@ -176,6 +177,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             await Task.CompletedTask;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Calls Stop method of this object.
         /// </summary>
@@ -189,26 +191,29 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Sends a message.
         /// </summary>
         /// <param name="message">Message to be sent</param>
+        /// <param name="priority"></param>
         public void SendMessage(IScsMessage message, byte priority)
         {
             Messenger.SendMessage(message, priority);
         }
 
-        /// <summary>
-        /// Sends a message and waits a response for that message.
-        /// </summary>
-        /// <remarks>
-        /// Response message is matched with RepliedMessageId property, so if any other message (that
-        /// is not reply for sent message) is received from remote application, it is not considered
-        /// as a reply and is not returned as return value of this method.
-        ///
-        /// MessageReceived event is not raised for response messages.
-        /// </remarks>
-        /// <param name="message">message to send</param>
+        ///  <summary>
+        ///  Sends a message and waits a response for that message.
+        ///  </summary>
+        ///  <remarks>
+        ///  Response message is matched with RepliedMessageId property, so if any other message (that
+        ///  is not reply for sent message) is received from remote application, it is not considered
+        ///  as a reply and is not returned as return value of this method.
+        /// 
+        ///  MessageReceived event is not raised for response messages.
+        ///  </remarks>
+        ///  <param name="message">message to send</param>
+        /// <param name="priority"></param>
         /// <returns>Response message</returns>
         public IScsMessage SendMessageAndWaitForResponse(IScsMessage message, byte priority)
         {
@@ -255,9 +260,11 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                 switch (waitingMessage.State)
                 {
                     case WaitingMessageStates.WaitingForResponse:
-                        throw new TimeoutException("Timeout occured. Can not received response.");
+                        Logger.Error(new TimeoutException("Timeout occured. Can not received response."));
+                        break;
                     case WaitingMessageStates.Cancelled:
-                        throw new CommunicationException("Disconnected before response received.");
+                        Logger.Error(new CommunicationException("Disconnected before response received."));
+                        break;
                 }
 
                 // return response message
