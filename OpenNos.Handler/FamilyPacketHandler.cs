@@ -576,14 +576,15 @@ namespace OpenNos.Handler
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PLAYER_OFFLINE")));
                         return;
                     }
-                    switch (targetSession.Character.FamilyCharacter.Authority)
+                    if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                     {
-                        case FamilyAuthority.Head:
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("HEAD_UNDEMOTABLE")));
-                            return;
-                        case FamilyAuthority.Assistant when Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head:
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("ASSISTANT_UNDEMOTABLE")));
-                            return;
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("HEAD_UNDEMOTABLE")));
+                        return;
+                    }
+                    if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant && Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("ASSISTANT_UNDEMOTABLE")));
+                        return;
                     }
                     targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Manager;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("DONE")));
