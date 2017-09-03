@@ -370,11 +370,11 @@ namespace OpenNos.Handler
                     ClientSession target = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
                     if (rdPacket.Parameter == null && target?.Character?.Group == null && Session.Character.Group.IsLeader(Session))
                     {
-                        GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId });
+                        GroupJoin(new PJoinPacket {RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId});
                     }
                     else if (Session.Character.Group == null)
                     {
-                        GroupJoin(new PJoinPacket() { RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId });
+                        GroupJoin(new PJoinPacket {RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId});
                     }
                     break;
 
@@ -1632,6 +1632,9 @@ namespace OpenNos.Handler
                             }
                         }
                         break;
+                    case MapInstanceType.ArenaInstance:
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
+                        return;
                 }
                 switch (Session.Character.Faction)
                 {

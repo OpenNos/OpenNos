@@ -685,15 +685,15 @@ namespace OpenNos.GameObject
                         }
                         if (change)
                         {
+                            // TODO FIX THIS
+                            /*
                             if (Session.Character.Group != null)
                             {
                                 Session.Character.Group.Characters.ToList()
                                     .ForEach(s => ServerManager.Instance.GetSessionByCharacterId(s.Character.CharacterId)?.SendPacket(s.Character.GenerateStat()));
                             }
-                            else
-                            {
-                                Session.SendPacket(GenerateStat());
-                            }
+                            */
+                            Session.SendPacket(GenerateStat());
                         }
                     }
                 }

@@ -37,12 +37,12 @@ namespace OpenNos.GameObject
 
         private static EncryptionBase _encryptor;
         private Character _character;
-        private INetworkClient _client;
+        private readonly INetworkClient _client;
         private IDictionary<string, HandlerMethodReference> _handlerMethods;
         private Random _random;
-        private ConcurrentQueue<byte[]> _receiveQueue;
+        private readonly ConcurrentQueue<byte[]> _receiveQueue;
         private object _receiveQueueObservable;
-        private IList<string> _waitForPacketList = new List<string>();
+        private readonly IList<string> _waitForPacketList = new List<string>();
 
         // Packetwait Packets
         private int? _waitForPacketsAmount;

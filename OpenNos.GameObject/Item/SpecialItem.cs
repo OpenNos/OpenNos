@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenNos.DAL;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 
 namespace OpenNos.GameObject
 {
@@ -141,6 +143,17 @@ namespace OpenNos.GameObject
                                 if (slot == -1)
                                 {
                                     continue;
+                                }
+                                if (rollitem.IsSuperReward)
+                                {
+                                    CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
+                                    {
+                                        DestinationCharacterId = null,
+                                        SourceCharacterId = session.Character.CharacterId,
+                                        SourceWorldId = ServerManager.Instance.WorldId,
+                                        Message = $"{session.Character.Name} a gagné le gros lot à la boîte Mystère !",
+                                        Type = MessageType.Shout
+                                    });
                                 }
                                 session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
                                 newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));

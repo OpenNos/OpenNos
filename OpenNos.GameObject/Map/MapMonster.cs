@@ -1118,6 +1118,7 @@ namespace OpenNos.GameObject
             MapY = FirstY;
             Path = new List<Node>();
             MapInstance.Broadcast(GenerateIn());
+            Monster.BCards.ForEach(s => s.ApplyBCards(this));
         }
 
         /// <summary>

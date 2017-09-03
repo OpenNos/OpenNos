@@ -1212,12 +1212,30 @@ namespace OpenNos.GameObject
                     Logger.Log.Info("[ARENA] Arena Map Loaded");
                     ArenaInstance = GenerateMapInstance(2006, MapInstanceType.ArenaInstance, new InstanceBag());
                     ArenaInstance.IsPVP = true;
+                    ArenaInstance.Portals.Add(new Portal
+                    {
+                        DestinationMapId = 1,
+                        DestinationX = 1,
+                        DestinationY = 1,
+                        SourceMapId = 2006,
+                        SourceX = 37,
+                        SourceY = 15,
+                    });
                 }
                 if (DAOFactory.MapDAO.LoadById(2106) != null)
                 {
                     Logger.Log.Info("[ARENA] Family Arena Map Loaded");
                     FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.ArenaInstance, new InstanceBag());
                     FamilyArenaInstance.IsPVP = true;
+                    ArenaInstance.Portals.Add(new Portal
+                    {
+                        DestinationMapId = 1,
+                        DestinationX = 1,
+                        DestinationY = 1,
+                        SourceMapId = 2106,
+                        SourceX = 38,
+                        SourceY = 3,
+                    });
                 }
                 if (DAOFactory.MapDAO.LoadById(148) != null)
                 {
