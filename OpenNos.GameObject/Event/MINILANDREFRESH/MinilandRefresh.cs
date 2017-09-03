@@ -33,11 +33,11 @@ namespace OpenNos.GameObject.Event
                 GeneralLogDTO gen = DAOFactory.GeneralLogDAO.LoadByAccount(null).LastOrDefault(s => s.LogData == "MinilandRefresh" && s.LogType == "World" && s.Timestamp.Day == DateTime.Now.Day);
                 int count = DAOFactory.GeneralLogDAO.LoadByAccount(chara.AccountId).Count(s => s.LogData == "MINILAND" && s.Timestamp > DateTime.Now.AddDays(-1) && s.CharacterId == chara.CharacterId);
 
-                ClientSession Session = ServerManager.Instance.GetSessionByCharacterId(chara.CharacterId);
-                if (Session != null)
+                ClientSession session = ServerManager.Instance.GetSessionByCharacterId(chara.CharacterId);
+                if (session != null)
                 {
-                    Session.Character.GetReput(2 * count);
-                    Session.Character.MinilandPoint = 2000;
+                    session.Character.GetReput(2 * count);
+                    session.Character.MinilandPoint = 2000;
                 }
                 else if (CommunicationServiceClient.Instance.IsCharacterConnected(ServerManager.Instance.ServerGroup, chara.CharacterId))
                 {

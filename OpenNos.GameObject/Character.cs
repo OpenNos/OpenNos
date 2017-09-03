@@ -2359,6 +2359,7 @@ namespace OpenNos.GameObject
                         GenerateXp(monsterToAttack, false);
                     }
                 }
+                GetReput(monsterToAttack.Monster.Level / 3);
                 GenerateDignity(monsterToAttack.Monster);
 
                 #endregion
