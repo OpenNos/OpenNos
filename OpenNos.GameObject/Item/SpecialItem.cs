@@ -151,7 +151,7 @@ namespace OpenNos.GameObject
                                         DestinationCharacterId = null,
                                         SourceCharacterId = session.Character.CharacterId,
                                         SourceWorldId = ServerManager.Instance.WorldId,
-                                        Message = $"{session.Character.Name} a gagné le gros lot à la boîte Mystère !",
+                                        Message = Language.Instance.GetMessageFromKey("SUPER_REWARD"),
                                         Type = MessageType.Shout
                                     });
                                 }

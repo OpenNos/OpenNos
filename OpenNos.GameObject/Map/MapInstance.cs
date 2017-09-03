@@ -515,6 +515,10 @@ namespace OpenNos.GameObject
             short originX = mon.MapX;
             short originY = mon.MapY;
             int amount = ServerManager.Instance.RandomNumber(parameter.Item4, parameter.Item5);
+            if (parameter.Item2 == 1024)
+            {
+                amount *= ServerManager.Instance.GoldRate;
+            }
             for (int i = 0; i < parameter.Item3; i++)
             {
                 short destX = (short)(originX + ServerManager.Instance.RandomNumber(-10, 10));
