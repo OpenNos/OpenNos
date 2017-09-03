@@ -400,10 +400,10 @@ namespace OpenNos.Handler
                                 {
                                     target.Character.Hp = (int)target.Character.HPLoad();
                                     target.Character.Mp = (int)target.Character.MPLoad();
-                                    target?.SendPacket(target?.Character?.GenerateStat());
+                                    target.SendPacket(target?.Character?.GenerateStat());
                                     target.Character.NoMove = true;
                                     target.Character.NoAttack = true;
-                                    target?.SendPacket(target?.Character?.GenerateCond());
+                                    target.SendPacket(target?.Character?.GenerateCond());
                                     while (IceBreaker.FrozenPlayers.Contains(target))
                                     {
                                         target?.CurrentMapInstance?.Broadcast(target?.Character?.GenerateEff(35));
@@ -754,18 +754,19 @@ namespace OpenNos.Handler
                                             //hit all other monsters
                                             foreach (ClientSession character in playersInAoeRange)
                                             {
-                                                if (Session.CurrentMapInstance.IsPVP)
+                                                if (!Session.CurrentMapInstance.IsPVP)
                                                 {
-                                                    ConcurrentBag<ArenaTeamMember> team = null;
-                                                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
-                                                    {
-                                                        team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
-                                                    }
-                                                    if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == character)?.ArenaTeamType
-                                                     || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId)))
-                                                    {
-                                                        PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
-                                                    }
+                                                    continue;
+                                                }
+                                                ConcurrentBag<ArenaTeamMember> team = null;
+                                                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
+                                                {
+                                                    team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
+                                                }
+                                                if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == character)?.ArenaTeamType
+                                                    || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId)))
+                                                {
+                                                    PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
                                                 }
                                             }
                                             if (playerToAttack.Character.Hp <= 0)
@@ -1071,7 +1072,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket("cancel 2 0");
+                Session.SendPacket($"cancel 0 {(characterSkill != null ? castingid : 0)}");
             }
         }
 

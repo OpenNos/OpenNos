@@ -1635,6 +1635,7 @@ namespace OpenNos.GameObject
 
             #endregion
 
+            baseDamage += GetBuff(CardType.AttackPower, (byte) AdditionalTypes.AttackPower.AllAttacksIncreased, false)[0];
 
             #region Soft-Damage
 
@@ -3240,8 +3241,7 @@ namespace OpenNos.GameObject
                 string info = string.Empty;
                 if (bz.Item.Item.Type == InventoryType.Equipment)
                 {
-                    WearableInstance item = bz.Item as WearableInstance;
-                    if (item != null)
+                    if (bz.Item is WearableInstance item)
                     {
                         info = item.GenerateEInfo().Replace(' ', '^').Replace("e_info^", "");
                     }
@@ -4115,34 +4115,30 @@ namespace OpenNos.GameObject
         {
             double multiplicator = 1.0;
             int hp = 0;
-
-            if (!UseSp)
+            if (UseSp)
             {
-                return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
-            }
-            
-            if (SpInstance == null)
-            {
-                return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
-            }
+                SpecialistInstance specialist = SpInstance;
+                if (SpInstance != null)
+                {
+                    int shellSlHpMp = SpInstance.SlHP + Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
+                                      Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+                    int point = CharacterHelper.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
 
-
-            int shellSlHpMp = SpInstance.SlHP +
-                              Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte) AdditionalTypes.SPSL.HPMP) +
-                              Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte) AdditionalTypes.SPSL.All);
-
-            int point = CharacterHelper.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
-
-            if (point <= 50)
-            {
-                multiplicator += point / 100.0;
+                    if (point <= 50)
+                    {
+                        multiplicator += point / 100.0;
+                    }
+                    else
+                    {
+                        multiplicator += 0.5 + (point - 50.00) / 50.00;
+                    }
+                    hp = specialist.HP + specialist.SpHP * 100;
+                }
             }
-            else
-            {
-                multiplicator += 0.5 + (point - 50.00) / 50.00;
-            }
-            hp = SpInstance.HP + SpInstance.SpHP * 100;
-            return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0]) * multiplicator);
+            multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumHP, false)[0] / 100D;
+            multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumHP, false)[0] / 100D;
+
+            return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0] + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased, false)[0]) * multiplicator);
         }
 
         public override void Initialize()
@@ -4374,27 +4370,29 @@ namespace OpenNos.GameObject
         {
             int mp = 0;
             double multiplicator = 1.0;
-            if (!UseSp)
+            if (UseSp)
             {
-                return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0]) * multiplicator);
-            }
-            SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-            if (specialist == null)
-            {
-                return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0]) * multiplicator);
-            }
-            int point = CharacterHelper.SlPoint(specialist.SlHP, 3);
+                if (SpInstance != null)
+                {
+                    int shellSlHpMp = SpInstance.SlHP + Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
+                                      Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+                    int point = CharacterHelper.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
 
-            if (point <= 50)
-            {
-                multiplicator += point / 100.0;
+                    if (point <= 50)
+                    {
+                        multiplicator += point / 100.0;
+                    }
+                    else
+                    {
+                        multiplicator += 0.5 + (point - 50.00) / 50.00;
+                    }
+                    mp = SpInstance.MP + SpInstance.SpHP * 100;
+                }
             }
-            else
-            {
-                multiplicator += 0.5 + (point - 50.00) / 50.00;
-            }
-            mp = specialist.MP + specialist.SpHP * 100;
-            return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0]) * multiplicator);
+            multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumMP, false)[0] / 100D;
+            multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0] / 100D;
+
+            return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumMPIncreased, false)[0] + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased, false)[0]) * multiplicator);
         }
 
         public void NotifyRarifyResult(sbyte rare)
@@ -5677,7 +5675,7 @@ namespace OpenNos.GameObject
             int value1 = 0;
             int value2 = 0;
 
-            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals((byte)(subtype / 10))))
+            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {
@@ -5704,7 +5702,7 @@ namespace OpenNos.GameObject
                     // THIS ONE DOES NOT FOR STUFFS
 
                     foreach (BCard entry in buff.Card.BCards.Where(s =>
-                        s.Type.Equals((byte) type) && s.SubType.Equals((byte)(subtype/ 10)) &&
+                        s.Type.Equals((byte) type) && s.SubType.Equals(subtype) &&
                         (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
                     {
                         if (entry.IsLevelScaled)
@@ -5742,13 +5740,13 @@ namespace OpenNos.GameObject
             int score2 = 0;
             if (tm == null)
             {
-                return $"ta_m {type} {score1} {score2} {(type == 3 ? (MapInstance.InstanceBag.Clock.DeciSecondRemaining / 10) : 0)} 0";
+                return $"ta_m {type} {score1} {score2} {(type == 3 ? MapInstance.InstanceBag.Clock.DeciSecondRemaining / 10 : 0)} 0";
             }
             ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
             IEnumerable<long> ids = tm.Where(s => tmem != null && tmem.ArenaTeamType != s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
             score1 = MapInstance.InstanceBag.DeadList.Count(s => ids.Contains(s));
             score2 = MapInstance.InstanceBag.DeadList.Count(s => !ids.Contains(s));
-            return $"ta_m {type} {score1} {score2} {(type == 3 ? (MapInstance.InstanceBag.Clock.DeciSecondRemaining / 10) : 0)} 0";
+            return $"ta_m {type} {score1} {score2} {(type == 3 ? MapInstance.InstanceBag.Clock.DeciSecondRemaining / 10 : 0)} 0";
         }
 
         public string GenerateTaF(byte victoriousteam)

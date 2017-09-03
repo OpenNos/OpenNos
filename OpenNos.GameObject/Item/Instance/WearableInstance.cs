@@ -173,7 +173,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case ItemType.Armor:
-                    return $"e_info 2 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.CloseDefence + CloseDefence} {Item.DistanceDefence + DistanceDefence} {Item.MagicDefence + MagicDefence} {Item.DefenceDodge + DefenceDodge} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {option.Level % 13}.{option.Type % 51}.{option.Value}")}";
+                    return $"e_info 2 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.CloseDefence + CloseDefence} {Item.DistanceDefence + DistanceDefence} {Item.MagicDefence + MagicDefence} {Item.DefenceDodge + DefenceDodge} {Item.Price} -1 {(ShellRarity == null ? "0" : $"{ShellRarity}")} {(BoundCharacterId == null ? "0" : $"{BoundCharacterId}")} {EquipmentOptions.Count}{EquipmentOptions.Aggregate(string.Empty, (current, option) => current + $" {(option.Level > 12 ? option.Level - 12 : option.Level)}.{(option.Type > 50 ? option.Type - 50 : option.Type)}.{option.Value}")}";
 
                 case ItemType.Fashion:
                     switch (equipmentslot)
