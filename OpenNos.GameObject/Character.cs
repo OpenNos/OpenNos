@@ -5407,7 +5407,7 @@ namespace OpenNos.GameObject
         /// <param name="cardId"></param>
         public void RemoveBuff(short cardId)
         {
-            Buff indicator = Buff.First(s => s.Card.CardId == cardId);
+            Buff indicator = Buff.FirstOrDefault(s => s?.Card?.CardId == cardId);
             if (indicator == null)
             {
                 return;
@@ -5427,18 +5427,18 @@ namespace OpenNos.GameObject
             {
                 Buff = Buff.Where(s => s != indicator);
             }
-            if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move && !s.SubType.Equals((byte)AdditionalTypes.Move.MovementImpossible / 10)))
+            if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move && !s.SubType.Equals((byte)AdditionalTypes.Move.MovementImpossible)))
             {
                 LastSpeedChange = DateTime.Now;
                 LoadSpeed();
                 Session.SendPacket(GenerateCond());
             }
-            if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.SpecialAttack && s.SubType.Equals((byte)AdditionalTypes.SpecialAttack.NoAttack / 10)))
+            if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.SpecialAttack && s.SubType.Equals((byte)AdditionalTypes.SpecialAttack.NoAttack)))
             {
                 NoAttack = false;
                 Session.SendPacket(GenerateCond());
             }
-            if (!indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move && s.SubType.Equals((byte)AdditionalTypes.Move.MovementImpossible / 10)))
+            if (!indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move && s.SubType.Equals((byte)AdditionalTypes.Move.MovementImpossible)))
             {
                 return;
             }
