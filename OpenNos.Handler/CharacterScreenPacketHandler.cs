@@ -231,7 +231,6 @@ namespace OpenNos.Handler
                 {
                     if (account != null)
                     {
-                        Logger.Log.Info($"isCrossServer {isCrossServerLogin}");
                         hasRegisteredAccountLogin = isCrossServerLogin
                             ? CommunicationServiceClient.Instance.IsCrossServerLoginPermitted(account.AccountId, Session.SessionId)
                             : CommunicationServiceClient.Instance.IsLoginPermitted(account.AccountId, Session.SessionId);
