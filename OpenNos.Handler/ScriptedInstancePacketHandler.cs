@@ -283,7 +283,7 @@ namespace OpenNos.Handler
                 }
                 Session.Character.Group.Raid.FirstMap.InstanceBag.Lock = true;
 
-                Session.Character.Group.Characters.Where(s => s.CurrentMapInstance != Session.CurrentMapInstance).ToList().ForEach(
+                Session.Character.Group.Characters.Where(s => s.CurrentMapInstance.MapInstanceId != Session.CurrentMapInstance.MapInstanceId).ToList().ForEach(
                     session =>
                     {
                         Session.Character.Group.LeaveGroup(session);
