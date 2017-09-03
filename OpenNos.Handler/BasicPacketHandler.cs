@@ -1088,9 +1088,9 @@ namespace OpenNos.Handler
                             ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
                             if (box != null)
                             {
-                                if (guriPacket.User.Value == 1)
+                                if (guriPacket.User.Value == 0)
                                 {
-                                    box.Item.Use(Session, ref box, 1, new[] {guriPacket.User.Value.ToString()});
+                                    box.Item.Use(Session, ref box, 1, new[] { guriPacket.Data.ToString() });
                                 }
                                 else
                                 {
@@ -1573,16 +1573,16 @@ namespace OpenNos.Handler
                 }
                 switch (portal.Type)
                 {
-                    case (sbyte) PortalType.MapPortal:
-                    case (sbyte) PortalType.TSNormal:
-                    case (sbyte) PortalType.Open:
-                    case (sbyte) PortalType.Miniland:
-                    case (sbyte) PortalType.TSEnd:
-                    case (sbyte) PortalType.Exit:
-                    case (sbyte) PortalType.Effect:
-                    case (sbyte) PortalType.ShopTeleport:
+                    case (sbyte)PortalType.MapPortal:
+                    case (sbyte)PortalType.TSNormal:
+                    case (sbyte)PortalType.Open:
+                    case (sbyte)PortalType.Miniland:
+                    case (sbyte)PortalType.TSEnd:
+                    case (sbyte)PortalType.Exit:
+                    case (sbyte)PortalType.Effect:
+                    case (sbyte)PortalType.ShopTeleport:
                         break;
-                    case (sbyte) PortalType.Raid:
+                    case (sbyte)PortalType.Raid:
                         if (Session.Character.Group?.Raid != null)
                         {
                             Session.SendPacket(Session.Character.Group.IsLeader(Session)
@@ -1594,9 +1594,9 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEED_TEAM"), 1));
                         }
                         return;
-                    case (sbyte) PortalType.BlueRaid:
-                    case (sbyte) PortalType.DarkRaid:
-                        if ((byte) Session.Character.Faction == (portal.Type - 9) && Session.Character.Family?.Act4Raid != null)
+                    case (sbyte)PortalType.BlueRaid:
+                    case (sbyte)PortalType.DarkRaid:
+                        if ((byte)Session.Character.Faction == (portal.Type - 9) && Session.Character.Family?.Act4Raid != null)
                         {
                             Session.Character.LastPortal = currentRunningSeconds;
                             ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.Act4Raid.MapInstanceId, portal.DestinationX, portal.DestinationY);
