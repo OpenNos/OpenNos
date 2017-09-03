@@ -481,7 +481,7 @@ namespace OpenNos.GameObject.Helpers
                     ClientSession cl = evt.MapInstance.Sessions.FirstOrDefault();
                     if (cl?.Character != null)
                     {
-                        ServerManager.Instance.Broadcast(cl, cl.Character?.Group.GeneraterRaidmbf(), ReceiverType.Group);
+                        ServerManager.Instance.Broadcast(cl, cl.Character?.Group?.GeneraterRaidmbf(), ReceiverType.Group);
                         ServerManager.Instance.Broadcast(cl, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEW_MISSION"), 0), ReceiverType.Group);
                     }
                     break;
