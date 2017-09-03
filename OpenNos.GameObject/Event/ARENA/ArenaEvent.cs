@@ -43,7 +43,10 @@ namespace OpenNos.GameObject.Event.ARENA
                                             e.Session.Character.Level >= s.Session.Character.Level - 5).ToList();
                             members.RemoveAll(o => o.GroupId != null && groupids.Contains(o.GroupId.Value));
                             ArenaMember member = members.FirstOrDefault();
-                            if (member != null)
+                            if (member == null)
+                            {
+                                return;
+                            }
                             {
                                 if (member.GroupId == null)
                                 {
@@ -111,7 +114,6 @@ namespace OpenNos.GameObject.Event.ARENA
                             map.InstanceBag.Clock.DeciSecondRemaining = 600;
                             map.InstanceBag.Clock.StartClock();
                             IDisposable obs4 = null;
-                            IDisposable obs5;
                             IDisposable obs2 = null;
                             IDisposable obs3 = null;
                             IDisposable obs6 = null;
@@ -122,7 +124,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                     arenamembers.ToList().ForEach(o => map.Broadcast(o.Session.Character.GenerateEff(o.GroupId == s.GroupId ? 3012 : 3013)));
                                 });
                             });
-                            obs5 = Observable.Interval(TimeSpan.FromMilliseconds(500)).Subscribe(start3 =>
+                            IDisposable obs5 = Observable.Interval(TimeSpan.FromMilliseconds(500)).Subscribe(start3 =>
                             {
                                 map.Broadcast(arenamembers.FirstOrDefault(o => o.Session != null)?.Session.Character.GenerateTaPs());
                                 List<ArenaTeamMember> erenia = arenaTeam.Where(team => team.ArenaTeamType == ArenaTeamType.ERENIA).ToList();
@@ -325,6 +327,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                 bool newround2 = true;
                                 int count1 = 0;
                                 int count2 = 0;
+                                IDisposable obs7 = obs4;
                                 obs4 = Observable.Interval(TimeSpan.FromMilliseconds(500)).Subscribe(start3 =>
                                 {
                                     int ereniacount = arenaTeam.Count(at => at.Dead && at.ArenaTeamType == ArenaTeamType.ERENIA);
@@ -476,7 +479,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                     else
                                                     {
                                                         arenauser.Session.Character.GetReput(200);
-                                                        arenauser.Session.Character.GiftAdd(2800, 3);
+                                                        arenauser.Session.Character.GiftAdd(2801, 3);
                                                         arenauser.Session.Character.GetGold(arenauser.Session.Character.Level * 500);
                                                         arenauser.Session.Character.TalentLose++;
                                                     }
@@ -510,7 +513,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                     else
                                                     {
                                                         arenauser.Session.Character.GetReput(200);
-                                                        arenauser.Session.Character.GiftAdd(2800, 3);
+                                                        arenauser.Session.Character.GiftAdd(2801, 3);
                                                         arenauser.Session.Character.GetGold(arenauser.Session.Character.Level * 500);
                                                         arenauser.Session.Character.TalentLose++;
                                                     }
@@ -533,7 +536,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                         }
                                         obs3.Dispose();
                                         obs2.Dispose();
-                                        obs4?.Dispose();
+                                        obs7?.Dispose();
                                         obs5.Dispose();
                                         Observable.Timer(TimeSpan.FromSeconds(30)).Subscribe(start4 =>
                                         {

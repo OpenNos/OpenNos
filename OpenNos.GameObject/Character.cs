@@ -638,7 +638,7 @@ namespace OpenNos.GameObject
                     Session.Character.AddBuff(new Buff(383), false);
                 }
                 
-                if (LastHealth.AddSeconds(3) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
+                if (LastHealth.AddSeconds(2) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
                 {
                     LastHealth = DateTime.Now;
                     if (Session.HealthStop)
@@ -649,20 +649,46 @@ namespace OpenNos.GameObject
 
                     if (LastDefence.AddSeconds(4) <= DateTime.Now && LastSkillUse.AddSeconds(2) <= DateTime.Now && Hp > 0)
                     {
-                        if (RegenHP())
+                        int x = 1;
+                        if (x == 0)
                         {
-                            change = true;
+                            x = 1;
                         }
-                        if (RegenMP())
+                        if (Hp + HealthHPLoad() < HPLoad())
                         {
                             change = true;
+                            Hp += HealthHPLoad();
+                        }
+                        else
+                        {
+                            if (Hp != (int)HPLoad())
+                            {
+                                change = true;
+                            }
+                            Hp = (int)HPLoad();
+                        }
+                        if (x == 1)
+                        {
+                            if (Mp + HealthMPLoad() < MPLoad())
+                            {
+                                Mp += HealthMPLoad();
+                                change = true;
+                            }
+                            else
+                            {
+                                if (Mp != (int)MPLoad())
+                                {
+                                    change = true;
+                                }
+                                Mp = (int)MPLoad();
+                            }
                         }
                         if (change)
                         {
                             if (Session.Character.Group != null)
                             {
-                                Session.Character.Group.Characters.ToList().ForEach(s => ServerManager.Instance.GetSessionByCharacterId(s.Character.CharacterId)
-                                    ?.SendPacket(Session.Character.GenerateStat()));
+                                Session.Character.Group.Characters.ToList()
+                                    .ForEach(s => ServerManager.Instance.GetSessionByCharacterId(s.Character.CharacterId)?.SendPacket(s.Character.GenerateStat()));
                             }
                             else
                             {
