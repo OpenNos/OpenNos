@@ -1496,7 +1496,7 @@ Veux-tu le porter ?</value>
     <value>C'est parti ! Larguez les amarres ! </value>
   </data>
   <data name="SUPPORT" xml:space="preserve">
-    <value>Supporteur</value>
+    <value>NH</value>
   </data>
   <data name="UNDER_EFFECT" xml:space="preserve">
     <value>Tu subis l'effet :  {0} !</value>
