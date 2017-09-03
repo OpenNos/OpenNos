@@ -2273,7 +2273,7 @@ namespace OpenNos.GameObject
                                 ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
                                 if (session != null)
                                 {
-                                    session.Character.Gold += drop2.Amount;
+                                    session.Character.Gold += drop2.Amount * (int)(GetBuff(CardType.Item, (byte)AdditionalTypes.Item.IncreaseEarnedGold, false)[0] / 100D);
                                     if (session.Character.Gold > maxGold)
                                     {
                                         session.Character.Gold = maxGold;
