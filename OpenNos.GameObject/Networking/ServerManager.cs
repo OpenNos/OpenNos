@@ -406,12 +406,11 @@ namespace OpenNos.GameObject
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), session.Character.Name)));
 
                         session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
-                        session.Character.Group?.Characters.ToList().ForEach(
-                            player =>
-                            {
-                                player.SendPacket(player.Character.Group.GeneraterRaidmbf());
-                                player.SendPacket(player.Character.Group.GenerateRdlst());
-                            });
+                        session.Character.Group?.Characters.ToList().ForEach(player =>
+                        {
+                            player.SendPacket(player.Character.Group.GeneraterRaidmbf());
+                            player.SendPacket(player.Character.Group.GenerateRdlst());
+                        });
                         Task.Factory.StartNew(async () =>
                         {
                             await Task.Delay(20000);

@@ -1779,21 +1779,6 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GenerateStat());
                             }
                             break;
-
-                        case MapInstanceType.BaseMapInstance:
-                            break;
-                        case MapInstanceType.NormalInstance:
-                            break;
-                        case MapInstanceType.TimeSpaceInstance:
-                            break;
-                        case MapInstanceType.RaidInstance:
-                            break;
-                        case MapInstanceType.FamilyRaidInstance:
-                            break;
-                        case MapInstanceType.Act4Instance:
-                            break;
-                        case MapInstanceType.TalentArenaMapInstance:
-                            break;
                         default:
                             const int seed = 1012;
                             if (Session.Character.Inventory.CountItem(seed) < 10 && Session.Character.Level > 20)

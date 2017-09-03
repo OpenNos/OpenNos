@@ -507,6 +507,11 @@ namespace OpenNos.GameObject
         public void ThrowItems(Tuple<int, short, byte, int, int> parameter)
         {
             MapMonster mon = Monsters.FirstOrDefault(s => s.MapMonsterId == parameter.Item1);
+
+            if (mon == null)
+            {
+                return;
+            }
             short originX = mon.MapX;
             short originY = mon.MapY;
             int amount = ServerManager.Instance.RandomNumber(parameter.Item4, parameter.Item5);
