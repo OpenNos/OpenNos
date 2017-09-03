@@ -1711,4 +1711,7 @@ Veux-tu continuer ?</value>
   <data name="TEAM_WINNER_ARENA_ROUND" xml:space="preserve">
     <value>Vainqueur ! {0}  {1} !</value>
   </data>
+  <data name="SUPER_REWARD" xml:space="preserve">
+    <value>Quelqu'un a gagné le gros lot à la boîte Mystere !</value>
+  </data>
 </root>
