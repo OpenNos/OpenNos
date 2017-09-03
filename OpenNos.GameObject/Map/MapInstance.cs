@@ -295,7 +295,7 @@ namespace OpenNos.GameObject
 
         public MapMonster GetMonster(long mapMonsterId)
         {
-            return _monsters[mapMonsterId];
+            return !_monsters.ContainsKey(mapMonsterId) ? null : _monsters[mapMonsterId];
         }
 
         // TODO: Fix, Seems glitchy.

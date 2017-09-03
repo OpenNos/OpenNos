@@ -18,7 +18,9 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using OpenNos.DAL;
 
 namespace OpenNos.GameObject
 {
@@ -101,7 +103,50 @@ namespace OpenNos.GameObject
                             session.Character.RemoveBuff(339);
                             session.Character.Inventory.RemoveItemAmount(5916);
                             break;
-
+                        default:
+                            IEnumerable<RollGeneratedItemDTO> roll = DAOFactory.RollGeneratedItemDAO.LoadByItemVNum(VNum);
+                            IEnumerable<RollGeneratedItemDTO> rollGeneratedItemDtos = roll as IList<RollGeneratedItemDTO> ?? roll.ToList();
+                            if (!rollGeneratedItemDtos.Any())
+                            {
+                                return;
+                            }
+                            int probabilities = rollGeneratedItemDtos.Sum(s => s.Probability);
+                            int rnd = ServerManager.Instance.RandomNumber(0, probabilities);
+                            int currentrnd = 0;
+                            List<ItemInstance> newInv = null;
+                            foreach (RollGeneratedItemDTO rollitem in rollGeneratedItemDtos)
+                            {
+                                if (rollitem.Probability == 10000)
+                                {
+                                    newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
+                                    session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
+                                    newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
+                                    continue;
+                                }
+                                if (newInv != null)
+                                {
+                                    continue;
+                                }
+                                currentrnd += rollitem.Probability;
+                                if (currentrnd < rnd)
+                                {
+                                    continue;
+                                }
+                                newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
+                                if (!newInv.Any())
+                                {
+                                    continue;
+                                }
+                                short slot = inv.Slot;
+                                if (slot == -1)
+                                {
+                                    continue;
+                                }
+                                session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
+                                newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
+                            }
+                            session.Character.Inventory.RemoveItemAmount(VNum);
+                            break;
                     }
                     break;
                 // sp point potions

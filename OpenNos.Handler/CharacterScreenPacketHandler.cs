@@ -149,6 +149,7 @@ namespace OpenNos.Handler
                     startupInventory.AddNewToInventory(12, 1, InventoryType.Wear);
                     startupInventory.AddNewToInventory(2024, 10, InventoryType.Etc);
                     startupInventory.AddNewToInventory(2081, 1, InventoryType.Etc);
+                    startupInventory.AddNewToInventory(1907, 1, InventoryType.Main);
                     startupInventory.Select(s => s.Value).ToList().ForEach(i => DAOFactory.IteminstanceDAO.InsertOrUpdate(i));
 
                     LoadCharacters(characterCreatePacket.OriginalContent);
