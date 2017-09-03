@@ -311,7 +311,7 @@ namespace OpenNos.GameObject
         public void AskRevive(long characterId)
         {
             ClientSession session = GetSessionByCharacterId(characterId);
-            if (session == null || !session.HasSelectedCharacter)
+            if (session == null || !session.HasSelectedCharacter || session.CurrentMapInstance == null)
             {
                 return;
             }
