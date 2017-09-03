@@ -388,15 +388,16 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (int.TryParse(sessionParts[1].Split('\\').FirstOrDefault(), out int sessid))
+                    if (!int.TryParse(sessionParts[1].Split('\\').FirstOrDefault(), out int sessid))
                     {
-                        SessionId = sessid;
-                        Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), SessionId);
+                        return;
+                    }
+                    SessionId = sessid;
+                    Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), SessionId);
 
-                        if (!_waitForPacketsAmount.HasValue)
-                        {
-                            TriggerHandler("OpenNos.EntryPoint", string.Empty, false);
-                        }
+                    if (!_waitForPacketsAmount.HasValue)
+                    {
+                        TriggerHandler("OpenNos.EntryPoint", string.Empty, false);
                     }
                     return;
                 }

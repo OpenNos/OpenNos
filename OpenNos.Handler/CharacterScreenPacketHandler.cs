@@ -230,11 +230,10 @@ namespace OpenNos.Handler
                 {
                     if (account != null)
                     {
+                        Logger.Log.Info($"isCrossServer {isCrossServerLogin}");
                         hasRegisteredAccountLogin = isCrossServerLogin
-                            ? CommunicationServiceClient.Instance.IsCrossServerLoginPermitted(account.AccountId,
-                                Session.SessionId)
-                            : CommunicationServiceClient.Instance.IsLoginPermitted(account.AccountId,
-                                Session.SessionId);
+                            ? CommunicationServiceClient.Instance.IsCrossServerLoginPermitted(account.AccountId, Session.SessionId)
+                            : CommunicationServiceClient.Instance.IsLoginPermitted(account.AccountId, Session.SessionId);
                     }
                 }
                 catch (Exception ex)
@@ -257,6 +256,7 @@ namespace OpenNos.Handler
                                 Session.Disconnect();
                                 return;
                             }
+                            // TODO MAINTENANCE MODE
                             if (ServerManager.Instance.Sessions.Count() >= ServerManager.Instance.AccountLimit)
                             {
                                 if (account.Authority < AuthorityType.Moderator)
@@ -352,54 +352,56 @@ namespace OpenNos.Handler
         {
             try
             {
-                if (Session?.Account != null && !Session.HasSelectedCharacter)
+                if (Session?.Account == null || Session.HasSelectedCharacter)
                 {
-                    if (DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) is Character character)
-                    {
-                        character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
-                        character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(character.MapId);
-                        character.PositionX = character.MapX;
-                        character.PositionY = character.MapY;
-                        character.Authority = Session.Account.Authority;
-                        Session.SetCharacter(character);
-                        if (!Session.Character.GeneralLogs.Any(s => s.Timestamp == DateTime.Now && s.LogData == "World" && s.LogType == "Connection"))
-                        {
-                            Session.Character.SpAdditionPoint += Session.Character.SpPoint;
-                            Session.Character.SpPoint = 10000;
-                        }
-                        if (Session.Character.Hp > Session.Character.HPLoad())
-                        {
-                            Session.Character.Hp = (int)Session.Character.HPLoad();
-                        }
-                        if (Session.Character.Mp > Session.Character.MPLoad())
-                        {
-                            Session.Character.Mp = (int)Session.Character.MPLoad();
-                        }
-                        Session.Character.Respawns = DAOFactory.RespawnDAO.LoadByCharacter(Session.Character.CharacterId).ToList();
-                        Session.Character.StaticBonusList = DAOFactory.StaticBonusDAO.LoadByCharacterId(Session.Character.CharacterId).ToList();
-                        Session.Character.LoadInventory();
-                        Session.Character.LoadQuicklists();
-                        Session.Character.GenerateMiniland();
-                        DAOFactory.MateDAO.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
-                        {
-                            Mate mate = (Mate)s;
-                            mate.Owner = Session.Character;
-                            mate.GeneateMateTransportId();
-                            mate.Monster = ServerManager.Instance.GetNpc(s.NpcMonsterVNum);
-                            Session.Character.Mates.Add(mate);
-                        });
-                        Session.Character.Life = Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
-                        {
-                            Session.Character.CharacterLife();
-                        });
-                        Session.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Connection", Timestamp = DateTime.Now });
-                        
-                        Session.SendPacket("OK");
-
-                        // Inform everyone about connected character
-                        CommunicationServiceClient.Instance.ConnectCharacter(ServerManager.Instance.WorldId, character.CharacterId);
-                    }
+                    return;
                 }
+                if (!(DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) is Character character))
+                {
+                    return;
+                }
+                character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
+                character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(character.MapId);
+                character.PositionX = character.MapX;
+                character.PositionY = character.MapY;
+                character.Authority = Session.Account.Authority;
+                Session.SetCharacter(character);
+                if (!Session.Character.GeneralLogs.Any(s => s.Timestamp == DateTime.Now && s.LogData == "World" && s.LogType == "Connection"))
+                {
+                    Session.Character.SpAdditionPoint += Session.Character.SpPoint;
+                    Session.Character.SpPoint = 10000;
+                }
+                if (Session.Character.Hp > Session.Character.HPLoad())
+                {
+                    Session.Character.Hp = (int)Session.Character.HPLoad();
+                }
+                if (Session.Character.Mp > Session.Character.MPLoad())
+                {
+                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                }
+                Session.Character.Respawns = DAOFactory.RespawnDAO.LoadByCharacter(Session.Character.CharacterId).ToList();
+                Session.Character.StaticBonusList = DAOFactory.StaticBonusDAO.LoadByCharacterId(Session.Character.CharacterId).ToList();
+                Session.Character.LoadInventory();
+                Session.Character.LoadQuicklists();
+                Session.Character.GenerateMiniland();
+                DAOFactory.MateDAO.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
+                {
+                    Mate mate = (Mate)s;
+                    mate.Owner = Session.Character;
+                    mate.GeneateMateTransportId();
+                    mate.Monster = ServerManager.Instance.GetNpc(s.NpcMonsterVNum);
+                    Session.Character.Mates.Add(mate);
+                });
+                Session.Character.Life = Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
+                {
+                    Session.Character.CharacterLife();
+                });
+                Session.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Connection", Timestamp = DateTime.Now });
+                        
+                Session.SendPacket("OK");
+
+                // Inform everyone about connected character
+                CommunicationServiceClient.Instance.ConnectCharacter(ServerManager.Instance.WorldId, character.CharacterId);
             }
             catch (Exception ex)
             {

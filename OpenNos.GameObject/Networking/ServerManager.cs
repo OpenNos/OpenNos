@@ -927,111 +927,114 @@ namespace OpenNos.GameObject
             HeroicStartLevel = byte.Parse(ConfigurationManager.AppSettings["HeroicStartLevel"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
+            Act4RaidStart = DateTime.Now;
+            Act4AngelStat = new Act4Stat();
+            Act4DemonStat = new Act4Stat();
 
             OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DAOFactory.ItemDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
-            ConcurrentDictionary<short, Item> _item = new ConcurrentDictionary<short, Item>();
-            Parallel.ForEach(itemPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 4 }, itemDTO =>
+            ConcurrentDictionary<short, Item> item = new ConcurrentDictionary<short, Item>();
+            Parallel.ForEach(itemPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 4 }, itemDto =>
             {
-                switch (itemDTO.ItemType)
+                switch (itemDto.ItemType)
                 {
                     case ItemType.Ammo:
-                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
+                        item[itemDto.VNum] = new NoFunctionItem(itemDto);
                         break;
 
                     case ItemType.Armor:
-                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
+                        item[itemDto.VNum] = new WearableItem(itemDto);
                         break;
 
                     case ItemType.Box:
-                        _item[itemDTO.VNum] = new BoxItem(itemDTO);
+                        item[itemDto.VNum] = new BoxItem(itemDto);
                         break;
 
                     case ItemType.Event:
-                        _item[itemDTO.VNum] = new MagicalItem(itemDTO);
+                        item[itemDto.VNum] = new MagicalItem(itemDto);
                         break;
 
                     case ItemType.Fashion:
-                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
+                        item[itemDto.VNum] = new WearableItem(itemDto);
                         break;
 
                     case ItemType.Food:
-                        _item[itemDTO.VNum] = new FoodItem(itemDTO);
+                        item[itemDto.VNum] = new FoodItem(itemDto);
                         break;
 
                     case ItemType.Jewelery:
-                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
+                        item[itemDto.VNum] = new WearableItem(itemDto);
                         break;
 
                     case ItemType.Magical:
-                        _item[itemDTO.VNum] = new MagicalItem(itemDTO);
+                        item[itemDto.VNum] = new MagicalItem(itemDto);
                         break;
 
                     case ItemType.Main:
-                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
+                        item[itemDto.VNum] = new NoFunctionItem(itemDto);
                         break;
 
                     case ItemType.Map:
-                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
+                        item[itemDto.VNum] = new NoFunctionItem(itemDto);
                         break;
 
                     case ItemType.Part:
-                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
+                        item[itemDto.VNum] = new NoFunctionItem(itemDto);
                         break;
 
                     case ItemType.Potion:
-                        _item[itemDTO.VNum] = new PotionItem(itemDTO);
+                        item[itemDto.VNum] = new PotionItem(itemDto);
                         break;
 
                     case ItemType.Production:
-                        _item[itemDTO.VNum] = new ProduceItem(itemDTO);
+                        item[itemDto.VNum] = new ProduceItem(itemDto);
                         break;
 
                     case ItemType.Quest1:
-                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
+                        item[itemDto.VNum] = new NoFunctionItem(itemDto);
                         break;
 
                     case ItemType.Quest2:
-                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
+                        item[itemDto.VNum] = new NoFunctionItem(itemDto);
                         break;
 
                     case ItemType.Sell:
-                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
+                        item[itemDto.VNum] = new NoFunctionItem(itemDto);
                         break;
 
                     case ItemType.Shell:
-                        _item[itemDTO.VNum] = new MagicalItem(itemDTO);
+                        item[itemDto.VNum] = new MagicalItem(itemDto);
                         break;
 
                     case ItemType.Snack:
-                        _item[itemDTO.VNum] = new SnackItem(itemDTO);
+                        item[itemDto.VNum] = new SnackItem(itemDto);
                         break;
 
                     case ItemType.Special:
-                        _item[itemDTO.VNum] = new SpecialItem(itemDTO);
+                        item[itemDto.VNum] = new SpecialItem(itemDto);
                         break;
 
                     case ItemType.Specialist:
-                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
+                        item[itemDto.VNum] = new WearableItem(itemDto);
                         break;
 
                     case ItemType.Teacher:
-                        _item[itemDTO.VNum] = new TeacherItem(itemDTO);
+                        item[itemDto.VNum] = new TeacherItem(itemDto);
                         break;
 
                     case ItemType.Upgrade:
-                        _item[itemDTO.VNum] = new UpgradeItem(itemDTO);
+                        item[itemDto.VNum] = new UpgradeItem(itemDto);
                         break;
 
                     case ItemType.Weapon:
-                        _item[itemDTO.VNum] = new WearableItem(itemDTO);
+                        item[itemDto.VNum] = new WearableItem(itemDto);
                         break;
 
                     default:
-                        _item[itemDTO.VNum] = new NoFunctionItem(itemDTO);
+                        item[itemDto.VNum] = new NoFunctionItem(itemDto);
                         break;
                 }
             });
-            _items.AddRange(_item.Select(s => s.Value));
+            _items.AddRange(item.Select(s => s.Value));
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_LOADED"), _items.Count));
 
             // intialize monsterdrops
@@ -1269,9 +1272,6 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-                Act4RaidStart = DateTime.Now;
-                Act4AngelStat = new Act4Stat();
-                Act4DemonStat = new Act4Stat();
                 Logger.Log.Info($"[ACT4] Initialized");
                 LoadScriptedInstances();
             }
