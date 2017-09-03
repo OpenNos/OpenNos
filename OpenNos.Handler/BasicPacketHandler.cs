@@ -688,7 +688,7 @@ namespace OpenNos.Handler
                             targetSession.Character.Group = group;
                         }
                     }
-                    if (Session.Character.Group.GroupType != GroupType.Group)
+                    if (Session?.Character?.Group.GroupType != GroupType.Group)
                     {
                         return;
                     }
