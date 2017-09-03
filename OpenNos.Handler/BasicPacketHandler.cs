@@ -368,11 +368,11 @@ namespace OpenNos.Handler
                         return;
                     }
                     ClientSession target = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
-                    if (rdPacket.Parameter == null && target?.Character?.Group == null && Session.Character.Group.IsLeader(Session))
+                    if (rdPacket.Parameter == null && target?.Character?.Group == null && Session?.Character?.Group?.IsLeader(Session) == true)
                     {
                         GroupJoin(new PJoinPacket {RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId});
                     }
-                    else if (Session.Character.Group == null)
+                    else if (Session?.Character?.Group == null)
                     {
                         GroupJoin(new PJoinPacket {RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId});
                     }
@@ -380,7 +380,7 @@ namespace OpenNos.Handler
 
                 case 2://leave
                     ClientSession sender = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
-                    if (sender.Character?.Group == null)
+                    if (sender?.Character?.Group == null)
                     {
                         return;
                     }
@@ -394,7 +394,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateRaid(1, true));
                     Session.SendPacket(Session.Character.GenerateRaid(2, true));
 
-                    grp.Characters.ToList().ForEach(s =>
+                    grp?.Characters?.ToList().ForEach(s =>
                     {
                         s.SendPacket(grp.GenerateRdlst());
                         s.SendPacket(grp.GeneraterRaidmbf());
