@@ -5699,8 +5699,6 @@ namespace OpenNos.GameObject
             {
                 foreach (Buff buff in Buff)
                 {
-                    // THIS ONE DOES NOT FOR STUFFS
-
                     foreach (BCard entry in buff.Card.BCards.Where(s =>
                         s.Type.Equals((byte) type) && s.SubType.Equals(subtype) &&
                         (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))

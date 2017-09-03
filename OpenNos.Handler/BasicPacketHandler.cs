@@ -1080,23 +1080,21 @@ namespace OpenNos.Handler
                     case 300:
                         if (guriPacket.Argument == 8023)
                         {
-                            if (guriPacket.Value == null)
+                            if (guriPacket.User == null)
                             {
                                 return;
                             }
-                            if (short.TryParse(guriPacket.Data.ToString(), out short slot))
+                            short slot = (short)guriPacket.User.Value;
+                            ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
+                            if (box != null)
                             {
-                                ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
-                                if (box != null)
+                                if (guriPacket.User.Value == 1)
                                 {
-                                    if (guriPacket.Value.Length == 1)
-                                    {
-                                        box.Item.Use(Session, ref box, 1, new[] { guriPacket.Value });
-                                    }
-                                    else
-                                    {
-                                        box.Item.Use(Session, ref box, 1);
-                                    }
+                                    box.Item.Use(Session, ref box, 1, new[] {guriPacket.User.Value.ToString()});
+                                }
+                                else
+                                {
+                                    box.Item.Use(Session, ref box, 1);
                                 }
                             }
                         }
