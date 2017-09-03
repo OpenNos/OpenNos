@@ -2158,7 +2158,7 @@ namespace OpenNos.GameObject
                 Group group = null;
                 if (dropOwner != null)
                 {
-                    group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)dropOwner));
+                    group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)dropOwner) && g.GroupType == GroupType.Group);
                 }
 
                 // end owner set

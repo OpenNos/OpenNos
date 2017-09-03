@@ -169,8 +169,7 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
                         return;
                     }
-                    int type, secondaryType, inventoryType, slot;
-                    if (packetsplit != null && int.TryParse(packetsplit[2], out type) && int.TryParse(packetsplit[3], out secondaryType) && int.TryParse(packetsplit[4], out inventoryType) && int.TryParse(packetsplit[5], out slot))
+                    if (packetsplit != null && int.TryParse(packetsplit[2], out var type) && int.TryParse(packetsplit[3], out var secondaryType) && int.TryParse(packetsplit[4], out var inventoryType) && int.TryParse(packetsplit[5], out var slot))
                     {
                         int packetType;
                         switch (EffectValue)
