@@ -1622,8 +1622,7 @@ namespace OpenNos.GameObject
             baseDamage -= monsterDefence;
             if (GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, false)[0] == 0)
             {
-                if (ServerManager.Instance.RandomNumber() <= mainCritChance
-                    || GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0] != 0)
+                if (ServerManager.Instance.RandomNumber() <= mainCritChance || GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0] != 0)
                 {
                     if (skill.Type == 2)
                     {
@@ -1665,6 +1664,7 @@ namespace OpenNos.GameObject
             }
 
             #endregion
+
             #region Total Damage
 
             int totalDamage = baseDamage + elementalDamage;
