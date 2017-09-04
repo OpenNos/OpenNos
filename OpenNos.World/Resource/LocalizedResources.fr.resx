@@ -1714,4 +1714,13 @@ Veux-tu continuer ?</value>
   <data name="SUPER_REWARD" xml:space="preserve">
     <value>Quelqu'un a gagné le gros lot à la boîte Mystere !</value>
   </data>
+  <data name="ACT4_NEED_FACTION" xml:space="preserve">
+    <value>Seuls ceux qui possèdent le pouvoir de protection peuvent entrer dans la Couronne de glace.</value>
+  </data>
+  <data name="ACT4_PVP_DEATH" xml:space="preserve">
+    <value>Le pouvoir de {1} a été volé par un gardien des {0}.</value>
+  </data>
+  <data name="ACT4_PVP_KILL" xml:space="preserve">
+    <value>{1} a vaincu un gardien des {0}.</value>
+  </data>
 </root>
