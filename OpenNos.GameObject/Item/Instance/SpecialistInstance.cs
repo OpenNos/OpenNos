@@ -438,6 +438,10 @@ namespace OpenNos.GameObject
             const short blueScrollVnum = 1363;
             const short redScrollVnum = 1364;
 
+            if (CharacterSession == null)
+            {
+                return;
+            }
             if (!CharacterSession.HasCurrentMapInstance)
             {
                 return;
