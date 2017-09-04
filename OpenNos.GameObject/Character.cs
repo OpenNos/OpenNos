@@ -1612,7 +1612,7 @@ namespace OpenNos.GameObject
                 elementalBoost = 0;
             }
 
-            elementalDamage = (int)((elementalDamage + (elementalDamage + baseDamage) * ((ElementRate + ElementRateSP) / 100D)) * 1 + elementalBoost);
+            elementalDamage = (int)((elementalDamage + (elementalDamage + baseDamage) * ((ElementRate + ElementRateSP) / 100D)) * (1 + elementalBoost));
             elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
 
             #endregion
