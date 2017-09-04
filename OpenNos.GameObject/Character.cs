@@ -637,8 +637,9 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.AddBuff(new Buff(383), false);
                 }
-                
-                if (LastHealth.AddSeconds(2) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
+
+                Logger.Log.Info($"LastHealth : {LastHealth} + 2 = {LastHealth.AddSeconds(2)}");
+                if (LastHealth.AddSeconds(2) <= DateTime.Now || (IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now))
                 {
                     LastHealth = DateTime.Now;
                     if (Session.HealthStop)
@@ -647,8 +648,11 @@ namespace OpenNos.GameObject
                         return;
                     }
 
+                    Logger.Log.Info($"LastDefence : {LastDefence} + 4 = {LastDefence.AddSeconds(4)}");
+                    Logger.Log.Info($"LastDefence : {LastSkillUse} + 2 = {LastSkillUse.AddSeconds(2)}");
                     if (LastDefence.AddSeconds(4) <= DateTime.Now && LastSkillUse.AddSeconds(2) <= DateTime.Now && Hp > 0)
                     {
+                        Logger.Log.Info($"RegenHp()");
                         int x = 1;
                         if (x == 0)
                         {
@@ -3846,7 +3850,6 @@ namespace OpenNos.GameObject
         public void GetDamage(int damage)
         {
             LastDefence = DateTime.Now;
-            Dispose();
 
             Hp -= damage;
             if (Hp < 0)
@@ -4170,6 +4173,7 @@ namespace OpenNos.GameObject
             LastDefence = DateTime.Now.AddSeconds(-21);
             LastDelay = DateTime.Now.AddSeconds(-5);
             LastHealth = DateTime.Now;
+            LastSkillUse = DateTime.Now;
             LastEffect = DateTime.Now;
             Session = null;
             MailList = new Dictionary<int, MailDTO>();
