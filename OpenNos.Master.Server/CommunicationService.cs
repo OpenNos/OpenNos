@@ -20,7 +20,6 @@ using OpenNos.Domain;
 using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -41,17 +40,12 @@ namespace OpenNos.Master.Server
 
         public bool Authenticate(string authKey)
         {
-            if (string.IsNullOrWhiteSpace(authKey))
+            if (!string.IsNullOrWhiteSpace(authKey) && authKey == ConfigurationManager.AppSettings["MasterAuthKey"])
             {
-                return false;
+                MSManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
+                return true;
             }
-
-            if (authKey != ConfigurationManager.AppSettings["MasterAuthKey"])
-            {
-                return false;
-            }
-            MSManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
-            return true;
+            return false;
         }
 
         public void Cleanup()
