@@ -32,7 +32,6 @@ namespace OpenNos.GameObject
         public ItemInstance()
         {
             _random = new Random();
-            CharacterSession = ServerManager.Instance.GetSessionByCharacterId(CharacterId);
         }
 
         public ItemInstance(short vNum, byte amount)
@@ -41,7 +40,6 @@ namespace OpenNos.GameObject
             Amount = amount;
             Type = Item.Type;
             _random = new Random();
-            CharacterSession = ServerManager.Instance.GetSessionByCharacterId(CharacterId);
         }
 
         #endregion
@@ -64,8 +62,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        public ClientSession CharacterSession { get; set; }
-
+        public ClientSession CharacterSession
+        {
+            // TODO REVIEW THAT
+            get { return ServerManager.Instance.GetSessionByCharacterId(CharacterId); }
+        }
 
         #endregion
 

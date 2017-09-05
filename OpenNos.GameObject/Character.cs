@@ -650,12 +650,9 @@ namespace OpenNos.GameObject
                         Session.HealthStop = false;
                         return;
                     }
-
-                    Logger.Log.Info($"LastDefence : {LastDefence} + 4 = {LastDefence.AddSeconds(4)}");
-                    Logger.Log.Info($"LastDefence : {LastSkillUse} + 2 = {LastSkillUse.AddSeconds(2)}");
+                    
                     if (LastDefence.AddSeconds(4) <= DateTime.Now && LastSkillUse.AddSeconds(2) <= DateTime.Now && Hp > 0)
                     {
-                        Logger.Log.Info($"RegenHp()");
                         int x = 1;
                         if (x == 0)
                         {

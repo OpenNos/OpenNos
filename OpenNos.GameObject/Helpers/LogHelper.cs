@@ -18,7 +18,7 @@ namespace OpenNos.GameObject.Helpers
             string[] packet = commandPacket.OriginalContent.Split(' ');
             for (int i = 1; i < packet.Length; i++)
             {
-                withoutHeaderpacket += packet[i];
+                withoutHeaderpacket += $" {packet[i]}";
             }
             LogCommandsDTO command = new LogCommandsDTO
             {
