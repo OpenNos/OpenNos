@@ -25,8 +25,8 @@ namespace OpenNos.GameObject
         public InstanceBag()
         {
             Clock = new Clock(1);
-            DeadList = new List<long>();
-            UnlockEvents = new List<EventContainer>();
+            DeadList = new ConcurrentBag<long>();
+            UnlockEvents = new ConcurrentBag<EventContainer>();
             ButtonLocker = new Locker();
             MonsterLocker = new Locker();
     }
@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
 
         public long Creator { get; set; }
 
-        public List<long> DeadList { get; set; }
+        public ConcurrentBag<long> DeadList { get; set; }
 
         public byte EndState { get; set; }
 
@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
         public int RoomsVisited { get; set; }
         public Locker MonsterLocker { get;  set; }
         public Locker ButtonLocker { get;  set; }
-        public List<EventContainer> UnlockEvents { get;  set; }
+        public ConcurrentBag<EventContainer> UnlockEvents { get;  set; }
 
         public void Dispose()
         {

@@ -52,14 +52,14 @@ namespace OpenNos.GameObject
             FriendRequestCharacters = new List<long>();
             StaticBonusList = new List<StaticBonusDTO>();
             Mates = new List<Mate>();
-            EquipmentBCards = new List<BCard>();
+            EquipmentBCards = new ConcurrentBag<BCard>();
         }
 
         #endregion
 
         #region Properties
 
-        public List<BCard> EquipmentBCards { get; set; }
+        public ConcurrentBag<BCard> EquipmentBCards { get; set; }
 
         public AuthorityType Authority { get; set; }
 
@@ -600,9 +600,9 @@ namespace OpenNos.GameObject
                     Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateEff(3007)));
                     LastEffect = DateTime.Now;
                 }
-                
+
                 // PERMA BUFFS (Mates, Maps..)
-                if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act52) == true)
+                if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) == true)
                 {
                     if (Buff.All(s => s.Card.CardId != 340 && s.Card.CardId != 339))
                     {
@@ -1024,7 +1024,7 @@ namespace OpenNos.GameObject
                     continue;
                 }
                 Inventory.DeleteById(item.Id);
-                Session.Character.EquipmentBCards.RemoveAll(o => o.ItemVNum == item.ItemVNum);
+                Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != item.ItemVNum);
                 Session.SendPacket(item.Type == InventoryType.Wear ? GenerateEquipment() : UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
                 Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
             }
@@ -1664,7 +1664,7 @@ namespace OpenNos.GameObject
 
             #endregion
 
-            baseDamage += GetBuff(CardType.AttackPower, (byte) AdditionalTypes.AttackPower.AllAttacksIncreased, false)[0];
+            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.AllAttacksIncreased, false)[0];
 
             #region Soft-Damage
 
@@ -2265,7 +2265,7 @@ namespace OpenNos.GameObject
                     };
                     if (Session.CurrentMapInstance != null)
                     {
-                        if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42)|| monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                        if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                         {
                             List<long> alreadyGifted = new List<long>();
                             foreach (long charId in monsterToAttack.DamageList.Keys)
@@ -2302,7 +2302,7 @@ namespace OpenNos.GameObject
                                         group.Characters.ToList().ForEach(s =>
                                             s.SendPacket(s.Character.GenerateSay(
                                                 string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop2.ItemVNum).Name,
-                                                    group.Characters.Single(c => c.Character.CharacterId == (long) dropOwner).Character.Name, drop2.Amount), 10)));
+                                                    group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop2.Amount), 10)));
                                     }
                                 }
                                 else
@@ -3166,12 +3166,12 @@ namespace OpenNos.GameObject
             #region Critical Damage
 
             baseDamage -= monsterDefence;
-            if (GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.ReceivingDecreased, true)[0] == 0
-                && target.GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.ReceivingDecreased, true, true)[0] == 0)
+            if (GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingDecreased, true)[0] == 0
+                && target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingDecreased, true, true)[0] == 0)
             {
                 if (ServerManager.Instance.RandomNumber() <= mainCritChance
-                    || GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.ReceivingIncreased, true)[0] != 0
-                    || target.GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.ReceivingIncreased, true, true)[0] != 0)
+                    || GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingIncreased, true)[0] != 0
+                    || target.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.ReceivingIncreased, true, true)[0] != 0)
                 {
                     if (skill.Type == 2)
                     {
@@ -3183,7 +3183,7 @@ namespace OpenNos.GameObject
                         {
                             multiplier = 3;
                         }
-                        baseDamage += (int) (baseDamage * multiplier);
+                        baseDamage += (int)(baseDamage * multiplier);
                         hitmode = 3;
                     }
                     else
@@ -3193,7 +3193,7 @@ namespace OpenNos.GameObject
                         {
                             multiplier = 3;
                         }
-                        baseDamage += (int) (baseDamage * multiplier);
+                        baseDamage += (int)(baseDamage * multiplier);
                         hitmode = 3;
                     }
                 }
@@ -3401,7 +3401,7 @@ namespace OpenNos.GameObject
             string skibase = string.Empty;
             if (!UseSp)
             {
-                skibase = $"{200 + 20 * (byte) Class} {201 + 20 * (byte) Class}";
+                skibase = $"{200 + 20 * (byte)Class} {201 + 20 * (byte)Class}";
             }
             else if (characterSkills.Any())
             {
@@ -3430,7 +3430,7 @@ namespace OpenNos.GameObject
             {
                 foreach (ItemInstance inv in Inventory.Select(s => s.Value))
                 {
-                    EquipmentBCards.AddRange(inv.Item.BCards);
+                    inv.Item.BCards.ForEach(s=>EquipmentBCards.Add(s));
                     switch (inv.Type)
                     {
                         case InventoryType.Equipment:
@@ -3451,10 +3451,10 @@ namespace OpenNos.GameObject
                                         {
                                             case ItemType.Armor:
                                             case ItemType.Weapon:
-                                                EquipmentBCards.AddRange(EquipmentOptionHelper.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum));
+                                                EquipmentOptionHelper.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                 break;
                                             case ItemType.Jewelery:
-                                                EquipmentBCards.AddRange(EquipmentOptionHelper.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum));
+                                                EquipmentOptionHelper.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                 break;
                                         }
 
@@ -3799,8 +3799,8 @@ namespace OpenNos.GameObject
                 {
                     continue;
                 }
-                if (item.Item.EquipmentSlot == EquipmentType.MainWeapon || 
-                    item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon || 
+                if (item.Item.EquipmentSlot == EquipmentType.MainWeapon ||
+                    item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon ||
                     item.Item.EquipmentSlot == EquipmentType.Armor ||
                     item.Item.EquipmentSlot == EquipmentType.Sp)
                 {
@@ -5419,7 +5419,7 @@ namespace OpenNos.GameObject
                     {
                         if (s.Character != null)
                         {
-                            result += $" {s.Character?.CharacterId}.{(int) (s.Character?.Hp / s.Character?.HPLoad() * 100)}.{(int) (s.Character.Mp / s.Character.MPLoad() * 100)}";
+                            result += $" {s.Character?.CharacterId}.{(int)(s.Character?.Hp / s.Character?.HPLoad() * 100)}.{(int)(s.Character.Mp / s.Character.MPLoad() * 100)}";
                         }
                     });
                     break;
@@ -5429,7 +5429,7 @@ namespace OpenNos.GameObject
                 case 5:
                     result = "raid 5 1";
                     break;
-                    
+
             }
             return result;
         }
@@ -5662,7 +5662,7 @@ namespace OpenNos.GameObject
         /// <returns></returns>
         public int GetMostValueEquipmentBuff(CardType type, byte subtype)
         {
-            return EquipmentBCards.Where(s => s.Type == (byte) type && s.SubType.Equals(subtype)).OrderByDescending(s => s.FirstData).FirstOrDefault()?.FirstData ?? 0;
+            return EquipmentBCards.Where(s => s.Type == (byte)type && s.SubType.Equals(subtype)).OrderByDescending(s => s.FirstData).FirstOrDefault()?.FirstData ?? 0;
         }
 
         /// <summary>
@@ -5708,7 +5708,7 @@ namespace OpenNos.GameObject
             int value1 = 0;
             int value2 = 0;
 
-            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
+            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {
@@ -5733,7 +5733,7 @@ namespace OpenNos.GameObject
                 foreach (Buff buff in Buff)
                 {
                     foreach (BCard entry in buff.Card.BCards.Where(s =>
-                        s.Type.Equals((byte) type) && s.SubType.Equals(subtype) &&
+                        s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
                         (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
                     {
                         if (entry.IsLevelScaled)
@@ -5756,7 +5756,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            return new[] {value1, value2};
+            return new[] { value1, value2 };
         }
 
         /// <summary>
@@ -5792,12 +5792,12 @@ namespace OpenNos.GameObject
             ArenaTeamType atype = ArenaTeamType.ERENIA;
             if (tm == null)
             {
-                return $"ta_f 0 {victoriousteam} {(byte) atype} {score1} {life1} {call1} {score2} {life2} {call2}";
+                return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
             }
             ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
             if (tmem == null)
             {
-                return $"ta_f 0 {victoriousteam} {(byte) atype} {score1} {life1} {call1} {score2} {life2} {call2}";
+                return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
             }
             atype = tmem.ArenaTeamType;
             IEnumerable<long> ids = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
@@ -5809,7 +5809,7 @@ namespace OpenNos.GameObject
             life2 = 3 - oposit.Count(s => s.Dead);
             call1 = 5 - own.Sum(s => s.SummonCount);
             call2 = 5 - oposit.Sum(s => s.SummonCount);
-            return $"ta_f 0 {victoriousteam} {(byte) atype} {score1} {life1} {call1} {score2} {life2} {call2}";
+            return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
         }
 
         public void LeaveTalentArena(bool surrender = false)
