@@ -282,7 +282,10 @@ namespace OpenNos.Handler
                     return;
                 }
                 Session.Character.Group.Raid.FirstMap.InstanceBag.Lock = true;
-
+                if (ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
+                {
+                    ServerManager.Instance.GroupList.Remove(Session.Character.Group);
+                }
                 Session.Character.Group.Characters.Where(s => s.CurrentMapInstance.MapInstanceId != Session.CurrentMapInstance.MapInstanceId).ToList().ForEach(
                     session =>
                     {
