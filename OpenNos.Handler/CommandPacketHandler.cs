@@ -2142,7 +2142,7 @@ namespace OpenNos.Handler
                     if (targetSession != null && !targetSession.Character.IsChangingMapInstance)
                     {
                         // clear any shop or trade on target character
-                        targetSession.Character.Dispose();
+                        targetSession.Character.DisposeShopOrExchange();
                         targetSession.Character.IsSitting = false;
                         ServerManager.Instance.ChangeMapInstance(targetSession.Character.CharacterId, Session.Character.MapInstanceId, (short)(Session.Character.PositionX + 1), (short)(Session.Character.PositionY + 1));
                     }
