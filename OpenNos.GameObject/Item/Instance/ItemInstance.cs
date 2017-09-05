@@ -64,8 +64,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        public ClientSession CharacterSession { get; set; }
-
+        public ClientSession CharacterSession
+        {
+            get { return CharacterSession ?? ServerManager.Instance.GetSessionByCharacterId(CharacterId); }
+            set { CharacterSession = value; }
+        }
 
         #endregion
 
