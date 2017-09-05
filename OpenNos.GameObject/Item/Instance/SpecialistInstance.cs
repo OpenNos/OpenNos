@@ -336,6 +336,11 @@ namespace OpenNos.GameObject
 
             SpecialistInstance specialist = CharacterSession.Character.Inventory.LoadByItemInstance<SpecialistInstance>(Id);
 
+            if (specialist == null)
+            {
+                return;
+            }
+
             int rnd = ServerManager.Instance.RandomNumber();
             if (rnd < upsuccess[upmode - 1])
             {
