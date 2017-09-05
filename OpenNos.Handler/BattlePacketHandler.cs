@@ -303,7 +303,6 @@ namespace OpenNos.Handler
                     });
                 }
                 target.Character.GetDamage(damage / 2);
-                target.Character.LastDefence = DateTime.Now;
                 target.SendPacket(target.Character.GenerateStat());
                 bool isAlive = target.Character.Hp > 0;
                 if (!isAlive)

@@ -39,23 +39,23 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public SaveResult InsertOrUpdate(ref LogCommandsDTO log)
+        public SaveResult InsertOrUpdate(ref LogCommandsDTO logCommand)
         {
             try
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    long logId = log.CommandId;
+                    long logId = logCommand.CommandId;
                     LogCommands entity = context.LogCommands.FirstOrDefault(c => c.CommandId.Equals(logId));
 
                     if (entity == null)
                     {
-                        log = Insert(log, context);
+                        logCommand = Insert(logCommand, context);
                         return SaveResult.Inserted;
                     }
 
-                    log.CommandId = entity.CommandId;
-                    log = Update(entity, log, context);
+                    logCommand.CommandId = entity.CommandId;
+                    logCommand = Update(entity, logCommand, context);
                     return SaveResult.Updated;
                 }
             }

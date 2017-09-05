@@ -193,7 +193,10 @@
     <Compile Include="Event\EventWave.cs" />
     <Compile Include="Event\ICEBREAKER\IceBreaker.cs" />
     <Compile Include="Helpers\CellonGeneratorHelper.cs" />
+    <Compile Include="Helpers\DamageHelper.cs" />
     <Compile Include="Helpers\EquipmentOptionHelper.cs" />
+    <Compile Include="Helpers\LogHelper.cs" />
+    <Compile Include="Helpers\PvpDamageHelper.cs" />
     <Compile Include="Helpers\ShellGeneratorHelper.cs" />
     <Compile Include="Map\Zone.cs" />
     <Compile Include="Event\EventContainer.cs" />

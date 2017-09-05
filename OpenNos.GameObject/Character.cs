@@ -625,21 +625,24 @@ namespace OpenNos.GameObject
                 // TODO NEED TO FIND A WAY TO APPLY BUFFS PROPERLY THROUGH MONSTER SKILLS
                 IEnumerable<Mate> equipMates = Mates.Where(s => s.IsTeamMember);
                 IEnumerable<Mate> mates = equipMates as IList<Mate> ?? equipMates.ToList();
+                // FIBI
                 if (mates.Any(s => s.Monster.NpcMonsterVNum == 670) && Buff.All(s => s.Card.CardId != 374))
                 {
                     Session.Character.AddBuff(new Buff(374), false);
                 }
+                // PADBRA
                 if (mates.Any(s => s.Monster.NpcMonsterVNum == 836) && Buff.All(s => s.Card.CardId != 381))
                 {
                     Session.Character.AddBuff(new Buff(381), false);
                 }
+                // INFERNO
                 if (mates.Any(s => s.Monster.NpcMonsterVNum == 2105) && Buff.All(s => s.Card.CardId != 383))
                 {
                     Session.Character.AddBuff(new Buff(383), false);
                 }
 
-                Logger.Log.Info($"LastHealth : {LastHealth} + 2 = {LastHealth.AddSeconds(2)}");
-                if (LastHealth.AddSeconds(2) <= DateTime.Now || (IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now))
+
+                if (LastHealth.AddSeconds(2) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
                 {
                     LastHealth = DateTime.Now;
                     if (Session.HealthStop)
@@ -1025,6 +1028,12 @@ namespace OpenNos.GameObject
                 Session.SendPacket(item.Type == InventoryType.Wear ? GenerateEquipment() : UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
                 Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
             }
+        }
+
+        public void DisposeShopOrExchange()
+        {
+            CloseShop();
+            CloseExchangeOrTrade();
         }
 
         /// <summary>
@@ -3850,6 +3859,8 @@ namespace OpenNos.GameObject
         public void GetDamage(int damage)
         {
             LastDefence = DateTime.Now;
+            CloseShop();
+            CloseExchangeOrTrade();
 
             Hp -= damage;
             if (Hp < 0)
