@@ -861,7 +861,7 @@ namespace OpenNos.Handler
                             string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int) Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                         return;
                 }
-                Session.Character.EquipmentBCards.RemoveAll(o => o.ItemVNum == inventory.ItemVNum);
+                Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != inventory.ItemVNum);
             }
 
             ItemInstance inv = Session.Character.Inventory.MoveInInventory(removePacket.InventorySlot, equipment, InventoryType.Equipment);
@@ -1946,7 +1946,7 @@ namespace OpenNos.Handler
             }
             List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
             Session.Character.DisableBuffs(bufftodisable);
-            Session.Character.EquipmentBCards.RemoveAll(s => s.ItemVNum.Equals(vnum));
+            Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(s => !s.ItemVNum.Equals(vnum));
             Session.Character.UseSp = false;
             Session.Character.LoadSpeed();
             Session.SendPacket(Session.Character.GenerateCond());

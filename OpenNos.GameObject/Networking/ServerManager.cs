@@ -394,7 +394,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case MapInstanceType.RaidInstance:
-                    List<long> save = session.CurrentMapInstance.InstanceBag.DeadList.ConvertAll(s => s);
+                    List<long> save = session.CurrentMapInstance.InstanceBag.DeadList.ToList();
                     if (session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count() < 0)
                     {
                         session.Character.Hp = 1;

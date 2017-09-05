@@ -73,7 +73,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    
+
                     if (ItemValidTime > 0 && inv.IsBound)
                     {
                         inv.ItemDeleteTime = DateTime.Now.AddSeconds(ItemValidTime);
@@ -108,8 +108,8 @@ namespace OpenNos.GameObject
                         }
 
                         if (ItemType != ItemType.Weapon && ItemType != ItemType.Armor && ItemType != ItemType.Fashion && ItemType != ItemType.Jewelery && ItemType != ItemType.Specialist ||
-                            LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) || Sex != 0 && Sex != (byte) session.Character.Gender + 1
-                            || ItemType != ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves && ((Class >> (byte) session.Character.Class) & 1) != 1)
+                            LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) || Sex != 0 && Sex != (byte)session.Character.Gender + 1
+                            || ItemType != ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves && ((Class >> (byte)session.Character.Class) & 1) != 1)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                             return;
@@ -119,7 +119,7 @@ namespace OpenNos.GameObject
                         {
                             SpecialistInstance sp = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, equipment);
 
-                            if (sp !=null && sp.Item.Element != 0 && EquipmentSlot == EquipmentType.Fairy && Element != sp.Item.Element && Element != sp.Item.SecondaryElement)
+                            if (sp != null && sp.Item.Element != 0 && EquipmentSlot == EquipmentType.Fairy && Element != sp.Item.Element && Element != sp.Item.SecondaryElement)
                             {
                                 session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                                 return;
@@ -160,9 +160,9 @@ namespace OpenNos.GameObject
                         // move from wear to equipment and back
                         session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment, itemToWearType, inv.Slot);
                         session.SendPacket(currentlyEquippedItem.GenerateInventoryAdd());
-                        session.Character.EquipmentBCards.RemoveAll(o => o.ItemVNum == currentlyEquippedItem.ItemVNum);
+                        session.Character.EquipmentBCards = session.Character.EquipmentBCards.Where(o => o.ItemVNum != currentlyEquippedItem.ItemVNum);
                     }
-                    session.Character.EquipmentBCards.AddRange(inv.Item.BCards);
+                    inv.Item.BCards.ForEach(s => session.Character.EquipmentBCards.Add(s));
 
                     if (inv is WearableInstance wearableInstance)
                     {
@@ -172,10 +172,10 @@ namespace OpenNos.GameObject
                             {
                                 case ItemType.Armor:
                                 case ItemType.Weapon:
-                                    session.Character.EquipmentBCards.AddRange(EquipmentOptionHelper.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum));
+                                    EquipmentOptionHelper.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => session.Character.EquipmentBCards.Add(s));
                                     break;
                                 case ItemType.Jewelery:
-                                    session.Character.EquipmentBCards.AddRange(EquipmentOptionHelper.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum));
+                                    EquipmentOptionHelper.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => session.Character.EquipmentBCards.Add(s));
                                     break;
                             }
 
