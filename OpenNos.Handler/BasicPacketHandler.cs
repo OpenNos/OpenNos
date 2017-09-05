@@ -484,8 +484,13 @@ namespace OpenNos.Handler
                     }
                     break;
                 case 1:
-                    if (Session.Character.Group != null && Session.Character.Group.IsLeader(Session) && Session.Character.Group.Raid.FirstMap.InstanceBag.Lock == false && Session.Character.Group.GroupType != GroupType.Group && ServerManager.Instance.GroupList.All(s => s.GroupId != Session.Character.Group.GroupId))
+                    if (Session.Character.Group != null && Session.Character.Group.IsLeader(Session) && Session.Character.Group.GroupType != GroupType.Group && ServerManager.Instance.GroupList.All(s => s.GroupId != Session.Character.Group.GroupId))
                     {
+                        if (Session.Character.Group.Raid?.FirstMap != null)
+                        {
+                            if (Session.Character.Group.Raid.FirstMap.InstanceBag.Lock == true)
+                                return;
+                        }
                         ServerManager.Instance.GroupList.Add(Session.Character.Group);
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(1));
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("RAID_REGISTERED"));
