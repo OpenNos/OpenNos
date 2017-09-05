@@ -181,7 +181,6 @@ namespace OpenNos.GameObject
             DamageList = new Dictionary<long, long>();
             _random = new Random(MapMonsterId);
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
-            Monster.BCards.ForEach(s => s.ApplyBCards(this));
         }
 
         /// <summary>
@@ -1047,25 +1046,23 @@ namespace OpenNos.GameObject
                         int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
                         short mapX = Path.ElementAt(maxindex - 1).X;
                         short mapY = Path.ElementAt(maxindex - 1).Y;
-                        double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Monster.Speed;
+                        double waitingtime = Map.GetDistance(new MapCell {X = mapX, Y = mapY}, new MapCell {X = MapX, Y = MapY}) / (double) Monster.Speed;
                         LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
-                        Observable.Timer(TimeSpan.FromMilliseconds(timetowalk))
-                                             .Subscribe(
-                                             x =>
-                                             {
-                                                 MapX = (short)mapX;
-                                                 MapY = (short)mapY;
+                        Observable.Timer(TimeSpan.FromMilliseconds(timetowalk)).Subscribe(x =>
+                        {
+                            MapX = mapX;
+                            MapY = mapY;
 
-                                                 MoveEvent?.Events.ForEach(e =>
-                                                 {
-                                                     EventHelper.Instance.RunEvent(e, monster: this);
-                                                 });
-                                                 if (MoveEvent != null && MoveEvent.InZone(MapX, MapY))
-                                                 {
-                                                    MoveEvent = null;
-                                                 }
-                                             });
+                            MoveEvent?.Events.ForEach(e =>
+                            {
+                                EventHelper.Instance.RunEvent(e, monster: this);
+                            });
+                            if (MoveEvent != null && MoveEvent.InZone(MapX, MapY))
+                            {
+                                MoveEvent = null;
+                            }
+                        });
                         Path.RemoveRange(0, maxindex);
                         MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                         return;
