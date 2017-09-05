@@ -1030,19 +1030,18 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void DisposeShopOrExchange()
+        public void DisposeShopAndExchange()
         {
             CloseShop();
             CloseExchangeOrTrade();
         }
 
         /// <summary>
-        /// Make the character moveable also from Teleport, ..
+        /// Destroy the character's related vars
         /// </summary>
         public void Dispose()
         {
-            CloseShop();
-            CloseExchangeOrTrade();
+            DisposeShopAndExchange();
             GroupSentRequestCharacterIds.Clear();
             FamilyInviteCharacters.Clear();
             FriendRequestCharacters.Clear();

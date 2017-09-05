@@ -2044,7 +2044,7 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.HasShopOpened || Session.Character.InExchangeOrTrade)
                 {
-                    Session.Character.DisposeShopOrExchange();
+                    Session.Character.DisposeShopAndExchange();
                 }
                 if (Session.Character.IsChangingMapInstance)
                 {
@@ -2099,7 +2099,7 @@ namespace OpenNos.Handler
                     Parallel.ForEach(ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId), session =>
                     {
                         // clear any shop or trade on target character
-                        session.Character.DisposeShopOrExchange();
+                        session.Character.DisposeShopAndExchange();
                         if (session.Character.IsChangingMapInstance || !Session.HasCurrentMapInstance)
                         {
                             return;
@@ -2142,7 +2142,7 @@ namespace OpenNos.Handler
                     if (targetSession != null && !targetSession.Character.IsChangingMapInstance)
                     {
                         // clear any shop or trade on target character
-                        targetSession.Character.DisposeShopOrExchange();
+                        targetSession.Character.DisposeShopAndExchange();
                         targetSession.Character.IsSitting = false;
                         ServerManager.Instance.ChangeMapInstance(targetSession.Character.CharacterId, Session.Character.MapInstanceId, (short)(Session.Character.PositionX + 1), (short)(Session.Character.PositionY + 1));
                     }
