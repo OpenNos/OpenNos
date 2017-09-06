@@ -1698,7 +1698,7 @@ namespace OpenNos.GameObject
             baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksIncreased, false)[0];
             baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksIncreased, false)[0];
             baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksIncreased, false)[0];
-            baseDamage += baseDamage * (1 + (int)(GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased, false)[0] / 100D));
+            baseDamage *= 1 + (int)(GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased, false)[0] / 100D);
 
 
             #region Soft-Damage
