@@ -237,7 +237,7 @@ namespace OpenNos.Handler
                 switch (target.CurrentMapInstance.MapInstanceType)
                 {
                     case MapInstanceType.ArenaInstance:
-                        if (!target.Character.MapInstance.Map.IsArenaPVPable(target.Character.PositionX, target.Character.PositionY))
+                        if (!target.Character.MapInstance.Map.IsArenaPVPable(target.Character.PositionX, target.Character.PositionY) || !Session.Character.MapInstance.Map.IsArenaPVPable(Session.Character.PositionX, Session.Character.PositionY))
                         {
                             Session.SendPacket("cancel 2 0");
                             return;
