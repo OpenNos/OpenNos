@@ -2285,7 +2285,8 @@ namespace OpenNos.GameObject
                 gold = gold > maxGold ? (int)maxGold : gold;
                 double randChance = ServerManager.Instance.RandomNumber() * random.NextDouble();
 
-                if (gold > 0 && randChance <= (int)(ServerManager.Instance.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)) && Session.CurrentMapInstance?.MapInstanceType != MapInstanceType.LodInstance)
+                if (gold > 0 && randChance <= (int) (ServerManager.Instance.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)) &&
+                    Session.CurrentMapInstance?.MapInstanceType != MapInstanceType.LodInstance)
                 {
                     DropDTO drop2 = new DropDTO
                     {
@@ -2294,7 +2295,8 @@ namespace OpenNos.GameObject
                     };
                     if (Session.CurrentMapInstance != null)
                     {
-                        if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                        if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act4) ||
+                            Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act42) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                         {
                             List<long> alreadyGifted = new List<long>();
                             foreach (long charId in monsterToAttack.DamageList.Keys)
@@ -2306,13 +2308,14 @@ namespace OpenNos.GameObject
                                 ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
                                 if (session != null)
                                 {
-                                    session.Character.Gold += drop2.Amount * (1 + (int)(GetBuff(CardType.Item, (byte)AdditionalTypes.Item.IncreaseEarnedGold, false)[0] / 100D));
+                                    session.Character.Gold += drop2.Amount * (1 + (int) (GetBuff(CardType.Item, (byte) AdditionalTypes.Item.IncreaseEarnedGold, false)[0] / 100D));
                                     if (session.Character.Gold > maxGold)
                                     {
                                         session.Character.Gold = maxGold;
                                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                                     }
-                                    session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
+                                    session.SendPacket(session.Character.GenerateSay(
+                                        $"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
                                     session.SendPacket(session.Character.GenerateGold());
                                 }
                                 alreadyGifted.Add(charId);
@@ -2322,7 +2325,7 @@ namespace OpenNos.GameObject
                         {
                             if (group != null)
                             {
-                                if (group.SharingMode == (byte)GroupSharingType.ByOrder)
+                                if (group.SharingMode == (byte) GroupSharingType.ByOrder)
                                 {
                                     dropOwner = group.GetNextOrderedCharacterId(this);
 
@@ -2331,7 +2334,7 @@ namespace OpenNos.GameObject
                                         group.Characters.ToList().ForEach(s =>
                                             s.SendPacket(s.Character.GenerateSay(
                                                 string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop2.ItemVNum).Name,
-                                                    group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop2.Amount), 10)));
+                                                    group.Characters.Single(c => c.Character.CharacterId == (long) dropOwner).Character.Name, drop2.Amount), 10)));
                                     }
                                 }
                                 else
@@ -2343,15 +2346,13 @@ namespace OpenNos.GameObject
                             }
 
                             // delayed Drop
-                            Observable.Timer(TimeSpan.FromMilliseconds(500))
-                                .Subscribe(
-                                    o =>
-                                    {
-                                        if (Session.HasCurrentMapInstance)
-                                        {
-                                            Session.CurrentMapInstance.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
-                                        }
-                                    });
+                            Observable.Timer(TimeSpan.FromMilliseconds(500)).Subscribe(o =>
+                            {
+                                if (Session.HasCurrentMapInstance)
+                                {
+                                    Session.CurrentMapInstance.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
+                                }
+                            });
                         }
                     }
                 }

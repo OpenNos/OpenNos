@@ -1597,7 +1597,8 @@ namespace OpenNos.Handler
                                 }
                                 // REMOVE ITEMS TO USE
                                 Session.Character.Gold -= gold;
-                                Session.Character.Inventory.DeleteById(cellon.Id);
+                                Session.SendPacket(Session.Character.GenerateGold());
+                                Session.Character.Inventory.RemoveItemAmount(cellon.ItemVNum);
 
                                 // GENERATE OPTION
                                 EquipmentOptionDTO option = CellonGeneratorHelper.GenerateOption(cellon.Item.EffectValue);
