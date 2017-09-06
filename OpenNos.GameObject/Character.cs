@@ -2285,7 +2285,7 @@ namespace OpenNos.GameObject
                 gold = gold > maxGold ? (int)maxGold : gold;
                 double randChance = ServerManager.Instance.RandomNumber() * random.NextDouble();
 
-                if (gold > 0 && randChance <= (int)(ServerManager.Instance.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
+                if (gold > 0 && randChance <= (int)(ServerManager.Instance.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)) && Session.CurrentMapInstance?.MapInstanceType != MapInstanceType.LodInstance)
                 {
                     DropDTO drop2 = new DropDTO
                     {
@@ -2320,7 +2320,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            if (group != null && MapInstance.MapInstanceType != MapInstanceType.LodInstance)
+                            if (group != null)
                             {
                                 if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                                 {
