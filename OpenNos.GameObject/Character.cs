@@ -53,6 +53,7 @@ namespace OpenNos.GameObject
             StaticBonusList = new List<StaticBonusDTO>();
             Mates = new List<Mate>();
             EquipmentBCards = new ConcurrentBag<BCard>();
+            SkillBcards = new ConcurrentBag<BCard>();
         }
 
         #endregion
@@ -66,6 +67,8 @@ namespace OpenNos.GameObject
         public Node[,] BrushFire { get; set; }
 
         public ConcurrentBag<Buff> Buff { get; internal set; }
+
+        public ConcurrentBag<BCard> SkillBcards { get; set; }
 
         public bool CanFight
         {
@@ -639,6 +642,31 @@ namespace OpenNos.GameObject
                 if (mates.Any(s => s.Monster.NpcMonsterVNum == 2105) && Buff.All(s => s.Card.CardId != 383))
                 {
                     Session.Character.AddBuff(new Buff(383), false);
+                }
+
+                // HEAL
+                if (LastHealth.AddSeconds(2) <= DateTime.Now)
+                {
+                    int heal = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.RestoreHP, false)[0];
+                    heal -= GetBuff(CardType.HealingBurningAndCasting, (byte) AdditionalTypes.HealingBurningAndCasting.DecreaseHP, false)[0];
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
+                    if (Hp + heal < HPLoad())
+                    {
+                        change = true;
+                        Hp += heal;
+                    }
+                    else
+                    {
+                        if (Hp != (int)HPLoad())
+                        {
+                            change = true;
+                        }
+                        Hp = (int)HPLoad();
+                    }
+                    if (change)
+                    {
+                        Session.SendPacket(GenerateStat());
+                    }
                 }
 
 
@@ -1218,8 +1246,8 @@ namespace OpenNos.GameObject
                     {
                         case ClassType.Swordman:
                             monsterDefence = monsterToAttack.Monster.CloseDefence;
-                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
-    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0];
+                            boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
+                                    + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MeleeIncreased, false)[0];
                             boostpercentage = GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0]
                                 + GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0];
                             mainMinDmg += boost;
@@ -1230,8 +1258,8 @@ namespace OpenNos.GameObject
 
                         case ClassType.Archer:
                             monsterDefence = monsterToAttack.Monster.DistanceDefence;
-                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
-    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, false)[0];
+                            boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
+                                    + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.RangedIncreased, false)[0];
                             boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
                                 + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedDecreased, false)[0];
                             mainMinDmg += boost;
@@ -1242,8 +1270,8 @@ namespace OpenNos.GameObject
 
                         case ClassType.Magician:
                             monsterDefence = monsterToAttack.Monster.MagicDefence;
-                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
-    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, false)[0];
+                            boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
+                                    + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MagicalIncreased, false)[0];
                             boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
                                 + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, false)[0];
                             mainMinDmg += boost;
@@ -1254,8 +1282,8 @@ namespace OpenNos.GameObject
 
                         case ClassType.Adventurer:
                             monsterDefence = monsterToAttack.Monster.CloseDefence;
-                            boost = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
-    + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0];
+                            boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
+                                    + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MeleeIncreased, false)[0];
                             boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
                                 + GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0];
                             mainMinDmg += boost;
@@ -1298,6 +1326,8 @@ namespace OpenNos.GameObject
                     }
                     break;
             }
+
+            skill.BCards?.ForEach(s => SkillBcards.Add(s));
 
             #endregion
 
@@ -1663,6 +1693,12 @@ namespace OpenNos.GameObject
 
             baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.AllAttacksIncreased, false)[0];
 
+            /* REVIEW THIS WITH NEW DAMAGE SYSTEM
+             * */
+            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksIncreased, false)[0];
+            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksIncreased, false)[0];
+            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksIncreased, false)[0];
+
             #region Soft-Damage
 
             #endregion
@@ -1739,6 +1775,8 @@ namespace OpenNos.GameObject
             }
 
             #endregion
+
+            SkillBcards.Clear();
 
             return damage;
         }
@@ -5699,6 +5737,26 @@ namespace OpenNos.GameObject
             int value2 = 0;
 
             foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+            {
+                if (entry.IsLevelScaled)
+                {
+                    if (entry.IsLevelDivided)
+                    {
+                        value1 += Level / entry.FirstData;
+                    }
+                    else
+                    {
+                        value1 += entry.FirstData * Level;
+                    }
+                }
+                else
+                {
+                    value1 += entry.FirstData;
+                }
+                value2 += entry.SecondData;
+            }
+
+            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {

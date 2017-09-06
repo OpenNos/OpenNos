@@ -1357,6 +1357,10 @@ namespace OpenNos.Handler
                                         case 3:
                                             if (Session.Character.Inventory.CountItem(speakerVNum) > 0)
                                             {
+                                                if (Session.Character == null || guriPacket.Value == null)
+                                                {
+                                                    return;
+                                                }
                                                 string message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
                                                 string[] valuesplit = guriPacket.Value.Split(' ');
                                                 message = valuesplit.Aggregate(message, (current, t) => current + t + " ");
