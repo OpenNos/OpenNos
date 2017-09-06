@@ -15,16 +15,19 @@
 using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using Hik.Communication.ScsServices.Service;
 using log4net;
+using Microsoft.Owin.Hosting;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
+using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Interface;
 using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 
@@ -76,12 +79,12 @@ namespace OpenNos.Master.Server
 
                     // configure Services and Service Host
                     IScsServiceApplication server = ScsServiceBuilder.CreateService(new ScsTcpEndPoint(ipAddress, port));
-
                     server.AddService<ICommunicationService, CommunicationService>(new CommunicationService());
                     server.ClientConnected += OnClientConnected;
                     server.ClientDisconnected += OnClientDisconnected;
-
+                    WebApp.Start<Startup>(url: ConfigurationManager.AppSettings["WebAppURL"]);
                     server.Start();
+                    CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
                     Console.Title = $"MASTER SERVER - Channels :{MSManager.Instance.WorldServers.Count} - Players : {MSManager.Instance.ConnectedAccounts.Count}";
                 }

@@ -50,7 +50,7 @@ namespace OpenNos.GameObject.Event
         public void Run(FactionType faction)
         {
             MapInstance map = faction == FactionType.Angel ? ServerManager.Instance.Act4ShipAngel : ServerManager.Instance.Act4ShipDemon;
-            for (;;)
+            for (; map != null;)
             {
                 OpenShip();
                 Thread.Sleep(60 * 1000);
@@ -101,7 +101,7 @@ namespace OpenNos.GameObject.Event
                 }
             }
         }
-        
+
         private void LockShip()
         {
             EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(145)), EventActionType.NPCSEFFECTCHANGESTATE, true));
