@@ -644,6 +644,31 @@ namespace OpenNos.GameObject
                     Session.Character.AddBuff(new Buff(383), false);
                 }
 
+                // HEAL
+                if (LastHealth.AddSeconds(2) <= DateTime.Now)
+                {
+                    int heal = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.RestoreHP, false)[0];
+                    heal -= GetBuff(CardType.HealingBurningAndCasting, (byte) AdditionalTypes.HealingBurningAndCasting.DecreaseHP, false)[0];
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
+                    if (Hp + heal < HPLoad())
+                    {
+                        change = true;
+                        Hp += heal;
+                    }
+                    else
+                    {
+                        if (Hp != (int)HPLoad())
+                        {
+                            change = true;
+                        }
+                        Hp = (int)HPLoad();
+                    }
+                    if (change)
+                    {
+                        Session.SendPacket(GenerateStat());
+                    }
+                }
+
 
                 if (LastHealth.AddSeconds(2) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
                 {
