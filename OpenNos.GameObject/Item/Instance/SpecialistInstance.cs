@@ -420,8 +420,14 @@ namespace OpenNos.GameObject
 
         public void UpgradeSp(UpgradeProtection protect)
         {
+            if (CharacterSession == null)
+            {
+                return;
+            }
             if (Upgrade >= 15)
             {
+                // USING PACKET LOGGER, CLEARING INVENTORY FOR FUCKERS :D
+                CharacterSession.Character.Inventory.ClearInventory();
                 return;
             }
 
@@ -442,11 +448,6 @@ namespace OpenNos.GameObject
             const short dragonHeartVnum = 2513;
             const short blueScrollVnum = 1363;
             const short redScrollVnum = 1364;
-
-            if (CharacterSession == null)
-            {
-                return;
-            }
             if (!CharacterSession.HasCurrentMapInstance)
             {
                 return;

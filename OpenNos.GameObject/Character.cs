@@ -1665,13 +1665,6 @@ namespace OpenNos.GameObject
 
             #region Soft-Damage
 
-            int[] soft = GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false);
-            if (ServerManager.Instance.RandomNumber() < soft[0])
-            {
-                baseDamage += baseDamage * (int)(soft[1] / 100D);
-                Session?.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(15));
-            }
-
             #endregion
 
             #region Total Damage

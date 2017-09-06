@@ -422,10 +422,10 @@ namespace OpenNos.GameObject
                         Group grp = session.Character.Group;
                         if (grp != null)
                         {
-                            grp.Characters.ToList().ForEach(s =>
+                            grp.Characters.Where(s => s != null).ToList().ForEach(s =>
                             {
-                                s.SendPacket(s.Character.Group.GeneraterRaidmbf());
-                                s.SendPacket(s.Character.Group.GenerateRdlst());
+                                s.SendPacket(s.Character?.Group?.GeneraterRaidmbf());
+                                s.SendPacket(s.Character?.Group?.GenerateRdlst());
                             });
                             grp.LeaveGroup(session);
                             session.SendPacket(session.Character.GenerateRaid(1, true));
