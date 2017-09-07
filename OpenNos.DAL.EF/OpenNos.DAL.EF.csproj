@@ -76,7 +76,6 @@
     </Reference>
     <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -540,6 +539,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701091242298_Aphrodite8.resx">
       <DependentUpon>201701091242298_Aphrodite8.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701101528067_Aphrodite9.resx">
       <DependentUpon>201701101528067_Aphrodite9.cs</DependentUpon>
@@ -597,6 +597,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702112212020_Aphrodite27.resx">
       <DependentUpon>201702112212020_Aphrodite27.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702112245077_Aphrodite28.resx">
       <DependentUpon>201702112245077_Aphrodite28.cs</DependentUpon>
@@ -657,6 +658,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703191106529_Aphrodite47.resx">
       <DependentUpon>201703191106529_Aphrodite47.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705181120240_Aphrodite48.resx">
       <DependentUpon>201705181120240_Aphrodite48.cs</DependentUpon>
@@ -678,6 +680,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706141433315_Aphrodite54.resx">
       <DependentUpon>201706141433315_Aphrodite54.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706141825546_Aphrodite55.resx">
       <DependentUpon>201706141825546_Aphrodite55.cs</DependentUpon>
