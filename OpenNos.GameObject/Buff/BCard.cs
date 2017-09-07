@@ -94,9 +94,9 @@ namespace OpenNos.GameObject
                                     }
                                     break;
                                 default:
-                                    if (session is MapMonster mapMonster && mapMonster.OnDeathEvents.All(s => s.EventActionType != EventActionType.SPAWNMONSTERS))
+                                    if (session is MapMonster monster1 && monster1.OnDeathEvents.All(s => s.EventActionType != EventActionType.SPAWNMONSTERS))
                                     {
-                                        ((MapMonster) session).OnDeathEvents.Add(new EventContainer(((MapMonster) session).MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
+                                        monster1.OnDeathEvents.Add(new EventContainer(monster1.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     }
                                     break;
                             }
