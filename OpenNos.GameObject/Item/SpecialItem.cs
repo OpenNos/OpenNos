@@ -121,8 +121,11 @@ namespace OpenNos.GameObject
                                 if (rollitem.Probability == 10000)
                                 {
                                     newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
-                                    session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
-                                    newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
+                                    if (newInv != null)
+                                    {
+                                        session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
+                                        newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
+                                    }
                                     continue;
                                 }
                                 if (newInv != null)
