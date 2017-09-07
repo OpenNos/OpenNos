@@ -147,8 +147,8 @@ namespace OpenNos.Import.Console
                                 {
                                     CardId = card.CardId,
                                     Type = byte.Parse(currentLine[2 + i * 6]),
-                                    SubType = (byte)((Convert.ToByte(currentLine[3 + i * 6]) + 1) * 10 + 1),
-                                    FirstData = first / 4,
+                                    SubType = (byte)((Convert.ToByte(currentLine[3 + i * 6]) + 1) * 10 + 1 + (first < 0 ? 1 : 0)),
+                                    FirstData = (first > 0 ? first : -first) / 4,
                                     SecondData = int.Parse(currentLine[7 + i * 6]) / 4,
                                     ThirdData = int.Parse(currentLine[5 + i * 6]),
                                     IsLevelScaled = Convert.ToBoolean(first % 4),
@@ -165,14 +165,17 @@ namespace OpenNos.Import.Console
                                 {
                                     continue;
                                 }
+                                int first = int.Parse(currentLine[i * 6 + 6]);
                                 bcard = new BCardDTO
                                 {
                                     CardId = card.CardId,
-                                    Type = Convert.ToByte(currentLine[2 + i * 6]),
-                                    SubType = (byte)((Convert.ToByte(currentLine[3 + i * 6]) + 1) * 10 + 1),
-                                    ThirdData = Convert.ToByte(currentLine[5 + i * 6]),
-                                    FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
-                                    SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
+                                    Type = byte.Parse(currentLine[2 + i * 6]),
+                                    SubType = (byte)((Convert.ToByte(currentLine[3 + i * 6]) + 1) * 10 + 1 + (first < 0 ? 1 : 0)),
+                                    FirstData = (first > 0 ? first : -first) / 4,
+                                    SecondData = int.Parse(currentLine[7 + i * 6]) / 4,
+                                    ThirdData = int.Parse(currentLine[5 + i * 6]),
+                                    IsLevelScaled = Convert.ToBoolean(first % 4),
+                                    IsLevelDivided = (first % 4) == 2,
                                 };
                                 bcards.Add(bcard);
                             }
@@ -1330,14 +1333,15 @@ namespace OpenNos.Import.Console
                             {
                                 continue;
                             }
+                            int first = int.Parse(currentLine[5 * i + 3]);
                             BCardDTO itemCard = new BCardDTO
                             {
                                 NpcMonsterVNum = npc.NpcMonsterVNum,
                                 Type = type,
-                                SubType = (byte)(int.Parse(currentLine[5 * i + 5]) + 1 * 10 + 1),
-                                IsLevelScaled = Convert.ToBoolean(int.Parse(currentLine[5 * i + 3]) % 4),
-                                IsLevelDivided = (int.Parse(currentLine[5 * i + 3]) % 4) == 2,
-                                FirstData = (short)(int.Parse(currentLine[5 * i + 3]) / 4),
+                                SubType = (byte)(int.Parse(currentLine[5 * i + 5]) + 1 * 10 + 1 + (first > 0 ? 0 : 1)),
+                                IsLevelScaled = Convert.ToBoolean(first % 4),
+                                IsLevelDivided = (first % 4) == 2,
+                                FirstData = (short)((first > 0 ? first : -first) / 4),
                                 SecondData = (short)(int.Parse(currentLine[5 * i + 4]) / 4),
                                 ThirdData = (short)(int.Parse(currentLine[5 * i + 6]) / 4),
                             };
@@ -1353,12 +1357,13 @@ namespace OpenNos.Import.Console
                             {
                                 continue;
                             }
+                            int first = int.Parse(currentLine[5 * i + 5]);
                             BCardDTO itemCard = new BCardDTO
                             {
                                 NpcMonsterVNum = npc.NpcMonsterVNum,
                                 Type = type,
-                                SubType = (byte) ((int.Parse(currentLine[5 * i + 6]) + 1) * 10 + 1),
-                                FirstData = (short) (int.Parse(currentLine[5 * i + 5]) / 4),
+                                SubType = (byte) ((int.Parse(currentLine[5 * i + 6]) + 1) * 10 + 1 + (first > 0 ? 0 : 1)),
+                                FirstData = (short) ((first > 0 ? first : -first) / 4),
                                 SecondData = (short) (int.Parse(currentLine[5 * i + 4]) / 4),
                                 ThirdData = (short) (int.Parse(currentLine[5 * i + 3]) / 4),
                                 CastType = 1,
@@ -2563,14 +2568,15 @@ namespace OpenNos.Import.Console
                         {
                             continue;
                         }
+                        int first = int.Parse(currentLine[5]);
                         BCardDTO itemCard = new BCardDTO
                         {
                             SkillVNum = skill.SkillVNum,
                             Type = type,
-                            SubType = (byte)((int.Parse(currentLine[4]) + 1 )* 10 + 1),
-                            IsLevelScaled = Convert.ToBoolean(int.Parse(currentLine[5]) % 4),
-                            IsLevelDivided = (int.Parse(currentLine[5]) % 4) == 2,
-                            FirstData = (short)(int.Parse(currentLine[5]) / 4),
+                            SubType = (byte)((int.Parse(currentLine[4]) + 1 )* 10 + 1 + (first < 0 ? 1 : 0)),
+                            IsLevelScaled = Convert.ToBoolean(first % 4),
+                            IsLevelDivided = (first % 4) == 2,
+                            FirstData = (short)(first > 0 ? first : -first / 4),
                             SecondData = (short)(int.Parse(currentLine[6]) / 4),
                             ThirdData = (short)(int.Parse(currentLine[7]) / 4),
                         };

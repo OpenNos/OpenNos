@@ -4165,6 +4165,22 @@ namespace OpenNos.GameObject
                     ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
                     newItem.Upgrade = newItem.Item.BasicUpgrade;
                 }
+                if (newItem.Item.ItemType == ItemType.Shell)
+                {
+                    int rand = ServerManager.Instance.RandomNumber(0, 101);
+                    if (rand < 84)
+                    {
+                        newItem.Upgrade = (byte)ServerManager.Instance.RandomNumber(50, 75);
+                    }
+                    else if (rand <= 99)
+                    {
+                        newItem.Upgrade = (byte) ServerManager.Instance.RandomNumber(75, 80);
+                    }
+                    else
+                    {
+                        newItem.Upgrade = (byte) ServerManager.Instance.RandomNumber(80, 91);
+                    }
+                }
                 List<ItemInstance> newInv = Inventory.AddToInventory(newItem);
                 if (newInv.Any())
                 {
