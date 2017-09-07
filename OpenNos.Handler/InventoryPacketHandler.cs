@@ -1625,6 +1625,7 @@ namespace OpenNos.Handler
                         {
                             RarifyMode mode = RarifyMode.Normal;
                             RarifyProtection protection = RarifyProtection.None;
+                            /*
                             WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                             if (amulet != null)
                             {
@@ -1641,6 +1642,7 @@ namespace OpenNos.Handler
                                     mode = RarifyMode.Success;
                                 }
                             }
+                            */
                             inventory.RarifyItem(Session, mode, protection);
                         }
                         Session.SendPacket("shop_end 1");
