@@ -648,12 +648,11 @@ namespace OpenNos.GameObject
                 if (LastHealth.AddSeconds(2) <= DateTime.Now)
                 {
                     int heal = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.RestoreHP, false)[0];
-                    heal -= GetBuff(CardType.HealingBurningAndCasting, (byte) AdditionalTypes.HealingBurningAndCasting.DecreaseHP, false)[0];
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
                     if (Hp + heal < HPLoad())
                     {
-                        change = true;
                         Hp += heal;
+                        change = true;
                     }
                     else
                     {
@@ -662,6 +661,29 @@ namespace OpenNos.GameObject
                             change = true;
                         }
                         Hp = (int)HPLoad();
+                    }
+                    if (change)
+                    {
+                        Session.SendPacket(GenerateStat());
+                    }
+                }
+
+                // DEBUFF HP LOSS
+                if (LastHealth.AddSeconds(2) <= DateTime.Now)
+                {
+                    int debuff = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.DecreaseHP, false)[0];
+                    if (Hp - debuff > 1)
+                    {
+                        Hp -= debuff;
+                        change = true;
+                    }
+                    else
+                    {
+                        if (Hp != 1)
+                        {
+                            change = true;
+                        }
+                        Hp = 1;
                     }
                     if (change)
                     {
@@ -2308,15 +2330,7 @@ namespace OpenNos.GameObject
                                 ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
                                 if (session != null)
                                 {
-                                    session.Character.Gold += drop2.Amount * (1 + (int) (GetBuff(CardType.Item, (byte) AdditionalTypes.Item.IncreaseEarnedGold, false)[0] / 100D));
-                                    if (session.Character.Gold > maxGold)
-                                    {
-                                        session.Character.Gold = maxGold;
-                                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
-                                    }
-                                    session.SendPacket(session.Character.GenerateSay(
-                                        $"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
-                                    session.SendPacket(session.Character.GenerateGold());
+                                    session.Character.GetGold(drop2.Amount * (1 + (int) (GetBuff(CardType.Item, (byte) AdditionalTypes.Item.IncreaseEarnedGold, false)[0] / 100D)));
                                 }
                                 alreadyGifted.Add(charId);
                             }
@@ -5392,20 +5406,24 @@ namespace OpenNos.GameObject
 
         private int HealthHPLoad()
         {
+            int regen = GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.HPRecoveryIncreased, false)[0];
+            regen -= GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.HPRecoveryDecreased, false)[0];
             if (IsSitting)
             {
-                return CharacterHelper.HPHealth[(byte)Class];
+                return CharacterHelper.HPHealth[(byte)Class] + regen;
             }
-            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.HPHealthStand[(byte)Class] : 0;
+            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.HPHealthStand[(byte)Class] + regen : 0;
         }
 
         private int HealthMPLoad()
         {
+            int regen = GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.MPRecoveryIncreased, false)[0];
+            regen -= GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.MPRecoveryDecreased, false)[0];
             if (IsSitting)
             {
-                return CharacterHelper.MPHealth[(byte)Class];
+                return CharacterHelper.MPHealth[(byte)Class] + regen;
             }
-            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.MPHealthStand[(byte)Class] : 0;
+            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.MPHealthStand[(byte)Class] + regen: 0;
         }
 
         private double HeroXPLoad()

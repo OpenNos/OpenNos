@@ -310,7 +310,20 @@ namespace OpenNos.GameObject
                 {
                     case RarifyMode.Free:
                         break;
-
+                    case RarifyMode.Success:
+                        if (Item.IsHeroic && Rare >= 8 || !Item.IsHeroic && Rare <= 7)
+                        {
+                            // TODO MESSAGE TO NOTIFY USER
+                            return;
+                        }
+                        Rare += 1;
+                        SetRarityPoint();
+                        ItemInstance inventory = session?.Character.Inventory.GetItemInstanceById(Id);
+                        if (inventory != null)
+                        {
+                            session.SendPacket(inventory.GenerateInventoryAdd());
+                        }
+                        return;
                     case RarifyMode.Reduced:
 
                         // TODO: Reduced Item Amount
@@ -471,9 +484,9 @@ namespace OpenNos.GameObject
                 Rare = -2;
                 SetRarityPoint();
             }
-            else if (this.Rare < 1 && Item.ItemType == ItemType.Shell)
+            else if (Rare < 1 && Item.ItemType == ItemType.Shell)
             {
-                this.Rare = 1;
+                Rare = 1;
             }
             else
             {
@@ -486,13 +499,10 @@ namespace OpenNos.GameObject
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
                         return;
                     }
-                    else
-                    {
-                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
-                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
-                        return;
-                    }
+                    session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
+                    session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
+                    return;
                 }
             }
             if (mode == RarifyMode.Drop || session == null)

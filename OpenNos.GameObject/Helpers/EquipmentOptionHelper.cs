@@ -25,12 +25,12 @@ namespace OpenNos.GameObject.Helpers
             {
                 case (byte) CellonType.Hp:
                     bcard.Type = (byte) BCardType.CardType.MaxHPMP;
-                    bcard.SubType = (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumHP;
+                    bcard.SubType = (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased;
                     bcard.FirstData = option.Value;
                     break;
                 case (byte) CellonType.Mp:
                     bcard.Type = (byte) BCardType.CardType.MaxHPMP;
-                    bcard.SubType = (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumMP;
+                    bcard.SubType = (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased;
                     bcard.FirstData = option.Value;
                     break;
                 case (byte) CellonType.HpRecovery:

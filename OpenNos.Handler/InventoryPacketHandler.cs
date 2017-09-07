@@ -1623,7 +1623,25 @@ namespace OpenNos.Handler
                     {
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
-                            inventory.RarifyItem(Session, RarifyMode.Normal, RarifyProtection.None);
+                            RarifyMode mode = RarifyMode.Normal;
+                            RarifyProtection protection = RarifyProtection.None;
+                            WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                            if (amulet != null)
+                            {
+                                if (amulet.ItemVNum == 282)
+                                {
+                                    protection = RarifyProtection.BlueAmulet;
+                                }
+                                else if (amulet.ItemVNum == 283)
+                                {
+                                    protection = RarifyProtection.RedAmulet;
+                                }
+                                if (amulet.ItemVNum == 259 || amulet.ItemVNum == 4263 && inventory.Item.IsHeroic)
+                                {
+                                    mode = RarifyMode.Success;
+                                }
+                            }
+                            inventory.RarifyItem(Session, mode, protection);
                         }
                         Session.SendPacket("shop_end 1");
                     }

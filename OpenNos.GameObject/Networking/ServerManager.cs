@@ -686,7 +686,7 @@ namespace OpenNos.GameObject
                     EventHelper.Instance.RunEvent(e.Item1, session);
                 });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
                 session.Character.IsChangingMapInstance = false;
