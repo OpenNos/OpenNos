@@ -496,7 +496,7 @@ namespace OpenNos.Handler
         public void FamilyManagement(FamilyManagementPacket familyManagementPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
-            if (Session.Character.Family == null)
+            if (Session.Character.Family == null || Session.Character.FamilyCharacter == null)
             {
                 return;
             }
