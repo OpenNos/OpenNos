@@ -614,9 +614,18 @@ namespace OpenNos.Handler
                 {
                     continue;
                 }
-                int petId = int.Parse(packetsplit[i]);
-                short positionX = short.Parse(packetsplit[i + 1]);
-                short positionY = short.Parse(packetsplit[i + 2]);
+                if (!int.TryParse(packetsplit[i], out int petId))
+                {
+                    return;
+                }
+                if (!short.TryParse(packetsplit[i + 1], out short positionX))
+                {
+                    return;
+                }
+                if (!short.TryParse(packetsplit[i + 2], out short positionY))
+                {
+                    return;
+                }
 
                 Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == petId);
                 if (mate == null)
@@ -627,18 +636,6 @@ namespace OpenNos.Handler
                 mate.PositionY = positionY;
                 Session.CurrentMapInstance.Broadcast($"mv 2 {petId} {positionX} {positionY} {mate.Monster.Speed}");
             }
-            /*
-            packet.Users.ForEach(u =>
-            {
-                Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId);
-                if (mate != null)
-                {
-                    mate.PositionX = u.UserX;
-                    mate.PositionY = u.UserY;
-                    Session.CurrentMapInstance.Broadcast($"mv 2 {u.UserId} { u.UserX} { u.UserY} {mate.Monster.Speed}");
-                }
-            });
-             */
         }
 
         /// <summary>
