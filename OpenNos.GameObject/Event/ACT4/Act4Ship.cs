@@ -50,6 +50,10 @@ namespace OpenNos.GameObject.Event
         public void Run(FactionType faction)
         {
             MapInstance map = faction == FactionType.Angel ? ServerManager.Instance.Act4ShipAngel : ServerManager.Instance.Act4ShipDemon;
+            if (map == null)
+            {
+                return;
+            }
             for (; map != null;)
             {
                 OpenShip();
