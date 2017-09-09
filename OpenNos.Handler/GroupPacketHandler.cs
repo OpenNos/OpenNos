@@ -349,6 +349,10 @@ namespace OpenNos.Handler
                                         s.SendPacket(currentGroup.GenerateRdlst());
                                         s.SendPacket(s.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("JOIN_TEAM"), Session.Character.Name), 10));
                                         s.SendPacket(s.Character.GenerateRaid(0, false));
+                                        if (!currentGroup.IsLeader(s))
+                                        {
+                                            s.SendPacket(s.Character.GenerateRaid(2, false));
+                                        }
                                     });
                                 }
                             }
