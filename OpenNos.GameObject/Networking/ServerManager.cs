@@ -573,29 +573,6 @@ namespace OpenNos.GameObject
 
                 session.SendPacket(session.CurrentMapInstance.GenerateMapDesignObjects());
                 session.SendPackets(session.CurrentMapInstance.GetMapDesignObjectEffects());
-
-                Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character?.InvisibleGm == false), visibleSession =>
-                {
-                    if (session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance || session.Character.Faction == visibleSession.Character.Faction)
-                    {
-                        session.SendPacket(visibleSession.Character.GenerateIn());
-                        session.SendPacket(visibleSession.Character.GenerateGidx());
-                        visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(mate =>
-                        {
-                            session.SendPacket(mate.GenerateIn(false, session.CurrentMapInstance.MapInstanceType.Equals(MapInstanceType.Act4Instance)));
-                        });
-                    }
-                    else
-                    {
-                        session.SendPacket(visibleSession.Character.GenerateIn(true));
-                        visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(m =>
-                        {
-                            session.SendPacket(m.GenerateIn(true, true));
-                        });
-                    }
-                });
-
-
                 session.SendPackets(session.CurrentMapInstance.GetMapItems());
                 MapInstancePortalHandler.GenerateMinilandEntryPortals(session.CurrentMapInstance.Map.MapId, session.Character.Miniland.MapInstanceId).ForEach(p => session.SendPacket(p.GenerateGp()));
 
@@ -612,35 +589,6 @@ namespace OpenNos.GameObject
                 if (session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.CleftOfDarkness))
                 {
                     session.SendPacket("bc 0 0 0");
-                }
-                if (!session.Character.InvisibleGm)
-                {
-                    Parallel.ForEach(session.Character.Mates.Where(m => m.IsTeamMember), mate =>
-                    {
-                        mate.PositionX = (short)(session.Character.PositionX + (mate.MateType == MateType.Partner ? -1 : 1));
-                        mate.PositionY = (short)(session.Character.PositionY + 1);
-                    });
-
-                    Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character != null), s =>
-                    {
-                        if (session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance || session.Character.Faction == s.Character.Faction)
-                        {
-                            s.SendPacket(session.Character.GenerateIn());
-                            s.SendPacket(session.Character.GenerateGidx());
-                            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m =>
-                            {
-                                s.SendPacket(m.GenerateIn());
-                            });
-                        }
-                        else
-                        {
-                            s.SendPacket(session.Character.GenerateIn(true));
-                            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m =>
-                            {
-                                s.SendPacket(m.GenerateIn(true));
-                            });
-                        }
-                    });
                 }
                 if (session.Character.Size != 10)
                 {
@@ -678,6 +626,58 @@ namespace OpenNos.GameObject
                     session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
                 }
 
+                if (!session.Character.InvisibleGm && session.CurrentMapInstance != null)
+                {
+                    Parallel.ForEach(session.Character.Mates.Where(m => m.IsTeamMember), mate =>
+                    {
+                        mate.PositionX = (short)(session.Character.PositionX + (mate.MateType == MateType.Partner ? -1 : 1));
+                        mate.PositionY = (short)(session.Character.PositionY + 1);
+                    });
+
+                    Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character != null), s =>
+                    {
+                        if (session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance || session.Character.Faction == s.Character.Faction)
+                        {
+                            s.SendPacket(session.Character.GenerateIn());
+                            s.SendPacket(session.Character.GenerateGidx());
+                            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m =>
+                            {
+                                s.SendPacket(m.GenerateIn());
+                            });
+                        }
+                        else
+                        {
+                            s.SendPacket(session.Character.GenerateIn(true));
+                            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m =>
+                            {
+                                s.SendPacket(m.GenerateIn(true));
+                            });
+                        }
+                    });
+                }
+                if (session.CurrentMapInstance != null)
+                {
+                    Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character?.InvisibleGm == false), visibleSession =>
+                    {
+                        if (session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance || session.Character.Faction == visibleSession.Character.Faction)
+                        {
+                            session.SendPacket(visibleSession.Character.GenerateIn());
+                            session.SendPacket(visibleSession.Character.GenerateGidx());
+                            visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(mate =>
+                            {
+                                session.SendPacket(mate.GenerateIn(false, session.CurrentMapInstance.MapInstanceType.Equals(MapInstanceType.Act4Instance)));
+                            });
+                        }
+                        else
+                        {
+                            session.SendPacket(visibleSession.Character.GenerateIn(true));
+                            visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(m =>
+                            {
+                                session.SendPacket(m.GenerateIn(true, true));
+                            });
+                        }
+                    });
+                }
                 session.Character.IsChangingMapInstance = false;
                 session.SendPacket(session.Character.GenerateMinimapPosition());
                 session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>
@@ -1962,10 +1962,11 @@ namespace OpenNos.GameObject
                         if (familyCharacter != null)
                         {
                             fam.Warehouse = new Inventory((Character)familyCharacter.Character);
-                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse)
+                                .ToList())
                             {
                                 inventory.CharacterId = familyCharacter.CharacterId;
-                                fam.Warehouse[inventory.Id] = (ItemInstance)inventory;
+                                fam.Warehouse[inventory.Id] = (ItemInstance) inventory;
                             }
                         }
                         fam.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fam.FamilyId).ToList();

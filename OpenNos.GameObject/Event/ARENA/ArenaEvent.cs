@@ -631,6 +631,10 @@ namespace OpenNos.GameObject.Event.ARENA
             {
                 return (int)(CharacterHelper.XPData[characterLevel] / 50);
             }
+            if (characterLevel <= 90)
+            {
+                return (int)(CharacterHelper.XPData[characterLevel] / 80);
+            }
             if (characterLevel <= 93)
             {
                 return (int)(CharacterHelper.XPData[characterLevel] / 100);
