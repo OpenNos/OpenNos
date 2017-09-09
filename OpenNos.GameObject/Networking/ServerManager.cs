@@ -24,7 +24,6 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
@@ -363,7 +362,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case MapInstanceType.TimeSpaceInstance:
-                    if (!(session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count() <= 1))
+                    if (!(session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count <= 1))
                     {
                         session.Character.Hp = 1;
                         session.Character.Mp = 1;
@@ -655,7 +654,7 @@ namespace OpenNos.GameObject
                 {
                     Parallel.ForEach(Groups, group =>
                     {
-                        foreach (ClientSession groupSession in @group.Characters)
+                        foreach (ClientSession groupSession in group.Characters)
                         {
                             ClientSession chara = Sessions.FirstOrDefault(s =>
                                 s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMapInstance == groupSession.CurrentMapInstance);

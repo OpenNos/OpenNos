@@ -4165,18 +4165,46 @@ namespace OpenNos.GameObject
                 }
                 if (newItem.Item.ItemType == ItemType.Shell)
                 {
+                    byte[] incompleteShells = {25, 30, 40, 55, 60, 65, 70, 75, 80, 85};
                     int rand = ServerManager.Instance.RandomNumber(0, 101);
+                    if (!ShellGeneratorHelper.ShellTypes.TryGetValue(newItem.ItemVNum, out byte shellType))
+                    {
+                        return;
+                    }
+                    bool isIncomplete = shellType == 8 || shellType == 9;
+
                     if (rand < 84)
                     {
-                        newItem.Upgrade = (byte)ServerManager.Instance.RandomNumber(50, 75);
+                        if (isIncomplete)
+                        {
+                            newItem.Upgrade = incompleteShells[ServerManager.Instance.RandomNumber(0, 6)];
+                        }
+                        else
+                        {
+                            newItem.Upgrade = (byte)ServerManager.Instance.RandomNumber(50, 75);
+                        }
                     }
                     else if (rand <= 99)
                     {
-                        newItem.Upgrade = (byte) ServerManager.Instance.RandomNumber(75, 80);
+                        if (isIncomplete)
+                        {
+                            newItem.Upgrade = 75;
+                        }
+                        else
+                        {
+                            newItem.Upgrade = (byte)ServerManager.Instance.RandomNumber(75, 79);
+                        }
                     }
                     else
                     {
-                        newItem.Upgrade = (byte) ServerManager.Instance.RandomNumber(80, 91);
+                        if (isIncomplete)
+                        {
+                            newItem.Upgrade = (byte)(ServerManager.Instance.RandomNumber() > 50 ? 85 : 80);
+                        }
+                        else
+                        {
+                            newItem.Upgrade = (byte)ServerManager.Instance.RandomNumber(80, 90);
+                        }
                     }
                 }
                 List<ItemInstance> newInv = Inventory.AddToInventory(newItem);
