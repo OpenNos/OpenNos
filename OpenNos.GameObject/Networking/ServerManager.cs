@@ -343,6 +343,9 @@ namespace OpenNos.GameObject
                     session.SendPacket("eff_ob -1 -1 0 4269");
 
                     session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {(session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+                        RespawnMapTypeDTO resp = session.Character.Respawn;
+                    session.Character.MapX = (short) (resp.DefaultX + RandomNumber(-3, 3));
+                    session.Character.MapY = (short) (resp.DefaultY + RandomNumber(-3, 3));
                     Task.Factory.StartNew(async () =>
                     {
                         bool revive = true;
