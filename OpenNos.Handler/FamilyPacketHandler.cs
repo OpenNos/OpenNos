@@ -150,6 +150,7 @@ namespace OpenNos.Handler
                 FamilyExperience = 0,
                 FamilyLevel = 1,
                 FamilyMessage = string.Empty,
+                FamilyFaction = Session.Character.Faction != FactionType.Neutral ? (byte)Session.Character.Faction : (byte)ServerManager.Instance.RandomNumber(1, 2),
                 MaxSize = 50
             };
             DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
@@ -901,7 +902,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (inviteSession.Character.Family.FamilyCharacters.Count() + 1 > inviteSession.Character.Family.MaxSize)
+            if (inviteSession.Character.Family.FamilyCharacters.Count + 1 > inviteSession.Character.Family.MaxSize)
             {
                 return;
             }
@@ -925,6 +926,15 @@ namespace OpenNos.Handler
                 Type = MessageType.Family
             });
 
+            // TODO Character.ChangeFaction
+            Session.Character.Faction = (FactionType) inviteSession.Character.Family.FamilyFaction;
+            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{(byte) Session.Character.Faction}"), 0));
+            Session.SendPacket("scr 0 0 0 0 0 0");
+            Session.SendPacket(Session.Character.GenerateFaction());
+            Session.SendPacket(Session.Character.GenerateStatChar());
+            Session.SendPacket(Session.Character.GenerateEff(4799 + (byte) Session.Character.Faction));
+            Session.SendPacket(Session.Character.GenerateCond());
+            Session.SendPacket(Session.Character.GenerateLev());
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
             Session.SendPacket(Session.Character.GenerateFamilyMember());
             Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());

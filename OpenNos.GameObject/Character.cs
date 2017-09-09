@@ -1332,7 +1332,8 @@ namespace OpenNos.GameObject
                     }
                     if (Class == ClassType.Magician)
                     {
-                        boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0] + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MagicalIncreased, false)[0];
+                        boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0] +
+                                GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MagicalIncreased, false)[0];
                         boostpercentage = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0] +
                                           GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MagicalIncreased, false)[0];
                         mainMinDmg += boost;
@@ -1342,7 +1343,8 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0] + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MeleeIncreased, false)[0];
+                        boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0] +
+                                GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MeleeIncreased, false)[0];
                         boostpercentage = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0] +
                                           GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MeleeIncreased, false)[0];
                         mainMinDmg += boost;
