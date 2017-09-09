@@ -85,6 +85,13 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_ERASED"), 0));
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId));
                             break;
+                        case 1904:
+                            short[] items = {1894, 1895, 1896, 1897, 1898, 1899, 1900, 1901, 1902, 1903, 1972, 1973};
+                            for (int i = 0; i < 5; i++)
+                            {
+                                session.Character.GiftAdd(items[ServerManager.Instance.RandomNumber(0, items.Length)], 1);
+                            }
+                            break;
                         case 5916:
                             session.Character.AddStaticBuff(new StaticBuffDTO
                             {
