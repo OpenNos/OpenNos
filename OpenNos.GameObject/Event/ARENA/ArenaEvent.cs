@@ -471,6 +471,7 @@ namespace OpenNos.GameObject.Event.ARENA
 
                                                     if (arenauser.ArenaTeamType == ArenaTeamType.ZENAS)
                                                     {
+                                                        arenauser.Session.Character.GetXp(ArenaLevelToXp(arenauser.Session.Character.Level));
                                                         arenauser.Session.Character.GetReput(500);
                                                         arenauser.Session.Character.GiftAdd(2800, 1);
                                                         arenauser.Session.Character.GetGold(arenauser.Session.Character.Level * 1000);
@@ -478,6 +479,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                     }
                                                     else
                                                     {
+                                                        arenauser.Session.Character.GetXp(ArenaLevelToXp(arenauser.Session.Character.Level) / 2);
                                                         arenauser.Session.Character.GetReput(200);
                                                         arenauser.Session.Character.GiftAdd(2801, 3);
                                                         arenauser.Session.Character.GetGold(arenauser.Session.Character.Level * 500);
@@ -505,6 +507,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                 {
                                                     if (arenauser.ArenaTeamType == ArenaTeamType.ERENIA)
                                                     {
+                                                        arenauser.Session.Character.GetXp(ArenaLevelToXp(arenauser.Session.Character.Level));
                                                         arenauser.Session.Character.GetReput(500);
                                                         arenauser.Session.Character.GiftAdd(2800, 1);
                                                         arenauser.Session.Character.GetGold(arenauser.Session.Character.Level * 1000);
@@ -512,6 +515,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                     }
                                                     else
                                                     {
+                                                        arenauser.Session.Character.GetXp(ArenaLevelToXp(arenauser.Session.Character.Level) / 2);
                                                         arenauser.Session.Character.GetReput(200);
                                                         arenauser.Session.Character.GiftAdd(2801, 3);
                                                         arenauser.Session.Character.GetGold(arenauser.Session.Character.Level * 500);
@@ -603,6 +607,39 @@ namespace OpenNos.GameObject.Event.ARENA
                 ServerManager.Instance.StartedEvents.Remove(EventType.TALENTARENA);
                 obs.Dispose();
             });
+        }
+
+        private static int ArenaLevelToXp(byte characterLevel)
+        {
+            if (characterLevel <= 39)
+            {
+                return (int)(CharacterHelper.XPData[characterLevel] / 4);
+            }
+            if (characterLevel <= 55)
+            {
+                return (int)(CharacterHelper.XPData[characterLevel] / 5);
+            }
+            if (characterLevel <= 75)
+            {
+                return (int)(CharacterHelper.XPData[characterLevel] / 10);
+            }
+            if (characterLevel <= 79)
+            {
+                return (int)(CharacterHelper.XPData[characterLevel] / 20);
+            }
+            if (characterLevel <= 85)
+            {
+                return (int)(CharacterHelper.XPData[characterLevel] / 50);
+            }
+            if (characterLevel <= 93)
+            {
+                return (int)(CharacterHelper.XPData[characterLevel] / 100);
+            }
+            if (characterLevel <= 99)
+            {
+                return (int)(CharacterHelper.XPData[characterLevel] / 1000);
+            }
+            return 0;
         }
     }
 }

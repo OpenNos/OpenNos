@@ -3996,6 +3996,12 @@ namespace OpenNos.GameObject
             return mlobjstring;
         }
 
+        public void GetXp(long val)
+        {
+            LevelXp += val * ServerManager.Instance.XPRate * (int)(1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D);
+            GenerateLevelXpLevelUp();
+        }
+
         public void GetReput(long val)
         {
             Reput += val * ServerManager.Instance.ReputRate;
