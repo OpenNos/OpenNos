@@ -1201,9 +1201,9 @@ namespace OpenNos.GameObject
 
             #endregion
 
-            #region Switch skill.Type
 
             skill.BCards?.ForEach(s => SkillBcards.Add(s));
+            #region Switch skill.Type
 
             int boost, boostpercentage;
 
@@ -1354,7 +1354,6 @@ namespace OpenNos.GameObject
                     }
                     break;
             }
-
             #endregion
 
             #region Basic Damage Data Calculation
@@ -1527,6 +1526,7 @@ namespace OpenNos.GameObject
 
             double elementalBoost = 0;
             short monsterResistance = 0;
+            elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllIncreased, false)[0];
             switch (Element)
             {
                 case 0:
@@ -1534,6 +1534,7 @@ namespace OpenNos.GameObject
 
                 case 1:
                     elementalDamage += GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.FireIncreased, false)[0];
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.FireResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1561,6 +1562,7 @@ namespace OpenNos.GameObject
 
                 case 2:
                     elementalDamage += GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.WaterIncreased, false)[0];
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.WaterIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.WaterResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1588,6 +1590,7 @@ namespace OpenNos.GameObject
 
                 case 3:
                     elementalDamage += GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.LightIncreased, false)[0];
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.LightIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.LightResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1615,6 +1618,7 @@ namespace OpenNos.GameObject
 
                 case 4:
                     elementalDamage += GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.DarkIncreased, false)[0];
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.DarkIncreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.DarkResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1715,7 +1719,10 @@ namespace OpenNos.GameObject
 
             #endregion
 
-            baseDamage += GetBuff(CardType.AttackPower, (byte) AdditionalTypes.AttackPower.AllAttacksIncreased, false)[0];
+            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.AllAttacksIncreased, false)[0];
+            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksIncreased, false)[0];
+            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksIncreased, false)[0];
+            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksIncreased, false)[0];
             baseDamage *= 1 + (int) (GetBuff(CardType.Item, (byte) AdditionalTypes.Item.AttackIncreased, false)[0] / 100D);
 
 
@@ -2325,10 +2332,7 @@ namespace OpenNos.GameObject
                                     continue;
                                 }
                                 ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
-                                if (session != null)
-                                {
-                                    session.Character.GetGold(drop2.Amount * (1 + (int) (GetBuff(CardType.Item, (byte) AdditionalTypes.Item.IncreaseEarnedGold, false)[0] / 100D)));
-                                }
+                                session?.Character.GetGold(drop2.Amount * (1 + (int) (GetBuff(CardType.Item, (byte) AdditionalTypes.Item.IncreaseEarnedGold, false)[0] / 100D)));
                                 alreadyGifted.Add(charId);
                             }
                         }
