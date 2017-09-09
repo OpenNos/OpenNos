@@ -393,7 +393,7 @@ namespace OpenNos.GameObject
                         return;
                     }
                     SessionId = sessid;
-                    Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), SessionId);
+                    Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), Account.Name);
 
                     if (!_waitForPacketsAmount.HasValue)
                     {

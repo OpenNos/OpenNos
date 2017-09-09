@@ -313,7 +313,7 @@ namespace OpenNos.Handler
             else
             {
                 IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
-                Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.SessionId);
+                Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.Account.Name);
 
                 // load characterlist packet for each character in CharacterDTO
                 Session.SendPacket("clist_start 0");
@@ -337,8 +337,7 @@ namespace OpenNos.Handler
                     }
 
                     // 1 1 before long string of -1.-1 = act completion
-                    Session.SendPacket(
-                        $"clist {character.Slot} {character.Name} 0 {(byte) character.Gender} {(byte) character.HairStyle} {(byte) character.HairColor} 0 {(byte) character.Class} {character.Level} {character.HeroLevel} {equipment[(byte) EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte) EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte) EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 {petlist} {(equipment[(byte) EquipmentType.Hat] != null && equipment[(byte) EquipmentType.Hat].Item.IsColored ? equipment[(byte) EquipmentType.Hat].Design : 0)} 0");
+                    Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte) character.Gender} {(byte) character.HairStyle} {(byte) character.HairColor} 0 {(byte) character.Class} {character.Level} {character.HeroLevel} {equipment[(byte) EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte) EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte) EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 {petlist} {(equipment[(byte) EquipmentType.Hat] != null && equipment[(byte) EquipmentType.Hat].Item.IsColored ? equipment[(byte) EquipmentType.Hat].Design : 0)} 0");
                 }
                 Session.SendPacket("clist_end");
             }
