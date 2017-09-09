@@ -4640,8 +4640,7 @@ namespace OpenNos.GameObject
             Session.Character.Save();
             Session.Disconnect();
         }
-
-        // TODO REVIEW TO A PROPER CODE
+        
         public bool ConnectAct4()
         {
             if (Faction == FactionType.Neutral)

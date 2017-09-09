@@ -261,6 +261,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(timespace.GenerateRbr());
             }
         }
+
         /// <summary>
         /// mkraid packet
         /// </summary>

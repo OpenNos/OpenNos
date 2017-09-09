@@ -1553,8 +1553,12 @@ namespace OpenNos.Handler
         /// <param name="positionPacket"></param>
         public void Position(PositionPacket positionPacket)
         {
+            if (Session.CurrentMapInstance == null)
+            {
+                return;
+            }
             LogHelper.InsertCommandLog(Session.Character.CharacterId, positionPacket, Session.IpAddress);
-            Session.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapInstance.Map.MapId} - X:{Session.Character.PositionX} - Y:{Session.Character.PositionY} - Dir:{Session.Character.Direction} - Grid:{Session.CurrentMapInstance.Map.Grid[Session.Character.PositionX, Session.Character.PositionY].Value}", 12));
+            Session.SendPacket(Session.Character.GenerateSay($"Map:{Session.CurrentMapInstance.Map.MapId} - X:{Session.Character.PositionX} - Y:{Session.Character.PositionY} - Dir:{Session.Character.Direction} - Grid:{Session.CurrentMapInstance.Map.Grid[Session.Character.PositionX, Session.Character.PositionY].Value}", 12));
         }
 
         /// <summary>
@@ -2503,12 +2507,13 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
             }
             ClientSession session = ServerManager.Instance.GetSessionByCharacterName(character.Name);
-            if (session != null)
+            if (session == null)
             {
-                Session.SendPacket(Session.Character.GenerateSay("----- SESSION -----", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Current IP: {session.IpAddress}", 13));
-                Session.SendPacket(Session.Character.GenerateSay("----- ------------ -----", 13));
+                return;
             }
+            Session.SendPacket(Session.Character.GenerateSay("----- SESSION -----", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Current IP: {session.IpAddress}", 13));
+            Session.SendPacket(Session.Character.GenerateSay("----- ------------ -----", 13));
         }
 
         #endregion
