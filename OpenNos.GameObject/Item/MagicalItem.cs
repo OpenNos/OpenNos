@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -365,18 +366,10 @@ namespace OpenNos.GameObject
                 case 300:
                     if (session.Character.Group != null && session.Character.Group.GroupType != GroupType.Group && session.Character.Group.IsLeader(session) && session.CurrentMapInstance.Portals.Any(s => s.Type == (short)PortalType.Raid))
                     {
-                        int delay = 0;
-                        foreach (ClientSession sess in session.Character.Group.Characters)
+                        Parallel.ForEach(session.Character.Group.Characters.Where(s => s.Character.Group?.GroupId == session.Character.Group?.GroupId), sess =>
                         {
-                            Observable.Timer(TimeSpan.FromMilliseconds(delay)).Subscribe(o =>
-                            {
-                                if (sess?.Character != null && session?.CurrentMapInstance != null && session?.Character != null)
-                                {
-                                    ServerManager.Instance.ChangeMapInstance(sess.Character.CharacterId, session.CurrentMapInstance.MapInstanceId, session.Character.PositionX, session.Character.PositionY);
-                                }
-                            });
-                            delay = delay + 100;
-                        }
+                            ServerManager.Instance.TeleportOnRandomPlaceInMap(sess, session.CurrentMapInstance.MapInstanceId);
+                        });
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     break;

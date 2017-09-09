@@ -224,11 +224,11 @@ namespace OpenNos.GameObject
                         return;
                     }
                     ItemInstance raidSeal = session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
-                    session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
 
                     ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj => obj.VNum == raidSeal.ItemVNum))?.GetClone();
                     if (raid != null)
                     {
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
                         Group group = new Group(GroupType.Team);
                         group.Raid = raid;
                         group.JoinGroup(session.Character.CharacterId);
