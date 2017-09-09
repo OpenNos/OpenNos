@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
                             {
                                 return;
                             }
-                        
+
                             if (packetsplit.Length < 9)
                             {
                                 // MODIFIED PACKET
@@ -123,7 +123,7 @@ namespace OpenNos.GameObject
                                     newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
                                     if (newInv != null)
                                     {
-                                        session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
+                                        session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {rollitem.ItemGeneratedAmount})", 12));
                                         newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
                                     }
                                     continue;
@@ -158,7 +158,8 @@ namespace OpenNos.GameObject
                                         Type = MessageType.Shout
                                     });
                                 }
-                                session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {rollitem.ItemGeneratedAmount})", 12));
+                                session.SendPacket(session.Character.GenerateSay(
+                                    $"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {rollitem.ItemGeneratedAmount})", 12));
                                 newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
                             }
                             session.Character.Inventory.RemoveItemAmount(VNum);
