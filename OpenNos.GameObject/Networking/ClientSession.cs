@@ -539,6 +539,10 @@ namespace OpenNos.GameObject
 
         private void TriggerHandler(string packetHeader, string packet, bool force)
         {
+            if (ServerManager.Instance.InShutdown)
+            {
+                return;
+            }
             if (!IsDisposing)
             {
                 HandlerMethodReference methodReference = HandlerMethods.ContainsKey(packetHeader) ? HandlerMethods[packetHeader] : null;
@@ -553,30 +557,33 @@ namespace OpenNos.GameObject
                     }
                     try
                     {
-                        if (HasSelectedCharacter || methodReference.ParentHandler.GetType().Name == "CharacterScreenPacketHandler" || methodReference.ParentHandler.GetType().Name == "LoginPacketHandler")
+                        if (!HasSelectedCharacter && methodReference.ParentHandler.GetType().Name != "CharacterScreenPacketHandler" &&
+                            methodReference.ParentHandler.GetType().Name != "LoginPacketHandler")
                         {
-                            // call actual handler method
-                            if (methodReference.PacketDefinitionParameterType != null)
+                            return;
+                        }
+                        // call actual handler method
+                        if (methodReference.PacketDefinitionParameterType != null)
+                        {
+                            //check for the correct authority
+                            if (IsAuthenticated && (byte) methodReference.Authority > (byte) Account.Authority)
                             {
-                                //check for the correct authority
-                                if (!IsAuthenticated || (byte)methodReference.Authority <= (byte)Account.Authority)
-                                {
-                                    object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, IsAuthenticated);
+                                return;
+                            }
+                            object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, IsAuthenticated);
 
-                                    if (deserializedPacket != null || methodReference.PassNonParseablePacket)
-                                    {
-                                        methodReference.HandlerMethod(methodReference.ParentHandler, deserializedPacket);
-                                    }
-                                    else
-                                    {
-                                        Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CORRUPT_PACKET"), packetHeader, packet);
-                                    }
-                                }
+                            if (deserializedPacket != null || methodReference.PassNonParseablePacket)
+                            {
+                                methodReference.HandlerMethod(methodReference.ParentHandler, deserializedPacket);
                             }
                             else
                             {
-                                methodReference.HandlerMethod(methodReference.ParentHandler, packet);
+                                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CORRUPT_PACKET"), packetHeader, packet);
                             }
+                        }
+                        else
+                        {
+                            methodReference.HandlerMethod(methodReference.ParentHandler, packet);
                         }
                     }
                     catch (DivideByZeroException ex)

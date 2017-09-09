@@ -4835,6 +4835,7 @@ namespace OpenNos.GameObject
                         DAOFactory.RespawnDAO.InsertOrUpdate(ref res);
                     }
                 }
+                Logger.Log.Info($"[DB] Successfully saved Character {Name}");
             }
             catch (Exception e)
             {

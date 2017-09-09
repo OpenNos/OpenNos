@@ -196,6 +196,7 @@ namespace OpenNos.GameObject
         public string IpAddress { get; set; }
 
         public short Port { get; set; }
+        public bool InShutdown { get; set; }
 
         #endregion
 

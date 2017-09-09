@@ -104,9 +104,17 @@ namespace OpenNos.World
             // TODO: initialize ClientLinkManager initialize PacketSerialization
             PacketFactory.Initialize<WalkPacket>();
             string ip = ConfigurationManager.AppSettings["IPADDRESS"];
+            if (bool.TryParse(ConfigurationManager.AppSettings["AutoReboot"], out bool autoreboot))
+            {
+                autoreboot = false;
+            }
             try
             {
                 _exitHandler += ExitHandler;
+                if (autoreboot)
+                {
+                    AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
+                }
                 NativeMethods.SetConsoleCtrlHandler(_exitHandler, true);
             }
             catch (Exception ex)
@@ -157,6 +165,22 @@ namespace OpenNos.World
             ServerManager.Instance.SaveAll();
             Thread.Sleep(5000);
             return false;
+        }
+        
+        // TODO SEND MAIL TO REVIEW EXCEPTION
+        private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        {
+            ServerManager.Instance.InShutdown = true;
+            Logger.Log.Error((Exception)e.ExceptionObject);
+            Logger.Log.Debug(Language.Instance.GetMessageFromKey("SERVER_CRASH"));
+            CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
+
+            ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
+            ServerManager.Instance.SaveAll();
+            Thread.Sleep(5000);
+
+            Process.Start("OpenNos.World.exe");
+            Environment.Exit(1);
         }
 
         private static void RegisterMappings()
