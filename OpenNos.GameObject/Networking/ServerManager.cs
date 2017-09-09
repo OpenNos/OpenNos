@@ -196,6 +196,7 @@ namespace OpenNos.GameObject
         public string IpAddress { get; set; }
 
         public short Port { get; set; }
+
         public bool InShutdown { get; set; }
 
         #endregion
@@ -1255,9 +1256,29 @@ namespace OpenNos.GameObject
                     {
                         act4Map.Portals.Clear();
                         // ANGEL
-                        act4Map.Portals.Add(new Portal {DestinationMapId = 134, DestinationX = 46, DestinationY = 171, SourceMapId = 153, IsDisabled = false, Type = (short) PortalType.MapPortal});
+                        act4Map.Portals.Add(new Portal
+                        {
+                            DestinationMapId = 134,
+                            DestinationX = 140,
+                            DestinationY = 4,
+                            SourceX = 46,
+                            SourceY = 171,
+                            SourceMapId = 153,
+                            IsDisabled = false,
+                            Type = (short) PortalType.MapPortal
+                        });
                         // DEMON
-                        act4Map.Portals.Add(new Portal {DestinationMapId = 134, DestinationX = 50, DestinationY = 171, SourceMapId = 153, IsDisabled = false, Type = (short) PortalType.MapPortal});
+                        act4Map.Portals.Add(new Portal
+                        {
+                            DestinationMapId = 134,
+                            DestinationX = 140,
+                            DestinationY = 4,
+                            SourceX = 140,
+                            SourceY = 171,
+                            SourceMapId = 153,
+                            IsDisabled = false,
+                            Type = (short) PortalType.MapPortal
+                        });
                     }
                     // TODO REMOVE THAT FOR RELEASE
                     if (act4Map.Map.MapId == 134)
