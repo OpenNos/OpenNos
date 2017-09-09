@@ -77,6 +77,10 @@ namespace OpenNos.Handler
                         s.SendPacket(grp.GenerateRdlst());
                         s.SendPacket(grp.GeneraterRaidmbf());
                         s.SendPacket(s.Character.GenerateRaid(0, false));
+                        if (!grp.IsLeader(s))
+                        {
+                            s.SendPacket(s.Character.GenerateRaid(2, false));
+                        }
                     });
                     break;
                 case 3:
@@ -101,6 +105,10 @@ namespace OpenNos.Handler
                         {
                             s.SendPacket(grp.GenerateRdlst());
                             s.SendPacket(s.Character.GenerateRaid(0, false));
+                            if (!grp.IsLeader(s))
+                            {
+                                s.SendPacket(s.Character.GenerateRaid(2, false));
+                            }
                         });
                     }
 
