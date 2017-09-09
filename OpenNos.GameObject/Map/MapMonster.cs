@@ -113,7 +113,7 @@ namespace OpenNos.GameObject
 
         public bool? ShouldRespawn { get; set; }
 
-        public List<NpcMonsterSkill> Skills { get; set; }
+        public ConcurrentBag<NpcMonsterSkill> Skills { get; set; } = new ConcurrentBag<NpcMonsterSkill>();
 
         public bool Started { get; internal set; }
 
@@ -177,7 +177,7 @@ namespace OpenNos.GameObject
             IsHostile = Monster.IsHostile;
             CurrentHp = Monster.MaxHP;
             CurrentMp = Monster.MaxMP;
-            Skills = Monster.Skills.ToList();
+            Monster.Skills.ForEach(s => Skills.Add(s));
             DamageList = new Dictionary<long, long>();
             _random = new Random(MapMonsterId);
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
@@ -904,7 +904,7 @@ namespace OpenNos.GameObject
                 }
                 if (IsBoss)
                 {
-                    MapInstance.Broadcast(GenerateBoss());
+                    MapInstance?.Broadcast(GenerateBoss());
                 }
             }
 
@@ -1173,9 +1173,9 @@ namespace OpenNos.GameObject
                 MapInstance.Broadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
                 MapInstance.Broadcast(npcMonsterSkill != null
-                    ? $"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0"
-                    : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0");
-                npcMonsterSkill?.Skill.BCards.ForEach(s => s.ApplyBCards(this));
+                    ? $"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int) (targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0"
+                    : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int) (targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0");
+                npcMonsterSkill?.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(this));
                 LastSkill = DateTime.Now;
                 if (targetSession.Character.Hp <= 0)
                 {
@@ -1183,32 +1183,39 @@ namespace OpenNos.GameObject
                     Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(targetSession.Character.CharacterId); });
                 }
             }
-            if (npcMonsterSkill != null && (npcMonsterSkill.Skill.Range > 0 || npcMonsterSkill.Skill.TargetRange > 0))
+            if (npcMonsterSkill == null || (npcMonsterSkill.Skill.Range <= 0 && npcMonsterSkill.Skill.TargetRange <= 0))
             {
-                foreach (Character characterInRange in MapInstance.GetCharactersInRange(npcMonsterSkill.Skill.TargetRange == 0 ? MapX : targetSession.Character.PositionX, npcMonsterSkill.Skill.TargetRange == 0 ? MapY : targetSession.Character.PositionY, npcMonsterSkill.Skill.TargetRange).Where(s => s.CharacterId != Target && s.Hp > 0 && !s.InvisibleGm))
+                return;
+            }
+            foreach (Character characterInRange in MapInstance
+                .GetCharactersInRange(npcMonsterSkill.Skill.TargetRange == 0 ? MapX : targetSession.Character.PositionX,
+                    npcMonsterSkill.Skill.TargetRange == 0 ? MapY : targetSession.Character.PositionY, npcMonsterSkill.Skill.TargetRange)
+                .Where(s => s.CharacterId != Target && s.Hp > 0 && !s.InvisibleGm))
+            {
+                if (characterInRange.IsSitting)
                 {
-                    if (characterInRange.IsSitting)
-                    {
-                        characterInRange.IsSitting = false;
-                        MapInstance.Broadcast(characterInRange.GenerateRest());
-                    }
-                    if (characterInRange.HasGodMode)
-                    {
-                        damage = 0;
-                        hitmode = 1;
-                    }
-                    if (characterInRange.Hp > 0)
-                    {
-                        characterInRange.GetDamage(damage);
-                        MapInstance.Broadcast(null, characterInRange.GenerateStat(), ReceiverType.OnlySomeone, "", characterInRange.CharacterId);
-                        MapInstance.Broadcast($"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} { (int)(characterInRange.Hp / characterInRange.HPLoad() * 100) } {damage} {hitmode} 0");
-                        if (characterInRange.Hp <= 0)
-                        {
-                            RemoveTarget();
-                            Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(characterInRange.CharacterId); });
-                        }
-                    }
+                    characterInRange.IsSitting = false;
+                    MapInstance.Broadcast(characterInRange.GenerateRest());
                 }
+                if (characterInRange.HasGodMode)
+                {
+                    damage = 0;
+                    hitmode = 1;
+                }
+                if (characterInRange.Hp <= 0)
+                {
+                    continue;
+                }
+                characterInRange.GetDamage(damage);
+                MapInstance.Broadcast(null, characterInRange.GenerateStat(), ReceiverType.OnlySomeone, "", characterInRange.CharacterId);
+                MapInstance.Broadcast(
+                    $"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} {(int) (characterInRange.Hp / characterInRange.HPLoad() * 100)} {damage} {hitmode} 0");
+                if (characterInRange.Hp > 0)
+                {
+                    continue;
+                }
+                RemoveTarget();
+                Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(characterInRange.CharacterId); });
             }
         }
 

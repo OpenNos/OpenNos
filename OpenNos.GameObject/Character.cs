@@ -1204,7 +1204,7 @@ namespace OpenNos.GameObject
             #endregion
 
 
-            skill.BCards?.ForEach(s => SkillBcards.Add(s));
+            skill.BCards?.ToList().ForEach(s => SkillBcards.Add(s));
             #region Switch skill.Type
 
             int boost, boostpercentage;

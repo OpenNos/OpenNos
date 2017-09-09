@@ -63,7 +63,6 @@ namespace OpenNos.GameObject.Event.ARENA
                                         s.Time = 300;
                                         if (ServerManager.Instance.ArenaMembers.Count(g => g.GroupId == s.GroupId) < 3)
                                         {
-
                                             o.Session.SendPacket(o.Session.Character.GenerateBsInfo(0, 2, s.Time, 8));
                                             o.Session.SendPacket(o.Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SEARCH_ARENA_TEAM"), 10));
                                         }
@@ -310,7 +309,6 @@ namespace OpenNos.GameObject.Event.ARENA
                                                             arenauser.Order = x;
                                                         }
                                                     }
-
                                                 }
                                                 arenauser.Session.SendPacket($"ta_pn {arenauser.Order + 1}");
                                                 arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true));
@@ -434,11 +432,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                         tm2.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Call));
 
                                         map.Broadcast("ta_s");
-                                        Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(start4 =>
-                                        {
-                                            map.IsPVP = true;
-                                        });
-
+                                        Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(start4 => { map.IsPVP = true; });
                                     }
                                     else
                                     {
@@ -468,7 +462,6 @@ namespace OpenNos.GameObject.Event.ARENA
                                                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("VICTORIOUS_ZENAS"), 0));
                                                 arenaTeam.ToList().ForEach(arenauser =>
                                                 {
-
                                                     if (arenauser.ArenaTeamType == ArenaTeamType.ZENAS)
                                                     {
                                                         arenauser.Session.Character.GetXp(ArenaLevelToXp(arenauser.Session.Character.Level));
@@ -562,7 +555,6 @@ namespace OpenNos.GameObject.Event.ARENA
                                 .ForEach(se => { se.Session.SendPacket(se.Session.Character.GenerateBsInfo(2, 2, 0, 0)); });
 
                             ServerManager.Instance.ArenaMembers.RemoveAll(o => o.GroupId == member.GroupId || o.GroupId == s.GroupId);
-
                         }
                     }
                     else
@@ -613,35 +605,35 @@ namespace OpenNos.GameObject.Event.ARENA
         {
             if (characterLevel <= 39)
             {
-                return (int)(CharacterHelper.XPData[characterLevel] / 4);
+                return (int) (CharacterHelper.XPData[characterLevel] / 4);
             }
             if (characterLevel <= 55)
             {
-                return (int)(CharacterHelper.XPData[characterLevel] / 5);
+                return (int) (CharacterHelper.XPData[characterLevel] / 5);
             }
             if (characterLevel <= 75)
             {
-                return (int)(CharacterHelper.XPData[characterLevel] / 10);
+                return (int) (CharacterHelper.XPData[characterLevel] / 10);
             }
             if (characterLevel <= 79)
             {
-                return (int)(CharacterHelper.XPData[characterLevel] / 20);
+                return (int) (CharacterHelper.XPData[characterLevel] / 20);
             }
             if (characterLevel <= 85)
             {
-                return (int)(CharacterHelper.XPData[characterLevel] / 50);
+                return (int) (CharacterHelper.XPData[characterLevel] / 50);
             }
             if (characterLevel <= 90)
             {
-                return (int)(CharacterHelper.XPData[characterLevel] / 80);
+                return (int) (CharacterHelper.XPData[characterLevel] / 80);
             }
             if (characterLevel <= 93)
             {
-                return (int)(CharacterHelper.XPData[characterLevel] / 100);
+                return (int) (CharacterHelper.XPData[characterLevel] / 100);
             }
             if (characterLevel <= 99)
             {
-                return (int)(CharacterHelper.XPData[characterLevel] / 1000);
+                return (int) (CharacterHelper.XPData[characterLevel] / 1000);
             }
             return 0;
         }

@@ -605,7 +605,7 @@ namespace OpenNos.Handler
                         Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
                         Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HPLoad() * 100)} 0 -1 {ski.Skill.SkillType - 1}");
                         ClientSession target = ServerManager.Instance.GetSessionByCharacterId(targetId) ?? Session;
-                        ski.Skill.BCards.ForEach(s => s.ApplyBCards(target.Character));
+                        ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(target.Character));
                     }
                     else if (ski.Skill.TargetType == 1 && ski.Skill.HitType != 1)
                     {
@@ -620,7 +620,7 @@ namespace OpenNos.Handler
                                     foreach (ClientSession target in clientSessions)
                                     {
 
-                                        ski.Skill.BCards.ForEach(s => s.ApplyBCards(target.Character));
+                                        ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(target.Character));
                                     }
 
                                 }
@@ -628,9 +628,9 @@ namespace OpenNos.Handler
 
                             case 4:
                             case 0:
-                                ski.Skill.BCards.ForEach(c =>
+                                ski.Skill.BCards.ToList().ForEach(c =>
                                 {
-                                    ski.Skill.BCards.ForEach(s => s.ApplyBCards(Session.Character));
+                                    ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(Session.Character));
                                 });
                                 break;
 

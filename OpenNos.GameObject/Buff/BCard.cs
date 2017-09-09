@@ -17,6 +17,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -69,7 +70,7 @@ namespace OpenNos.GameObject
                     }
                     else if (session.GetType() == typeof(MapMonster))
                     {
-                        List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
+                        ConcurrentBag<MonsterToSummon> summonParameters = new ConcurrentBag<MonsterToSummon>();
                         for (int i = 0; i < FirstData; i++)
                         {
                             MapMonster monster = session as MapMonster;
@@ -80,7 +81,7 @@ namespace OpenNos.GameObject
                             short x = (short)(ServerManager.Instance.RandomNumber(-3, 3) + monster.MapX);
                             MapMonster mapMonster = monster;
                             short y = (short)(ServerManager.Instance.RandomNumber(-3, 3) + mapMonster.MapY);
-                            summonParameters.Add(new MonsterToSummon((short)SecondData, new MapCell() { X = x, Y = y }, -1, true));
+                            summonParameters.Add(new MonsterToSummon((short)SecondData, new MapCell { X = x, Y = y }, -1, true));
                         }
                         int rnd = ServerManager.Instance.RandomNumber();
                         if (rnd <= Math.Abs(ThirdData) || ThirdData == 0)

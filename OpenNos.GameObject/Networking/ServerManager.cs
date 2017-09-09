@@ -1131,9 +1131,9 @@ namespace OpenNos.GameObject
                     return;
                 }
                 skillObj.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skillObj.SkillVNum).ToList());
-                skillObj.BCards = new List<BCard>();
+                skillObj.BCards = new ConcurrentBag<BCard>();
                 DAOFactory.BCardDAO.LoadBySkillVNum(skillObj.SkillVNum).ToList().ForEach(o => skillObj.BCards.Add((BCard)o));
-                _skill[skillObj.SkillVNum] = (Skill)skillObj;
+                _skill[skillObj.SkillVNum] = skillObj;
             });
             _skills.AddRange(_skill.Select(s => s.Value));
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
