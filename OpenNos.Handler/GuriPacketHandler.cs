@@ -325,7 +325,7 @@ namespace OpenNos.Handler
                                                 DropDTO drop = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum);
                                                 if (drop != null)
                                                 {
-                                                    if (npc.NpcVNum == 2004 && !npc.IsOut)
+                                                    if (npc.NpcVNum == 2004 && npc.IsOut == false)
                                                     {
                                                         ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(drop.ItemVNum).FirstOrDefault();
                                                         if (newInv == null)

@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using System;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -65,6 +66,13 @@ namespace OpenNos.GameObject
                     if (session.Character.Hp > session.Character.HPLoad())
                     {
                         session.Character.Hp = (int)session.Character.HPLoad();
+                    }
+                    if (session.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance || session.CurrentMapInstance?.IsPVP == true)
+                    {
+                        if (inv.ItemVNum == 1242 || inv.ItemVNum == 5582 || inv.ItemVNum == 1243 || inv.ItemVNum == 5583 || inv.ItemVNum == 1244 || inv.ItemVNum == 5584)
+                        {
+                            return;
+                        }
                     }
                     if (inv.ItemVNum == 1242 || inv.ItemVNum == 5582)
                     {

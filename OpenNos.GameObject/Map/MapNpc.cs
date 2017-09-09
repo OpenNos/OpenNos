@@ -99,7 +99,7 @@ namespace OpenNos.GameObject
             {
                 return string.Empty;
             }
-            IsOut = true;
+            IsOut = false;
             return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
         }
 
