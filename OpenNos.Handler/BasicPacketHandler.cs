@@ -999,13 +999,11 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        if (!ShellGeneratorHelper.ShellTypes.ContainsKey(shell.ItemVNum))
+                        if (!ShellGeneratorHelper.ShellTypes.TryGetValue(shell.ItemVNum, out byte shellType))
                         {
                             // SHELL TYPE NOT IMPLEMENTED
                             return;
                         }
-
-                        int shellType = ShellGeneratorHelper.ShellTypes[shell.ItemVNum];
 
                         if (shellType == 8 || shellType == 9)
                         {

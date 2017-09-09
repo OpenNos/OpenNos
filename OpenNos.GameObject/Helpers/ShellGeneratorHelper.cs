@@ -682,7 +682,7 @@ namespace OpenNos.GameObject.Helpers
             return null;
         }
 
-        public static List<EquipmentOptionDTO> GenerateShell(int shellType, int shellRarity, int shellLevel)
+        public static List<EquipmentOptionDTO> GenerateShell(byte shellType, int shellRarity, int shellLevel)
         {
             int w;
             List<int> factor;
