@@ -50,6 +50,7 @@ namespace OpenNos.GameObject
                             return;
                         }
                         mate.Level++;
+                        session.Character.Inventory.RemoveItemAmount(inv.ItemVNum);
                         session.CurrentMapInstance?.Broadcast(mate.GenerateEff(8), mate.PositionX, mate.PositionY);
                         session.CurrentMapInstance?.Broadcast(mate.GenerateEff(198), mate.PositionX, mate.PositionY);
                     }
