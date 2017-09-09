@@ -189,6 +189,7 @@
     <Compile Include="BazaarPacketHandler.cs" />
     <Compile Include="CharacterScreenPacketHandler.cs" />
     <Compile Include="FamilyPacketHandler.cs" />
+    <Compile Include="GuriPacketHandler.cs" />
     <Compile Include="MatePacketHandler.cs" />
     <Compile Include="GroupPacketHandler.cs" />
     <Compile Include="ScriptedInstancePacketHandler.cs" />

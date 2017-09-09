@@ -192,16 +192,7 @@ namespace OpenNos.GameObject
         /// <returns>True if the Monster is in range, False if not.</returns>
         public bool IsInRange(short mapX, short mapY, byte distance)
         {
-            return Map.GetDistance(
-             new MapCell
-             {
-                 X = mapX,
-                 Y = mapY
-             }, new MapCell
-             {
-                 X = MapX,
-                 Y = MapY
-             }) <= distance + 1;
+            return Map.GetDistance(new MapCell {X = mapX, Y = mapY}, new MapCell {X = MapX, Y = MapY}) <= distance + 1;
         }
 
         public void RunDeathEvent()
