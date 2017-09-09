@@ -178,7 +178,11 @@ namespace OpenNos.Handler
                 Message = "fhis_stc",
                 Type = MessageType.Family
             });
-            Session.Character.Group.Characters.ToList().ForEach(s => s.Character.Family = family; s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
+            Session.Character.Group.Characters.ToList().ForEach(s =>
+            {
+                s.Character.Family = (Family)family;
+                s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx());
+            });
         }
 
         [Packet("%Familyshout")]

@@ -232,7 +232,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                         obs2 = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(start3 =>
                                         {
                                             bool resettap = false;
-                                            map.MapDesignObjects.ForEach(e =>
+                                            map.MapDesignObjects.ToList().ForEach(e =>
                                             {
                                                 if (e.ItemInstance.Design >= 4433 && e.ItemInstance.Design <= 4435)
                                                 {
@@ -315,8 +315,8 @@ namespace OpenNos.GameObject.Event.ARENA
                                                 arenauser.Session.SendPacket($"ta_pn {arenauser.Order + 1}");
                                                 arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true));
                                             });
-                                            map.MapDesignObjects.ToArray().ToList().ForEach(md => map.Broadcast(md.GenerateEffect(true)));
-                                            map.MapDesignObjects.RemoveAll(md => true);
+                                            map.MapDesignObjects.ToList().ForEach(md => map.Broadcast(md.GenerateEffect(true)));
+                                            map.MapDesignObjects.Clear();
                                         });
                                     });
                                 });

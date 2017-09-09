@@ -95,7 +95,7 @@ namespace OpenNos.GameObject
 
         public int DropRate { get; set; }
 
-        public List<MapDesignObject> MapDesignObjects = new List<MapDesignObject>();
+        public ConcurrentBag<MapDesignObject> MapDesignObjects = new ConcurrentBag<MapDesignObject>();
 
         public InstanceBag InstanceBag { get; set; }
 

@@ -401,27 +401,29 @@ namespace OpenNos.Handler
         public void MinilandRemoveObject(RmvobjPacket packet)
         {
             ItemInstance minilandobject = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Slot, InventoryType.Miniland);
-            if (minilandobject != null)
+            if (minilandobject == null)
             {
-                if (Session.Character.MinilandState == MinilandState.LOCK)
+                return;
+            }
+            if (Session.Character.MinilandState == MinilandState.LOCK)
+            {
+                MapDesignObject minilandObject = Session.Character.MapInstance.MapDesignObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
+                if (minilandObject == null)
                 {
-                    MapDesignObject minilandObject = Session.Character.MapInstance.MapDesignObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
-                    if (minilandObject != null)
-                    {
-                        if (minilandobject.Item.IsWarehouse)
-                        {
-                            Session.Character.WareHouseSize = 0;
-                        }
-                        Session.Character.MapInstance.MapDesignObjects.Remove(minilandObject);
-                        Session.SendPacket(minilandObject.GenerateEffect(true));
-                        Session.SendPacket(Session.Character.GenerateMinilandPoint());
-                        Session.SendPacket(minilandObject.GenerateMapDesignObject(true));
-                    }
+                    return;
                 }
-                else
+                if (minilandobject.Item.IsWarehouse)
                 {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_NEED_LOCK"), 0));
+                    Session.Character.WareHouseSize = 0;
                 }
+                Session.Character.MapInstance.MapDesignObjects = Session.Character.MapInstance.MapDesignObjects.Where(s => s != minilandObject);
+                Session.SendPacket(minilandObject.GenerateEffect(true));
+                Session.SendPacket(Session.Character.GenerateMinilandPoint());
+                Session.SendPacket(minilandObject.GenerateMapDesignObject(true));
+            }
+            else
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_NEED_LOCK"), 0));
             }
         }
 
