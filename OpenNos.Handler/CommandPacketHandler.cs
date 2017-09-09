@@ -823,7 +823,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
 
             // TODO: OPTIMIZE!
-            List<Type> classes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).Where(t => t.IsClass && t.Namespace == "OpenNos.GameObject.CommandPackets").ToList();
+            List<Type> classes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).Where(t => t.IsClass && t.Namespace == "OpenNos.GameObject.CommandPackets").OrderBy(x => x.Name).ToList();
             foreach (Type type in classes)
             {
                 object classInstance = Activator.CreateInstance(type);
