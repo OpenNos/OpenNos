@@ -622,7 +622,6 @@ namespace OpenNos.Handler
 
                                         ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(target.Character));
                                     }
-
                                 }
                                 break;
 

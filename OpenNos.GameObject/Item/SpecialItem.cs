@@ -115,35 +115,15 @@ namespace OpenNos.GameObject
                             int probabilities = rollGeneratedItemDtos.Sum(s => s.Probability);
                             int rnd = ServerManager.Instance.RandomNumber(0, probabilities);
                             int currentrnd = 0;
-                            List<ItemInstance> newInv = null;
                             foreach (RollGeneratedItemDTO rollitem in rollGeneratedItemDtos)
                             {
                                 if (rollitem.Probability == 10000)
                                 {
-                                    newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
-                                    if (newInv != null)
-                                    {
-                                        session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {rollitem.ItemGeneratedAmount})", 12));
-                                        newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
-                                    }
-                                    continue;
-                                }
-                                if (newInv != null)
-                                {
+                                    session.Character.GiftAdd(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
                                     continue;
                                 }
                                 currentrnd += rollitem.Probability;
                                 if (currentrnd < rnd)
-                                {
-                                    continue;
-                                }
-                                newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
-                                if (!newInv.Any())
-                                {
-                                    continue;
-                                }
-                                short slot = inv.Slot;
-                                if (slot == -1)
                                 {
                                     continue;
                                 }
@@ -158,9 +138,9 @@ namespace OpenNos.GameObject
                                         Type = MessageType.Shout
                                     });
                                 }
-                                session.SendPacket(session.Character.GenerateSay(
-                                    $"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {rollitem.ItemGeneratedAmount})", 12));
-                                newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
+                                session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(rollitem.ItemGeneratedVNum)?.Name} x {rollitem.ItemGeneratedAmount}", 12));
+                                session.Character.GiftAdd(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
+                                break;
                             }
                             session.Character.Inventory.RemoveItemAmount(VNum);
                             break;
