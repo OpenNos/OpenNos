@@ -50,13 +50,8 @@ namespace OpenNos.Handler
         /// <param name="cBuyPacket"></param>
         public void BuyBazaar(CBuyPacket cBuyPacket)
         {
-            if (ServerManager.Instance.InShutdown)
+            if (ServerManager.Instance.InShutdown || Session.Character == null || Session.Character.InExchangeOrTrade)
             {
-                return;
-            }
-            if (Session.Character == null || Session.Character.InExchangeOrTrade)
-            {
-                // USING PACKET LOGGER
                 return;
             }
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == cBuyPacket.BazaarId);
@@ -132,13 +127,8 @@ namespace OpenNos.Handler
         /// <param name="cScalcPacket"></param>
         public void GetBazaar(CScalcPacket cScalcPacket)
         {
-            if (ServerManager.Instance.InShutdown)
+            if (ServerManager.Instance.InShutdown || Session.Character == null || Session.Character.InExchangeOrTrade)
             {
-                return;
-            }
-            if (Session.Character == null || Session.Character.InExchangeOrTrade)
-            {
-                // USING PACKET LOGGER
                 return;
             }
             SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);
@@ -203,13 +193,8 @@ namespace OpenNos.Handler
         /// <param name="cSkillPacket"></param>
         public void OpenBazaar(CSkillPacket cSkillPacket)
         {
-            if (ServerManager.Instance.InShutdown)
+            if (ServerManager.Instance.InShutdown || Session.Character == null || Session.Character.InExchangeOrTrade)
             {
-                return;
-            }
-            if (Session.Character == null || Session.Character.InExchangeOrTrade)
-            {
-                // USING PACKET LOGGER
                 return;
             }
             SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);
@@ -261,13 +246,8 @@ namespace OpenNos.Handler
         /// <param name="cRegPacket"></param>
         public void SellBazaar(CRegPacket cRegPacket)
         {
-            if (ServerManager.Instance.InShutdown)
+            if (ServerManager.Instance.InShutdown || Session.Character == null || Session.Character.InExchangeOrTrade)
             {
-                return;
-            }
-            if (Session.Character == null || Session.Character.InExchangeOrTrade)
-            {
-                // USING PACKET LOGGER
                 return;
             }
             SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);

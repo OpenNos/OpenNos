@@ -179,7 +179,7 @@ namespace OpenNos.World
             ServerManager.Instance.SaveAll();
             Thread.Sleep(5000);
 
-            Process.Start("OpenNos.World.exe");
+            Process.Start(Process.GetCurrentProcess().ProcessName);
             Environment.Exit(1);
         }
 
