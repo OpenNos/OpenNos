@@ -192,6 +192,8 @@ namespace OpenNos.GameObject
 
         public DateTime LastHealth { get; set; }
 
+        public DateTime LastGroupJoin { get; set; }
+
         public DateTime LastMapObject { get; set; }
 
         public int LastMonsterId { get; set; }
@@ -4273,6 +4275,7 @@ namespace OpenNos.GameObject
             LastDelay = DateTime.Now.AddSeconds(-5);
             LastHealth = DateTime.Now;
             LastSkillUse = DateTime.Now;
+            LastGroupJoin = DateTime.Now;
             LastEffect = DateTime.Now;
             Session = null;
             MailList = new Dictionary<int, MailDTO>();

@@ -138,6 +138,7 @@ namespace OpenNos.GameObject
         public void JoinGroup(ClientSession session)
         {
             session.Character.Group = this;
+            session.Character.LastGroupJoin = DateTime.Now;
             Characters.Add(session);
         }
 
@@ -153,7 +154,7 @@ namespace OpenNos.GameObject
 
         public bool IsLeader(ClientSession session)
         {
-            return Characters.ElementAt(0) == session;
+            return Characters.OrderBy(s => s.Character.LastGroupJoin).ElementAt(0) == session;
         }
 
         public string GeneraterRaidmbf()
