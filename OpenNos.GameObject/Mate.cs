@@ -209,11 +209,11 @@ namespace OpenNos.GameObject
             if (Level < ServerManager.Instance.MaxLevel)
             {
                 Experience += xp;
-                if (Experience >= MateHelper.XPData[Level - 1])
+                if (Experience >= XpLoad())
                 {
                     if (Level + 1 < Owner.Level)
                     {
-                        Experience = (long)(Experience - MateHelper.XPData[Level - 1]);
+                        Experience = (long)(Experience - XpLoad());
                         Level++;
                         Hp = MaxHp;
                         Mp = MaxMp;
@@ -222,7 +222,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        Experience = (long)MateHelper.XPData[Level - 1];
+                        Experience = (long)XpLoad();
                     }
                 }
             }
@@ -263,6 +263,11 @@ namespace OpenNos.GameObject
         public bool IsInRange(int xCoordinate, int yCoordinate, int range)
         {
             return Math.Abs(PositionX - xCoordinate) <= range && Math.Abs(PositionY - yCoordinate) <= range;
+        }
+
+        private double XpLoad()
+        {
+            return MateHelper.XPData[Level - 1];
         }
 
         #endregion
