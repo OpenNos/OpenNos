@@ -146,7 +146,6 @@ namespace OpenNos.GameObject
                                         Type = MessageType.Shout
                                     });
                                 }
-                                session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(rollitem.ItemGeneratedVNum)?.Name} x {rollitem.ItemGeneratedAmount}", 12));
                                 session.Character.GiftAdd(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
                                 break;
                             }
