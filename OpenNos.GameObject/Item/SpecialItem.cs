@@ -91,6 +91,7 @@ namespace OpenNos.GameObject
                             {
                                 session.Character.GiftAdd(items[ServerManager.Instance.RandomNumber(0, items.Length)], 1);
                             }
+                            session.Character.Inventory.RemoveItemAmount(1904);
                             break;
                         case 5916:
                             session.Character.AddStaticBuff(new StaticBuffDTO
