@@ -3321,6 +3321,8 @@ namespace OpenNos.GameObject
                 {
                     if (bz.Item is WearableInstance item)
                     {
+                        item.EquipmentOptions.Clear();
+                        item.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
                         info = item.GenerateEInfo().Replace(' ', '^').Replace("e_info^", "");
                     }
                 }
@@ -4430,7 +4432,7 @@ namespace OpenNos.GameObject
                 Inventory[inventory.Id] = (ItemInstance)inventory;
                 WearableInstance wearinstance = inventory as WearableInstance;
                 wearinstance?.EquipmentOptions.Clear();
-                wearinstance?.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(wearinstance.Id).OrderBy(s => s.Level));
+                wearinstance?.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(wearinstance.Id));
             }
         }
 

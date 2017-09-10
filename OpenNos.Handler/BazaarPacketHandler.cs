@@ -163,6 +163,7 @@ namespace OpenNos.Handler
                             newBz.Type = newBz.Item.Type;
                             if (newBz is WearableInstance wear)
                             {
+                                wear.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
                                 wear.EquipmentOptions.ForEach(s => s.WearableInstanceId = newBz.Id);
                             }
                             List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(newBz);
@@ -333,6 +334,11 @@ namespace OpenNos.Handler
             };
 
             DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bazaarItem);
+            if (bazar is WearableInstance wear)
+            {
+                wear.EquipmentOptions.ForEach(s => s.WearableInstanceId = bazar.Id);
+                DAOFactory.EquipmentOptionDAO.InsertOrUpdate(wear.EquipmentOptions);
+            }
             ServerManager.Instance.BazaarRefresh(bazaarItem.BazaarItemId);
 
             Session.Character.Gold -= tax;

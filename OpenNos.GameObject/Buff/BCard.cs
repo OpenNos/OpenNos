@@ -172,7 +172,50 @@ namespace OpenNos.GameObject
                     break;
 
                 case BCardType.CardType.HealingBurningAndCasting:
-                   
+                    AdditionalTypes.HealingBurningAndCasting subtype = (AdditionalTypes.HealingBurningAndCasting) SubType;
+                    Logger.Log.Info($"HEAL");
+                    switch (subtype)
+                    {
+                        case AdditionalTypes.HealingBurningAndCasting.RestoreHP:
+                        case AdditionalTypes.HealingBurningAndCasting.RestoreHPWhenCasting:
+                            Logger.Log.Info($"HEAL IN CASE");
+                            if (session is Character sess)
+                            {
+                                Logger.Log.Info($"HEAL IN IF");
+                                int heal = FirstData;
+                                bool change = false;
+                                if (IsLevelScaled)
+                                {
+                                    if (IsLevelDivided)
+                                    {
+                                        heal /= sess.Level;
+                                    }
+                                    else
+                                    {
+                                        heal *= sess.Level;
+                                    }
+                                }
+                                sess.Session?.CurrentMapInstance?.Broadcast(sess.GenerateRc(heal));
+                                if (sess.Hp + heal < sess.HPLoad())
+                                {
+                                    sess.Hp += heal;
+                                    change = true;
+                                }
+                                else
+                                {
+                                    if (sess.Hp != (int)sess.HPLoad())
+                                    {
+                                        change = true;
+                                    }
+                                    sess.Hp = (int)sess.HPLoad();
+                                }
+                                if (change)
+                                {
+                                    sess.Session?.SendPacket(sess.GenerateStat());
+                                }
+                            }
+                            break;
+                    }
                     break;
 
                 case BCardType.CardType.HPMP:

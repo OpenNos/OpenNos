@@ -17,6 +17,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.DAL;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -510,6 +511,11 @@ namespace OpenNos.GameObject.Helpers
                 string info = string.Empty;
                 if (bzlink.Item.Item.Type == InventoryType.Equipment)
                 {
+                    if (bzlink.Item is WearableInstance wear)
+                    {
+                        wear.EquipmentOptions.Clear();
+                        wear.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(wear.Id));
+                    }
                     info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ?
                         (bzlink.Item as WearableInstance).GenerateEInfo() : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
                             (bzlink.Item as SpecialistInstance).GeneratePslInfo() : (bzlink.Item as SpecialistInstance).GenerateSlInfo()).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
@@ -532,7 +538,7 @@ namespace OpenNos.GameObject.Helpers
             return str;
         }
 
-        public string GenerateRemovePacket(short slot)
+        private string GenerateRemovePacket(short slot)
         {
             return $"{slot}.-1.0.0.0";
         }
