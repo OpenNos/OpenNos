@@ -387,7 +387,7 @@ namespace OpenNos.GameObject.Helpers
                         {
                             if (bz.Item.Item.ItemType == ItemType.Box && bz.Item.Item.ItemSubType == 0)
                             {
-                                if (bz.Item is BoxInstance instance && (packet.LevelFilter == 0 || instance.SpLevel < packet.LevelFilter * 10 + 1 && instance.SpLevel >= packet.LevelFilter * 10 - 9))
+                                if (bz.Item is BoxInstance boxinstanced && (packet.LevelFilter == 0 || boxinstanced.SpLevel < packet.LevelFilter * 10 + 1 && boxinstanced.SpLevel >= packet.LevelFilter * 10 - 9))
                                 {
                                     if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && ((BoxInstance)bz.Item).HoldingVNum == 0 || packet.SubTypeFilter == 2 && ((BoxInstance)bz.Item).HoldingVNum != 0)
                                     {

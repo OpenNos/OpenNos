@@ -101,7 +101,10 @@ namespace OpenNos.GameObject
             }
             ItemInstance invcopy = inv.DeepCopy();
             invcopy.Id = Guid.NewGuid();
-
+            if (invcopy is WearableInstance wear)
+            {
+                wear.EquipmentOptions.ForEach(s => s.WearableInstanceId = invcopy.Id);
+            }
             if (inv.Item.Type == InventoryType.Equipment)
             {
                 for (short i = 0; i < 255; i++)

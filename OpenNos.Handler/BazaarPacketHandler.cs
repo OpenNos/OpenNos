@@ -75,33 +75,39 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        if (bzcree.Item != null)
+                        if (bzcree.Item == null)
                         {
-                            if (bz.IsPackage && cBuyPacket.Amount != bz.Amount)
-                            {
-                                return;
-                            }
-                            ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDAO.LoadById(bzcree.BazaarItem.ItemInstanceId);
-                            if (bzitemdto.Amount < cBuyPacket.Amount)
-                            {
-                                return;
-                            }
-                            bzitemdto.Amount -= cBuyPacket.Amount;
-                            Session.Character.Gold -= price;
-                            Session.SendPacket(Session.Character.GenerateGold());
-                            DAOFactory.IteminstanceDAO.InsertOrUpdate(bzitemdto);
-                            ServerManager.Instance.BazaarRefresh(bzcree.BazaarItem.BazaarItemId);
-                            Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {cBuyPacket.Amount} {cBuyPacket.Price} 0 0 0");
-                            ItemInstance newBz = bzcree.Item.DeepCopy();
-                            newBz.Id = Guid.NewGuid();
-                            newBz.Amount = cBuyPacket.Amount;
-                            newBz.Type = newBz.Item.Type;
+                            return;
+                        }
+                        if (bz.IsPackage && cBuyPacket.Amount != bz.Amount)
+                        {
+                            return;
+                        }
+                        ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDAO.LoadById(bzcree.BazaarItem.ItemInstanceId);
+                        if (bzitemdto.Amount < cBuyPacket.Amount)
+                        {
+                            return;
+                        }
+                        bzitemdto.Amount -= cBuyPacket.Amount;
+                        Session.Character.Gold -= price;
+                        Session.SendPacket(Session.Character.GenerateGold());
+                        DAOFactory.IteminstanceDAO.InsertOrUpdate(bzitemdto);
+                        ServerManager.Instance.BazaarRefresh(bzcree.BazaarItem.BazaarItemId);
+                        Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {cBuyPacket.Amount} {cBuyPacket.Price} 0 0 0");
+                        ItemInstance newBz = bzcree.Item.DeepCopy();
+                        newBz.Id = Guid.NewGuid();
+                        newBz.Amount = cBuyPacket.Amount;
+                        newBz.Type = newBz.Item.Type;
+                        if (newBz is WearableInstance wear)
+                        {
+                            wear.EquipmentOptions.ForEach(s => s.WearableInstanceId = newBz.Id);
+                        }
 
-                            List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(newBz);
-                            if (newInv.Any())
-                            {
-                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: { bzcree.Item.Item.Name} x {cBuyPacket.Amount}", 10));
-                            }
+
+                        List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(newBz);
+                        if (newInv.Any())
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: { bzcree.Item.Item.Name} x {cBuyPacket.Amount}", 10));
                         }
                     }
                     else
@@ -155,7 +161,10 @@ namespace OpenNos.Handler
                             ItemInstance newBz = item.DeepCopy();
                             newBz.Id = Guid.NewGuid();
                             newBz.Type = newBz.Item.Type;
-
+                            if (newBz is WearableInstance wear)
+                            {
+                                wear.EquipmentOptions.ForEach(s => s.WearableInstanceId = newBz.Id);
+                            }
                             List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(newBz);
                         }
                         Session.SendPacket($"rc_scalc 1 {bz.Price} {bz.Amount - item.Amount} {bz.Amount} {taxes} {price + taxes}");
