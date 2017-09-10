@@ -5135,47 +5135,53 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if ((int)(LevelXp / (XPLoad() / 10)) < (int)((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
+            if ((int) (LevelXp / (XPLoad() / 10)) < (int) ((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
             {
-                Hp = (int)HPLoad();
-                Mp = (int)MPLoad();
+                Hp = (int) HPLoad();
+                Mp = (int) MPLoad();
                 Session.SendPacket(GenerateStat());
                 Session.SendPacket(GenerateEff(5));
             }
+            int xp;
+            if (isMonsterOwner)
+            {
+                xp = (int) (GetXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+            }
+            else
+            {
+                xp = (int) (GetXP(monsterinfo, grp) / 3D * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+            }
             if (Level < ServerManager.Instance.MaxLevel)
             {
-                if (isMonsterOwner)
-                {
-                    LevelXp += (int)(GetXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
-                }
-                else
-                {
-                    LevelXp += (int)(GetXP(monsterinfo, grp) / 3D * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
-                }
+                LevelXp += xp;
+            }
+            foreach (var mate in Mates)
+            {
+                mate.GenerateXp(xp);
             }
             if (Class == 0 && JobLevel < 20 || Class != 0 && JobLevel < ServerManager.Instance.MaxJobLevel)
             {
                 if (SpInstance != null && UseSp && SpInstance.SpLevel < ServerManager.Instance.MaxSPLevel && SpInstance.SpLevel > 19)
                 {
-                    JobLevelXp += (int)(GetJXP(monsterinfo, grp) / 2D * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                    JobLevelXp += (int) (GetJXP(monsterinfo, grp) / 2D * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                 }
                 else
                 {
-                    JobLevelXp += (int)(GetJXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                    JobLevelXp += (int) (GetJXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
                 }
             }
             if (SpInstance != null && UseSp && SpInstance.SpLevel < ServerManager.Instance.MaxSPLevel)
             {
                 int multiplier = SpInstance.SpLevel < 10 ? 10 : SpInstance.SpLevel < 19 ? 5 : 1;
-                SpInstance.XP += (int)(GetJXP(monsterinfo, grp) * (multiplier + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                SpInstance.XP += (int) (GetJXP(monsterinfo, grp) * (multiplier + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
             }
             if (HeroLevel > 0 && HeroLevel < ServerManager.Instance.MaxHeroLevel)
             {
-                HeroXp += (int)(GetHXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
+                HeroXp += (int) (GetHXP(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased, false)[0] / 100D));
             }
 
             GenerateLevelXpLevelUp();
-            WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+            WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Fairy, InventoryType.Wear);
             if (fairy != null)
             {
                 if (fairy.ElementRate + fairy.Item.ElementRate < fairy.Item.MaxElementRate && Level <= monsterinfo.Level + 15 && Level >= monsterinfo.Level - 15)

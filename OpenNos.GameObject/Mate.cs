@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,9 +65,21 @@ namespace OpenNos.GameObject
 
         public int MateTransportId { get; set; }
 
-        public int MaxHp => Monster.MaxHP;
+        public int MaxHp
+        {
+            get
+            {
+                return Monster.MaxHP;
+            }
+        }
 
-        public int MaxMp => Monster.MaxMP;
+        public int MaxMp
+        {
+            get
+            {
+                return Monster.MaxMP;
+            }
+        }
 
         public NpcMonster Monster
         {
@@ -181,7 +194,7 @@ namespace OpenNos.GameObject
                     return $"sc_n {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(weapon != null ? $"{weapon.ItemVNum}.{weapon.Rare}.{weapon.Upgrade}" : "-1")} {(armor != null ? $"{armor.ItemVNum}.{armor.Rare}.{armor.Upgrade}" : "-1")} {(gloves != null ? $"{gloves.ItemVNum}.0.0" : "-1")} {(boots != null ? $"{boots.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} {(Skin != 0 ? Skin : -1)} {(IsSummonable ? 1 : 0)} -1 -1 -1 -1";
 
                 case MateType.Pet:
-                    return $"sc_p {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(IsSummonable ? 1 : 0)}";
+                    return $"sc_p {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.Element} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(IsSummonable ? 1 : 0)}";
             }
             return string.Empty;
         }
@@ -189,6 +202,27 @@ namespace OpenNos.GameObject
         public string GenerateStatInfo()
         {
             return $"st 2 {MateTransportId} {Level} {(int)((float)Hp / (float)MaxHp * 100)} {(int)((float)Mp / (float)MaxMp * 100)} {Hp} {Mp}";
+        }
+
+        public void GenerateXp(int xp)
+        {
+            if (Level < ServerManager.Instance.MaxLevel)
+            {
+                Experience += xp;
+                if (Experience >= MateHelper.XPData[Level])
+                {
+                    if (Level + 1 < Owner.Level)
+                    {
+                        Level++;
+                        Hp = MaxHp;
+                        Mp = MaxMp;
+                        Experience = (long)(Experience - MateHelper.XPData[Level]);
+                        Owner.MapInstance?.Broadcast(GenerateEff(6), PositionX, PositionY);
+                        Owner.MapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
+                    }
+                }
+            }
+            ServerManager.Instance.GetSessionByCharacterId(Owner.CharacterId).SendPacket(GenerateScPacket());
         }
 
         public List<ItemInstance> GetInventory()
