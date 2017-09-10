@@ -209,16 +209,20 @@ namespace OpenNos.GameObject
             if (Level < ServerManager.Instance.MaxLevel)
             {
                 Experience += xp;
-                if (Experience >= MateHelper.XPData[Level])
+                if (Experience >= MateHelper.XPData[Level - 1])
                 {
                     if (Level + 1 < Owner.Level)
                     {
+                        Experience = (long)(Experience - MateHelper.XPData[Level - 1]);
                         Level++;
                         Hp = MaxHp;
                         Mp = MaxMp;
-                        Experience = (long)(Experience - MateHelper.XPData[Level]);
                         Owner.MapInstance?.Broadcast(GenerateEff(6), PositionX, PositionY);
                         Owner.MapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
+                    }
+                    else
+                    {
+                        Experience = (long)MateHelper.XPData[Level - 1];
                     }
                 }
             }

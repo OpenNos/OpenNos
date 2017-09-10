@@ -5155,7 +5155,7 @@ namespace OpenNos.GameObject
             {
                 LevelXp += xp;
             }
-            foreach (var mate in Mates)
+            foreach (var mate in Mates.Where(x => x.IsTeamMember))
             {
                 mate.GenerateXp(xp);
             }
