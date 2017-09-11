@@ -489,13 +489,12 @@ namespace OpenNos.GameObject
             Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
             Session.CurrentMapInstance?.Broadcast(GenerateEff(196), PositionX, PositionY);
-            int faction = 1 + ServerManager.Instance.RandomNumber(0, 2);
-            Faction = (FactionType)faction;
-            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+            Faction = Session.Character.Family == null ? (FactionType)(1 + ServerManager.Instance.RandomNumber(0, 2)) : (FactionType)(Session.Character.Family.FamilyFaction);
+            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{(int)Faction}"), 0));
             Session.SendPacket("scr 0 0 0 0 0 0");
             Session.SendPacket(GenerateFaction());
             Session.SendPacket(GenerateStatChar());
-            Session.SendPacket(GenerateEff(4799 + faction));
+            Session.SendPacket(GenerateEff(4799 + (int)Faction));
             Session.SendPacket(GenerateCond());
             Session.SendPacket(GenerateLev());
             Session.CurrentMapInstance?.Broadcast(Session, GenerateCMode());
