@@ -81,7 +81,7 @@ namespace OpenNos.GameObject
                             }
                             eq.EquipmentOptions.Clear();
                             eq.ShellRarity = null;
-                            session.Character.Inventory.RemoveItemAmount(1430);
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_ERASED"), 0));
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId));
                             break;
@@ -91,7 +91,7 @@ namespace OpenNos.GameObject
                             {
                                 session.Character.GiftAdd(items[ServerManager.Instance.RandomNumber(0, items.Length)], 1);
                             }
-                            session.Character.Inventory.RemoveItemAmount(1904);
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             break;
                         case 5916:
                             session.Character.AddStaticBuff(new StaticBuffDTO
@@ -101,7 +101,7 @@ namespace OpenNos.GameObject
                                 RemainingTime = 7200
                             });
                             session.Character.RemoveBuff(339);
-                            session.Character.Inventory.RemoveItemAmount(5916);
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             break;
                         case 5929:
                             session.Character.AddStaticBuff(new StaticBuffDTO
@@ -111,7 +111,7 @@ namespace OpenNos.GameObject
                                 RemainingTime = 600
                             });
                             session.Character.RemoveBuff(339);
-                            session.Character.Inventory.RemoveItemAmount(5916);
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             break;
                         default:
                             IEnumerable<RollGeneratedItemDTO> roll = DAOFactory.RollGeneratedItemDAO.LoadByItemVNum(VNum);
