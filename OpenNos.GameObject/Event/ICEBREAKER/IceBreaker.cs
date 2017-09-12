@@ -73,11 +73,17 @@ namespace OpenNos.GameObject.Event
                     Map.Sessions.ToList().ForEach(x =>
                     {
                         x.Character.GetReput(x.Character.Level * 10);
+                        if (x.Character.Dignity < 100)
+                        {
+                            x.Character.Dignity = 100;
+                        }
                         x.Character.Gold += GoldRewards[_currentBracket];
                         x.Character.Gold = x.Character.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : x.Character.Gold;
+                        x.SendPacket(x.Character.GenerateFd());
                         x.SendPacket(x.Character.GenerateGold());
                         x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), GoldRewards[_currentBracket]), 10));
                         x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), x.Character.Level * 10), 10));
+                        x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DIGNITY_RESTORED"), x.Character.Level * 10), 10));
                     });
                     Thread.Sleep(5000);
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10), new EventContainer(Map, EventActionType.DISPOSEMAP, null));
@@ -100,11 +106,17 @@ namespace OpenNos.GameObject.Event
                     Map.Sessions.ToList().ForEach(x =>
                     {
                         x.Character.GetReput(x.Character.Level * 10);
+                        if (x.Character.Dignity < 100)
+                        {
+                            x.Character.Dignity = 100;
+                        }
                         x.Character.Gold += GoldRewards[_currentBracket];
                         x.Character.Gold = x.Character.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : x.Character.Gold;
+                        x.SendPacket(x.Character.GenerateFd());
                         x.SendPacket(x.Character.GenerateGold());
                         x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), GoldRewards[_currentBracket]), 10));
                         x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), x.Character.Level * 10), 10));
+                        x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DIGNITY_RESTORED"), x.Character.Level * 10), 10));
                     });
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10), new EventContainer(Map, EventActionType.DISPOSEMAP, null));
                 }

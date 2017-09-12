@@ -1185,4 +1185,7 @@
   <data name="INSTANTBATTLE_NOT_ENOUGH_PLAYERS" xml:space="preserve">
     <value />
   </data>
+  <data name="DIGNITY_RESTORED" xml:space="preserve">
+    <value />
+  </data>
 </root>

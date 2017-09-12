@@ -1723,4 +1723,7 @@ Veux-tu continuer ?</value>
   <data name="ACT4_PVP_KILL" xml:space="preserve">
     <value>{1} a vaincu un gardien des {0}.</value>
   </data>
+  <data name="DIGNITY_RESTORED" xml:space="preserve">
+    <value />
+  </data>
 </root>

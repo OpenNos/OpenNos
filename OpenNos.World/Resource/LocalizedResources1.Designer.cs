@@ -1006,6 +1006,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string DIGNITY_RESTORED {
+            get {
+                return ResourceManager.GetString("DIGNITY_RESTORED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Client disconnected! ClientId = .
         /// </summary>
         internal static string DISCONNECT {
