@@ -173,15 +173,12 @@ namespace OpenNos.GameObject
 
                 case BCardType.CardType.HealingBurningAndCasting:
                     AdditionalTypes.HealingBurningAndCasting subtype = (AdditionalTypes.HealingBurningAndCasting) SubType;
-                    Logger.Log.Info($"HEAL");
                     switch (subtype)
                     {
                         case AdditionalTypes.HealingBurningAndCasting.RestoreHP:
                         case AdditionalTypes.HealingBurningAndCasting.RestoreHPWhenCasting:
-                            Logger.Log.Info($"HEAL IN CASE");
                             if (session is Character sess)
                             {
-                                Logger.Log.Info($"HEAL IN IF");
                                 int heal = FirstData;
                                 bool change = false;
                                 if (IsLevelScaled)

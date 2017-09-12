@@ -5836,7 +5836,7 @@ namespace OpenNos.GameObject
             int value1 = 0;
             int value2 = 0;
 
-            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {
@@ -5856,7 +5856,7 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {
@@ -5876,35 +5876,32 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            lock (Buff)
+            foreach (Buff buff in Buff)
             {
-                foreach (Buff buff in Buff)
+                foreach (BCard entry in buff.Card.BCards.Where(s =>
+                    s.Type.Equals((byte) type) && s.SubType.Equals(subtype) &&
+                    (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
                 {
-                    foreach (BCard entry in buff.Card.BCards.Where(s =>
-                        s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
-                        (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
+                    if (entry.IsLevelScaled)
                     {
-                        if (entry.IsLevelScaled)
+                        if (entry.IsLevelDivided)
                         {
-                            if (entry.IsLevelDivided)
-                            {
-                                value1 += buff.Level / entry.FirstData;
-                            }
-                            else
-                            {
-                                value1 += entry.FirstData * buff.Level;
-                            }
+                            value1 += buff.Level / entry.FirstData;
                         }
                         else
                         {
-                            value1 += entry.FirstData;
+                            value1 += entry.FirstData * buff.Level;
                         }
-                        value2 += entry.SecondData;
                     }
+                    else
+                    {
+                        value1 += entry.FirstData;
+                    }
+                    value2 += entry.SecondData;
                 }
             }
 
-            return new[] { value1, value2 };
+            return new[] {value1, value2};
         }
 
         /// <summary>
