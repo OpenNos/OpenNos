@@ -15,6 +15,16 @@ namespace OpenNos.GameObject.Event
     {
         public const int MaxAllowedPlayers = 50;
 
+        private static readonly int[] GoldRewards =
+        {
+            100,
+            1000,
+            3000,
+            5000,
+            10000,
+            20000
+        };
+
         private static readonly Tuple<int, int>[] LevelBrackets =
         {
             new Tuple<int, int>(1, 25),
@@ -22,10 +32,10 @@ namespace OpenNos.GameObject.Event
             new Tuple<int, int>(35, 55),
             new Tuple<int, int>(50, 70),
             new Tuple<int, int>(65, 85),
-            new Tuple<int, int>(80, 99),
+            new Tuple<int, int>(80, 99)
         };
 
-        private static int _currentBracket = 0;
+        private static int _currentBracket;
 
         public static List<ClientSession> AlreadyFrozenPlayers { get; set; }
 
@@ -59,15 +69,14 @@ namespace OpenNos.GameObject.Event
                 ServerManager.Instance.IceBreakerInWaiting = false;
                 if (Map.Sessions.Count() <= 1)
                 {
-                    int goldReward = 15000;  //I STILL DON'T KNOW HOW THE GOLD REWARD IS CALCULATED
                     Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_WIN"), 0));
                     Map.Sessions.ToList().ForEach(x =>
                     {
                         x.Character.GetReput(x.Character.Level * 10);
-                        x.Character.Gold += goldReward;
+                        x.Character.Gold += GoldRewards[_currentBracket];
                         x.Character.Gold = x.Character.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : x.Character.Gold;
                         x.SendPacket(x.Character.GenerateGold());
-                        x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), goldReward), 10));
+                        x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), GoldRewards[_currentBracket]), 10));
                         x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), x.Character.Level * 10), 10));
                     });
                     Thread.Sleep(5000);
@@ -87,16 +96,14 @@ namespace OpenNos.GameObject.Event
                     {
                         Thread.Sleep(1000);
                     }
-                    Map.IsPVP = false;
-                    int goldReward = 15000;  //I STILL DON'T KNOW HOW THE GOLD REWARD IS CALCULATED
                     Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_WIN"), 0));
                     Map.Sessions.ToList().ForEach(x =>
                     {
                         x.Character.GetReput(x.Character.Level * 10);
-                        x.Character.Gold += goldReward;
+                        x.Character.Gold += GoldRewards[_currentBracket];
                         x.Character.Gold = x.Character.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : x.Character.Gold;
                         x.SendPacket(x.Character.GenerateGold());
-                        x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), goldReward), 10));
+                        x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), GoldRewards[_currentBracket]), 10));
                         x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), x.Character.Level * 10), 10));
                     });
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10), new EventContainer(Map, EventActionType.DISPOSEMAP, null));
