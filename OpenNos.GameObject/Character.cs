@@ -2409,7 +2409,11 @@ namespace OpenNos.GameObject
                         GenerateXp(monsterToAttack, false);
                     }
                 }
-                GetReput(monsterToAttack.Monster.Level / 3);
+                // TODO ADD A CONFIGURATION FOR THAT
+                if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.BaseMapInstance)
+                {
+                    GetReput(monsterToAttack.Monster.Level / 3);
+                }
                 GenerateDignity(monsterToAttack.Monster);
 
                 #endregion
