@@ -80,7 +80,7 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case EventType.INSTANTBATTLE:
-                            InstantBattle.GenerateInstantBattle();
+                            InstantBattle.GenerateInstantBattle(useTimer);
                             break;
                         case EventType.TALENTARENA:
                             ArenaEvent.GenerateTalentArena();
