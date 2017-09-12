@@ -87,7 +87,7 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        if (!ShellGeneratorHelper.ShellTypes.TryGetValue(shell.ItemVNum, out byte shellType))
+                        if (!ShellGeneratorHelper.Instance.ShellTypes.TryGetValue(shell.ItemVNum, out byte shellType))
                         {
                             // SHELL TYPE NOT IMPLEMENTED
                             return;
@@ -131,7 +131,7 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        List<EquipmentOptionDTO> shellOptions = ShellGeneratorHelper.GenerateShell(shellType, shell.Rare, shell.Upgrade);
+                        List<EquipmentOptionDTO> shellOptions = ShellGeneratorHelper.Instance.GenerateShell(shellType, shell.Rare, shell.Upgrade);
 
                         if (!shellOptions.Any())
                         {
@@ -166,7 +166,7 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        int perfumesNeeded = ShellGeneratorHelper.PerfumeFromItemLevelAndShellRarity(eq.Item.LevelMinimum, (byte) eq.ShellRarity.Value);
+                        int perfumesNeeded = ShellGeneratorHelper.Instance.PerfumeFromItemLevelAndShellRarity(eq.Item.LevelMinimum, (byte) eq.ShellRarity.Value);
                         if (Session.Character.Inventory.CountItem(perfumeVnum) < perfumesNeeded)
                         {
                             // NOT ENOUGH PEARLS
@@ -475,15 +475,7 @@ namespace OpenNos.Handler
                                                 }
                                                 Session.Character.Inventory.RemoveItemAmount(speakerVNum);
                                                 ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
-                                                LogChatDTO log = new LogChatDTO
-                                                {
-                                                    CharacterId = Session.Character.CharacterId,
-                                                    ChatMessage = message,
-                                                    ChatType = (byte) ChatType.Speaker,
-                                                    IpAddress = Session.IpAddress,
-                                                    Timestamp = DateTime.Now,
-                                                };
-                                                DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
+                                                LogHelper.Instance.InsertChatLog(ChatType.Speaker, Session.Character.CharacterId, message, Session.IpAddress);
                                             }
                                             break;
                                     }

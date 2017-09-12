@@ -33,14 +33,7 @@ namespace OpenNos.GameObject.Helpers
 
         public static UserInterfaceHelper Instance
         {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new UserInterfaceHelper();
-                }
-                return instance;
-            }
+            get { return instance ?? (instance = new UserInterfaceHelper()); }
         }
 
         #endregion

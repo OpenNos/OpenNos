@@ -255,16 +255,7 @@ namespace OpenNos.Handler
                     ccmsg = $"[Support {Session.Character.Name}]:{msg}";
                     break;
             }
-
-            LogChatDTO log = new LogChatDTO
-            {
-                CharacterId = Session.Character.CharacterId,
-                ChatMessage = familyChatPacket.Message,
-                ChatType = (byte)ChatType.Family,
-                IpAddress = Session.IpAddress,
-                Timestamp = DateTime.Now,
-            };
-            DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
+            LogHelper.Instance.InsertChatLog(ChatType.Family, Session.Character.CharacterId, familyChatPacket.Message, Session.IpAddress);
             CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
             {
                 DestinationCharacterId = Session.Character.Family.FamilyId,

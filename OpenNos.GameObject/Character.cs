@@ -3499,10 +3499,10 @@ namespace OpenNos.GameObject
                                         {
                                             case ItemType.Armor:
                                             case ItemType.Weapon:
-                                                EquipmentOptionHelper.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                                EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                 break;
                                             case ItemType.Jewelery:
-                                                EquipmentOptionHelper.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                                EquipmentOptionHelper.Instance.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                 break;
                                         }
 
@@ -3605,36 +3605,36 @@ namespace OpenNos.GameObject
             int secondaryUpgrade = 0;
             int armorUpgrade = 0;
 
-            MinHit = CharacterHelper.MinHit(Class, Level);
-            MaxHit = CharacterHelper.MaxHit(Class, Level);
-            HitRate = CharacterHelper.HitRate(Class, Level);
-            HitCriticalRate = CharacterHelper.HitCriticalRate(Class, Level);
-            HitCritical = CharacterHelper.HitCritical(Class, Level);
-            MinDistance = CharacterHelper.MinDistance(Class, Level);
-            MaxDistance = CharacterHelper.MaxDistance(Class, Level);
-            DistanceRate = CharacterHelper.DistanceRate(Class, Level);
-            DistanceCriticalRate = CharacterHelper.DistCriticalRate(Class, Level);
-            DistanceCritical = CharacterHelper.DistCritical(Class, Level);
-            FireResistance = CharacterHelper.FireResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.FireIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
-            LightResistance = CharacterHelper.LightResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.LightIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
-            WaterResistance = CharacterHelper.WaterResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.WaterIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
-            DarkResistance = CharacterHelper.DarkResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.DarkIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
-            Defence = CharacterHelper.Defence(Class, Level);
-            DefenceRate = CharacterHelper.DefenceRate(Class, Level);
-            ElementRate = CharacterHelper.ElementRate(Class, Level);
+            MinHit = CharacterHelper.Instance.MinHit(Class, Level);
+            MaxHit = CharacterHelper.Instance.MaxHit(Class, Level);
+            HitRate = CharacterHelper.Instance.HitRate(Class, Level);
+            HitCriticalRate = CharacterHelper.Instance.HitCriticalRate(Class, Level);
+            HitCritical = CharacterHelper.Instance.HitCritical(Class, Level);
+            MinDistance = CharacterHelper.Instance.MinDistance(Class, Level);
+            MaxDistance = CharacterHelper.Instance.MaxDistance(Class, Level);
+            DistanceRate = CharacterHelper.Instance.DistanceRate(Class, Level);
+            DistanceCriticalRate = CharacterHelper.Instance.DistCriticalRate(Class, Level);
+            DistanceCritical = CharacterHelper.Instance.DistCritical(Class, Level);
+            FireResistance = CharacterHelper.Instance.FireResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.FireIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
+            LightResistance = CharacterHelper.Instance.LightResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.LightIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
+            WaterResistance = CharacterHelper.Instance.WaterResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.WaterIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
+            DarkResistance = CharacterHelper.Instance.DarkResistance(Class, Level) + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.DarkIncreased, false)[0] + GetStuffBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0];
+            Defence = CharacterHelper.Instance.Defence(Class, Level);
+            DefenceRate = CharacterHelper.Instance.DefenceRate(Class, Level);
+            ElementRate = CharacterHelper.Instance.ElementRate(Class, Level);
             ElementRateSP = 0;
-            DistanceDefence = CharacterHelper.DistanceDefence(Class, Level);
-            DistanceDefenceRate = CharacterHelper.DistanceDefenceRate(Class, Level);
-            MagicalDefence = CharacterHelper.MagicalDefence(Class, Level);
+            DistanceDefence = CharacterHelper.Instance.DistanceDefence(Class, Level);
+            DistanceDefenceRate = CharacterHelper.Instance.DistanceDefenceRate(Class, Level);
+            MagicalDefence = CharacterHelper.Instance.MagicalDefence(Class, Level);
             if (UseSp)
             {
                 // handle specialist
                 if (SpInstance != null)
                 {
-                    int slHit = CharacterHelper.SlPoint(SpInstance.SlDamage, 0);
-                    int slDefence = CharacterHelper.SlPoint(SpInstance.SlDefence, 0);
-                    int slElement = CharacterHelper.SlPoint(SpInstance.SlElement, 0);
-                    int slHp = CharacterHelper.SlPoint(SpInstance.SlHP, 0);
+                    int slHit = CharacterHelper.Instance.SlPoint(SpInstance.SlDamage, 0);
+                    int slDefence = CharacterHelper.Instance.SlPoint(SpInstance.SlDefence, 0);
+                    int slElement = CharacterHelper.Instance.SlPoint(SpInstance.SlElement, 0);
+                    int slHp = CharacterHelper.Instance.SlPoint(SpInstance.SlHP, 0);
 
                     if (Session != null)
                     {
@@ -3677,7 +3677,7 @@ namespace OpenNos.GameObject
                     DistanceDefence += SpInstance.DistanceDefence + slDefence * 10;
                     MagicalDefence += SpInstance.MagicDefence + slDefence * 10;
 
-                    int point = CharacterHelper.SlPoint((short)slHit, 0);
+                    int point = CharacterHelper.Instance.SlPoint((short)slHit, 0);
 
                     int p = 0;
                     if (point <= 10)
@@ -3737,7 +3737,7 @@ namespace OpenNos.GameObject
                     MaxDistance += p;
                     MinDistance += p;
 
-                    point = CharacterHelper.SlPoint((short)slDefence, 1);
+                    point = CharacterHelper.Instance.SlPoint((short)slDefence, 1);
                     p = 0;
                     if (point <= 10)
                     {
@@ -3783,7 +3783,7 @@ namespace OpenNos.GameObject
                     MagicalDefence += p;
                     DistanceDefence += p;
 
-                    point = CharacterHelper.SlPoint((short)slElement, 2);
+                    point = CharacterHelper.Instance.SlPoint((short)slElement, 2);
                     if (point <= 50)
                     {
                         p = point;
@@ -4179,7 +4179,7 @@ namespace OpenNos.GameObject
                 {
                     byte[] incompleteShells = {25, 30, 40, 55, 60, 65, 70, 75, 80, 85};
                     int rand = ServerManager.Instance.RandomNumber(0, 101);
-                    if (!ShellGeneratorHelper.ShellTypes.TryGetValue(newItem.ItemVNum, out byte shellType))
+                    if (!ShellGeneratorHelper.Instance.ShellTypes.TryGetValue(newItem.ItemVNum, out byte shellType))
                     {
                         return;
                     }
@@ -4252,7 +4252,7 @@ namespace OpenNos.GameObject
                 {
                     int shellSlHpMp = SpInstance.SlHP + Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
                                       Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-                    int point = CharacterHelper.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
+                    int point = CharacterHelper.Instance.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
 
                     if (point <= 50)
                     {
@@ -4268,7 +4268,7 @@ namespace OpenNos.GameObject
             multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumHP, false)[0] / 100D;
             multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumHP, false)[0] / 100D;
 
-            return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0] + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased, false)[0]) * multiplicator);
+            return (int)((CharacterHelper.Instance.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0] + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased, false)[0]) * multiplicator);
         }
 
         public override void Initialize()
@@ -4473,7 +4473,7 @@ namespace OpenNos.GameObject
             // only load speed if you dont use custom speed
             if (!IsVehicled && !IsCustomSpeed)
             {
-                Speed = CharacterHelper.SpeedData[(byte)Class];
+                Speed = CharacterHelper.Instance.SpeedData[(byte)Class];
 
                 if (UseSp)
                 {
@@ -4508,7 +4508,7 @@ namespace OpenNos.GameObject
                 {
                     int shellSlHpMp = SpInstance.SlHP + Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
                                       Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-                    int point = CharacterHelper.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
+                    int point = CharacterHelper.Instance.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
 
                     if (point <= 50)
                     {
@@ -4524,7 +4524,8 @@ namespace OpenNos.GameObject
             multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumMP, false)[0] / 100D;
             multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0] / 100D;
 
-            return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumMPIncreased, false)[0] + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased, false)[0]) * multiplicator);
+            return (int) ((CharacterHelper.Instance.MPData[(byte) Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased, false)[0] +
+                           GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased, false)[0]) * multiplicator);
         }
 
         public void NotifyRarifyResult(sbyte rare)
@@ -5485,9 +5486,9 @@ namespace OpenNos.GameObject
             regen -= GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.HPRecoveryDecreased, false)[0];
             if (IsSitting)
             {
-                return CharacterHelper.HPHealth[(byte)Class] + regen;
+                return CharacterHelper.Instance.HPHealth[(byte)Class] + regen;
             }
-            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.HPHealthStand[(byte)Class] + regen : 0;
+            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.Instance.HPHealthStand[(byte)Class] + regen : 0;
         }
 
         private int HealthMPLoad()
@@ -5496,29 +5497,29 @@ namespace OpenNos.GameObject
             regen -= GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.MPRecoveryDecreased, false)[0];
             if (IsSitting)
             {
-                return CharacterHelper.MPHealth[(byte)Class] + regen;
+                return CharacterHelper.Instance.MPHealth[(byte)Class] + regen;
             }
-            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.MPHealthStand[(byte)Class] + regen: 0;
+            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.Instance.MPHealthStand[(byte)Class] + regen: 0;
         }
 
         private double HeroXPLoad()
         {
-            return HeroLevel == 0 ? 1 : CharacterHelper.HeroXpData[HeroLevel - 1];
+            return HeroLevel == 0 ? 1 : CharacterHelper.Instance.HeroXpData[HeroLevel - 1];
         }
 
         private double JobXPLoad()
         {
-            return Class == (byte)ClassType.Adventurer ? CharacterHelper.FirstJobXPData[JobLevel - 1] : CharacterHelper.SecondJobXPData[JobLevel - 1];
+            return Class == (byte)ClassType.Adventurer ? CharacterHelper.Instance.FirstJobXPData[JobLevel - 1] : CharacterHelper.Instance.SecondJobXPData[JobLevel - 1];
         }
 
         private double SPXPLoad()
         {
-            return SpInstance != null ? CharacterHelper.SPXPData[SpInstance.SpLevel == 0 ? 0 : SpInstance.SpLevel - 1] : 0;
+            return SpInstance != null ? CharacterHelper.Instance.SPXPData[SpInstance.SpLevel == 0 ? 0 : SpInstance.SpLevel - 1] : 0;
         }
 
         private double XPLoad()
         {
-            return CharacterHelper.XPData[Level - 1];
+            return CharacterHelper.Instance.XPData[Level - 1];
         }
 
         public string GenerateRaid(int type, bool exit)

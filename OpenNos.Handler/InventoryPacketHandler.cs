@@ -1011,7 +1011,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
                 }
-                if (CharacterHelper.SPPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
+                if (CharacterHelper.Instance.SPPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
                 {
                     return;
                 }
@@ -1025,10 +1025,10 @@ namespace OpenNos.Handler
                 specialistInstance.SlElement += specialistElement;
                 specialistInstance.SlHP += specialistHealpoints;
 
-                int slElement = CharacterHelper.SlPoint(specialistInstance.SlElement, 2);
-                int slHp = CharacterHelper.SlPoint(specialistInstance.SlHP, 3);
-                int slDefence = CharacterHelper.SlPoint(specialistInstance.SlDefence, 1);
-                int slHit = CharacterHelper.SlPoint(specialistInstance.SlDamage, 0);
+                int slElement = CharacterHelper.Instance.SlPoint(specialistInstance.SlElement, 2);
+                int slHp = CharacterHelper.Instance.SlPoint(specialistInstance.SlHP, 3);
+                int slDefence = CharacterHelper.Instance.SlPoint(specialistInstance.SlDefence, 1);
+                int slHit = CharacterHelper.Instance.SlPoint(specialistInstance.SlDamage, 0);
 
                 #region slHit
 
@@ -1601,7 +1601,7 @@ namespace OpenNos.Handler
                                 Session.Character.Inventory.RemoveItemAmount(cellon.ItemVNum);
 
                                 // GENERATE OPTION
-                                EquipmentOptionDTO option = CellonGeneratorHelper.GenerateOption(cellon.Item.EffectValue);
+                                EquipmentOptionDTO option = CellonGeneratorHelper.Instance.GenerateOption(cellon.Item.EffectValue);
 
                                 // FAIL
                                 if (option == null || inventory.EquipmentOptions.Any(s => s.Type == option.Type))

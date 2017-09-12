@@ -122,12 +122,12 @@ namespace OpenNos.GameObject
 
         public string GenerateSlInfo()
         {
-            int freepoint = CharacterHelper.SPPoint(SpLevel, Upgrade) - SlDamage - SlHP - SlElement - SlDefence;
+            int freepoint = CharacterHelper.Instance.SPPoint(SpLevel, Upgrade) - SlDamage - SlHP - SlElement - SlDefence;
 
-            int slHit = CharacterHelper.SlPoint(SlDamage, 0);
-            int slDefence = CharacterHelper.SlPoint(SlDefence, 0);
-            int slElement = CharacterHelper.SlPoint(SlElement, 0);
-            int slHp = CharacterHelper.SlPoint(SlHP, 0);
+            int slHit = CharacterHelper.Instance.SlPoint(SlDamage, 0);
+            int slDefence = CharacterHelper.Instance.SlPoint(SlDefence, 0);
+            int slElement = CharacterHelper.Instance.SlPoint(SlElement, 0);
+            int slHp = CharacterHelper.Instance.SlPoint(SlHP, 0);
 
             if (CharacterSession != null)
             {
@@ -183,7 +183,7 @@ namespace OpenNos.GameObject
             // 3 first values are not important
             skill = skill.TrimEnd('.');
             return
-                $"slinfo {(Type == InventoryType.Wear || Type == InventoryType.Specialist || Type == InventoryType.Equipment ? "0" : "2")} {ItemVNum} {Item.Morph} {SpLevel} {Item.LevelJobMinimum} {Item.ReputationMinimum} 0 0 0 0 0 0 0 {Item.SpType} {Item.FireResistance} {Item.WaterResistance} {Item.LightResistance} {Item.DarkResistance} {XP} {CharacterHelper.SPXPData[SpLevel - 1]} {skill} {TransportId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {Upgrade} 0 0 {spdestroyed} 0 0 0 0 {SpStoneUpgrade} {SpDamage} {SpDefence} {SpElement} {SpHP} {SpFire} {SpWater} {SpLight} {SpDark}";
+                $"slinfo {(Type == InventoryType.Wear || Type == InventoryType.Specialist || Type == InventoryType.Equipment ? "0" : "2")} {ItemVNum} {Item.Morph} {SpLevel} {Item.LevelJobMinimum} {Item.ReputationMinimum} 0 0 0 0 0 0 0 {Item.SpType} {Item.FireResistance} {Item.WaterResistance} {Item.LightResistance} {Item.DarkResistance} {XP} {CharacterHelper.Instance.SPXPData[SpLevel - 1]} {skill} {TransportId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {Upgrade} 0 0 {spdestroyed} 0 0 0 0 {SpStoneUpgrade} {SpDamage} {SpDefence} {SpElement} {SpHP} {SpFire} {SpWater} {SpLight} {SpDark}";
         }
 
         public void PerfectSP()

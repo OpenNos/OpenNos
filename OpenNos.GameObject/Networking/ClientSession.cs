@@ -527,14 +527,16 @@ namespace OpenNos.GameObject
         private void OnOtherCharacterDisconnected(object sender, EventArgs e)
         {
             Tuple<long, string> loggedOutCharacter = (Tuple<long, string>)sender;
-            if (Character.IsFriendOfCharacter(loggedOutCharacter.Item1))
+            if (!Character.IsFriendOfCharacter(loggedOutCharacter.Item1))
             {
-                if (Character != null && Character.CharacterId != loggedOutCharacter.Item1)
-                {
-                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item2), 10));
-                    _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item1, false));
-                }
+                return;
             }
+            if (Character == null || Character.CharacterId == loggedOutCharacter.Item1)
+            {
+                return;
+            }
+            _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item2), 10));
+            _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item1, false));
         }
 
         private void TriggerHandler(string packetHeader, string packet, bool force)

@@ -12,21 +12,21 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.Domain;
-using OpenNos.GameObject;
-using OpenNos.GameObject.CommandPackets;
-using OpenNos.GameObject.Helpers;
-using OpenNos.Master.Library.Client;
-using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL;
+using OpenNos.Domain;
+using OpenNos.GameObject;
+using OpenNos.GameObject.CommandPackets;
+using OpenNos.GameObject.Helpers;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 
 namespace OpenNos.Handler
 {
@@ -73,12 +73,12 @@ namespace OpenNos.Handler
                     player.Character.MapY = 40;
                     break;
             }
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, act4ConnectPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, act4ConnectPacket, Session.IpAddress);
             player.Character.ConnectAct4();
         }
 
         /// <summary>
-        /// $AddMonster Command
+        ///     $AddMonster Command
         /// </summary>
         /// <param name="addMonsterPacket"></param>
         public void AddMonster(AddMonsterPacket addMonsterPacket)
@@ -100,7 +100,7 @@ namespace OpenNos.Handler
                     MapY = Session.Character.PositionY,
                     MapX = Session.Character.PositionX,
                     MapId = Session.Character.MapInstance.Map.MapId,
-                    Position = (byte)Session.Character.Direction,
+                    Position = (byte) Session.Character.Direction,
                     IsMoving = addMonsterPacket.IsMoving,
                     MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId()
                 };
@@ -114,7 +114,7 @@ namespace OpenNos.Handler
                         Session.CurrentMapInstance?.Broadcast(monster.GenerateIn());
                     }
                 }
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, addMonsterPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, addMonsterPacket, Session.IpAddress);
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
             else
@@ -124,14 +124,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $AddPartner Command
+        ///     $AddPartner Command
         /// </summary>
         /// <param name="addPartnerPacket"></param>
         public void AddPartner(AddPartnerPacket addPartnerPacket)
         {
             if (addPartnerPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, addPartnerPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, addPartnerPacket, Session.IpAddress);
                 AddMate(addPartnerPacket.MonsterVNum, addPartnerPacket.Level, MateType.Partner);
             }
             else
@@ -141,14 +141,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $AddPet Command
+        ///     $AddPet Command
         /// </summary>
         /// <param name="addPetPacket"></param>
         public void AddPet(AddPetPacket addPetPacket)
         {
             if (addPetPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, addPetPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, addPetPacket, Session.IpAddress);
                 AddMate(addPetPacket.MonsterVNum, addPetPacket.Level, MateType.Pet);
             }
             else
@@ -158,7 +158,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $AddSkill Command
+        ///     $AddSkill Command
         /// </summary>
         /// <param name="addSkillPacket"></param>
         public void AddSkill(AddSkillPacket addSkillPacket)
@@ -178,7 +178,7 @@ namespace OpenNos.Handler
                     {
                         if (skillinfo.CastId == skill.Skill.CastId && skill.Skill.SkillVNum < 200)
                         {
-                            Session.Character.Skills.TryRemove(skill.SkillVNum,out CharacterSkill value);
+                            Session.Character.Skills.TryRemove(skill.SkillVNum, out CharacterSkill value);
                         }
                     }
                 }
@@ -192,19 +192,20 @@ namespace OpenNos.Handler
 
                     if (skillinfo.UpgradeSkill != 0)
                     {
-                        CharacterSkill oldupgrade = Session.Character.Skills.Select(s => s.Value).FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
+                        CharacterSkill oldupgrade = Session.Character.Skills.Select(s => s.Value).FirstOrDefault(s =>
+                            s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
                         if (oldupgrade != null)
                         {
                             Session.Character.Skills.TryRemove(oldupgrade.SkillVNum, out CharacterSkill value);
                         }
                     }
                 }
-                Session.Character.Skills[skillVNum] = new CharacterSkill { SkillVNum = skillVNum, CharacterId = Session.Character.CharacterId };
+                Session.Character.Skills[skillVNum] = new CharacterSkill {SkillVNum = skillVNum, CharacterId = Session.Character.CharacterId};
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                 Session.SendPacket(Session.Character.GenerateLev());
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, addSkillPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, addSkillPacket, Session.IpAddress);
             }
             else
             {
@@ -213,7 +214,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $ArenaWinner Command
+        ///     $ArenaWinner Command
         /// </summary>
         /// <param name="arenaWinnerPacket"></param>
         public void ArenaWinner(ArenaWinner arenaWinnerPacket)
@@ -221,11 +222,11 @@ namespace OpenNos.Handler
             Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, arenaWinnerPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, arenaWinnerPacket, Session.IpAddress);
         }
 
         /// <summary>
-        /// $Ban Command
+        ///     $Ban Command
         /// </summary>
         /// <param name="banPacket"></param>
         public void Ban(BanPacket banPacket)
@@ -236,7 +237,7 @@ namespace OpenNos.Handler
                 CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(banPacket.CharacterName);
                 if (character != null)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, banPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, banPacket, Session.IpAddress);
                     ServerManager.Instance.Kick(banPacket.CharacterName);
                     PenaltyLogDTO log = new PenaltyLogDTO
                     {
@@ -262,7 +263,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $BlockExp Command
+        ///     $BlockExp Command
         /// </summary>
         /// <param name="blockExpPacket"></param>
         public void BlockExp(BlockExpPacket blockExpPacket)
@@ -278,9 +279,11 @@ namespace OpenNos.Handler
                 CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(blockExpPacket.CharacterName);
                 if (character != null)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, blockExpPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, blockExpPacket, Session.IpAddress);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == blockExpPacket.CharacterName);
-                    session?.SendPacket(blockExpPacket.Duration == 1 ? UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), blockExpPacket.Reason)) : UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), blockExpPacket.Reason, blockExpPacket.Duration)));
+                    session?.SendPacket(blockExpPacket.Duration == 1
+                        ? UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), blockExpPacket.Reason))
+                        : UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), blockExpPacket.Reason, blockExpPacket.Duration)));
                     PenaltyLogDTO log = new PenaltyLogDTO
                     {
                         AccountId = character.AccountId,
@@ -305,7 +308,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $BlockFExp Command
+        ///     $BlockFExp Command
         /// </summary>
         /// <param name="blockFExpPacket"></param>
         public void BlockFExp(BlockFExpPacket blockFExpPacket)
@@ -321,9 +324,11 @@ namespace OpenNos.Handler
                 CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(blockFExpPacket.CharacterName);
                 if (character != null)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, blockFExpPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, blockFExpPacket, Session.IpAddress);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == blockFExpPacket.CharacterName);
-                    session?.SendPacket(blockFExpPacket.Duration == 1 ? UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), blockFExpPacket.Reason)) : UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), blockFExpPacket.Reason, blockFExpPacket.Duration)));
+                    session?.SendPacket(blockFExpPacket.Duration == 1
+                        ? UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), blockFExpPacket.Reason))
+                        : UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), blockFExpPacket.Reason, blockFExpPacket.Duration)));
                     PenaltyLogDTO log = new PenaltyLogDTO
                     {
                         AccountId = character.AccountId,
@@ -348,12 +353,12 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $BlockPM Command
+        ///     $BlockPM Command
         /// </summary>
         /// <param name="blockPmPacket"></param>
         public void BlockPm(BlockPMPacket blockPmPacket)
         {
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, blockPmPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, blockPmPacket, Session.IpAddress);
             if (!Session.Character.GmPvtBlock)
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_ENABLE"), 10));
@@ -367,7 +372,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $BlockRep Command
+        ///     $BlockRep Command
         /// </summary>
         /// <param name="blockRepPacket"></param>
         public void BlockRep(BlockRepPacket blockRepPacket)
@@ -383,9 +388,11 @@ namespace OpenNos.Handler
                 CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(blockRepPacket.CharacterName);
                 if (character != null)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, blockRepPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, blockRepPacket, Session.IpAddress);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == blockRepPacket.CharacterName);
-                    session?.SendPacket(blockRepPacket.Duration == 1 ? UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), blockRepPacket.Reason)) : UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), blockRepPacket.Reason, blockRepPacket.Duration)));
+                    session?.SendPacket(blockRepPacket.Duration == 1
+                        ? UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), blockRepPacket.Reason))
+                        : UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), blockRepPacket.Reason, blockRepPacket.Duration)));
                     PenaltyLogDTO log = new PenaltyLogDTO
                     {
                         AccountId = character.AccountId,
@@ -410,14 +417,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $ChangeClass Command
+        ///     $ChangeClass Command
         /// </summary>
         /// <param name="changeClassPacket"></param>
         public void ChangeClass(ChangeClassPacket changeClassPacket)
         {
             if (changeClassPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, changeClassPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeClassPacket, Session.IpAddress);
                 Session.Character.ChangeClass(changeClassPacket.ClassType);
             }
             else
@@ -427,14 +434,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $ChangeDignity Command
+        ///     $ChangeDignity Command
         /// </summary>
         /// <param name="changeDignityPacket"></param>
         public void ChangeDignity(ChangeDignityPacket changeDignityPacket)
         {
             if (changeDignityPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, changeDignityPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeDignityPacket, Session.IpAddress);
                 if (changeDignityPacket.Dignity >= -1000 && changeDignityPacket.Dignity <= 100)
                 {
                     Session.Character.Dignity = changeDignityPacket.Dignity;
@@ -455,17 +462,17 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $FLvl Command
+        ///     $FLvl Command
         /// </summary>
         /// <param name="changeFairyLevelPacket"></param>
         public void ChangeFairyLevel(ChangeFairyLevelPacket changeFairyLevelPacket)
         {
-            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Fairy, InventoryType.Wear);
             if (changeFairyLevelPacket != null)
             {
                 if (fairy != null)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, changeFairyLevelPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeFairyLevelPacket, Session.IpAddress);
                     short fairylevel = changeFairyLevelPacket.FairyLevel;
                     fairylevel -= fairy.Item.ElementRate;
                     fairy.ElementRate = fairylevel;
@@ -485,17 +492,17 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $ChangeSex Command
+        ///     $ChangeSex Command
         /// </summary>
         /// <param name="changeSexPacket"></param>
         public void ChangeGender(ChangeSexPacket changeSexPacket)
         {
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, changeSexPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeSexPacket, Session.IpAddress);
             Session.Character.ChangeSex();
         }
 
         /// <summary>
-        /// $HeroLvl Command
+        ///     $HeroLvl Command
         /// </summary>
         /// <param name="changeHeroLevelPacket"></param>
         public void ChangeHeroLevel(ChangeHeroLevelPacket changeHeroLevelPacket)
@@ -504,7 +511,7 @@ namespace OpenNos.Handler
             {
                 if (changeHeroLevelPacket.HeroLevel <= 255)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, changeHeroLevelPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeHeroLevelPacket, Session.IpAddress);
                     Session.Character.HeroLevel = changeHeroLevelPacket.HeroLevel;
                     Session.Character.HeroXp = 0;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
@@ -528,7 +535,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $JLvl Command
+        ///     $JLvl Command
         /// </summary>
         /// <param name="changeJobLevelPacket"></param>
         public void ChangeJobLevel(ChangeJobLevelPacket changeJobLevelPacket)
@@ -537,7 +544,7 @@ namespace OpenNos.Handler
             {
                 if ((Session.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20 || Session.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 255) && changeJobLevelPacket.JobLevel > 0)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, changeJobLevelPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeJobLevelPacket, Session.IpAddress);
                     Session.Character.JobLevel = changeJobLevelPacket.JobLevel;
                     Session.Character.JobLevelXp = 0;
                     Session.Character.Skills.Clear();
@@ -546,14 +553,14 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), Session.Character.PositionX, Session.Character.PositionY);
-                    Session.Character.Skills[(short)(200 + 20 * (byte)Session.Character.Class)] = new CharacterSkill
+                    Session.Character.Skills[(short) (200 + 20 * (byte) Session.Character.Class)] = new CharacterSkill
                     {
-                        SkillVNum = (short)(200 + 20 * (byte)Session.Character.Class),
+                        SkillVNum = (short) (200 + 20 * (byte) Session.Character.Class),
                         CharacterId = Session.Character.CharacterId
                     };
-                    Session.Character.Skills[(short)(201 + 20 * (byte)Session.Character.Class)] = new CharacterSkill
+                    Session.Character.Skills[(short) (201 + 20 * (byte) Session.Character.Class)] = new CharacterSkill
                     {
-                        SkillVNum = (short)(201 + 20 * (byte)Session.Character.Class),
+                        SkillVNum = (short) (201 + 20 * (byte) Session.Character.Class),
                         CharacterId = Session.Character.CharacterId
                     };
                     Session.Character.Skills[236] = new CharacterSkill
@@ -579,7 +586,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Lvl Command
+        ///     $Lvl Command
         /// </summary>
         /// <param name="changeLevelPacket"></param>
         public void ChangeLevel(ChangeLevelPacket changeLevelPacket)
@@ -588,11 +595,11 @@ namespace OpenNos.Handler
             {
                 if (changeLevelPacket.Level > 0)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, changeLevelPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeLevelPacket, Session.IpAddress);
                     Session.Character.Level = changeLevelPacket.Level;
                     Session.Character.LevelXp = 0;
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                    Session.Character.Hp = (int) Session.Character.HPLoad();
+                    Session.Character.Mp = (int) Session.Character.MPLoad();
                     Session.SendPacket(Session.Character.GenerateStat());
                     Session.SendPacket(Session.Character.GenerateStatInfo());
                     Session.SendPacket(Session.Character.GenerateStatChar());
@@ -606,7 +613,7 @@ namespace OpenNos.Handler
                     if (Session.Character.Family != null)
                     {
                         ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-                        CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                        CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
                         {
                             DestinationCharacterId = Session.Character.Family.FamilyId,
                             SourceCharacterId = Session.Character.CharacterId,
@@ -628,7 +635,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $ChangeRep Command
+        ///     $ChangeRep Command
         /// </summary>
         /// <param name="changeReputationPacket"></param>
         public void ChangeReputation(ChangeReputationPacket changeReputationPacket)
@@ -637,7 +644,7 @@ namespace OpenNos.Handler
             {
                 if (changeReputationPacket.Reputation > 0)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, changeReputationPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeReputationPacket, Session.IpAddress);
                     Session.Character.Reput = changeReputationPacket.Reputation;
                     Session.SendPacket(Session.Character.GenerateFd());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"), 0));
@@ -656,19 +663,19 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $SPLvl Command
+        ///     $SPLvl Command
         /// </summary>
         /// <param name="changeSpecialistLevelPacket"></param>
         public void ChangeSpecialistLevel(ChangeSpecialistLevelPacket changeSpecialistLevelPacket)
         {
             if (changeSpecialistLevelPacket != null)
             {
-                SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
                 if (sp != null && Session.Character.UseSp)
                 {
                     if (changeSpecialistLevelPacket.SpecialistLevel <= 255 && changeSpecialistLevelPacket.SpecialistLevel > 0)
                     {
-                        LogHelper.InsertCommandLog(Session.Character.CharacterId, changeSpecialistLevelPacket, Session.IpAddress);
+                        LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeSpecialistLevelPacket, Session.IpAddress);
                         sp.SpLevel = changeSpecialistLevelPacket.SpecialistLevel;
                         sp.XP = 0;
                         Session.SendPacket(Session.Character.GenerateLev());
@@ -698,12 +705,12 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $ChannelInfo Command
+        ///     $ChannelInfo Command
         /// </summary>
         /// <param name="channelInfoPacket"></param>
         public void ChannelInfo(ChannelInfoPacket channelInfoPacket)
         {
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, channelInfoPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, channelInfoPacket, Session.IpAddress);
             Session.SendPacket(Session.Character.GenerateSay("---------CHANNEL INFO---------", 11));
             foreach (ClientSession session in ServerManager.Instance.Sessions)
             {
@@ -713,7 +720,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $CharEdit Command
+        ///     $CharEdit Command
         /// </summary>
         /// <param name="characterEditPacket"></param>
         public void CharacterEdit(CharacterEditPacket characterEditPacket)
@@ -729,7 +736,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, characterEditPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, characterEditPacket, Session.IpAddress);
                 propertyInfo.SetValue(Session.Character, Convert.ChangeType(characterEditPacket.Data, propertyInfo.PropertyType));
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                 Session.Character.Save();
@@ -741,7 +748,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $CharStat Command
+        ///     $CharStat Command
         /// </summary>
         /// <param name="characterStatsPacket"></param>
         public void CharStat(CharacterStatsPacket characterStatsPacket)
@@ -749,7 +756,7 @@ namespace OpenNos.Handler
             string returnHelp = CharacterStatsPacket.ReturnHelp();
             if (characterStatsPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, characterStatsPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, characterStatsPacket, Session.IpAddress);
                 string name = characterStatsPacket.CharacterName;
                 if (int.TryParse(characterStatsPacket.CharacterName, out int sessionId))
                 {
@@ -792,14 +799,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Clear Command
+        ///     $Clear Command
         /// </summary>
         /// <param name="clearInventoryPacket"></param>
         public void ClearInventory(ClearInventoryPacket clearInventoryPacket)
         {
             if (clearInventoryPacket != null && clearInventoryPacket.InventoryType != InventoryType.Wear)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, clearInventoryPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, clearInventoryPacket, Session.IpAddress);
                 Parallel.ForEach(Session.Character.Inventory.Select(s => s.Value).Where(s => s.Type == clearInventoryPacket.InventoryType), inv =>
                 {
                     Session.Character.Inventory.DeleteById(inv.Id);
@@ -814,7 +821,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Help Command
+        ///     $Help Command
         /// </summary>
         /// <param name="helpPacket"></param>
         public void Command(HelpPacket helpPacket)
@@ -823,7 +830,8 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
 
             // TODO: OPTIMIZE!
-            List<Type> classes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).Where(t => t.IsClass && t.Namespace == "OpenNos.GameObject.CommandPackets").OrderBy(x => x.Name).ToList();
+            List<Type> classes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).Where(t => t.IsClass && t.Namespace == "OpenNos.GameObject.CommandPackets").OrderBy(x => x.Name)
+                .ToList();
             foreach (Type type in classes)
             {
                 object classInstance = Activator.CreateInstance(type);
@@ -844,7 +852,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $CreateItem Packet
+        ///     $CreateItem Packet
         /// </summary>
         /// <param name="createItemPacket"></param>
         public void CreateItem(CreateItemPacket createItemPacket)
@@ -861,7 +869,7 @@ namespace OpenNos.Handler
                 Item iteminfo = ServerManager.Instance.GetItem(vnum);
                 if (iteminfo != null)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, createItemPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, createItemPacket, Session.IpAddress);
                     if (iteminfo.IsColored || iteminfo.VNum == 302)
                     {
                         if (createItemPacket.Design.HasValue)
@@ -894,13 +902,13 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                rare = (sbyte)createItemPacket.Design.Value;
+                                rare = (sbyte) createItemPacket.Design.Value;
                             }
                         }
                     }
                     if (createItemPacket.Design.HasValue && !createItemPacket.Upgrade.HasValue)
                     {
-                        amount = createItemPacket.Design.Value > 99 ? (byte)99 : createItemPacket.Design.Value;
+                        amount = createItemPacket.Design.Value > 99 ? (byte) 99 : createItemPacket.Design.Value;
                     }
                     ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, Rare: rare, Upgrade: upgrade, Design: design).FirstOrDefault();
                     if (inv != null)
@@ -918,10 +926,10 @@ namespace OpenNos.Handler
 
                                 case EquipmentType.Boots:
                                 case EquipmentType.Gloves:
-                                    wearable.FireResistance = (short)(wearable.Item.FireResistance * upgrade);
-                                    wearable.DarkResistance = (short)(wearable.Item.DarkResistance * upgrade);
-                                    wearable.LightResistance = (short)(wearable.Item.LightResistance * upgrade);
-                                    wearable.WaterResistance = (short)(wearable.Item.WaterResistance * upgrade);
+                                    wearable.FireResistance = (short) (wearable.Item.FireResistance * upgrade);
+                                    wearable.DarkResistance = (short) (wearable.Item.DarkResistance * upgrade);
+                                    wearable.LightResistance = (short) (wearable.Item.LightResistance * upgrade);
+                                    wearable.WaterResistance = (short) (wearable.Item.WaterResistance * upgrade);
                                     break;
                             }
                         }
@@ -944,7 +952,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $PortalTo Command
+        ///     $PortalTo Command
         /// </summary>
         /// <param name="portalToPacket"></param>
         public void CreatePortal(PortalToPacket portalToPacket)
@@ -955,7 +963,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, portalToPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, portalToPacket, Session.IpAddress);
                 Portal portal = new Portal
                 {
                     SourceMapId = Session.Character.MapId,
@@ -964,7 +972,7 @@ namespace OpenNos.Handler
                     DestinationMapId = portalToPacket.DestinationMapId,
                     DestinationX = portalToPacket.DestinationX,
                     DestinationY = portalToPacket.DestinationY,
-                    Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
+                    Type = portalToPacket.PortalType == null ? (short) -1 : (short) portalToPacket.PortalType
                 };
                 Session.CurrentMapInstance.Portals.Add(portal);
                 Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
@@ -976,7 +984,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Demote Command
+        ///     $Demote Command
         /// </summary>
         /// <param name="demotePacket"></param>
         public void Demote(DemotePacket demotePacket)
@@ -987,7 +995,7 @@ namespace OpenNos.Handler
                 AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
                 if (account != null && account.Authority > AuthorityType.User)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, demotePacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, demotePacket, Session.IpAddress);
                     account.Authority -= 1;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
@@ -1016,7 +1024,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $DropRate Command
+        ///     $DropRate Command
         /// </summary>
         /// <param name="dropRatePacket"></param>
         public void DropRate(DropRatePacket dropRatePacket)
@@ -1026,7 +1034,7 @@ namespace OpenNos.Handler
                 if (dropRatePacket.Value <= 1000)
                 {
                     ServerManager.Instance.DropRate = dropRatePacket.Value;
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, dropRatePacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, dropRatePacket, Session.IpAddress);
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_RATE_CHANGED"), 0));
                 }
                 else
@@ -1041,14 +1049,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Effect Command
+        ///     $Effect Command
         /// </summary>
         /// <param name="effectCommandpacket"></param>
         public void Effect(EffectCommandPacket effectCommandpacket)
         {
             if (effectCommandpacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, effectCommandpacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, effectCommandpacket, Session.IpAddress);
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(effectCommandpacket.EffectId), Session.Character.PositionX, Session.Character.PositionY);
             }
             else
@@ -1058,7 +1066,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $FairyXPRate Command
+        ///     $FairyXPRate Command
         /// </summary>
         /// <param name="fairyXpRatePacket"></param>
         public void FairyXpRate(FairyXpRatePacket fairyXpRatePacket)
@@ -1068,7 +1076,7 @@ namespace OpenNos.Handler
                 if (fairyXpRatePacket.Value <= 1000)
                 {
                     ServerManager.Instance.FairyXpRate = fairyXpRatePacket.Value;
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, fairyXpRatePacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, fairyXpRatePacket, Session.IpAddress);
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("FAIRYXP_RATE_CHANGED"), 0));
                 }
                 else
@@ -1083,7 +1091,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Gift Command
+        ///     $Gift Command
         /// </summary>
         /// <param name="giftPacket"></param>
         public void Gift(GiftPacket giftPacket)
@@ -1100,7 +1108,7 @@ namespace OpenNos.Handler
                     Parallel.ForEach(Session.CurrentMapInstance.Sessions, session =>
                     {
                         giftLog.CharacterName = session.Character.Name;
-                        LogHelper.InsertCommandLog(Session.Character.CharacterId, giftLog, Session.IpAddress);
+                        LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, giftLog, Session.IpAddress);
                         Session.Character.SendGift(session.Character.CharacterId, giftPacket.VNum, giftPacket.Amount, giftPacket.Rare, giftPacket.Upgrade, false);
                     });
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFT_SENT"), 10));
@@ -1110,7 +1118,7 @@ namespace OpenNos.Handler
                     CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(giftPacket.CharacterName);
                     if (chara != null)
                     {
-                        LogHelper.InsertCommandLog(Session.Character.CharacterId, giftPacket, Session.IpAddress);
+                        LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, giftPacket, Session.IpAddress);
                         Session.Character.SendGift(chara.CharacterId, giftPacket.VNum, giftPacket.Amount, giftPacket.Rare, giftPacket.Upgrade, false);
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFT_SENT"), 10));
                     }
@@ -1127,18 +1135,18 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $GodMode Command
+        ///     $GodMode Command
         /// </summary>
         /// <param name="godModePacket"></param>
         public void GodMode(GodModePacket godModePacket)
         {
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, godModePacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, godModePacket, Session.IpAddress);
             Session.Character.HasGodMode = !Session.Character.HasGodMode;
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
         /// <summary>
-        /// $Gold Command
+        ///     $Gold Command
         /// </summary>
         /// <param name="goldPacket"></param>
         public void Gold(GoldPacket goldPacket)
@@ -1150,7 +1158,7 @@ namespace OpenNos.Handler
                 gold = gold > maxGold ? maxGold : gold;
                 if (gold >= 0)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, goldPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, goldPacket, Session.IpAddress);
                     Session.Character.Gold = gold;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
                     Session.SendPacket(Session.Character.GenerateGold());
@@ -1167,7 +1175,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $GoldDropRate Command
+        ///     $GoldDropRate Command
         /// </summary>
         /// <param name="goldDropRatePacket"></param>
         public void GoldDropRate(GoldDropRatePacket goldDropRatePacket)
@@ -1176,7 +1184,7 @@ namespace OpenNos.Handler
             {
                 if (goldDropRatePacket.Value <= 1000)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, goldDropRatePacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, goldDropRatePacket, Session.IpAddress);
                     ServerManager.Instance.GoldDropRate = goldDropRatePacket.Value;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_DROP_RATE_CHANGED"), 0));
                 }
@@ -1192,7 +1200,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $GoldRate Command
+        ///     $GoldRate Command
         /// </summary>
         /// <param name="goldRatePacket"></param>
         public void GoldRate(GoldRatePacket goldRatePacket)
@@ -1202,7 +1210,7 @@ namespace OpenNos.Handler
                 if (goldRatePacket.Value <= 1000)
                 {
                     ServerManager.Instance.GoldRate = goldRatePacket.Value;
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, goldRatePacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, goldRatePacket, Session.IpAddress);
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_RATE_CHANGED"), 0));
                 }
                 else
@@ -1217,7 +1225,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Guri Command
+        ///     $Guri Command
         /// </summary>
         /// <param name="guriCommandPacket"></param>
         public void Guri(GuriCommandPacket guriCommandPacket)
@@ -1227,19 +1235,19 @@ namespace OpenNos.Handler
                 Session.Character.GenerateSay(GuriCommandPacket.ReturnHelp(), 10);
                 return;
             }
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, guriCommandPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, guriCommandPacket, Session.IpAddress);
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, Session.Character.CharacterId, guriCommandPacket.Value));
         }
 
         /// <summary>
-        /// $HairColor Command
+        ///     $HairColor Command
         /// </summary>
         /// <param name="hairColorPacket"></param>
         public void Haircolor(HairColorPacket hairColorPacket)
         {
             if (hairColorPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, hairColorPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, hairColorPacket, Session.IpAddress);
                 Session.Character.HairColor = hairColorPacket.HairColor;
                 Session.SendPacket(Session.Character.GenerateEq());
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateIn());
@@ -1252,14 +1260,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $HairStyle Command
+        ///     $HairStyle Command
         /// </summary>
         /// <param name="hairStylePacket"></param>
         public void Hairstyle(HairStylePacket hairStylePacket)
         {
             if (hairStylePacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, hairStylePacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, hairStylePacket, Session.IpAddress);
                 Session.Character.HairStyle = hairStylePacket.HairStyle;
                 Session.SendPacket(Session.Character.GenerateEq());
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateIn());
@@ -1272,7 +1280,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $FairyXPRate Command
+        ///     $FairyXPRate Command
         /// </summary>
         /// <param name="heroXpRatePacket"></param>
         public void HeroXpRate(HeroXpRatePacket heroXpRatePacket)
@@ -1281,7 +1289,7 @@ namespace OpenNos.Handler
             {
                 if (heroXpRatePacket.Value <= 1000)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, heroXpRatePacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, heroXpRatePacket, Session.IpAddress);
                     ServerManager.Instance.HeroXpRate = heroXpRatePacket.Value;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HEROXP_RATE_CHANGED"), 0));
                 }
@@ -1297,12 +1305,12 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Invisible Command
+        ///     $Invisible Command
         /// </summary>
         /// <param name="invisiblePacket"></param>
         public void Invisible(InvisiblePacket invisiblePacket)
         {
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, invisiblePacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, invisiblePacket, Session.IpAddress);
             Session.Character.Invisible = !Session.Character.Invisible;
             Session.Character.InvisibleGm = !Session.Character.InvisibleGm;
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateInvisible());
@@ -1321,20 +1329,17 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Kick Command
+        ///     $Kick Command
         /// </summary>
         /// <param name="kickPacket"></param>
         public void Kick(KickPacket kickPacket)
         {
             if (kickPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, kickPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, kickPacket, Session.IpAddress);
                 if (kickPacket.CharacterName == "*")
                 {
-                    Parallel.ForEach(ServerManager.Instance.Sessions, session =>
-                    {
-                        session.Disconnect();
-                    });
+                    Parallel.ForEach(ServerManager.Instance.Sessions, session => { session.Disconnect(); });
                 }
                 ServerManager.Instance.Kick(kickPacket.CharacterName);
             }
@@ -1345,7 +1350,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $KickSession Command
+        ///     $KickSession Command
         /// </summary>
         public void KickSession(KickSessionPacket kickSessionPacket)
         {
@@ -1355,7 +1360,7 @@ namespace OpenNos.Handler
                 {
                     kickSessionPacket.AccountName = string.Empty;
                 }
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, kickSessionPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, kickSessionPacket, Session.IpAddress);
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 AccountDTO account = DAOFactory.AccountDAO.LoadByName(kickSessionPacket.AccountName);
                 CommunicationServiceClient.Instance.KickSession(account?.AccountId, kickSessionPacket.SessionId);
@@ -1367,14 +1372,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Kill Command
+        ///     $Kill Command
         /// </summary>
         /// <param name="killPacket"></param>
         public void Kill(KillPacket killPacket)
         {
             if (killPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, killPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, killPacket, Session.IpAddress);
                 string name = killPacket.CharacterName;
                 long? id = ServerManager.Instance.GetProperty<long?>(name, nameof(Character.CharacterId));
 
@@ -1385,16 +1390,17 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    int? hp = ServerManager.Instance.GetProperty<int?>((long)id, nameof(Character.Hp));
+                    int? hp = ServerManager.Instance.GetProperty<int?>((long) id, nameof(Character.Hp));
                     if (hp == 0)
                     {
                         return;
                     }
-                    ServerManager.Instance.SetProperty((long)id, nameof(Character.Hp), 0);
-                    ServerManager.Instance.SetProperty((long)id, nameof(Character.LastDefence), DateTime.Now);
+                    ServerManager.Instance.SetProperty((long) id, nameof(Character.Hp), 0);
+                    ServerManager.Instance.SetProperty((long) id, nameof(Character.LastDefence), DateTime.Now);
                     Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 60000 3 0");
-                    Session.CurrentMapInstance?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, string.Empty, (long)id);
-                    ServerManager.Instance.AskRevive((long)id);
+                    Session.CurrentMapInstance?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long) id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, string.Empty,
+                        (long) id);
+                    ServerManager.Instance.AskRevive((long) id);
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
                 else
@@ -1409,7 +1415,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $MapDance Command
+        ///     $MapDance Command
         /// </summary>
         /// <param name="mapDancePacket"></param>
         public void MapDance(MapDancePacket mapDancePacket)
@@ -1418,7 +1424,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, mapDancePacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, mapDancePacket, Session.IpAddress);
             Session.CurrentMapInstance.IsDancing = !Session.CurrentMapInstance.IsDancing;
             if (Session.CurrentMapInstance.IsDancing)
             {
@@ -1434,25 +1440,25 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $MapPVP Command
+        ///     $MapPVP Command
         /// </summary>
         /// <param name="mapPvpPacket"></param>
         public void MapPVP(MapPVPPacket mapPvpPacket)
         {
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, mapPvpPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, mapPvpPacket, Session.IpAddress);
             Session.CurrentMapInstance.IsPVP = !Session.CurrentMapInstance.IsPVP;
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
         /// <summary>
-        /// $Morph Command
+        ///     $Morph Command
         /// </summary>
         /// <param name="morphPacket"></param>
         public void Morph(MorphPacket morphPacket)
         {
             if (morphPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, morphPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, morphPacket, Session.IpAddress);
                 if (morphPacket.MorphId < 30 && morphPacket.MorphId > 0)
                 {
                     Session.Character.UseSp = true;
@@ -1488,7 +1494,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Music Command
+        ///     $Music Command
         /// </summary>
         /// <param name="musicPacket"></param>
         public void Music(MusicPacket musicPacket)
@@ -1497,7 +1503,7 @@ namespace OpenNos.Handler
             {
                 if (musicPacket.Music >= 0)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, musicPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, musicPacket, Session.IpAddress);
                     Session.CurrentMapInstance?.Broadcast($"bgm {musicPacket.Music}");
                 }
             }
@@ -1508,7 +1514,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Mute Command
+        ///     $Mute Command
         /// </summary>
         /// <param name="mutePacket"></param>
         public void Mute(MutePacket mutePacket)
@@ -1519,7 +1525,7 @@ namespace OpenNos.Handler
                 {
                     mutePacket.Duration = 60;
                 }
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, mutePacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, mutePacket, Session.IpAddress);
                 mutePacket.Reason = mutePacket.Reason?.Trim();
                 MuteMethod(mutePacket.CharacterName, mutePacket.Reason, mutePacket.Duration);
             }
@@ -1530,14 +1536,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Packet Command
+        ///     $Packet Command
         /// </summary>
         /// <param name="packetCallbackPacket"></param>
         public void PacketCallBack(PacketCallbackPacket packetCallbackPacket)
         {
             if (packetCallbackPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, packetCallbackPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, packetCallbackPacket, Session.IpAddress);
                 Session.SendPacket(packetCallbackPacket.Packet);
                 Session.SendPacket(Session.Character.GenerateSay(packetCallbackPacket.Packet, 10));
             }
@@ -1548,7 +1554,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Position Command
+        ///     $Position Command
         /// </summary>
         /// <param name="positionPacket"></param>
         public void Position(PositionPacket positionPacket)
@@ -1557,12 +1563,14 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, positionPacket, Session.IpAddress);
-            Session.SendPacket(Session.Character.GenerateSay($"Map:{Session.CurrentMapInstance.Map.MapId} - X:{Session.Character.PositionX} - Y:{Session.Character.PositionY} - Dir:{Session.Character.Direction} - Grid:{Session.CurrentMapInstance.Map.Grid[Session.Character.PositionX, Session.Character.PositionY].Value}", 12));
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, positionPacket, Session.IpAddress);
+            Session.SendPacket(Session.Character.GenerateSay(
+                $"Map:{Session.CurrentMapInstance.Map.MapId} - X:{Session.Character.PositionX} - Y:{Session.Character.PositionY} - Dir:{Session.Character.Direction} - Grid:{Session.CurrentMapInstance.Map.Grid[Session.Character.PositionX, Session.Character.PositionY].Value}",
+                12));
         }
 
         /// <summary>
-        /// $Promote Command
+        ///     $Promote Command
         /// </summary>
         /// <param name="promotePacket"></param>
         public void Promote(PromotePacket promotePacket)
@@ -1573,7 +1581,7 @@ namespace OpenNos.Handler
                 AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
                 if (account != null && account.Authority >= AuthorityType.User && account.Authority < AuthorityType.GameMaster)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, promotePacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, promotePacket, Session.IpAddress);
                     account.Authority += 1;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
@@ -1602,7 +1610,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Rarify Command
+        ///     $Rarify Command
         /// </summary>
         /// <param name="rarifyPacket"></param>
         public void Rarify(RarifyPacket rarifyPacket)
@@ -1613,7 +1621,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, rarifyPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, rarifyPacket, Session.IpAddress);
                 WearableInstance wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(rarifyPacket.Slot, 0);
                 wearableInstance?.RarifyItem(Session, rarifyPacket.Mode, rarifyPacket.Protection);
             }
@@ -1624,7 +1632,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $RemoveMob Packet
+        ///     $RemoveMob Packet
         /// </summary>
         /// <param name="removeMobPacket"></param>
         public void RemoveMob(RemoveMobPacket removeMobPacket)
@@ -1638,9 +1646,10 @@ namespace OpenNos.Handler
             {
                 if (monst.IsAlive)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, removeMobPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, removeMobPacket, Session.IpAddress);
                     Session.CurrentMapInstance.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {6000} 3 0");
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MONSTER_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
+                    Session.SendPacket(Session.Character.GenerateSay(
+                        string.Format(Language.Instance.GetMessageFromKey("MONSTER_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
                     Session.CurrentMapInstance.RemoveMonster(monst);
                     if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) != null)
                     {
@@ -1659,7 +1668,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $RemovePortal Command
+        ///     $RemovePortal Command
         /// </summary>
         /// <param name="removePortalPacket"></param>
         public void RemovePortal(RemovePortalPacket removePortalPacket)
@@ -1668,10 +1677,12 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Portal portal = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapInstanceId == Session.Character.MapInstanceId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
+            Portal portal = Session.CurrentMapInstance.Portals.FirstOrDefault(s =>
+                s.SourceMapInstanceId == Session.Character.MapInstanceId &&
+                Map.GetDistance(new MapCell {X = s.SourceX, Y = s.SourceY}, new MapCell {X = Session.Character.PositionX, Y = Session.Character.PositionY}) < 10);
             if (portal != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, removePortalPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, removePortalPacket, Session.IpAddress);
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), portal.SourceMapId, portal.SourceX, portal.SourceY), 12));
                 Session.CurrentMapInstance.Portals.Remove(portal);
                 Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
@@ -1683,7 +1694,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Resize Command
+        ///     $Resize Command
         /// </summary>
         /// <param name="resizePacket"></param>
         public void Resize(ResizePacket resizePacket)
@@ -1694,7 +1705,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, resizePacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, resizePacket, Session.IpAddress);
                 Session.Character.Size = resizePacket.Value;
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateScal());
             }
@@ -1705,7 +1716,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $SearchItem Command
+        ///     $SearchItem Command
         /// </summary>
         /// <param name="searchItemPacket"></param>
         public void SearchItem(SearchItemPacket searchItemPacket)
@@ -1713,10 +1724,11 @@ namespace OpenNos.Handler
             if (searchItemPacket != null)
             {
                 // TODO REVIEW COMMAND LOGGING
-                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(string.IsNullOrEmpty(searchItemPacket.Data) ? string.Empty : searchItemPacket.Data).OrderBy(s => s.VNum).Skip(0 * 200).Take(200).ToList();
+                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(string.IsNullOrEmpty(searchItemPacket.Data) ? string.Empty : searchItemPacket.Data).OrderBy(s => s.VNum).Skip(0 * 200)
+                    .Take(200).ToList();
                 if (itemlist.Any())
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, searchItemPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, searchItemPacket, Session.IpAddress);
                     foreach (ItemDTO item in itemlist)
                     {
                         Session.SendPacket(Session.Character.GenerateSay($"Item: {(string.IsNullOrEmpty(item.Name) ? "none" : item.Name)} VNum: {item.VNum}", 12));
@@ -1734,17 +1746,18 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $SearchMonster Command
+        ///     $SearchMonster Command
         /// </summary>
         /// <param name="searchMonsterPacket"></param>
         public void SearchMonster(SearchMonsterPacket searchMonsterPacket)
         {
             if (searchMonsterPacket != null)
             {
-                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(string.IsNullOrEmpty(searchMonsterPacket.Name) ? string.Empty : searchMonsterPacket.Name).OrderBy(s => s.NpcMonsterVNum).Skip(searchMonsterPacket.Page * 200).Take(200).ToList();
+                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(string.IsNullOrEmpty(searchMonsterPacket.Name) ? string.Empty : searchMonsterPacket.Name)
+                    .OrderBy(s => s.NpcMonsterVNum).Skip(searchMonsterPacket.Page * 200).Take(200).ToList();
                 if (monsterlist.Any())
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, searchMonsterPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, searchMonsterPacket, Session.IpAddress);
                     foreach (NpcMonsterDTO npcMonster in monsterlist)
                     {
                         Session.SendPacket(Session.Character.GenerateSay($"Monster: {(string.IsNullOrEmpty(npcMonster.Name) ? "none" : npcMonster.Name)} VNum: {npcMonster.NpcMonsterVNum}", 12));
@@ -1762,14 +1775,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Shout Command
+        ///     $Shout Command
         /// </summary>
         /// <param name="shoutPacket"></param>
         public void Shout(ShoutPacket shoutPacket)
         {
             if (shoutPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, shoutPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, shoutPacket, Session.IpAddress);
                 CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
                 {
                     DestinationCharacterId = null,
@@ -1786,14 +1799,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $ShoutHere Command
+        ///     $ShoutHere Command
         /// </summary>
         /// <param name="shoutHerePacket"></param>
         public void ShoutHere(ShoutHerePacket shoutHerePacket)
         {
             if (shoutHerePacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, shoutHerePacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, shoutHerePacket, Session.IpAddress);
                 ServerManager.Instance.Shout(shoutHerePacket.Message);
             }
             else
@@ -1803,12 +1816,12 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Shutdown Command
+        ///     $Shutdown Command
         /// </summary>
         /// <param name="shutdownPacket"></param>
         public void Shutdown(ShutdownPacket shutdownPacket)
         {
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, shutdownPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, shutdownPacket, Session.IpAddress);
             if (ServerManager.Instance.TaskShutdown != null)
             {
                 ServerManager.Instance.ShutdownStop = true;
@@ -1822,18 +1835,18 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $ShutdownAll Command
+        ///     $ShutdownAll Command
         /// </summary>
         /// <param name="shutdownAllPacket"></param>
         public void ShutdownAll(ShutdownAllPacket shutdownAllPacket)
         {
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, shutdownAllPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, shutdownAllPacket, Session.IpAddress);
             CommunicationServiceClient.Instance.Shutdown(!string.IsNullOrEmpty(shutdownAllPacket.WorldGroup) ? shutdownAllPacket.WorldGroup : ServerManager.Instance.ServerGroup);
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
         /// <summary>
-        /// $Speed Command
+        ///     $Speed Command
         /// </summary>
         /// <param name="speedPacket"></param>
         public void Speed(SpeedPacket speedPacket)
@@ -1844,7 +1857,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, speedPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, speedPacket, Session.IpAddress);
                 Session.Character.Speed = speedPacket.Value;
                 Session.Character.IsCustomSpeed = true;
                 Session.SendPacket(Session.Character.GenerateCond());
@@ -1856,12 +1869,12 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $SPRefill Command
+        ///     $SPRefill Command
         /// </summary>
         /// <param name="sprefillPacket"></param>
         public void SpRefill(SPRefillPacket sprefillPacket)
         {
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, sprefillPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, sprefillPacket, Session.IpAddress);
             Session.Character.SpPoint = 10000;
             Session.Character.SpAdditionPoint = 1000000;
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_REFILL"), 0));
@@ -1869,14 +1882,14 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Event Command
+        ///     $Event Command
         /// </summary>
         /// <param name="eventPacket"></param>
         public void StartEvent(EventPacket eventPacket)
         {
             if (eventPacket != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, eventPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, eventPacket, Session.IpAddress);
                 EventHelper.Instance.GenerateEvent(eventPacket.EventType);
             }
             else
@@ -1886,19 +1899,20 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Stat Command
+        ///     $Stat Command
         /// </summary>
         /// <param name="statCommandPacket"></param>
         public void Stat(StatCommandPacket statCommandPacket)
         {
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, statCommandPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, statCommandPacket, Session.IpAddress);
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("XP_RATE_NOW")}: {ServerManager.Instance.XPRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("DROP_RATE_NOW")}: {ServerManager.Instance.DropRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_RATE_NOW")}: {ServerManager.Instance.GoldRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_DROPRATE_NOW")}: {ServerManager.Instance.GoldDropRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("HERO_XPRATE_NOW")}: {ServerManager.Instance.HeroXpRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("FAIRYXP_RATE_NOW")}: {ServerManager.Instance.FairyXpRate} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("SERVER_WORKING_TIME")}: {(Process.GetCurrentProcess().StartTime - DateTime.Now):d\\ hh\\:mm\\:ss} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("SERVER_WORKING_TIME")}: {Process.GetCurrentProcess().StartTime - DateTime.Now:d\\ hh\\:mm\\:ss} ",
+                13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("MEMORY")}: {GC.GetTotalMemory(true) / (1024 * 1024)}MB ", 13));
 
             foreach (string message in CommunicationServiceClient.Instance.RetrieveServerStatistics())
@@ -1908,7 +1922,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Summon Command
+        ///     $Summon Command
         /// </summary>
         /// <param name="summonPacket"></param>
         public void Summon(SummonPacket summonPacket)
@@ -1924,7 +1938,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, summonPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, summonPacket, Session.IpAddress);
                 Random random = new Random();
                 for (int i = 0; i < summonPacket.Amount; i++)
                 {
@@ -1933,14 +1947,14 @@ namespace OpenNos.Handler
                     {
                         for (short y = -4; y < 5; y++)
                         {
-                            possibilities.Add(new MapCell { X = x, Y = y });
+                            possibilities.Add(new MapCell {X = x, Y = y});
                         }
                     }
                     // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
                     foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                     {
-                        short mapx = (short)(Session.Character.PositionX + possibilitie.X);
-                        short mapy = (short)(Session.Character.PositionY + possibilitie.Y);
+                        short mapx = (short) (Session.Character.PositionX + possibilitie.X);
+                        short mapy = (short) (Session.Character.PositionY + possibilitie.Y);
                         if (!Session.CurrentMapInstance?.Map.IsBlockedZone(mapx, mapy) ?? false)
                         {
                             break;
@@ -1957,7 +1971,7 @@ namespace OpenNos.Handler
                         MapY = Session.Character.PositionY,
                         MapX = Session.Character.PositionX,
                         MapId = Session.Character.MapInstance.Map.MapId,
-                        Position = (byte)Session.Character.Direction,
+                        Position = (byte) Session.Character.Direction,
                         IsMoving = summonPacket.IsMoving,
                         MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId(),
                         ShouldRespawn = false
@@ -1974,7 +1988,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $SummonNPC Command
+        ///     $SummonNPC Command
         /// </summary>
         /// <param name="summonNpcPacket"></param>
         public void SummonNPC(SummonNPCPacket summonNpcPacket)
@@ -1991,7 +2005,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, summonNpcPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, summonNpcPacket, Session.IpAddress);
                 Random random = new Random();
                 for (int i = 0; i < summonNpcPacket.Amount; i++)
                 {
@@ -2000,14 +2014,14 @@ namespace OpenNos.Handler
                     {
                         for (short y = -4; y < 5; y++)
                         {
-                            possibilities.Add(new MapCell { X = x, Y = y });
+                            possibilities.Add(new MapCell {X = x, Y = y});
                         }
                     }
                     // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
                     foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                     {
-                        short mapx = (short)(Session.Character.PositionX + possibilitie.X);
-                        short mapy = (short)(Session.Character.PositionY + possibilitie.Y);
+                        short mapx = (short) (Session.Character.PositionX + possibilitie.X);
+                        short mapy = (short) (Session.Character.PositionY + possibilitie.Y);
                         if (!Session.CurrentMapInstance?.Map.IsBlockedZone(mapx, mapy) ?? false)
                         {
                             break;
@@ -2023,7 +2037,7 @@ namespace OpenNos.Handler
                         MapY = Session.Character.PositionY,
                         MapX = Session.Character.PositionX,
                         MapId = Session.Character.MapInstance.Map.MapId,
-                        Position = (byte)Session.Character.Direction,
+                        Position = (byte) Session.Character.Direction,
                         IsMoving = summonNpcPacket.IsMoving,
                         MapNpcId = Session.CurrentMapInstance.GetNextMonsterId()
                     };
@@ -2039,7 +2053,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Teleport Command
+        ///     $Teleport Command
         /// </summary>
         /// <param name="teleportPacket"></param>
         public void Teleport(TeleportPacket teleportPacket)
@@ -2057,7 +2071,7 @@ namespace OpenNos.Handler
                 if (short.TryParse(teleportPacket.Data, out short mapId))
                 {
                     // TODO CHECK IF MAP EXIST
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, teleportPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, teleportPacket, Session.IpAddress);
                     ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, teleportPacket.X, teleportPacket.Y);
                 }
                 else
@@ -2065,7 +2079,7 @@ namespace OpenNos.Handler
                     ClientSession session = ServerManager.Instance.GetSessionByCharacterName(teleportPacket.Data);
                     if (session != null)
                     {
-                        LogHelper.InsertCommandLog(Session.Character.CharacterId, teleportPacket, Session.IpAddress);
+                        LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, teleportPacket, Session.IpAddress);
                         short mapX = session.Character.PositionX;
                         short mapY = session.Character.PositionY;
                         if (session.Character.Miniland == session.Character.MapInstance)
@@ -2090,7 +2104,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $TeleportToMe Command
+        ///     $TeleportToMe Command
         /// </summary>
         /// <param name="teleportToMePacket"></param>
         public void TeleportToMe(TeleportToMePacket teleportToMePacket)
@@ -2108,13 +2122,13 @@ namespace OpenNos.Handler
                         {
                             return;
                         }
-                        LogHelper.InsertCommandLog(Session.Character.CharacterId, teleportToMePacket, Session.IpAddress);
+                        LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, teleportToMePacket, Session.IpAddress);
                         List<MapCell> possibilities = new List<MapCell>();
                         for (short x = -6; x < 6; x++)
                         {
                             for (short y = -6; y < 6; y++)
                             {
-                                possibilities.Add(new MapCell { X = x, Y = y });
+                                possibilities.Add(new MapCell {X = x, Y = y});
                             }
                         }
 
@@ -2122,8 +2136,8 @@ namespace OpenNos.Handler
                         short mapYPossibility = Session.Character.PositionY;
                         foreach (MapCell possibility in possibilities.OrderBy(s => random.Next()))
                         {
-                            mapXPossibility = (short)(Session.Character.PositionX + possibility.X);
-                            mapYPossibility = (short)(Session.Character.PositionY + possibility.Y);
+                            mapXPossibility = (short) (Session.Character.PositionX + possibility.X);
+                            mapYPossibility = (short) (Session.Character.PositionY + possibility.Y);
                             if (!Session.CurrentMapInstance.Map.IsBlockedZone(mapXPossibility, mapYPossibility))
                             {
                                 break;
@@ -2148,7 +2162,8 @@ namespace OpenNos.Handler
                         // clear any shop or trade on target character
                         targetSession.Character.DisposeShopAndExchange();
                         targetSession.Character.IsSitting = false;
-                        ServerManager.Instance.ChangeMapInstance(targetSession.Character.CharacterId, Session.Character.MapInstanceId, (short)(Session.Character.PositionX + 1), (short)(Session.Character.PositionY + 1));
+                        ServerManager.Instance.ChangeMapInstance(targetSession.Character.CharacterId, Session.Character.MapInstanceId, (short) (Session.Character.PositionX + 1),
+                            (short) (Session.Character.PositionY + 1));
                     }
                     else
                     {
@@ -2163,7 +2178,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Unban Command
+        ///     $Unban Command
         /// </summary>
         /// <param name="unbanPacket"></param>
         public void Unban(UnbanPacket unbanPacket)
@@ -2177,7 +2192,7 @@ namespace OpenNos.Handler
                     PenaltyLogDTO log = ServerManager.Instance.PenaltyLogs.FirstOrDefault(s => s.AccountId == chara.AccountId && s.Penalty == PenaltyType.Banned && s.DateEnd > DateTime.Now);
                     if (log != null)
                     {
-                        LogHelper.InsertCommandLog(Session.Character.CharacterId, unbanPacket, Session.IpAddress);
+                        LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, unbanPacket, Session.IpAddress);
                         log.DateEnd = DateTime.Now.AddSeconds(-1);
                         Session.Character.InsertOrUpdatePenalty(log);
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
@@ -2199,12 +2214,12 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Undercover Command
+        ///     $Undercover Command
         /// </summary>
         /// <param name="undercoverPacket"></param>
         public void Undercover(UndercoverPacket undercoverPacket)
         {
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, undercoverPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, undercoverPacket, Session.IpAddress);
             Session.Character.Undercover = !Session.Character.Undercover;
             Session.SendPacket(Session.Character.GenerateEq());
             Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
@@ -2212,7 +2227,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Unmute Command
+        ///     $Unmute Command
         /// </summary>
         /// <param name="unmutePacket"></param>
         public void Unmute(UnmutePacket unmutePacket)
@@ -2223,10 +2238,10 @@ namespace OpenNos.Handler
                 CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(name);
                 if (chara != null)
                 {
-                    if (ServerManager.Instance.PenaltyLogs.Any(s => s.AccountId == chara.AccountId && s.Penalty == (byte)PenaltyType.Muted && s.DateEnd > DateTime.Now))
+                    if (ServerManager.Instance.PenaltyLogs.Any(s => s.AccountId == chara.AccountId && s.Penalty == (byte) PenaltyType.Muted && s.DateEnd > DateTime.Now))
                     {
-                        LogHelper.InsertCommandLog(Session.Character.CharacterId, unmutePacket, Session.IpAddress);
-                        PenaltyLogDTO log = ServerManager.Instance.PenaltyLogs.FirstOrDefault(s => s.AccountId == chara.AccountId && s.Penalty == (byte)PenaltyType.Muted && s.DateEnd > DateTime.Now);
+                        LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, unmutePacket, Session.IpAddress);
+                        PenaltyLogDTO log = ServerManager.Instance.PenaltyLogs.FirstOrDefault(s => s.AccountId == chara.AccountId && s.Penalty == (byte) PenaltyType.Muted && s.DateEnd > DateTime.Now);
                         if (log != null)
                         {
                             log.DateEnd = DateTime.Now.AddSeconds(-1);
@@ -2251,7 +2266,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Upgrade Command
+        ///     $Upgrade Command
         /// </summary>
         /// <param name="upgradePacket"></param>
         public void Upgrade(UpgradeCommandPacket upgradePacket)
@@ -2262,7 +2277,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, upgradePacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, upgradePacket, Session.IpAddress);
                 WearableInstance wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(upgradePacket.Slot, 0);
                 wearableInstance?.UpgradeItem(Session, upgradePacket.Mode, upgradePacket.Protection, true);
             }
@@ -2273,7 +2288,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Warn Command
+        ///     $Warn Command
         /// </summary>
         /// <param name="warningPacket"></param>
         public void Warn(WarningPacket warningPacket)
@@ -2282,7 +2297,7 @@ namespace OpenNos.Handler
             CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
             if (character != null)
             {
-                LogHelper.InsertCommandLog(Session.Character.CharacterId, warningPacket, Session.IpAddress);
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, warningPacket, Session.IpAddress);
                 ClientSession session = ServerManager.Instance.GetSessionByCharacterName(characterName);
                 session?.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("WARNING"), warningPacket.Reason)));
                 PenaltyLogDTO log = new PenaltyLogDTO
@@ -2326,17 +2341,17 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $WigColor Command
+        ///     $WigColor Command
         /// </summary>
         /// <param name="wigColorPacket"></param>
         public void WigColor(WigColorPacket wigColorPacket)
         {
             if (wigColorPacket != null)
             {
-                WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+                WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Hat, InventoryType.Wear);
                 if (wig != null)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, wigColorPacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, wigColorPacket, Session.IpAddress);
                     wig.Design = wigColorPacket.Color;
                     Session.SendPacket(Session.Character.GenerateEq());
                     Session.SendPacket(Session.Character.GenerateEquipment());
@@ -2355,7 +2370,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $XpRate Command
+        ///     $XpRate Command
         /// </summary>
         /// <param name="xpRatePacket"></param>
         public void XpRate(XpRatePacket xpRatePacket)
@@ -2364,7 +2379,7 @@ namespace OpenNos.Handler
             {
                 if (xpRatePacket.Value <= 1000)
                 {
-                    LogHelper.InsertCommandLog(Session.Character.CharacterId, xpRatePacket, Session.IpAddress);
+                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, xpRatePacket, Session.IpAddress);
                     ServerManager.Instance.XPRate = xpRatePacket.Value;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("XP_RATE_CHANGED"), 0));
                 }
@@ -2380,7 +2395,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Zoom Command
+        ///     $Zoom Command
         /// </summary>
         /// <param name="zoomPacket"></param>
         public void Zoom(ZoomPacket zoomPacket)
@@ -2390,13 +2405,13 @@ namespace OpenNos.Handler
                 Session.Character.GenerateSay(ZoomPacket.ReturnHelp(), 10);
                 return;
             }
-            LogHelper.InsertCommandLog(Session.Character.CharacterId, zoomPacket, Session.IpAddress);
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, zoomPacket, Session.IpAddress);
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(15, zoomPacket.Value, Session.Character.CharacterId));
         }
 
         // TODO MOVE THAT SHIT
         /// <summary>
-        /// private AddMate method
+        ///     private AddMate method
         /// </summary>
         /// <param name="vnum"></param>
         /// <param name="level"></param>
@@ -2421,7 +2436,7 @@ namespace OpenNos.Handler
 
         // TODO MOVE THAT SHIT
         /// <summary>
-        /// private mute method
+        ///     private mute method
         /// </summary>
         /// <param name="characterName"></param>
         /// <param name="reason"></param>
@@ -2455,7 +2470,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// Helper method used for sending stats of desired character
+        ///     Helper method used for sending stats of desired character
         /// </summary>
         /// <param name="character"></param>
         private void SendStats(CharacterDTO character)
@@ -2478,7 +2493,8 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"Dignity: {character.Dignity}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Rage: {character.RagePoint}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Faction: {(character.Faction == FactionType.Demon ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
+            Session.SendPacket(Session.Character.GenerateSay(
+                $"Faction: {(character.Faction == FactionType.Demon ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
             Session.SendPacket(Session.Character.GenerateSay("----- --------- -----", 13));
             AccountDTO account = DAOFactory.AccountDAO.LoadById(character.AccountId);
             if (account != null)

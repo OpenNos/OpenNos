@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenNos.Data;
 using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public static class CellonGeneratorHelper
+    public class CellonGeneratorHelper
     {
-        private class CellonGenerator
-        {
-            public int Min { get; set; }
-            public int Max { get; set; }
-        }
-
-        private static readonly Dictionary<int, Dictionary<CellonType, CellonGenerator>> _generatorDictionary =
+        private readonly Dictionary<int, Dictionary<CellonType, CellonGenerator>> _generatorDictionary =
             new Dictionary<int, Dictionary<CellonType, CellonGenerator>>
             {
                 {
@@ -26,7 +18,7 @@ namespace OpenNos.GameObject.Helpers
                         {CellonType.Hp, new CellonGenerator {Min = 30, Max = 100}},
                         {CellonType.Mp, new CellonGenerator {Min = 50, Max = 120}},
                         {CellonType.HpRecovery, new CellonGenerator {Min = 5, Max = 10}},
-                        {CellonType.MpRecovery, new CellonGenerator {Min = 8, Max = 15}},
+                        {CellonType.MpRecovery, new CellonGenerator {Min = 8, Max = 15}}
                     }
                 },
                 {
@@ -109,7 +101,7 @@ namespace OpenNos.GameObject.Helpers
                 }
             };
 
-        public static EquipmentOptionDTO GenerateOption(int itemEffectValue)
+        public EquipmentOptionDTO GenerateOption(int itemEffectValue)
         {
             if (new Random().Next(100) > 50)
             {
@@ -126,11 +118,28 @@ namespace OpenNos.GameObject.Helpers
                     continue;
                 }
                 result.Value = new Random().Next(list.ElementAt(i).Min, list.ElementAt(i).Max);
-                result.Level = (byte)itemEffectValue;
-                result.Type = (byte)i;
+                result.Level = (byte) itemEffectValue;
+                result.Type = (byte) i;
                 return result;
             }
             return null;
         }
+
+        private class CellonGenerator
+        {
+            public int Min { get; set; }
+            public int Max { get; set; }
+        }
+
+        #region Singleton
+
+        private static CellonGeneratorHelper _instance;
+
+        public static CellonGeneratorHelper Instance
+        {
+            get { return _instance ?? (_instance = new CellonGeneratorHelper()); }
+        }
+
+        #endregion
     }
 }

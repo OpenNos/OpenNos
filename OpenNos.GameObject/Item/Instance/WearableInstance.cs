@@ -240,7 +240,7 @@ namespace OpenNos.GameObject
                             Item spitem = ServerManager.Instance.GetItem(specialist.HoldingVNum);
                             return specialist.HoldingVNum == 0
                                 ? $"e_info 7 {ItemVNum} 0"
-                                : $"e_info 7 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} {CharacterHelper.SPXPData[specialist.SpLevel - 1]} {Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
+                                : $"e_info 7 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} {CharacterHelper.Instance.SPXPData[specialist.SpLevel - 1]} {Upgrade} {CharacterHelper.Instance.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.Instance.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.Instance.SlPoint(specialist.SlElement, 2)} {CharacterHelper.Instance.SlPoint(specialist.SlHP, 3)} {CharacterHelper.Instance.SPPoint(specialist.SpLevel, Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
 
                         case 4:
                             return specialist.HoldingVNum == 0 ? $"e_info 11 {ItemVNum} 0" : $"e_info 11 {ItemVNum} 1 {specialist.HoldingVNum}";
@@ -535,7 +535,7 @@ namespace OpenNos.GameObject
                 case EquipmentType.MainWeapon:
                 case EquipmentType.SecondaryWeapon:
                 {
-                    int point = CharacterHelper.RarityPoint(Rare, Item.IsHeroic ? (short) (95 + Item.LevelMinimum) : Item.LevelMinimum);
+                    int point = CharacterHelper.Instance.RarityPoint(Rare, Item.IsHeroic ? (short) (95 + Item.LevelMinimum) : Item.LevelMinimum);
                     Concentrate = 0;
                     HitRate = 0;
                     DamageMinimum = 0;
@@ -570,7 +570,7 @@ namespace OpenNos.GameObject
 
                 case EquipmentType.Armor:
                 {
-                    int point = CharacterHelper.RarityPoint(Rare, Item.IsHeroic ? (short) (95 + Item.LevelMinimum) : Item.LevelMinimum);
+                    int point = CharacterHelper.Instance.RarityPoint(Rare, Item.IsHeroic ? (short) (95 + Item.LevelMinimum) : Item.LevelMinimum);
                     DefenceDodge = 0;
                     DistanceDefenceDodge = 0;
                     DistanceDefence = 0;

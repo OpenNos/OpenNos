@@ -45,9 +45,9 @@ namespace OpenNos.GameObject
                     if (ItemType == ItemType.Event)
                     {
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(EffectValue));
-                        if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))
+                        if (MappingHelper.Instance.GuriItemEffects.ContainsKey(EffectValue))
                         {
-                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(19, 1, session.Character.CharacterId, MappingHelper.GuriItemEffects[EffectValue]), session.Character.MapX, session.Character.MapY);
+                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(19, 1, session.Character.CharacterId, MappingHelper.Instance.GuriItemEffects[EffectValue]), session.Character.MapX, session.Character.MapY);
                         }
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }

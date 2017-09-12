@@ -20,43 +20,54 @@ namespace OpenNos.GameObject.Helpers
 {
     public class CharacterHelper
     {
+        #region Singleton
+
+        private static CharacterHelper _instance;
+
+        public static CharacterHelper Instance
+        {
+            get { return _instance ?? (_instance = new CharacterHelper()); }
+        }
+
+        #endregion
+
         #region Members
 
-        private static int[,] _criticalDist;
-        private static int[,] _criticalDistRate;
-        private static int[,] _criticalHit;
-        private static int[,] _criticalHitRate;
-        private static int[,] _distDef;
-        private static int[,] _distDodge;
-        private static int[,] _distRate;
-        private static double[] _firstJobXpData;
-        private static double[] _heroXpData;
-        private static int[,] _hitDef;
-        private static int[,] _hitDodge;
-        private static int[,] _hitRate;
-        private static int[,] _hp;
-        private static int[] _hpHealth;
-        private static int[] _hpHealthStand;
-        private static int[,] _magicalDef;
-        private static int[,] _maxDist;
-        private static int[,] _maxHit;
-        private static int[,] _minDist;
+        private int[,] _criticalDist;
+        private int[,] _criticalDistRate;
+        private int[,] _criticalHit;
+        private int[,] _criticalHitRate;
+        private int[,] _distDef;
+        private int[,] _distDodge;
+        private int[,] _distRate;
+        private double[] _firstJobXpData;
+        private double[] _heroXpData;
+        private int[,] _hitDef;
+        private int[,] _hitDodge;
+        private int[,] _hitRate;
+        private int[,] _hp;
+        private int[] _hpHealth;
+        private int[] _hpHealthStand;
+        private int[,] _magicalDef;
+        private int[,] _maxDist;
+        private int[,] _maxHit;
+        private int[,] _minDist;
 
         // difference between class
-        private static int[,] _minHit;
+        private int[,] _minHit;
 
-        private static int[,] _mp;
-        private static int[] _mpHealth;
-        private static int[] _mpHealthStand;
-        private static double[] _secondjobxpData;
+        private int[,] _mp;
+        private int[] _mpHealth;
+        private int[] _mpHealthStand;
+        private double[] _secondjobxpData;
 
         // STAT DATA
-        private static byte[] _speedData;
+        private byte[] _speedData;
 
-        private static double[] _spxpData;
+        private double[] _spxpData;
 
         // same for all class
-        private static double[] _xpData;
+        private double[] _xpData;
 
         #endregion
 
@@ -82,148 +93,64 @@ namespace OpenNos.GameObject.Helpers
 
         #region Properties
 
-        public static double[] FirstJobXPData
+        public double[] FirstJobXPData
         {
-            get
-            {
-                if (_firstJobXpData == null)
-                {
-                    new CharacterHelper();
-                }
-                return _firstJobXpData;
-            }
+            get { return _firstJobXpData; }
         }
 
-        public static double[] HeroXpData
+        public double[] HeroXpData
         {
-            get
-            {
-                if (_heroXpData == null)
-                {
-                    new CharacterHelper();
-                }
-                return _heroXpData;
-            }
+            get { return _heroXpData; }
         }
 
-        public static int[,] HPData
+        public int[,] HPData
         {
-            get
-            {
-                if (_hp == null)
-                {
-                    new CharacterHelper();
-                }
-                return _hp;
-            }
+            get { return _hp; }
         }
 
-        public static int[] HPHealth
+        public int[] HPHealth
         {
-            get
-            {
-                if (_hpHealth == null)
-                {
-                    new CharacterHelper();
-                }
-                return _hpHealth;
-            }
+            get { return _hpHealth; }
         }
 
-        public static int[] HPHealthStand
+        public int[] HPHealthStand
         {
-            get
-            {
-                if (_hpHealthStand == null)
-                {
-                    new CharacterHelper();
-                }
-                return _hpHealthStand;
-            }
+            get { return _hpHealthStand; }
         }
 
-        public static int[,] MPData
+        public int[,] MPData
         {
-            get
-            {
-                if (_mp == null)
-                {
-                    new CharacterHelper();
-                }
-                return _mp;
-            }
+            get { return _mp; }
         }
 
-        public static int[] MPHealth
+        public int[] MPHealth
         {
-            get
-            {
-                if (_mpHealth == null)
-                {
-                    new CharacterHelper();
-                }
-                return _mpHealth;
-            }
+            get { return _mpHealth; }
         }
 
-        public static int[] MPHealthStand
+        public int[] MPHealthStand
         {
-            get
-            {
-                if (_mpHealthStand == null)
-                {
-                    new CharacterHelper();
-                }
-                return _mpHealthStand;
-            }
+            get { return _mpHealthStand; }
         }
 
-        public static double[] SecondJobXPData
+        public double[] SecondJobXPData
         {
-            get
-            {
-                if (_secondjobxpData == null)
-                {
-                    new CharacterHelper();
-                }
-                return _secondjobxpData;
-            }
+            get { return _secondjobxpData; }
         }
 
-        public static byte[] SpeedData
+        public byte[] SpeedData
         {
-            get
-            {
-                if (_speedData == null)
-                {
-                    new CharacterHelper();
-                }
-                return _speedData;
-            }
+            get { return _speedData; }
         }
 
-        public static double[] SPXPData
+        public double[] SPXPData
         {
-            get
-            {
-                if (_spxpData == null)
-                {
-                    new CharacterHelper();
-                }
-                return _spxpData;
-            }
+            get { return _spxpData; }
         }
 
-        public static double[] XPData
+        public double[] XPData
         {
-            get
-            {
-                if (_xpData == null)
-                {
-                    new CharacterHelper();
-                }
-                return _xpData;
-            }
+            get { return _xpData; }
         }
 
         #endregion
@@ -399,32 +326,32 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
-        public static int MagicalDefence(ClassType @class, byte level)
+        public int MagicalDefence(ClassType @class, byte level)
         {
             return _magicalDef[(byte)@class, level];
         }
 
-        public static int MaxDistance(ClassType @class, byte level)
+        public int MaxDistance(ClassType @class, byte level)
         {
             return _maxDist[(byte)@class, level];
         }
 
-        public static int MaxHit(ClassType @class, byte level)
+        public int MaxHit(ClassType @class, byte level)
         {
             return _maxHit[(byte)@class, level];
         }
 
-        public static int MinDistance(ClassType @class, byte level)
+        public int MinDistance(ClassType @class, byte level)
         {
             return _minDist[(byte)@class, level];
         }
 
-        public static int MinHit(ClassType @class, byte level)
+        public int MinHit(ClassType @class, byte level)
         {
             return _minHit[(int)@class, level];
         }
 
-        public static int RarityPoint(short rarity, short lvl)
+        public int RarityPoint(short rarity, short lvl)
         {
             int p;
             switch (rarity)
@@ -473,7 +400,7 @@ namespace OpenNos.GameObject.Helpers
         }
 
         [SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
-        public static int SlPoint(short spPoint, short mode)
+        public int SlPoint(short spPoint, short mode)
         {
             try
             {
@@ -636,7 +563,7 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
-        public static int SPPoint(short spLevel, short upgrade)
+        public int SPPoint(short spLevel, short upgrade)
         {
             int point = (spLevel - 20) * 3;
             if (spLevel <= 20)
@@ -714,87 +641,87 @@ namespace OpenNos.GameObject.Helpers
             return point;
         }
 
-        internal static int DarkResistance(ClassType @class, byte level)
+        internal int DarkResistance(ClassType @class, byte level)
         {
             return 0;
         }
 
-        internal static int Defence(ClassType @class, byte level)
+        internal int Defence(ClassType @class, byte level)
         {
             return _hitDef[(byte)@class, level];
         }
 
-        internal static int DefenceRate(ClassType @class, byte level)
+        internal int DefenceRate(ClassType @class, byte level)
         {
             return _hitDodge[(byte)@class, level];
         }
 
-        internal static int DistanceDefence(ClassType @class, byte level)
+        internal int DistanceDefence(ClassType @class, byte level)
         {
             return _distDef[(byte)@class, level];
         }
 
-        internal static int DistanceDefenceRate(ClassType @class, byte level)
+        internal int DistanceDefenceRate(ClassType @class, byte level)
         {
             return _distDodge[(byte)@class, level];
         }
 
-        internal static int DistanceRate(ClassType @class, byte level)
+        internal int DistanceRate(ClassType @class, byte level)
         {
             return _distRate[(byte)@class, level];
         }
 
-        internal static int DistCritical(ClassType @class, byte level)
+        internal int DistCritical(ClassType @class, byte level)
         {
             return _criticalDist[(byte)@class, level];
         }
 
-        internal static int DistCriticalRate(ClassType @class, byte level)
+        internal int DistCriticalRate(ClassType @class, byte level)
         {
             return _criticalDistRate[(byte)@class, level];
         }
 
-        internal static int Element(ClassType @class, byte level)
+        internal int Element(ClassType @class, byte level)
         {
             return 0;
         }
 
-        internal static int ElementRate(ClassType @class, byte level)
+        internal int ElementRate(ClassType @class, byte level)
         {
             return 0;
         }
 
-        internal static int FireResistance(ClassType @class, byte level)
+        internal int FireResistance(ClassType @class, byte level)
         {
             return 0;
         }
 
-        internal static int HitCritical(ClassType @class, byte level)
+        internal int HitCritical(ClassType @class, byte level)
         {
             return _criticalHit[(byte)@class, level];
         }
 
-        internal static int HitCriticalRate(ClassType @class, byte level)
+        internal int HitCriticalRate(ClassType @class, byte level)
         {
             return _criticalHitRate[(byte)@class, level];
         }
 
-        internal static int HitRate(ClassType @class, byte level)
+        internal int HitRate(ClassType @class, byte level)
         {
             return _hitRate[(byte)@class, level];
         }
 
-        internal static int LightResistance(ClassType @class, byte level)
+        internal int LightResistance(ClassType @class, byte level)
         {
             return 0;
         }
 
-        internal static int WaterResistance(ClassType @class, byte level)
+        internal int WaterResistance(ClassType @class, byte level)
         {
             return 0;
         }
 
-        private static void LoadHeroXpData()
+        private void LoadHeroXpData()
         {
             // Load SpData
             _heroXpData = new double[256];
@@ -805,7 +732,7 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
-        private static void LoadHPData()
+        private void LoadHPData()
         {
             _hp = new int[4, 256];
 
@@ -865,7 +792,7 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
-        private static void LoadHPHealth()
+        private void LoadHPHealth()
         {
             _hpHealth = new int[4];
             _hpHealth[(int)ClassType.Archer] = 60;
@@ -874,7 +801,7 @@ namespace OpenNos.GameObject.Helpers
             _hpHealth[(int)ClassType.Magician] = 30;
         }
 
-        private static void LoadHPHealthStand()
+        private void LoadHPHealthStand()
         {
             _hpHealthStand = new int[4];
             _hpHealthStand[(int)ClassType.Archer] = 32;
@@ -883,7 +810,7 @@ namespace OpenNos.GameObject.Helpers
             _hpHealthStand[(int)ClassType.Magician] = 20;
         }
 
-        private static void LoadJobXPData()
+        private void LoadJobXPData()
         {
             // Load JobData
             _firstJobXpData = new double[21];
@@ -910,7 +837,7 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
-        private static void LoadMPData()
+        private void LoadMPData()
         {
             _mp = new int[4, 257];
 
@@ -946,7 +873,7 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
-        private static void LoadMPHealth()
+        private void LoadMPHealth()
         {
             _mpHealth = new int[4];
             _mpHealth[(int)ClassType.Adventurer] = 10;
@@ -955,7 +882,7 @@ namespace OpenNos.GameObject.Helpers
             _mpHealth[(int)ClassType.Magician] = 80;
         }
 
-        private static void LoadMPHealthStand()
+        private void LoadMPHealthStand()
         {
             _mpHealthStand = new int[4];
             _mpHealthStand[(int)ClassType.Adventurer] = 5;
@@ -964,7 +891,7 @@ namespace OpenNos.GameObject.Helpers
             _mpHealthStand[(int)ClassType.Magician] = 40;
         }
 
-        private static void LoadSpeedData()
+        private void LoadSpeedData()
         {
             _speedData = new byte[4];
             _speedData[(int)ClassType.Adventurer] = 11;
@@ -973,7 +900,7 @@ namespace OpenNos.GameObject.Helpers
             _speedData[(int)ClassType.Magician] = 10;
         }
 
-        private static void LoadSPXPData()
+        private void LoadSPXPData()
         {
             // Load SpData
             _spxpData = new double[256];
@@ -990,7 +917,7 @@ namespace OpenNos.GameObject.Helpers
         }
 
         // TODO: Change or Verify
-        private static void LoadStats()
+        private void LoadStats()
         {
             _minHit = new int[4, 256];
             _maxHit = new int[4, 256];
@@ -1087,7 +1014,7 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
-        private static void LoadXPData()
+        private void LoadXPData()
         {
             // Load XpData
             _xpData = new double[256];
@@ -1118,24 +1045,23 @@ namespace OpenNos.GameObject.Helpers
                     }
                     _xpData[i] = Convert.ToInt64(_xpData[i - 1] + var * v[i - 1]);
                 }
-                if (i >= 79)
+                if (i < 79)
                 {
-                    if (i == 79)
-                    {
-                        var = 5000;
-                    }
-                    if (i == 82)
-                    {
-                        var = 9000;
-                    }
-                    if (i == 84)
-                    {
-                        var = 13000;
-                    }
-                    _xpData[i] = Convert.ToInt64(_xpData[i - 1] + var * (i + 2) * (i + 2));
+                    continue;
                 }
-
-                // Console.WriteLine($"LvL {i}: xpdata: {_xpData[i - 1]} v: {v[i - 1]}");
+                switch (i)
+                {
+                    case 79:
+                        var = 5000;
+                        break;
+                    case 82:
+                        var = 9000;
+                        break;
+                    case 84:
+                        var = 13000;
+                        break;
+                }
+                _xpData[i] = Convert.ToInt64(_xpData[i - 1] + var * (i + 2) * (i + 2));
             }
         }
 

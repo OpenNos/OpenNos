@@ -8,17 +8,27 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public static class EquipmentOptionHelper
+    public class EquipmentOptionHelper
     {
+        #region Singleton
 
+        private static EquipmentOptionHelper _instance;
+
+        public static EquipmentOptionHelper Instance
+        {
+            get { return _instance ?? (_instance = new EquipmentOptionHelper()); }
+        }
+
+        #endregion
+        
         #region Cellons
 
-        public static List<BCard> CellonToBCards(List<EquipmentOptionDTO> optionList, short itemVnum)
+        public List<BCard> CellonToBCards(List<EquipmentOptionDTO> optionList, short itemVnum)
         {
             return optionList.Select(option => CellonToBcard(option, itemVnum)).ToList();
         }
 
-        private static BCard CellonToBcard(EquipmentOptionDTO option, short itemVnum)
+        private BCard CellonToBcard(EquipmentOptionDTO option, short itemVnum)
         {
             BCard bcard = new BCard();
             switch (option.Type)
@@ -57,13 +67,15 @@ namespace OpenNos.GameObject.Helpers
         }
 
         #endregion
-        
-        public static List<BCard> ShellToBCards(List<EquipmentOptionDTO> optionList, short itemVnum)
+
+        #region Shells
+
+        public List<BCard> ShellToBCards(List<EquipmentOptionDTO> optionList, short itemVnum)
         {
             return optionList.Select(option => ShellToBCards(option, itemVnum)).ToList();
         }
 
-        public static BCard ShellToBCards(EquipmentOptionDTO option, short itemVNum)
+        public BCard ShellToBCards(EquipmentOptionDTO option, short itemVNum)
         {
             BCard bCard = new BCard();
 
@@ -436,5 +448,6 @@ namespace OpenNos.GameObject.Helpers
             }
             return bCard;
         }
+        #endregion
     }
 }

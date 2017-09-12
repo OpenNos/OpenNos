@@ -465,15 +465,7 @@ namespace OpenNos.Handler
                 return;
             }
             ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(groupSayPacket.Message, 3), ReceiverType.Group);
-            LogChatDTO log = new LogChatDTO
-            {
-                CharacterId = Session.Character.CharacterId,
-                ChatMessage = groupSayPacket.Message,
-                ChatType = (byte)ChatType.Party,
-                IpAddress = Session.IpAddress,
-                Timestamp = DateTime.Now,
-            };
-            DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
+            LogHelper.Instance.InsertChatLog(ChatType.Friend, Session.Character.CharacterId, groupSayPacket.Message, Session.IpAddress);
         }
     }
     #endregion

@@ -10,9 +10,9 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public static class LogHelper
+    public class LogHelper
     {
-        public static void InsertCommandLog(long characterId, PacketDefinition commandPacket, string ipAddress)
+        public void InsertCommandLog(long characterId, PacketDefinition commandPacket, string ipAddress)
         {
             string withoutHeaderpacket = string.Empty;
             string[] packet = commandPacket.OriginalContent.Split(' ');
@@ -31,9 +31,29 @@ namespace OpenNos.GameObject.Helpers
             DAOFactory.LogCommandsDAO.InsertOrUpdate(ref command);
         }
 
-        public static void InsertChatLog(ChatType type, long characterId, string message, string ipAddress)
+        public void InsertChatLog(ChatType type, long characterId, string message, string ipAddress)
         {
-            
+            LogChatDTO log = new LogChatDTO
+            {
+                CharacterId = characterId,
+                ChatMessage = message,
+                IpAddress = ipAddress,
+                ChatType = (byte) type,
+                Timestamp = DateTime.Now
+            };
+            DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
         }
+
+
+        #region Singleton
+
+        private static LogHelper _instance;
+
+        public static LogHelper Instance
+        {
+            get { return _instance ?? (_instance = new LogHelper()); }
+        }
+
+        #endregion
     }
 }

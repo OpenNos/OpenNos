@@ -391,15 +391,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                LogChatDTO log = new LogChatDTO
-                {
-                    CharacterId = Session.Character.CharacterId,
-                    ChatMessage = message,
-                    ChatType = (byte)ChatType.Friend,
-                    IpAddress = Session.IpAddress,
-                    Timestamp = DateTime.Now,
-                };
-                DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
+                LogHelper.Instance.InsertChatLog(ChatType.Friend, Session.Character.CharacterId, message, Session.IpAddress);
             }
         }
 
@@ -880,15 +872,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                LogChatDTO log = new LogChatDTO
-                {
-                    CharacterId = Session.Character.CharacterId,
-                    ChatMessage = message,
-                    ChatType = (byte)ChatType.General,
-                    IpAddress = Session.IpAddress,
-                    Timestamp = DateTime.Now,
-                };
-                DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
+                LogHelper.Instance.InsertChatLog(ChatType.General, Session.Character.CharacterId, message, Session.IpAddress);
                 byte type = 0;
                 ConcurrentBag<ArenaTeamMember> member = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(e => e.Session == Session));
                 if (Session.Character.Authority == AuthorityType.Moderator)
@@ -1360,15 +1344,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    LogChatDTO log = new LogChatDTO
-                    {
-                        CharacterId = Session.Character.CharacterId,
-                        ChatMessage = message,
-                        ChatType = (byte)ChatType.Whisper,
-                        IpAddress = Session.IpAddress,
-                        Timestamp = DateTime.Now,
-                    };
-                    DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
+                    LogHelper.Instance.InsertChatLog(ChatType.Whisper, Session.Character.CharacterId, message, Session.IpAddress);
                 }
             }
             catch (Exception e)

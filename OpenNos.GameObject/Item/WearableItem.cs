@@ -172,10 +172,10 @@ namespace OpenNos.GameObject
                             {
                                 case ItemType.Armor:
                                 case ItemType.Weapon:
-                                    EquipmentOptionHelper.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => session.Character.EquipmentBCards.Add(s));
+                                    EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => session.Character.EquipmentBCards.Add(s));
                                     break;
                                 case ItemType.Jewelery:
-                                    EquipmentOptionHelper.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => session.Character.EquipmentBCards.Add(s));
+                                    EquipmentOptionHelper.Instance.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => session.Character.EquipmentBCards.Add(s));
                                     break;
                             }
 
