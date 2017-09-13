@@ -453,7 +453,7 @@ namespace OpenNos.GameObject.Event
                     }
                     break;
 
-                case 40:
+                case 30:
                     switch (wave)
                     {
                         case 0:
