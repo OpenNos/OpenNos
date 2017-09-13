@@ -49,6 +49,10 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public ConcurrentBag<Buff> Buff { get; internal set; }
+
+        public ConcurrentBag<BCard> SkillBcards { get; set; }
+
         public int CurrentHp { get; set; }
 
         public int CurrentMp { get; set; }
@@ -181,6 +185,8 @@ namespace OpenNos.GameObject
             DamageList = new Dictionary<long, long>();
             _random = new Random(MapMonsterId);
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
+            Buff = new ConcurrentBag<Buff>();
+            SkillBcards = new ConcurrentBag<BCard>();
         }
 
         /// <summary>
@@ -353,6 +359,12 @@ namespace OpenNos.GameObject
             int playerDodge = targetCharacter.GetBuff(CardType.DodgeAndDefencePercent, (byte)AdditionalTypes.DodgeAndDefencePercent.DodgeIncreased, false)[0]
                             - targetCharacter.GetBuff(CardType.DodgeAndDefencePercent, (byte)AdditionalTypes.DodgeAndDefencePercent.DodgeDecreased, false)[0];
 
+            int playerMorale = targetCharacter.Level + targetCharacter.GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleIncreased, false)[0]
+                             - targetCharacter.GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleDecreased, false)[0];
+
+            int Morale = Monster.Level + GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleIncreased)[0]
+                       - GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleDecreased)[0];
+
             WearableInstance playerArmor = targetCharacter.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
             if (playerArmor != null)
             {
@@ -377,6 +389,8 @@ namespace OpenNos.GameObject
             #endregion
 
             #region Get Player defense
+
+            skill.BCards?.ToList().ForEach(s => SkillBcards.Add(s));
 
             int boostpercentage;
             switch (Monster.AttackClass)
@@ -417,7 +431,7 @@ namespace OpenNos.GameObject
 
             // Critical damage deacreased by x %
             mainCritHit = (int)((mainCritHit / 100D) * (100 + targetCharacter.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalIncreased, false)[0]
-                                                              - targetCharacter.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, false)[0]));
+                                                            - targetCharacter.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased, false)[0]));
 
             mainUpgrade -= playerDefenseUpgrade;
 
@@ -461,16 +475,7 @@ namespace OpenNos.GameObject
             #region Base Damage
 
             int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg, mainMaxDmg + 1);
-            baseDamage += Monster.Level - targetCharacter.Level + targetCharacter.GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleIncreased, false)[0]
-                                                                - targetCharacter.GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleDecreased, false)[0];
-
-            int elementalDamage = 0; // placeholder for BCard etc...
-
-            if (skill != null)
-            {
-                // baseDamage += skill.Damage / 4;  it's a bcard need a skillbcardload
-                // elementalDamage += skill.ElementalDamage / 4;  it's a bcard need a skillbcardload
-            }
+            baseDamage += Morale - playerMorale;
 
             switch (mainUpgrade)
             {
@@ -570,7 +575,10 @@ namespace OpenNos.GameObject
 
             #region Elementary Damage
 
-            int bonusrez = targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0] - targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllDecreased, false)[0];
+            int elementalDamage = GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllIncreased)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllDecreased)[0];
+
+            int bonusrez = targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllIncreased, false)[0] 
+                         - targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.AllDecreased, false)[0];
 
             #region Calculate Elemental Boost + Rate
 
@@ -584,6 +592,7 @@ namespace OpenNos.GameObject
                 case 1:
                     bonusrez += targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.FireIncreased, false)[0]
                               - targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.FireDecreased, false)[0];
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireIncreased)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireDecreased)[0];
                     playerRessistance = targetCharacter.FireResistance;
                     switch (targetCharacter.Element)
                     {
@@ -610,6 +619,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 2:
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.WaterIncreased)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.WaterDecreased)[0];
                     bonusrez += targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.WaterIncreased, false)[0]
                               - targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.WaterDecreased, false)[0];
                     playerRessistance = targetCharacter.WaterResistance;
@@ -638,6 +648,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 3:
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.LightIncreased)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.LightDecreased)[0];
                     bonusrez += targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.LightIncreased, false)[0]
                               - targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.LightDecreased, false)[0];
                     playerRessistance = targetCharacter.LightResistance;
@@ -666,6 +677,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 4:
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.DarkIncreased)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.DarkDecreased)[0];
                     bonusrez += targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.DarkIncreased, false)[0]
                               - targetCharacter.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.DarkDecreased, false)[0];
                     playerRessistance = targetCharacter.DarkResistance;
@@ -746,6 +758,8 @@ namespace OpenNos.GameObject
                 }
             }
 
+            SkillBcards.Clear();
+            
             #endregion
 
             #region Total Damage
@@ -1229,6 +1243,86 @@ namespace OpenNos.GameObject
                 RemoveTarget();
                 Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(characterInRange.CharacterId); });
             }
+        }
+
+        public void AddBuff(Buff indicator)
+        {
+            if (indicator?.Card == null)
+            {
+                return;
+            }
+            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            indicator.RemainingTime = indicator.Card.Duration;
+            indicator.Start = DateTime.Now;
+            Buff.Add(indicator);
+            indicator.Card.BCards.ForEach(c => c.ApplyBCards(this));
+            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>{ RemoveBuff(indicator.Card.cardId); });
+        }
+
+        private void RemoveBuff(int id)
+        {
+            Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
+            if (indicator == null || indicator.Start.AddSeconds(indicator.RemainingTime / 10) > DateTime.Now.AddSeconds(-2))
+            {
+                return;
+            }
+            if (Buff.Contains(indicator))
+            {
+                Buff = Buff.Where(s => s.Card.CardId != id);
+            }
+        }
+
+        public int[] GetBuff(CardType type, byte subtype, bool affectingOpposite = false)
+        {
+            int value1 = 0;
+            int value2 = 0;
+
+            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+            {
+                if (entry.IsLevelScaled)
+                {
+                    if (entry.IsLevelDivided)
+                    {
+                        value1 += Level / entry.FirstData;
+                    }
+                    else
+                    {
+                        value1 += entry.FirstData * Level;
+                    }
+                }
+                else
+                {
+                    value1 += entry.FirstData;
+                }
+                value2 += entry.SecondData;
+            }
+
+            foreach (Buff buff in Buff)
+            {
+                foreach (BCard entry in buff.Card.BCards.Where(s =>
+                    s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
+                    (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
+                {
+                    if (entry.IsLevelScaled)
+                    {
+                        if (entry.IsLevelDivided)
+                        {
+                            value1 += buff.Level / entry.FirstData;
+                        }
+                        else
+                        {
+                            value1 += entry.FirstData * buff.Level;
+                        }
+                    }
+                    else
+                    {
+                        value1 += entry.FirstData;
+                    }
+                    value2 += entry.SecondData;
+                }
+            }
+
+            return new[] { value1, value2 };
         }
 
         #endregion
