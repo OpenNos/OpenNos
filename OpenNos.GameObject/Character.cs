@@ -1153,16 +1153,16 @@ namespace OpenNos.GameObject
             int monsterDefence = 0;
             int monsterDodge = 0;
 
-            int morale = Level + GetBuff(CardType.Morale, (byte) AdditionalTypes.Morale.MoraleIncreased, false)[0];
+            int morale = Level + GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleIncreased, false)[0] - GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleDecreased, false)[0];
 
-            short mainUpgrade = (short) GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0];
+            short mainUpgrade = 0;
             int mainCritChance = 0;
             int mainCritHit = 0;
             int mainMinDmg = 0;
             int mainMaxDmg = 0;
             int mainHitRate = morale;
 
-            short secUpgrade = mainUpgrade;
+            short secUpgrade = 0;
             int secCritChance = 0;
             int secCritHit = 0;
             int secMinDmg = 0;
@@ -1176,7 +1176,7 @@ namespace OpenNos.GameObject
 
             #region Get Weapon Stats
 
-            WearableInstance weapon = Inventory.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.MainWeapon, InventoryType.Wear);
+            WearableInstance weapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
             if (weapon != null)
             {
                 mainUpgrade += weapon.Upgrade;
@@ -1188,7 +1188,7 @@ namespace OpenNos.GameObject
             mainCritChance += HitCriticalRate;
             mainCritHit += HitCritical;
 
-            WearableInstance weapon2 = Inventory.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.SecondaryWeapon, InventoryType.Wear);
+            WearableInstance weapon2 = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
             if (weapon2 != null)
             {
                 secUpgrade += weapon2.Upgrade;
@@ -1208,118 +1208,15 @@ namespace OpenNos.GameObject
 
             int boost, boostpercentage;
 
+            boost = GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.AllAttacksIncreased, false)[0]
+                    - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.AllAttacksDecreased, false)[0];
+
+            boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased, false)[0]
+                              - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageDecreased, false)[0];
+
             switch (skill.Type)
             {
                 case 0:
-                    monsterDefence = monsterToAttack.Monster.CloseDefence;
-                    monsterDodge = (int) (monsterToAttack.Monster.DefenceDodge * 0.95);
-                    if (Class == ClassType.Archer)
-                    {
-                        mainCritHit = secCritHit;
-                        mainCritChance = secCritChance;
-                        mainHitRate = secHitRate;
-                        mainMaxDmg = secMaxDmg;
-                        mainMinDmg = secMinDmg;
-                        mainUpgrade = secUpgrade;
-                    }
-                    boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
-                            + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MeleeIncreased, false)[0];
-                    boostpercentage = GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0]
-                                      + GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0];
-                    mainMinDmg += boost;
-                    mainMaxDmg += boost;
-                    mainMinDmg = (int) (mainMinDmg * (1 + boostpercentage / 100D));
-                    mainMaxDmg = (int) (mainMaxDmg * (1 + boostpercentage / 100D));
-                    break;
-
-                case 1:
-                    monsterDefence = monsterToAttack.Monster.DistanceDefence;
-                    monsterDodge = (int) (monsterToAttack.Monster.DistanceDefenceDodge * 0.95);
-                    if (Class == ClassType.Swordman || Class == ClassType.Adventurer || Class == ClassType.Magician)
-                    {
-                        mainCritHit = secCritHit;
-                        mainCritChance = secCritChance;
-                        mainHitRate = secHitRate;
-                        mainMaxDmg = secMaxDmg;
-                        mainMinDmg = secMinDmg;
-                        mainUpgrade = secUpgrade;
-                    }
-                    boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
-                            + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.RangedIncreased, false)[0];
-                    boostpercentage = GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0]
-                                      + GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0];
-                    mainMinDmg += boost;
-                    mainMaxDmg += boost;
-                    mainMinDmg = (int) (mainMinDmg * (1 + boostpercentage / 100D));
-                    mainMaxDmg = (int) (mainMaxDmg * (1 + boostpercentage / 100D));
-                    break;
-
-                case 2:
-                    monsterDefence = monsterToAttack.Monster.MagicDefence;
-                    boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
-                            + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MagicalIncreased, false)[0];
-                    boostpercentage = GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0]
-                                      + GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0];
-                    mainMinDmg += boost;
-                    mainMaxDmg += boost;
-                    mainMinDmg = (int) (mainMinDmg * (1 + boostpercentage / 100D));
-                    mainMaxDmg = (int) (mainMaxDmg * (1 + boostpercentage / 100D));
-                    break;
-
-                case 3:
-                    switch (Class)
-                    {
-                        case ClassType.Swordman:
-                            monsterDefence = monsterToAttack.Monster.CloseDefence;
-                            boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
-                                    + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MeleeIncreased, false)[0];
-                            boostpercentage = GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0]
-                                              + GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0];
-                            mainMinDmg += boost;
-                            mainMaxDmg += boost;
-                            mainMinDmg = (int) (mainMinDmg * (1 + boostpercentage / 100D));
-                            mainMaxDmg = (int) (mainMaxDmg * (1 + boostpercentage / 100D));
-                            break;
-
-                        case ClassType.Archer:
-                            monsterDefence = monsterToAttack.Monster.DistanceDefence;
-                            boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
-                                    + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.RangedIncreased, false)[0];
-                            boostpercentage = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
-                                              + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.RangedDecreased, false)[0];
-                            mainMinDmg += boost;
-                            mainMaxDmg += boost;
-                            mainMinDmg = (int) (mainMinDmg * (1 + boostpercentage / 100D));
-                            mainMaxDmg = (int) (mainMaxDmg * (1 + boostpercentage / 100D));
-                            break;
-
-                        case ClassType.Magician:
-                            monsterDefence = monsterToAttack.Monster.MagicDefence;
-                            boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
-                                    + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MagicalIncreased, false)[0];
-                            boostpercentage = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
-                                              + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MagicalIncreased, false)[0];
-                            mainMinDmg += boost;
-                            mainMaxDmg += boost;
-                            mainMinDmg = (int) (mainMinDmg * (1 + boostpercentage / 100D));
-                            mainMaxDmg = (int) (mainMaxDmg * (1 + boostpercentage / 100D));
-                            break;
-
-                        case ClassType.Adventurer:
-                            monsterDefence = monsterToAttack.Monster.CloseDefence;
-                            boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
-                                    + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MeleeIncreased, false)[0];
-                            boostpercentage = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0]
-                                              + GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MeleeIncreased, false)[0];
-                            mainMinDmg += boost;
-                            mainMaxDmg += boost;
-                            mainMinDmg = (int) (mainMinDmg * (1 + boostpercentage / 100D));
-                            mainMaxDmg = (int) (mainMaxDmg * (1 + boostpercentage / 100D));
-                            break;
-                    }
-                    break;
-
-                case 5:
                     monsterDefence = monsterToAttack.Monster.CloseDefence;
                     monsterDodge = monsterToAttack.Monster.DefenceDodge;
                     if (Class == ClassType.Archer)
@@ -1331,27 +1228,159 @@ namespace OpenNos.GameObject
                         mainMinDmg = secMinDmg;
                         mainUpgrade = secUpgrade;
                     }
-                    if (Class == ClassType.Magician)
+
+                    boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksIncreased, false)[0]
+                            - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksDecreased, false)[0];
+                    boostpercentage += GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0]
+                                      - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, false)[0];
+
+                    mainMinDmg += boost;
+                    mainMaxDmg += boost;
+                    mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                    mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
+                    break;
+
+                case 1:
+                    monsterDefence = monsterToAttack.Monster.DistanceDefence;
+                    monsterDodge = monsterToAttack.Monster.DistanceDefenceDodge;
+                    if (Class == ClassType.Swordman || Class == ClassType.Adventurer || Class == ClassType.Magician)
                     {
-                        boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0] +
-                                GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MagicalIncreased, false)[0];
-                        boostpercentage = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0] +
-                                          GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MagicalIncreased, false)[0];
+                        mainCritHit = secCritHit;
+                        mainCritChance = secCritChance;
+                        mainHitRate = secHitRate;
+                        mainMaxDmg = secMaxDmg;
+                        mainMinDmg = secMinDmg;
+                        mainUpgrade = secUpgrade;
+                    }
+
+                    boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksIncreased, false)[0]
+                            - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksDecreased, false)[0];
+                    boostpercentage += GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, false)[0]
+                                      - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedDecreased, false)[0];
+
+                    mainMinDmg += boost;
+                    mainMaxDmg += boost;
+                    mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                    mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
+                    break;
+
+                case 2:
+                    monsterDefence = monsterToAttack.Monster.MagicDefence;
+
+                    boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksIncreased, false)[0]
+                            - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksDecreased, false)[0];
+                    boostpercentage += GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, false)[0]
+                                      - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalDecreased, false)[0];
+
+                    mainMinDmg += boost;
+                    mainMaxDmg += boost;
+                    mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                    mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
+                    break;
+
+                case 3:
+                    switch (Class)
+                    {
+                        case ClassType.Swordman:
+                            monsterDefence = monsterToAttack.Monster.CloseDefence;
+
+                            boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksIncreased, false)[0]
+                                    - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksDecreased, false)[0];
+                            boostpercentage += GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0]
+                                              - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, false)[0];
+
+                            mainMinDmg += boost;
+                            mainMaxDmg += boost;
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
+                            break;
+
+                        case ClassType.Archer:
+                            monsterDefence = monsterToAttack.Monster.DistanceDefence;
+
+                            boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksIncreased, false)[0]
+                                    - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksDecreased, false)[0];
+                            boostpercentage += GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, false)[0]
+                                              - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedDecreased, false)[0];
+
+                            mainMinDmg += boost;
+                            mainMaxDmg += boost;
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
+                            break;
+
+                        case ClassType.Magician:
+                            monsterDefence = monsterToAttack.Monster.MagicDefence;
+
+                            boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksIncreased, false)[0]
+                                    - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksDecreased, false)[0];
+                            boostpercentage += GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, false)[0]
+                                              - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalDecreased, false)[0];
+
+                            mainMinDmg += boost;
+                            mainMaxDmg += boost;
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
+                            break;
+
+                        case ClassType.Adventurer:
+                            monsterDefence = monsterToAttack.Monster.CloseDefence;
+
+                            boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksIncreased, false)[0]
+                                    - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksDecreased, false)[0];
+                            boostpercentage += GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0]
+                                              - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, false)[0];
+
+                            mainMinDmg += boost;
+                            mainMaxDmg += boost;
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
+                            break;
+                    }
+                    break;
+
+                case 5:
+                    if (Class == ClassType.Archer)
+                    {
+                        monsterDefence = monsterToAttack.Monster.DistanceDefence;
+
+                        boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksIncreased, false)[0]
+                                - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksDecreased, false)[0];
+                        boostpercentage += GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedIncreased, false)[0]
+                                          - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.RangedDecreased, false)[0];
+
                         mainMinDmg += boost;
                         mainMaxDmg += boost;
-                        mainMinDmg = (int) (mainMinDmg * (1 + boostpercentage / 100D));
-                        mainMaxDmg = (int) (mainMaxDmg * (1 + boostpercentage / 100D));
+                        mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                        mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
+                    }
+                    if (Class == ClassType.Magician)
+                    {
+                        monsterDefence = monsterToAttack.Monster.DistanceDefence;
+
+                        boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksIncreased, false)[0]
+                                - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksDecreased, false)[0];
+                        boostpercentage += GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalIncreased, false)[0]
+                                          - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MagicalDecreased, false)[0];
+
+                        mainMinDmg += boost;
+                        mainMaxDmg += boost;
+                        mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                        mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     }
                     else
                     {
-                        boost = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0] +
-                                GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MeleeIncreased, false)[0];
-                        boostpercentage = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0] +
-                                          GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.MeleeIncreased, false)[0];
+                        monsterDefence = monsterToAttack.Monster.CloseDefence;
+
+                        boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksIncreased, false)[0]
+                                - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksDecreased, false)[0];
+                        boostpercentage += GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeIncreased, false)[0]
+                                          - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.MeleeDecreased, false)[0];
+
                         mainMinDmg += boost;
                         mainMaxDmg += boost;
-                        mainMinDmg = (int) (mainMinDmg * (1 + boostpercentage / 100D));
-                        mainMaxDmg = (int) (mainMaxDmg * (1 + boostpercentage / 100D));
+                        mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                        mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     }
                     break;
             }
@@ -1359,20 +1388,18 @@ namespace OpenNos.GameObject
 
             #region Basic Damage Data Calculation
 
-            mainCritChance += GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.DamageIncreased, false)[0];
-            mainCritChance -= GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.DamageFromCriticalDecreased, false)[0];
-            mainCritHit += GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.DamageIncreased, false)[0];
-            mainCritHit -= GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.DamageFromCriticalDecreased, false)[0];
-
             mainUpgrade -= monsterToAttack.Monster.DefenceUpgrade;
-            if (mainUpgrade < -10)
+
+
+            // Useless if we stay in Rx+0 to Rx+10
+            /*if (mainUpgrade < -10)
             {
                 mainUpgrade = -10;
             }
             else if (mainUpgrade > 10)
             {
                 mainUpgrade = 10;
-            }
+            }*/
 
             #endregion
 
@@ -1392,7 +1419,7 @@ namespace OpenNos.GameObject
                 {
                     chance = 1;
                 }
-                if (GetBuff(CardType.DodgeAndDefencePercent, (byte) AdditionalTypes.DodgeAndDefencePercent.DodgeIncreased, false)[0] != 0)
+                if (GetBuff(CardType.DodgeAndDefencePercent, (byte)AdditionalTypes.DodgeAndDefencePercent.DodgeIncreased, false)[0] != 0)
                 {
                     chance = 10;
                 }
@@ -1412,12 +1439,12 @@ namespace OpenNos.GameObject
 
             int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg, mainMaxDmg + 1);
             baseDamage += morale - monsterToAttack.Monster.Level; //Morale
+
             if (Class == ClassType.Adventurer)
             {
-                //HACK: Damage is ~10 lower in OpenNos than in official. Fix this...
                 baseDamage += 20;
             }
-            int elementalDamage = GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0];
+
             switch (mainUpgrade)
             {
                 case -10:
@@ -1425,97 +1452,100 @@ namespace OpenNos.GameObject
                     break;
 
                 case -9:
-                    monsterDefence += (int) (monsterDefence * 1.2);
+                    monsterDefence += (int)(monsterDefence * 1.2);
                     break;
 
                 case -8:
-                    monsterDefence += (int) (monsterDefence * 0.9);
+                    monsterDefence += (int)(monsterDefence * 0.9);
                     break;
 
                 case -7:
-                    monsterDefence += (int) (monsterDefence * 0.65);
+                    monsterDefence += (int)(monsterDefence * 0.65);
                     break;
 
                 case -6:
-                    monsterDefence += (int) (monsterDefence * 0.54);
+                    monsterDefence += (int)(monsterDefence * 0.54);
                     break;
 
                 case -5:
-                    monsterDefence += (int) (monsterDefence * 0.43);
+                    monsterDefence += (int)(monsterDefence * 0.43);
                     break;
 
                 case -4:
-                    monsterDefence += (int) (monsterDefence * 0.32);
+                    monsterDefence += (int)(monsterDefence * 0.32);
                     break;
 
                 case -3:
-                    monsterDefence += (int) (monsterDefence * 0.22);
+                    monsterDefence += (int)(monsterDefence * 0.22);
                     break;
 
                 case -2:
-                    monsterDefence += (int) (monsterDefence * 0.15);
+                    monsterDefence += (int)(monsterDefence * 0.15);
                     break;
 
                 case -1:
-                    monsterDefence += (int) (monsterDefence * 0.1);
+                    monsterDefence += (int)(monsterDefence * 0.1);
                     break;
 
                 case 0:
                     break;
 
                 case 1:
-                    baseDamage += (int) (baseDamage * 0.1);
+                    baseDamage += (int)(baseDamage * 0.1);
                     break;
 
                 case 2:
-                    baseDamage += (int) (baseDamage * 0.15);
+                    baseDamage += (int)(baseDamage * 0.15);
                     break;
 
                 case 3:
-                    baseDamage += (int) (baseDamage * 0.22);
+                    baseDamage += (int)(baseDamage * 0.22);
                     break;
 
                 case 4:
-                    baseDamage += (int) (baseDamage * 0.32);
+                    baseDamage += (int)(baseDamage * 0.32);
                     break;
 
                 case 5:
-                    baseDamage += (int) (baseDamage * 0.43);
+                    baseDamage += (int)(baseDamage * 0.43);
                     break;
 
                 case 6:
-                    baseDamage += (int) (baseDamage * 0.54);
+                    baseDamage += (int)(baseDamage * 0.54);
                     break;
 
                 case 7:
-                    baseDamage += (int) (baseDamage * 0.65);
+                    baseDamage += (int)(baseDamage * 0.65);
                     break;
 
                 case 8:
-                    baseDamage += (int) (baseDamage * 0.9);
+                    baseDamage += (int)(baseDamage * 0.9);
                     break;
 
                 case 9:
-                    baseDamage += (int) (baseDamage * 1.2);
+                    baseDamage += (int)(baseDamage * 1.2);
                     break;
 
                 case 10:
                     baseDamage += baseDamage * 2;
                     break;
 
-                // sush don't tell ciapa
-                default:
-                    if (mainUpgrade > 10)
-                    {
-                        baseDamage += baseDamage * (mainUpgrade / 5);
-                    }
-                    break;
+                    // sush don't tell ciapa
+                    /*default:
+                        if (mainUpgrade > 10)
+                        {
+                            baseDamage += baseDamage * (mainUpgrade / 5);
+                        }
+                        break;*/
             }
+
+            baseDamage -= monsterDefence;
+
             if (skill.Type == 1)
             {
-                if (Map.GetDistance(new MapCell {X = PositionX, Y = PositionY}, new MapCell {X = monsterToAttack.MapX, Y = monsterToAttack.MapY}) < 4)
+                if (Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) < 4)
                 {
-                    baseDamage = (int) (baseDamage * 0.85);
+                    baseDamage = (int)(baseDamage * 0.85);
                 }
             }
 
@@ -1527,15 +1557,17 @@ namespace OpenNos.GameObject
 
             double elementalBoost = 0;
             short monsterResistance = 0;
-            elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllIncreased, false)[0];
+            int elementalDamage = GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllIncreased, false)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllDecreased, false)[0];
+
+            // "GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.FireIncreased," is only use for monster, not for player
+
             switch (Element)
             {
                 case 0:
                     break;
 
                 case 1:
-                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.FireIncreased, false)[0];
-                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireIncreased, false)[0];
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireIncreased, false)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireDecreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.FireResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1562,8 +1594,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 2:
-                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.WaterIncreased, false)[0];
-                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.WaterIncreased, false)[0];
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.WaterIncreased, false)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.WaterDecreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.WaterResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1590,8 +1621,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 3:
-                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.LightIncreased, false)[0];
-                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.LightIncreased, false)[0];
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.LightIncreased, false)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.LightDecreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.LightResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1618,8 +1648,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 4:
-                    elementalDamage += GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.DarkIncreased, false)[0];
-                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.DarkIncreased, false)[0];
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.DarkIncreased, false)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.DarkDecreased, false)[0];
                     monsterResistance = monsterToAttack.Monster.DarkResistance;
                     switch (monsterToAttack.Monster.Element)
                     {
@@ -1680,52 +1709,55 @@ namespace OpenNos.GameObject
                 elementalBoost = 0;
             }
 
-            elementalDamage = (int) ((elementalDamage + (elementalDamage + baseDamage) * ((ElementRate + ElementRateSP) / 100D)) * (1 + elementalBoost));
-            elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
+            elementalDamage = (int)(elementalDamage + ((baseDamage + 100) * ((ElementRate + ElementRateSP) / 100D)));
+            elementalDamage = (int)(elementalDamage / 100D * (100 - monsterResistance) * elementalBoost);
 
             #endregion
 
             #region Critical Damage
 
-            baseDamage -= monsterDefence;
-            if (GetBuff(CardType.Critical, (byte) AdditionalTypes.Critical.DamageFromCriticalDecreased, false)[0] == 0)
+            mainCritChance += GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.InflictingIncreased, false)[0]
+                  - GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.InflictingReduced, false)[0];
+
+            mainCritHit += GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageIncreased, false)[0]
+                          - GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageIncreasedInflictingReduced, false)[0];
+
+            if (ServerManager.Instance.RandomNumber() <= mainCritChance)
             {
-                if (ServerManager.Instance.RandomNumber() <= mainCritChance || GetBuff(CardType.Damage, (byte) AdditionalTypes.Damage.DamageIncreased, false)[0] != 0)
+                if (skill.Type == 2)
                 {
-                    if (skill.Type == 2)
+                }
+                else if (skill.Type == 3 && Class != ClassType.Magician)
+                {
+                    double multiplier = mainCritHit / 100D;
+                    if (multiplier > 3)
                     {
+                        multiplier = 3;
                     }
-                    else if (skill.Type == 3 && Class != ClassType.Magician)
+                    baseDamage += (int)(baseDamage * multiplier);
+                    hitmode = 3;
+                }
+                else
+                {
+                    double multiplier = mainCritHit / 100D;
+                    if (multiplier > 3)
                     {
-                        double multiplier = mainCritHit / 100D;
-                        if (multiplier > 3)
-                        {
-                            multiplier = 3;
-                        }
-                        baseDamage += (int) (baseDamage * multiplier);
-                        hitmode = 3;
+                        multiplier = 3;
                     }
-                    else
-                    {
-                        double multiplier = mainCritHit / 100D;
-                        if (multiplier > 3)
-                        {
-                            multiplier = 3;
-                        }
-                        baseDamage += (int) (baseDamage * multiplier);
-                        hitmode = 3;
-                    }
+                    baseDamage += (int)(baseDamage * multiplier);
+                    hitmode = 3;
                 }
             }
 
+
             #endregion
+            baseDamage *= 1 + (int)(GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased, false)[0] / 100D);
 
-            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.AllAttacksIncreased, false)[0];
-            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksIncreased, false)[0];
-            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksIncreased, false)[0];
-            baseDamage += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksIncreased, false)[0];
-            baseDamage *= 1 + (int) (GetBuff(CardType.Item, (byte) AdditionalTypes.Item.AttackIncreased, false)[0] / 100D);
-
+            // ItemBonus with x% of increase damage by y%
+            if (GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[0] > ServerManager.Instance.RandomNumber())
+            {
+                baseDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, false)[1];
+            }
 
             #region Soft-Damage
 
@@ -1734,6 +1766,7 @@ namespace OpenNos.GameObject
             #region Total Damage
 
             int totalDamage = baseDamage + elementalDamage;
+
             if (totalDamage < 5)
             {
                 totalDamage = ServerManager.Instance.RandomNumber(1, 6);
@@ -1784,7 +1817,7 @@ namespace OpenNos.GameObject
                 {
                     continue;
                 }
-                int distance = Map.GetDistance(new MapCell {X = monsterToAttack.MapX, Y = monsterToAttack.MapY}, new MapCell {X = session.Character.PositionX, Y = session.Character.PositionY});
+                int distance = Map.GetDistance(new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }, new MapCell { X = session.Character.PositionX, Y = session.Character.PositionY });
                 if (distance >= nearestDistance)
                 {
                     continue;
@@ -1796,7 +1829,7 @@ namespace OpenNos.GameObject
 
             #region Onyx Wings
 
-            int[] onyxBuff = GetBuff(CardType.StealBuff, (byte) AdditionalTypes.StealBuff.ChanceSummonOnyxDragon, false);
+            int[] onyxBuff = GetBuff(CardType.StealBuff, (byte)AdditionalTypes.StealBuff.ChanceSummonOnyxDragon, false);
             if (onyxBuff[0] > ServerManager.Instance.RandomNumber())
             {
                 onyxEffect = true;
@@ -5687,7 +5720,7 @@ namespace OpenNos.GameObject
         private void RemoveBuff(int id)
         {
             Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
-            if (indicator == null)
+            if (indicator == null || indicator.Start.AddSeconds(indicator.RemainingTime / 10) > DateTime.Now.AddSeconds(-2))
             {
                 return;
             }
