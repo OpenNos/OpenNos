@@ -1256,7 +1256,7 @@ namespace OpenNos.GameObject
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(this));
-            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>{ RemoveBuff(indicator.Card.cardId); });
+            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>{ RemoveBuff(indicator.Card.CardId); });
         }
 
         private void RemoveBuff(int id)
@@ -1283,11 +1283,11 @@ namespace OpenNos.GameObject
                 {
                     if (entry.IsLevelDivided)
                     {
-                        value1 += Level / entry.FirstData;
+                        value1 += Monster.Level / entry.FirstData;
                     }
                     else
                     {
-                        value1 += entry.FirstData * Level;
+                        value1 += entry.FirstData * Monster.Level;
                     }
                 }
                 else
