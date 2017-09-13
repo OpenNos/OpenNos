@@ -43,6 +43,12 @@ namespace OpenNos.GameObject
                     }
                     else if (session.GetType() == typeof(MapMonster))
                     {
+                        if (ServerManager.Instance.RandomNumber() < FirstData)
+                        {
+                            MapMonster monster = session as MapMonster;
+                            // TO DO : 1 --> Character Lvl
+                            monster?.AddBuff(new Buff(SecondData, 1));
+                        }
                     }
                     else if (session.GetType() == typeof(MapNpc))
                     {
