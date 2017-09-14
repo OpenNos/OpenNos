@@ -338,10 +338,10 @@ namespace OpenNos.GameObject.Helpers
                                         }
                                         foreach (Gift gift in grp.Raid?.GiftItems)
                                         {
-                                            byte rare = 0;
+                                            sbyte rare = 0;
                                             if (gift.IsRandomRare)
                                             {
-                                                rare = (byte) ServerManager.Instance.RandomNumber(0, 7);
+                                                rare = (sbyte) ServerManager.Instance.RandomNumber(-2, 7);
                                             }
                                             //TODO add random rarity for some object
                                             sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);

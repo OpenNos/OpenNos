@@ -4222,7 +4222,7 @@ namespace OpenNos.GameObject
             return Reput <= 5000000 ? 26 : 27;
         }
 
-        public void GiftAdd(short itemVNum, byte amount, byte rare = 0, short design = 0)
+        public void GiftAdd(short itemVNum, byte amount, sbyte rare = 0, short design = 0)
         {
             //TODO add the rare support
             if (Inventory == null)
@@ -4231,7 +4231,7 @@ namespace OpenNos.GameObject
             }
             lock (Inventory)
             {
-                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, CharacterId, amount);
+                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, CharacterId, amount, rare);
                 if (newItem == null)
                 {
                     return;
