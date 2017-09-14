@@ -272,7 +272,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                return MateHelper.XPData[Level - 1];
+                return MateHelper.Instance.XPData[Level - 1];
             }
             catch
             {
