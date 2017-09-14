@@ -1309,9 +1309,10 @@ namespace OpenNos.GameObject
             {
                 GenerateEff(indicator.Card.EffectId);
             }
-            if(BCardHelper.Instance.GetEffectByCardId(indicator.Card.CardId) != 0)
+            int effect = BCardHelper.Instance.GetEffectByCardId(indicator.Card.CardId);
+            if (effect != 0)
             {
-                GenerateEff(BCardHelper.Instance.GetEffectByCardId(indicator.Card.CardId));
+                GenerateEff(effect);
             }
             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>{ RemoveBuff(indicator.Card.CardId); });
         }
@@ -1385,8 +1386,7 @@ namespace OpenNos.GameObject
         // NoAttack // NoMove [...]
         public bool HasBuff(CardType type, byte subtype)
         {
-            return Buff.Any(buff => buff.Card.BCards.Any(b => b.Type == (byte) type && b.SubType == subtype && (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))) ||
-                   SkillBcards.Any(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype));
+            return Buff.Any(buff => buff.Card.BCards.Any(b => b.Type == (byte)type && b.SubType == subtype && (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)));
         }
         #endregion
     }

@@ -376,6 +376,9 @@ namespace OpenNos.GameObject
         {
             get
             {
+                if(HasBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
+                { return 0; }
+
                 byte bonusSpeed = (byte)GetBuff(CardType.Move, (byte)AdditionalTypes.Move.SetMovementNegated, false)[0];
                 if (_speed + bonusSpeed > 59)
                 {
@@ -5710,6 +5713,13 @@ namespace OpenNos.GameObject
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
+
+            int effect = BCardHelper.Instance.GetEffectByCardId(indicator.Card.CardId);
+            if (effect != 0)
+            {
+                GenerateEff(effect);
+            }
+
             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>
             {
                 RemoveBuff(indicator.Card.CardId);
@@ -6050,6 +6060,13 @@ namespace OpenNos.GameObject
             {
                 ServerManager.Instance.ArenaTeams.Add(tm);
             }
+        }
+
+        // NoAttack // NoMove [...]
+        public bool HasBuff(CardType type, byte subtype)
+        {
+            return Buff.Any(buff => buff.Card.BCards.Any(b => b.Type == (byte)type && b.SubType == subtype && (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))) ||
+                   EquipmentBCards.Any(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype));
         }
 
         #endregion
