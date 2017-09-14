@@ -1324,6 +1324,24 @@ namespace OpenNos.GameObject
             return new[] { value1, value2 };
         }
 
+        // NoAttack // NoMove [...]
+        public bool GetBoolBuff(CardType type, byte subtype)
+        {
+            foreach(Buff buff in Buff)
+            {
+                if(buff.Card.BCards.Any(b => b.Type == (byte)type && b.SubType == subtype &&
+                    (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
+                {
+                    return true;
+                }
+            }
+            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+            {
+                    return true;
+            }
+            return false;
+        }
+
         #endregion
     }
 }
