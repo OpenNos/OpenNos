@@ -876,6 +876,7 @@ namespace OpenNos.Handler
                         {
                             design = createItemPacket.Design.Value;
                         }
+                        rare = createItemPacket.Upgrade.HasValue && iteminfo.VNum == 302 ? (sbyte) createItemPacket.Upgrade.Value : rare;
                     }
                     else if (iteminfo.Type == 0)
                     {
