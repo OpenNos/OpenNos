@@ -809,7 +809,7 @@ namespace OpenNos.GameObject
 
             #region Total Damage
 
-            int totalDamage = baseDamage + elementalDamage - playerDefense;
+            int totalDamage = baseDamage + elementalDamage - (targetCharacter.HasBuff(CardType.SpecialDefence, (byte)AdditionalTypes.SpecialDefence.AllDefenceNullified) ? 0 : playerDefense);
             if (totalDamage < 5)
             {
                 totalDamage = ServerManager.Instance.RandomNumber(1, 6);

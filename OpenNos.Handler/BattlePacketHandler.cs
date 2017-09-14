@@ -143,7 +143,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.Rest();
                 }
-                if (Session.Character.IsVehicled || Session.Character.InvisibleGm)
+                if (Session.Character.IsVehicled || Session.Character.InvisibleGm || Session.Character.HasBuff(BCardType.CardType.SpecialAttack, (byte)AdditionalTypes.SpecialAttack.NoAttack))
                 {
                     Session.SendPacket("cancel 0 0");
                     return;
