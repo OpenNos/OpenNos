@@ -1543,7 +1543,7 @@ namespace OpenNos.GameObject
                         break;*/
             }
 
-            baseDamage -= monsterDefence;
+            baseDamage -= monsterToAttack.HasBuff(CardType.SpecialDefence, (byte)AdditionalTypes.SpecialDefence.AllDefenceNullified) ? 0 : monsterDefence;
 
             if (skill.Type == 1)
             {

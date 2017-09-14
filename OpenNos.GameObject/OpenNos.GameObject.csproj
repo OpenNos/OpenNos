@@ -192,6 +192,7 @@
     <Compile Include="Event\ARENA\ArenaEvent.cs" />
     <Compile Include="Event\EventWave.cs" />
     <Compile Include="Event\ICEBREAKER\IceBreaker.cs" />
+    <Compile Include="Helpers\BCardHelper.cs" />
     <Compile Include="Helpers\CellonGeneratorHelper.cs" />
     <Compile Include="Helpers\EquipmentOptionHelper.cs" />
     <Compile Include="Helpers\LogHelper.cs" />
