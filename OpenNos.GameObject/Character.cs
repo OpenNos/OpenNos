@@ -678,7 +678,7 @@ namespace OpenNos.GameObject
                 // DEBUFF HP LOSS
                 if (LastHealth.AddSeconds(2) <= DateTime.Now)
                 {
-                    int debuff = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.DecreaseHP, false)[0];
+                    int debuff = (int)(GetBuff(CardType.RecoveryAndDamagePercent, (byte)AdditionalTypes.RecoveryAndDamagePercent.HPReduced, false)[0] * (HPLoad() / 100));
                     if (Hp - debuff > 1)
                     {
                         Hp -= debuff;

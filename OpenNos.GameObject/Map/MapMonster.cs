@@ -1327,8 +1327,7 @@ namespace OpenNos.GameObject
         // NoAttack // NoMove [...]
         public bool HasBuff(CardType type, byte subtype)
         {
-            return Buff.Any(buff => buff.Card.BCards.Any(b => b.Type == (byte) type && b.SubType == subtype &&
-                                                              (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))) ||
+            return Buff.Any(buff => buff.Card.BCards.Any(b => b.Type == (byte) type && b.SubType == subtype && (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))) ||
                    SkillBcards.Any(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype));
         }
 
