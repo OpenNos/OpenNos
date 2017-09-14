@@ -365,10 +365,9 @@ namespace OpenNos.GameObject
             int Morale = Monster.Level + GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleIncreased)[0]
                        - GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleDecreased)[0];
 
-            WearableInstance playerArmor = targetCharacter.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
-            if (playerArmor != null)
+            if (targetCharacter.Armor != null)
             {
-                playerDefenseUpgrade += playerArmor.Upgrade;
+                playerDefenseUpgrade += targetCharacter.Armor.Upgrade;
             }
 
             short mainUpgrade = Monster.AttackUpgrade;
@@ -1256,7 +1255,7 @@ namespace OpenNos.GameObject
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(this));
-            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>{ RemoveBuff(indicator.Card.cardId); });
+            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>{ RemoveBuff(indicator.Card.CardId); });
         }
 
         private void RemoveBuff(int id)
@@ -1283,11 +1282,11 @@ namespace OpenNos.GameObject
                 {
                     if (entry.IsLevelDivided)
                     {
-                        value1 += Level / entry.FirstData;
+                        value1 += Monster.Level / entry.FirstData;
                     }
                     else
                     {
-                        value1 += entry.FirstData * Level;
+                        value1 += entry.FirstData * Monster.Level;
                     }
                 }
                 else

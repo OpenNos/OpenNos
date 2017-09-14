@@ -860,6 +860,18 @@ namespace OpenNos.Handler
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
                             string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int) Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                         return;
+
+                    case (byte) EquipmentType.Armor:
+                        Session.Character.Armor = null;
+                        break;
+
+                    case (byte) EquipmentType.MainWeapon:
+                        Session.Character.WeaponPrimary = null;
+                        break;
+
+                    case (byte) EquipmentType.SecondaryWeapon:
+                        Session.Character.WeaponSecondary = null;
+                        break;
                 }
                 Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != inventory.ItemVNum);
             }

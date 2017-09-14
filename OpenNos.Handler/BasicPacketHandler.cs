@@ -331,7 +331,7 @@ namespace OpenNos.Handler
                                 return;
                             }
                             Session.Character.LastMonsterId = monster.MapMonsterId;
-                            Session.SendPacket($"st 3 {ncifPacket.TargetId} {monsterinfo.Level} {monsterinfo.HeroLevel} {(int)((float)monster.CurrentHp / (float)monster.Monster.MaxHP * 100)} {(int)((float)monster.CurrentMp / (float)monster.Monster.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}{(monster.MonBuff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}.{buff.Level}"))}");
+                            Session.SendPacket($"st 3 {ncifPacket.TargetId} {monsterinfo.Level} {monsterinfo.HeroLevel} {(int)((float)monster.CurrentHp / (float)monster.Monster.MaxHP * 100)} {(int)((float)monster.CurrentMp / (float)monster.Monster.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}{(monster.Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}.{buff.Level}"))}");
                         });
                     }
                     break;

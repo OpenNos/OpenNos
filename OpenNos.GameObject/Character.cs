@@ -409,6 +409,12 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; set; }
 
+        public WearableInstance WeaponPrimary { get; set; }
+
+        public WearableInstance WeaponSecondary { get; set; }
+
+        public WearableInstance Armor { get; set; }
+
         public IDisposable Life { get; set; }
 
         #endregion
@@ -1176,10 +1182,9 @@ namespace OpenNos.GameObject
 
             #region Get Weapon Stats
 
-            WearableInstance weapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
-            if (weapon != null)
+            if (WeaponPrimary != null)
             {
-                mainUpgrade += weapon.Upgrade;
+                mainUpgrade += WeaponPrimary.Upgrade;
             }
 
             mainMinDmg += MinHit;
@@ -1188,10 +1193,9 @@ namespace OpenNos.GameObject
             mainCritChance += HitCriticalRate;
             mainCritHit += HitCritical;
 
-            WearableInstance weapon2 = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
-            if (weapon2 != null)
+            if (WeaponSecondary != null)
             {
-                secUpgrade += weapon2.Upgrade;
+                secUpgrade += WeaponSecondary.Upgrade;
             }
 
             secMinDmg += MinDistance;
@@ -2672,10 +2676,9 @@ namespace OpenNos.GameObject
 
             #region Get Weapon Stats
 
-            WearableInstance weapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
-            if (weapon != null)
+            if (WeaponPrimary != null)
             {
-                mainUpgrade += weapon.Upgrade;
+                mainUpgrade += WeaponPrimary.Upgrade;
             }
 
             mainMinDmg += MinHit;
@@ -2684,10 +2687,9 @@ namespace OpenNos.GameObject
             mainCritChance += HitCriticalRate;
             mainCritHit += HitCritical;
 
-            WearableInstance weapon2 = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
-            if (weapon2 != null)
+            if (WeaponSecondary != null)
             {
-                secUpgrade += weapon2.Upgrade;
+                secUpgrade += WeaponSecondary.Upgrade;
             }
 
             secMinDmg += MinDistance;
@@ -2696,10 +2698,9 @@ namespace OpenNos.GameObject
             secCritChance += DistanceCriticalRate;
             secCritHit += DistanceCritical;
 
-            WearableInstance targetArmor = target.Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
-            if (targetArmor != null)
+            if (target.Armor != null)
             {
-                monsterDefLevel += targetArmor.Upgrade;
+                monsterDefLevel += target.Armor.Upgrade;
             }
 
             #endregion

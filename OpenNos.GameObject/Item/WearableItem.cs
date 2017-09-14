@@ -161,6 +161,18 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment, itemToWearType, inv.Slot);
                         session.SendPacket(currentlyEquippedItem.GenerateInventoryAdd());
                         session.Character.EquipmentBCards = session.Character.EquipmentBCards.Where(o => o.ItemVNum != currentlyEquippedItem.ItemVNum);
+                        switch (currentlyEquippedItem.Slot)
+                        {
+                            case (byte) EquipmentType.Armor:
+                                session.Character.Armor = null;
+                                break;
+                            case (byte) EquipmentType.MainWeapon:
+                                session.Character.WeaponPrimary = null;
+                                break;
+                            case (byte) EquipmentType.SecondaryWeapon:
+                                session.Character.WeaponSecondary = null;
+                                break;
+                        }
                     }
                     inv.Item.BCards.ForEach(s => session.Character.EquipmentBCards.Add(s));
 
@@ -172,6 +184,18 @@ namespace OpenNos.GameObject
                             {
                                 case ItemType.Armor:
                                 case ItemType.Weapon:
+                                    switch (wearableInstance.Slot)
+                                    {
+                                        case (byte)EquipmentType.Armor:
+                                            session.Character.Armor = wearableInstance;
+                                            break;
+                                        case (byte)EquipmentType.MainWeapon:
+                                            session.Character.WeaponPrimary = wearableInstance;
+                                            break;
+                                        case (byte)EquipmentType.SecondaryWeapon:
+                                            session.Character.WeaponSecondary = wearableInstance;
+                                            break;
+                                    }
                                     EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => session.Character.EquipmentBCards.Add(s));
                                     break;
                                 case ItemType.Jewelery:
