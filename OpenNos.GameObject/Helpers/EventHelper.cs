@@ -347,6 +347,18 @@ namespace OpenNos.GameObject.Helpers
                                             sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
                                         }
                                     }
+                                    // Remove monster when raid is over
+                                    foreach(MapMonster mon in evt.MapInstance.Monsters.Where(m => !m.IsBoss))
+                                    {
+                                        mon.IsAlive = false;
+                                        mon.CurrentHp = 0;
+                                        mon.CurrentMp = 0;
+                                        mon.Death = DateTime.Now;
+                                        mon.LastMove = DateTime.Now;
+                                        mon.GenerateOut();
+                                    }
+                                    evt.MapInstance.WaveEvents.Clear();
+
                                     ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(
                                         string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
 
