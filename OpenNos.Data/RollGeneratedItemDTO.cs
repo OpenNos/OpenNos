@@ -42,6 +42,8 @@ namespace OpenNos.Data
 
         public bool IsSuperReward { get; set; }
 
+        public byte ItemGeneratedUpgrade { get; set; }
+
         #endregion
     }
 }

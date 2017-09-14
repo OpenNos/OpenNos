@@ -4192,7 +4192,7 @@ namespace OpenNos.GameObject
             return Reput <= 5000000 ? 26 : 27;
         }
 
-        public void GiftAdd(short itemVNum, byte amount, byte rare = 0, short design = 0)
+        public void GiftAdd(short itemVNum, byte amount, byte rare = 0, short design = 0, byte upgrade = 0)
         {
             //TODO add the rare support
             if (Inventory == null)
@@ -4210,7 +4210,7 @@ namespace OpenNos.GameObject
                 if (newItem.Item.ItemType == ItemType.Armor || newItem.Item.ItemType == ItemType.Weapon || newItem.Item.ItemType == ItemType.Shell)
                 {
                     ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
-                    newItem.Upgrade = newItem.Item.BasicUpgrade;
+                    newItem.Upgrade = upgrade;
                 }
                 if (newItem.Item.ItemType == ItemType.Shell)
                 {
