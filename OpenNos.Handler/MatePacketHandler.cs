@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Packets.ClientPackets;
 
 namespace OpenNos.Handler
 {
@@ -92,6 +94,56 @@ namespace OpenNos.Handler
         public void AttackCharacter(Mate attacker, NpcMonsterSkill skill, Character target)
         {
             
+        }
+
+        /// <summary>
+        /// psl packet
+        /// </summary>
+        /// <param name="pslPacket"></param>
+        public void Psl(PslPacket pslPacket)
+        {
+            Mate mate = Session.Character.Mates.FirstOrDefault(x => x.IsTeamMember && x.MateType == MateType.Partner);
+            if (mate == null)
+            {
+                return;
+            }
+            if (pslPacket.Type == 0)
+            {
+                if (mate.IsUsingSp)
+                {
+                    mate.IsUsingSp = false;
+                    Session.Character.MapInstance.Broadcast(mate.GenerateCMode(-1));
+                    Session.SendPacket(mate.GenerateCond());
+                    //dpski
+                    Session.SendPacket(mate.GenerateScPacket());
+                    Session.Character.MapInstance.Broadcast(mate.GenerateOut());
+                    Session.Character.MapInstance.Broadcast(mate.GenerateIn());
+                    Session.SendPacket(Session.Character.GeneratePinit());
+                    //psd 30
+                }
+                else
+                {
+                    Session.SendPacket("delay 5000 3 #psl^1 ");
+                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 2, mate.MateTransportId), mate.PositionX, mate.PositionY);
+                }
+            }
+            else
+            {
+                ItemInstance sp = mate.GetInventory().FirstOrDefault(s => s.Item.EquipmentSlot == EquipmentType.Sp);
+                if (sp == null)
+                {
+                    return;                    
+                }
+                mate.IsUsingSp = true;
+                Session.SendPacket(mate.GenerateCond());
+                Session.Character.MapInstance.Broadcast(mate.GenerateCMode(sp.Item.Morph));
+                //pski 1236 1238 1240
+                Session.SendPacket(mate.GenerateScPacket());
+                Session.Character.MapInstance.Broadcast(mate.GenerateOut());
+                Session.Character.MapInstance.Broadcast(mate.GenerateIn());
+                Session.SendPacket(Session.Character.GeneratePinit());
+                Session.Character.MapInstance.Broadcast(mate.GenerateEff(196));
+            }
         }
     }
 }
