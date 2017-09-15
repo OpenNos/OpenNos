@@ -336,27 +336,22 @@ namespace OpenNos.GameObject.Helpers
                                             // RAID CERTIFICATE
                                             sess.Character.GiftAdd(2320, 1);
                                         }
-                                        foreach (Gift gift in grp.Raid?.GiftItems)
+                                        else
                                         {
-                                            sbyte rare = 0;
-                                            if (gift.IsRandomRare)
+                                            foreach (Gift gift in grp.Raid?.GiftItems)
                                             {
-                                                rare = (sbyte) ServerManager.Instance.RandomNumber(-2, 7);
+                                                sbyte rare = 0;
+                                                if (gift.IsRandomRare)
+                                                {
+                                                    rare = (sbyte) ServerManager.Instance.RandomNumber(-2, 7);
+                                                }
+                                                //TODO add random rarity for some object
+                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
                                             }
-                                            //TODO add random rarity for some object
-                                            sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
                                         }
                                     }
                                     // Remove monster when raid is over
-                                    foreach(MapMonster mon in evt.MapInstance.Monsters.Where(m => !m.IsBoss))
-                                    {
-                                        mon.IsAlive = false;
-                                        mon.CurrentHp = 0;
-                                        mon.CurrentMp = 0;
-                                        mon.Death = DateTime.Now;
-                                        mon.LastMove = DateTime.Now;
-                                        mon.GenerateOut();
-                                    }
+                                    evt.MapInstance.Monsters.ForEach(e => evt.MapInstance.DespawnMonster(e.MonsterVNum));
                                     evt.MapInstance.WaveEvents.Clear();
 
                                     ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(

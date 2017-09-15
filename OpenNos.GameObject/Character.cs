@@ -376,15 +376,17 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if(HasBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
-                { return 0; }
+                if (HasBuff(CardType.Move, (byte) AdditionalTypes.Move.MovementImpossible))
+                {
+                    return 0;
+                }
 
-                byte bonusSpeed = (byte)GetBuff(CardType.Move, (byte)AdditionalTypes.Move.SetMovementNegated, false)[0];
+                byte bonusSpeed = (byte) GetBuff(CardType.Move, (byte) AdditionalTypes.Move.SetMovementNegated, false)[0];
                 if (_speed + bonusSpeed > 59)
                 {
                     return 59;
                 }
-                return (byte)(_speed + bonusSpeed);
+                return (byte) (_speed + bonusSpeed);
             }
 
             set
