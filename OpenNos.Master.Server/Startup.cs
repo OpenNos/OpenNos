@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Owin;
+﻿using Owin;
 using System.Web.Http;
 
 namespace OpenNos.Master.Server
 {
-    public class Startup
+    public abstract class Startup
     {
         // This code configures Web API. The Startup class is specified as a type
         // parameter in the WebApp.Start method.
