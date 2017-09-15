@@ -2,7 +2,7 @@
 
 namespace OpenNos.GameObject.Helpers
 {
-    public sealed class MateHelper
+    public class MateHelper
     {
         #region Members
 
