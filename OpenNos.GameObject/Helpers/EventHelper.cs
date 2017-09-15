@@ -82,6 +82,7 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
+
         public TimeSpan GetMilisecondsBeforeTime(TimeSpan time)
         {
             TimeSpan now = TimeSpan.Parse(DateTime.Now.ToString("HH:mm"));
