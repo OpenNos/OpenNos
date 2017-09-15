@@ -36,7 +36,6 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private Random _random;
         private byte _speed;
         private readonly object _syncObj = new object();
 
@@ -68,7 +67,7 @@ namespace OpenNos.GameObject
 
         public ConcurrentBag<Buff> Buff { get; internal set; }
 
-        public ConcurrentBag<BCard> SkillBcards { get; set; }
+        private ConcurrentBag<BCard> SkillBcards { get; set; }
 
         public bool CanFight
         {
@@ -3564,18 +3563,23 @@ namespace OpenNos.GameObject
                                                 {
                                                     case (byte)EquipmentType.Armor:
                                                         Armor = wearableInstance;
+                                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                     case (byte)EquipmentType.MainWeapon:
                                                         WeaponPrimary = wearableInstance;
+                                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                     case (byte)EquipmentType.SecondaryWeapon:
                                                         WeaponSecondary = wearableInstance;
+                                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                 }
-                                                EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                 break;
                                             case ItemType.Jewelery:
-                                                EquipmentOptionHelper.Instance.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                                if (wearableInstance.Slot == (short)EquipmentType.Bracelet || wearableInstance.Slot == (short)EquipmentType.Ring || wearableInstance.Slot == (short)EquipmentType.Amulet)
+                                                {
+                                                    EquipmentOptionHelper.Instance.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                                }
                                                 break;
                                         }
 
@@ -4342,7 +4346,7 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
-            _random = new Random();
+            new Random();
             ExchangeInfo = null;
             SpCooldown = 30;
             SaveX = 0;
