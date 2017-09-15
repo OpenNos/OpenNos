@@ -17,7 +17,7 @@ namespace OpenNos.Handler
             Session = session;
         }
 
-        private ClientSession Session { get; set; }
+        private ClientSession Session { get; }
 
         /// <summary>
         /// suctl packet
@@ -72,23 +72,21 @@ namespace OpenNos.Handler
             {
                 return;
             }
-                if (target.CurrentHp > 0)
+            if (target.CurrentHp > 0)
+            {
+                int dmg = 100; //TEST
+                if (skill == null)
                 {
-                    int dmg = 100; //TEST
+                    Session?.CurrentMapInstance?.Broadcast($"ct 2 {attacker.MateTransportId} 3 {target.MapMonsterId} -1 -1 0");
                     target.CurrentHp -= dmg;
                     if (target.CurrentHp <= 0)
                     {
                         target.CurrentHp = 0;
                         target.IsAlive = false;
                     }
-                    if (skill == null)
-                    {
-                        Session?.CurrentMapInstance?.Broadcast($"ct 2 {attacker.MateTransportId} 3 {target.MapMonsterId} -1 -1 0");
-
-                        Session?.CurrentMapInstance?.Broadcast(
-                            $"su 2 {attacker.MateTransportId} 3 {target.MapMonsterId} 0 12 11 200 0 0 {(target.IsAlive ? 1 : 0)} {(int) ((double) target.CurrentHp / target.Monster.MaxHP * 100)} {dmg} 0 0");
-                    }
+                    Session?.CurrentMapInstance?.Broadcast($"su 2 {attacker.MateTransportId} 3 {target.MapMonsterId} 0 12 11 200 0 0 {(target.IsAlive ? 1 : 0)} {(int) ((double) target.CurrentHp / target.Monster.MaxHP * 100)} {dmg} 0 0");
                 }
+            }
         }
 
         public void AttackCharacter(Mate attacker, NpcMonsterSkill skill, Character target)
