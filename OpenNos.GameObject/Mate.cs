@@ -63,6 +63,8 @@ namespace OpenNos.GameObject
 
         public bool IsSitting { get; set; }
 
+        public bool IsUsingSp { get; set; }
+
         public int MateTransportId { get; set; }
 
         public int MaxHp
