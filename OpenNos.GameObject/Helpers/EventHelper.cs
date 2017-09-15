@@ -338,7 +338,10 @@ namespace OpenNos.GameObject.Helpers
                                         }
                                     }
                                     // Remove monster when raid is over
-                                    evt.MapInstance.Monsters.ForEach(e => evt.MapInstance.DespawnMonster(e.MonsterVNum));
+                                    foreach (MapMonster e in evt.MapInstance.Monsters.Where(s => !s.IsBoss))
+                                    {
+                                        evt.MapInstance.DespawnMonster(e.MonsterVNum);
+                                    }
                                     evt.MapInstance.WaveEvents.Clear();
 
                                     ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(
