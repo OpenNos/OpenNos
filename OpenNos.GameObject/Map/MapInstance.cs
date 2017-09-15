@@ -267,10 +267,6 @@ namespace OpenNos.GameObject
         public List<string> GetMapItems()
         {
             List<string> packets = new List<string>();
-            Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm && !s.Character.IsVehicled).ToList().ForEach(s =>
-            {
-                s.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => packets.Add(m.GenerateIn()));
-            });
             // TODO: Parallelize getting of items of mapinstance
             Portals.ForEach(s => packets.Add(s.GenerateGp()));
             ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList().ForEach(s => packets.Add(s.GenerateWp()));

@@ -556,8 +556,15 @@ namespace OpenNos.GameObject
                 session.SendPacket(session.Character.GenerateCMap());
                 session.SendPacket(session.Character.GenerateStatChar());
                 session.SendPacket(session.Character.GeneratePairy());
-                session.SendPacket(session.Character.GeneratePinit());
                 session.SendPackets(session.Character.GeneratePst());
+                session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
+                {
+                    s.PositionX = (short) (session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
+                    s.PositionY = (short) (session.Character.PositionY + 1);
+                    session.SendPacket(s.GenerateIn());
+                });
+                session.SendPacket(session.Character.GeneratePinit());
+                session.Character.Mates.ForEach(s => session.SendPacket(s.GenerateScPacket()));
                 session.SendPacket(session.Character.GenerateAct());
                 session.SendPacket(session.Character.GenerateScpStc());
                 if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance)
@@ -622,12 +629,7 @@ namespace OpenNos.GameObject
                 }
                 if (!session.Character.InvisibleGm && session.CurrentMapInstance != null)
                 {
-                    Parallel.ForEach(session.Character.Mates.Where(m => m.IsTeamMember), mate =>
-                    {
-                        mate.PositionX = (short)(session.Character.PositionX + (mate.MateType == MateType.Partner ? -1 : 1));
-                        mate.PositionY = (short)(session.Character.PositionY + 1);
-                    });
-                    Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character != null), s =>
+                    Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character != null && s != session), s =>
                     {
                         if (session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance || session.Character.Faction == s.Character.Faction)
                         {
@@ -656,7 +658,7 @@ namespace OpenNos.GameObject
                 }
                 if (session.CurrentMapInstance != null)
                 {
-                    Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character?.InvisibleGm == false), visibleSession =>
+                    Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character?.InvisibleGm == false && s != session), visibleSession =>
                     {
                         if (session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance || session.Character.Faction == visibleSession.Character.Faction)
                         {
