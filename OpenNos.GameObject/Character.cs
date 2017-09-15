@@ -2563,7 +2563,7 @@ namespace OpenNos.GameObject
                     {
                         sp = mate.GetInventory().FirstOrDefault(s => s.Item.EquipmentSlot == EquipmentType.Sp);
                     }
-                    str += $" 2|{mate.MateTransportId}|{(int)mate.MateType}|{mate.Level}|{(mate.IsUsingSp && sp != null ? $"{sp.Item.Morph}" : mate.Name.Replace(' ', '^'))}|-1|{mate.Monster.NpcMonsterVNum}|0";
+                    str += $" 2|{mate.MateTransportId}|{(int)mate.MateType}|{mate.Level}|{(mate.IsUsingSp && sp != null ? "SP_NAME" : mate.Name.Replace(' ', '^'))}|-1|{(mate.IsUsingSp && sp != null ? sp.Item.Morph : mate.Monster.NpcMonsterVNum)}|0";
                 }
             }
             if (grp == null)
