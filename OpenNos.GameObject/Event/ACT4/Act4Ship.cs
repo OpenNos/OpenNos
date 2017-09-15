@@ -23,61 +23,48 @@ using System.Threading;
 
 namespace OpenNos.GameObject.Event
 {
-    public class Act4Ship
+    public class Act4ShipTask
     {
         #region Methods
 
-        public static void GenerateAct4Ship(FactionType faction)
-        {
-            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(145)), EventActionType.NPCSEFFECTCHANGESTATE,
-                true));
-            Act4ShipThread shipThread = new Act4ShipThread();
-            DateTime now = DateTime.Now;
-            DateTime result = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0);
-
-            result = result.AddMinutes((now.Minute / 5 + 1) * 5);
-
-            Observable.Timer(result - now).Subscribe(x => shipThread.Run(faction));
-        }
-
-        #endregion
-    }
-
-    public class Act4ShipThread
-    {
-        #region Methods
-
-        public void Run(FactionType faction)
+        public static void Run(FactionType faction)
         {
             MapInstance map = faction == FactionType.Angel ? ServerManager.Instance.Act4ShipAngel : ServerManager.Instance.Act4ShipDemon;
-            if (map == null)
+            OpenShip();
+            Observable.Timer(TimeSpan.FromMinutes(1)).Subscribe(o =>
             {
-                return;
-            }
-            for (; map != null;)
-            {
-                OpenShip();
-                Thread.Sleep(60 * 1000);
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SHIP_MINUTES"), 4), 0));
-                Thread.Sleep(60 * 1000);
+            });
+            Observable.Timer(TimeSpan.FromMinutes(2)).Subscribe(o =>
+            {
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SHIP_MINUTES"), 3), 0));
-                Thread.Sleep(60 * 1000);
+            });
+            Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(o =>
+            {
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SHIP_MINUTES"), 2), 0));
-                Thread.Sleep(60 * 1000);
+            });
+            Observable.Timer(TimeSpan.FromMinutes(4)).Subscribe(o =>
+            {
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHIP_MINUTE"), 0));
                 LockShip();
-                Thread.Sleep(30 * 1000);
+            });
+            Observable.Timer(TimeSpan.FromMinutes(4) + TimeSpan.FromSeconds(30)).Subscribe(o =>
+            {
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SHIP_SECONDS"), 30), 0));
-                Thread.Sleep(20 * 1000);
+            });
+            Observable.Timer(TimeSpan.FromMinutes(4) + TimeSpan.FromSeconds(30)).Subscribe(o =>
+            {
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SHIP_SECONDS"), 10), 0));
-                Thread.Sleep(10 * 1000);
+            });
+            Observable.Timer(TimeSpan.FromMinutes(5)).Subscribe(o =>
+            {
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHIP_SETOFF"), 0));
                 List<ClientSession> sessions = map.Sessions.Where(s => s?.Character != null).ToList();
-                Observable.Timer(TimeSpan.FromSeconds(0)).Subscribe(x => TeleportPlayers(sessions));
-            }
+                TeleportPlayers(sessions);
+            });
         }
 
-        private void TeleportPlayers(List<ClientSession> sessions)
+        private static void TeleportPlayers(IEnumerable<ClientSession> sessions)
         {
             foreach (ClientSession s in sessions)
             {
@@ -106,12 +93,12 @@ namespace OpenNos.GameObject.Event
             }
         }
 
-        private void LockShip()
+        private static void LockShip()
         {
             EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(145)), EventActionType.NPCSEFFECTCHANGESTATE, true));
         }
 
-        private void OpenShip()
+        private static void OpenShip()
         {
             EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(145)), EventActionType.NPCSEFFECTCHANGESTATE, false));
         }

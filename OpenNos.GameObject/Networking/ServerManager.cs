@@ -29,6 +29,7 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenNos.GameObject.Event;
 
 namespace OpenNos.GameObject
 {
@@ -1657,6 +1658,8 @@ namespace OpenNos.GameObject
 
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { Act4Process(); });
 
+            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { Act4ShipProcess(); });
+
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { GroupProcess(); });
 
             Observable.Interval(TimeSpan.FromMinutes(1)).Subscribe(x => { Act4FlowerProcess(); });
@@ -1687,6 +1690,12 @@ namespace OpenNos.GameObject
             CommunicationServiceClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
             CommunicationServiceClient.Instance.ShutdownEvent += OnShutdown;
             _lastGroupId = 1;
+        }
+
+        private void Act4ShipProcess()
+        {
+            Act4ShipTask.Run(FactionType.Angel);
+            Act4ShipTask.Run(FactionType.Demon);
         }
 
         private void Act4FlowerProcess()

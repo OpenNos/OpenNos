@@ -591,21 +591,45 @@ namespace OpenNos.GameObject.Helpers
             return _hitDef[(byte) @class, level];
         }
 
+        /// <summary>
+        /// Defence rate base stats for Character by Class & Level
+        /// </summary>
+        /// <param name="class"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
         internal int DefenceRate(ClassType @class, byte level)
         {
             return _hitDodge[(byte) @class, level];
         }
 
+        /// <summary>
+        /// Distance Defence base stats for Character by Class & Level
+        /// </summary>
+        /// <param name="class"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
         internal int DistanceDefence(ClassType @class, byte level)
         {
             return _distDef[(byte) @class, level];
         }
 
+        /// <summary>
+        /// Distance Defence Rate base stats for Character by Class & Level
+        /// </summary>
+        /// <param name="class"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
         internal int DistanceDefenceRate(ClassType @class, byte level)
         {
             return _distDodge[(byte) @class, level];
         }
 
+        /// <summary>
+        /// Distance Rate base stats for Character by Class & Level
+        /// </summary>
+        /// <param name="class"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
         internal int DistanceRate(ClassType @class, byte level)
         {
             return _distRate[(byte) @class, level];

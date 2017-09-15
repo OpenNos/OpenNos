@@ -256,10 +256,6 @@ namespace OpenNos.Handler
                     target.Character.Rest();
                 }
                 int hitmode = 0;
-
-                // calculate damage
-                //int damage = hitRequest.Session.Character.GenerateDamage(this, hitRequest.Skill, ref hitmode);
-
                 bool onyxWings = false;
                 int damage = hitRequest.Session.Character.GeneratePVPDamage(target.Character, hitRequest.Skill, ref hitmode, ref onyxWings);
 
@@ -293,7 +289,7 @@ namespace OpenNos.Handler
                     onyx.Initialize(target.CurrentMapInstance);
                     target.CurrentMapInstance.AddMonster(onyx);
                     target.CurrentMapInstance.Broadcast(onyx.GenerateIn());
-                    target.Character.Hp -= (damage / 2);
+                    target.Character.Hp -= damage / 2;
                     HitRequest request = hitRequest;
                     Observable.Timer(TimeSpan.FromMilliseconds(350)).Subscribe(o =>
                     {

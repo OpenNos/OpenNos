@@ -940,6 +940,10 @@ namespace OpenNos.Handler
             Session.SendPacket(previousInventory != null ? (reposPacket.PartnerBackpack ? previousInventory.GeneratePStash() : previousInventory.GenerateStash()) : (reposPacket.PartnerBackpack ? UserInterfaceHelper.Instance.GeneratePStashRemove(reposPacket.OldSlot) : UserInterfaceHelper.Instance.GenerateStashRemove(reposPacket.OldSlot)));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="packet"></param>
         [Packet("sortopen")]
         public void SortOpen(string packet)
         {
