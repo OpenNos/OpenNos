@@ -5744,10 +5744,9 @@ namespace OpenNos.GameObject
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
 
-            int effect = BCardHelper.Instance.GetEffectByCardId(indicator.Card.CardId);
-            if (effect != 0)
+            if (indicator.Card.EffectId > 0)
             {
-                GenerateEff(effect);
+                GenerateEff(indicator.Card.EffectId);
             }
 
             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>

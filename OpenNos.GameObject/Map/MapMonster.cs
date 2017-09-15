@@ -1305,14 +1305,9 @@ namespace OpenNos.GameObject
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(this));
-            if(indicator.Card.EffectId != 0)
+            if (indicator.Card.EffectId > 0)
             {
                 GenerateEff(indicator.Card.EffectId);
-            }
-            int effect = BCardHelper.Instance.GetEffectByCardId(indicator.Card.CardId);
-            if (effect != 0)
-            {
-                GenerateEff(effect);
             }
             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>{ RemoveBuff(indicator.Card.CardId); });
         }

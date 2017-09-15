@@ -120,7 +120,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "EFFECT")
                     {
-                        card.EffectId = Convert.ToInt32(currentLine[3]);
+                        card.EffectId = Convert.ToInt32(currentLine[2]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "STYLE")
                     {
