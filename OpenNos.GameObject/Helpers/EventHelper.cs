@@ -26,23 +26,8 @@ using OpenNos.GameObject.CommandPackets;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class EventHelper
+    public class EventHelper : Singleton<EventHelper>
     {
-        #region Members
-
-        private static EventHelper _instance;
-
-        #endregion
-
-        #region Properties
-
-        public static EventHelper Instance
-        {
-            get { return _instance ?? (_instance = new EventHelper()); }
-        }
-
-        #endregion
-
         #region Methods
 
         public int CalculateComboPoint(int n)

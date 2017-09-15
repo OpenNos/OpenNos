@@ -2098,9 +2098,9 @@ namespace OpenNos.GameObject
             FamilyDTO fam = Family;
             fam.FamilyExperience += FXP;
             famchar.Experience += FXP;
-            if (CharacterHelper.LoadFamilyXPData(Family.FamilyLevel) <= fam.FamilyExperience)
+            if (CharacterHelper.LoadFamilyXpData(Family.FamilyLevel) <= fam.FamilyExperience)
             {
-                fam.FamilyExperience -= CharacterHelper.LoadFamilyXPData(Family.FamilyLevel);
+                fam.FamilyExperience -= CharacterHelper.LoadFamilyXpData(Family.FamilyLevel);
                 fam.FamilyLevel++;
                 Family.InsertFamilyLog(FamilyLogType.FamilyLevelUp, level: fam.FamilyLevel);
                 CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
@@ -2186,7 +2186,7 @@ namespace OpenNos.GameObject
                 FamilyCharacter familyCharacter = Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
                 if (familyCharacter != null)
                 {
-                    return $"ginfo {Family.Name} {familyCharacter.Character.Name} {(byte)Family.FamilyHeadGender} {Family.FamilyLevel} {Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Family.FamilyLevel)} {Family.FamilyCharacters.Count} {Family.MaxSize} {(byte)FamilyCharacter.Authority} {(Family.ManagerCanInvite ? 1 : 0)} {(Family.ManagerCanNotice ? 1 : 0)} {(Family.ManagerCanShout ? 1 : 0)} {(Family.ManagerCanGetHistory ? 1 : 0)} {(byte)Family.ManagerAuthorityType} {(Family.MemberCanGetHistory ? 1 : 0)} {(byte)Family.MemberAuthorityType} {Family.FamilyMessage.Replace(' ', '^')}";
+                    return $"ginfo {Family.Name} {familyCharacter.Character.Name} {(byte)Family.FamilyHeadGender} {Family.FamilyLevel} {Family.FamilyExperience} {CharacterHelper.LoadFamilyXpData(Family.FamilyLevel)} {Family.FamilyCharacters.Count} {Family.MaxSize} {(byte)FamilyCharacter.Authority} {(Family.ManagerCanInvite ? 1 : 0)} {(Family.ManagerCanNotice ? 1 : 0)} {(Family.ManagerCanShout ? 1 : 0)} {(Family.ManagerCanGetHistory ? 1 : 0)} {(byte)Family.ManagerAuthorityType} {(Family.MemberCanGetHistory ? 1 : 0)} {(byte)Family.MemberAuthorityType} {Family.FamilyMessage.Replace(' ', '^')}";
                 }
             }
             catch
@@ -4337,7 +4337,7 @@ namespace OpenNos.GameObject
             multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumHP, false)[0] / 100D;
             multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumHP, false)[0] / 100D;
 
-            return (int)((CharacterHelper.Instance.HPData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0] + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased, false)[0]) * multiplicator);
+            return (int)((CharacterHelper.Instance.HpData[(byte)Class, Level] + hp + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased, false)[0] + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased, false)[0]) * multiplicator);
         }
 
         public override void Initialize()
@@ -4593,7 +4593,7 @@ namespace OpenNos.GameObject
             multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumMP, false)[0] / 100D;
             multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP, false)[0] / 100D;
 
-            return (int) ((CharacterHelper.Instance.MPData[(byte) Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased, false)[0] +
+            return (int) ((CharacterHelper.Instance.MpData[(byte) Class, Level] + mp + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased, false)[0] +
                            GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased, false)[0]) * multiplicator);
         }
 
@@ -5332,7 +5332,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            double t = CharacterHelper.LoadFairyXPData(fairy.ElementRate + fairy.Item.ElementRate);
+            double t = CharacterHelper.LoadFairyXpData(fairy.ElementRate + fairy.Item.ElementRate);
             while (fairy.XP >= t)
             {
                 fairy.XP -= (int)t;
@@ -5555,9 +5555,9 @@ namespace OpenNos.GameObject
             regen -= GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.HPRecoveryDecreased, false)[0];
             if (IsSitting)
             {
-                return CharacterHelper.Instance.HPHealth[(byte)Class] + regen;
+                return CharacterHelper.Instance.HpHealth[(byte)Class] + regen;
             }
-            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.Instance.HPHealthStand[(byte)Class] + regen : 0;
+            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.Instance.HpHealthStand[(byte)Class] + regen : 0;
         }
 
         private int HealthMPLoad()
@@ -5566,9 +5566,9 @@ namespace OpenNos.GameObject
             regen -= GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.MPRecoveryDecreased, false)[0];
             if (IsSitting)
             {
-                return CharacterHelper.Instance.MPHealth[(byte)Class] + regen;
+                return CharacterHelper.Instance.MpHealth[(byte)Class] + regen;
             }
-            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.Instance.MPHealthStand[(byte)Class] + regen: 0;
+            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.Instance.MpHealthStand[(byte)Class] + regen: 0;
         }
 
         private double HeroXPLoad()
@@ -5578,17 +5578,17 @@ namespace OpenNos.GameObject
 
         private double JobXPLoad()
         {
-            return Class == (byte)ClassType.Adventurer ? CharacterHelper.Instance.FirstJobXPData[JobLevel - 1] : CharacterHelper.Instance.SecondJobXPData[JobLevel - 1];
+            return Class == (byte)ClassType.Adventurer ? CharacterHelper.Instance.FirstJobXpData[JobLevel - 1] : CharacterHelper.Instance.SecondJobXpData[JobLevel - 1];
         }
 
         private double SPXPLoad()
         {
-            return SpInstance != null ? CharacterHelper.Instance.SPXPData[SpInstance.SpLevel == 0 ? 0 : SpInstance.SpLevel - 1] : 0;
+            return SpInstance != null ? CharacterHelper.Instance.SpxpData[SpInstance.SpLevel == 0 ? 0 : SpInstance.SpLevel - 1] : 0;
         }
 
         private double XPLoad()
         {
-            return CharacterHelper.Instance.XPData[Level - 1];
+            return CharacterHelper.Instance.XpData[Level - 1];
         }
 
         public string GenerateRaid(int type, bool exit)

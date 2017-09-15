@@ -3,25 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenNos.Core;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class BCardHelper
+    public class BCardHelper : Singleton<BCardHelper>
     {
-        #region Singleton
-
-        private static BCardHelper _instance;
-
-        public static BCardHelper Instance
+        public int GetEffectByCardId(int cardId)
         {
-            get { return _instance ?? (_instance = new BCardHelper()); }
-        }
-
-        #endregion
-
-        public int GetEffectByCardId(int CardId)
-        {
-            switch (CardId)
+            switch (cardId)
             {
                 // Saignement // Brulure
                 case 1:

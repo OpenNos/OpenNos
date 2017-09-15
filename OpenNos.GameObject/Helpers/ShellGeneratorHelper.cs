@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenNos.Core;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject.Helpers
 {
     //TODO REVIEW MY RUSHED CODE
-    public class ShellGeneratorHelper
+    public class ShellGeneratorHelper : Singleton<ShellGeneratorHelper>
     {
         public static readonly Dictionary<int, List<object>> ShellOptionLevel = new Dictionary<int, List<object>>
         {
@@ -848,16 +849,5 @@ namespace OpenNos.GameObject.Helpers
             }
             return shellOptions;
         }
-
-        #region Singleton
-
-        private static ShellGeneratorHelper _instance;
-
-        public static ShellGeneratorHelper Instance
-        {
-            get { return _instance ?? (_instance = new ShellGeneratorHelper()); }
-        }
-
-        #endregion
     }
 }

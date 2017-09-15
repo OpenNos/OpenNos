@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class CellonGeneratorHelper
+    public class CellonGeneratorHelper : Singleton<CellonGeneratorHelper>
     {
         private readonly Dictionary<int, Dictionary<CellonType, CellonGenerator>> _generatorDictionary =
             new Dictionary<int, Dictionary<CellonType, CellonGenerator>>

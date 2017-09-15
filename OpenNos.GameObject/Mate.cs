@@ -267,7 +267,7 @@ namespace OpenNos.GameObject
 
         private double XpLoad()
         {
-            return MateHelper.XPData[Level - 1];
+            return MateHelper.Instance.XPData[Level - 1];
         }
 
         #endregion
