@@ -1664,9 +1664,6 @@ namespace OpenNos.GameObject
 
             Observable.Interval(TimeSpan.FromMinutes(1)).Subscribe(x => { Act4FlowerProcess(); });
 
-            // TODO REVIEW ACT4 SHIP PROCESS
-            //Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { Act4ShipProcess(); });
-
             Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x => { BotProcess(); });
 
             Observable.Interval(TimeSpan.FromSeconds(90)).Subscribe(x => { MailProcess(); });

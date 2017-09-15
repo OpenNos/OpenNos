@@ -93,6 +93,12 @@ namespace OpenNos.GameObject.Helpers
             return timeLeftUntilFirstRun;
         }
 
+        /// <summary>
+        /// Run Event
+        /// </summary>
+        /// <param name="evt">Event Container</param>
+        /// <param name="session">Character Session that run the event</param>
+        /// <param name="monster">Monster that run the event</param>
         public void RunEvent(EventContainer evt, ClientSession session = null, MapMonster monster = null)
         {
             if (session != null)

@@ -56,7 +56,7 @@ namespace OpenNos.GameObject.Event
             {
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SHIP_SECONDS"), 10), 0));
             });
-            Observable.Timer(TimeSpan.FromMinutes(5)).Subscribe(o =>
+            Observable.Timer(TimeSpan.FromMinutes(4) + TimeSpan.FromSeconds(55)).Subscribe(o =>
             {
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHIP_SETOFF"), 0));
                 List<ClientSession> sessions = map.Sessions.Where(s => s?.Character != null).ToList();
