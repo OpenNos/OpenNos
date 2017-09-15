@@ -161,7 +161,8 @@ namespace OpenNos.GameObject
             {
                 faction = (byte)Owner.Faction + 2;
             }
-            return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 {faction} 3 {CharacterId} 1 0 {(Skin != 0 ? Skin : -1)} {name} 0 -1 0 0 0 0 0 0 0 0";
+            ItemInstance sp = GetInventory().FirstOrDefault(s => s.Slot == (short)EquipmentType.Sp);
+            return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 {faction} 3 {CharacterId} 1 0 {(IsUsingSp && sp != null ? sp.Item.Morph : (Skin != 0 ? Skin : -1))} {name} 0 -1 0 0 0 0 0 0 0 0";
         }
 
         public string GenerateOut()
