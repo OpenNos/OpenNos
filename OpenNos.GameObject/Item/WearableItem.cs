@@ -124,6 +124,7 @@ namespace OpenNos.GameObject
                                 session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                                 return;
                             }
+
                         }
 
                         if (session.Character.UseSp && EquipmentSlot == EquipmentType.Sp)
@@ -140,7 +141,7 @@ namespace OpenNos.GameObject
                     }
                     else if (mate != null)
                     {
-                        if (EquipmentSlot != EquipmentType.Gloves && EquipmentSlot != EquipmentType.Boots || LevelMinimum > mate.Level)
+                        if (EquipmentSlot != EquipmentType.Gloves && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Sp && EquipmentSlot != EquipmentType.MainWeapon && EquipmentSlot != EquipmentType.Armor || LevelMinimum > mate.Level)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                             return;
