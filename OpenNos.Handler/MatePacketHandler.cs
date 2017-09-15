@@ -68,8 +68,10 @@ namespace OpenNos.Handler
 
         public void AttackMonster(Mate attacker, NpcMonsterSkill skill, MapMonster target)
         {
-            if (target != null)
+            if (target == null || attacker == null)
             {
+                return;
+            }
                 if (target.CurrentHp > 0)
                 {
                     int dmg = 100; //TEST
@@ -79,10 +81,14 @@ namespace OpenNos.Handler
                         target.CurrentHp = 0;
                         target.IsAlive = false;
                     }
-                    Session?.CurrentMapInstance?.Broadcast($"ct 2 {attacker.MateTransportId} 3 {target.MapMonsterId} -1 -1 0");
-                    Session?.CurrentMapInstance?.Broadcast($"su 2 {attacker.MateTransportId} 3 {target.MapMonsterId} 0 12 11 200 0 0 {(target.IsAlive ? 1 : 0)} {(int)((double)target.CurrentHp / target.Monster.MaxHP * 100)} {dmg} 0 0");
+                    if (skill == null)
+                    {
+                        Session?.CurrentMapInstance?.Broadcast($"ct 2 {attacker.MateTransportId} 3 {target.MapMonsterId} -1 -1 0");
+
+                        Session?.CurrentMapInstance?.Broadcast(
+                            $"su 2 {attacker.MateTransportId} 3 {target.MapMonsterId} 0 12 11 200 0 0 {(target.IsAlive ? 1 : 0)} {(int) ((double) target.CurrentHp / target.Monster.MaxHP * 100)} {dmg} 0 0");
+                    }
                 }
-            }
         }
 
         public void AttackCharacter(Mate attacker, NpcMonsterSkill skill, Character target)
