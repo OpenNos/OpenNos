@@ -214,6 +214,7 @@
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="NpcToSummon.cs" />
     <Compile Include="MonsterToSummon.cs" />
+    <Compile Include="Packets\ClientPackets\PslPacket.cs" />
     <Compile Include="Packets\ClientPackets\TawPacket.cs" />
     <Compile Include="Packets\ClientPackets\BscPacket.cs" />
     <Compile Include="Packets\ClientPackets\BlDelPacket.cs" />

@@ -1553,6 +1553,13 @@ namespace OpenNos.Handler
             }
         }
 
+        public void PetExp(PetExpPacket petExpPacket)
+        {
+            var pet = Session?.Character?.Mates?.Where(x => x.IsTeamMember && x.MateType == MateType.Pet).First();
+            pet.Experience = petExpPacket.Amount;
+            Session?.SendPacket(pet?.GenerateScPacket());
+        }
+
         /// <summary>
         ///     $Position Command
         /// </summary>
@@ -1890,7 +1897,14 @@ namespace OpenNos.Handler
             if (eventPacket != null)
             {
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, eventPacket, Session.IpAddress);
-                EventHelper.Instance.GenerateEvent(eventPacket.EventType);
+                if (eventPacket.UseTimer < 1)
+                {
+                    EventHelper.Instance.GenerateEvent(eventPacket.EventType, false);
+                }
+                else
+                {
+                    EventHelper.Instance.GenerateEvent(eventPacket.EventType);
+                }
             }
             else
             {
