@@ -129,6 +129,11 @@ namespace OpenNos.GameObject
             return $"c_mode 2 {MateTransportId} {morphId} 0 0";
         }
 
+        public string GenerateCond()
+        {
+            return $"cond 2 {MateTransportId} 0 0 {Monster.Speed}";
+        }
+
         public EffectPacket GenerateEff(int effectid)
         {
             return new EffectPacket
