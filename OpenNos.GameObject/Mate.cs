@@ -85,11 +85,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (_monster == null)
-                {
-                    _monster = ServerManager.Instance.GetNpc(NpcMonsterVNum);
-                }
-                return _monster;
+                return _monster ?? ServerManager.Instance.GetNpc(NpcMonsterVNum);
             }
             set
             {
@@ -101,11 +97,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (_owner == null)
-                {
-                    _owner = ServerManager.Instance.GetSessionByCharacterId(CharacterId).Character;
-                }
-                return _owner;
+                return _owner ?? ServerManager.Instance.GetSessionByCharacterId(CharacterId).Character;
             }
             set
             {
