@@ -2558,7 +2558,12 @@ namespace OpenNos.GameObject
                 foreach (Mate mate in mates.Where(s => s.IsTeamMember).OrderByDescending(s => s.MateType))
                 {
                     i++;
-                    str += $" 2|{mate.MateTransportId}|{(int)mate.MateType}|{mate.Level}|{mate.Name.Replace(' ', '^')}|-1|{mate.Monster.NpcMonsterVNum}|0";
+                    ItemInstance sp = null;
+                    if (mate.MateType == MateType.Partner)
+                    {
+                        sp = mate.GetInventory().FirstOrDefault(s => s.Item.EquipmentSlot == EquipmentType.Sp);
+                    }
+                    str += $" 2|{mate.MateTransportId}|{(int)mate.MateType}|{mate.Level}|{(mate.IsUsingSp && sp != null ? $"{sp.Item.Morph}" : mate.Name.Replace(' ', '^'))}|-1|{mate.Monster.NpcMonsterVNum}|0";
                 }
             }
             if (grp == null)
