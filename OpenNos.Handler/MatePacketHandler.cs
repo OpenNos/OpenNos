@@ -46,12 +46,12 @@ namespace OpenNos.Handler
             switch (suctlPacket.TargetType)
             {
                 case UserType.Monster:
-                    if (attacker.Hp > 0)
+                    /*if (attacker.Hp > 0)
                     {
                         MapMonster target = Session?.CurrentMapInstance?.GetMonster(suctlPacket.TargetId);
                         NpcMonsterSkill skill = attacker.Monster.Skills.FirstOrDefault(x => x.NpcMonsterSkillId == suctlPacket.CastId);
                         AttackMonster(attacker, skill, target);
-                    }
+                    }*/
                     return;
 
                 case UserType.Npc:
