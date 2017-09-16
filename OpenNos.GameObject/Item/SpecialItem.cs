@@ -146,7 +146,7 @@ namespace OpenNos.GameObject
                                         Type = MessageType.Shout
                                     });
                                 }
-                                session.Character.GiftAdd(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
+                                session.Character.GiftAdd(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, 0, 0, rollitem.ItemGeneratedUpgrade);
                                 break;
                             }
                             session.Character.Inventory.RemoveItemAmount(VNum);
