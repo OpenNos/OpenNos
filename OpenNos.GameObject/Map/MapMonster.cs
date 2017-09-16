@@ -187,7 +187,6 @@ namespace OpenNos.GameObject
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
             Buff = new ConcurrentBag<Buff>();
             SkillBcards = new ConcurrentBag<BCard>();
-            Monster.BCards.ForEach(b => b.ApplyBCards(this));
         }
 
         /// <summary>
@@ -239,7 +238,7 @@ namespace OpenNos.GameObject
             });
         }
 
-        internal void GetNearestOponent()
+        private void GetNearestOponent()
         {
             if (Target != -1)
             {
@@ -260,7 +259,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal void HostilityTarget()
+        private void HostilityTarget()
         {
             if (!IsHostile || Target != -1)
             {
@@ -1024,7 +1023,7 @@ namespace OpenNos.GameObject
                     npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
                 }
 
-                if (npcMonsterSkill?.Skill.TargetType == 1 && npcMonsterSkill?.Skill.HitType == 0)
+                if (npcMonsterSkill?.Skill.TargetType == 1 && npcMonsterSkill.Skill.HitType == 0)
                 {
                     TargetHit(targetSession, npcMonsterSkill);
                 }
