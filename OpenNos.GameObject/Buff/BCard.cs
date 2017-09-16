@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public void ApplyBCards(object session)
+        public void ApplyBCards(object session, object secondarysession = null)
         {
             switch ((BCardType.CardType)Type)
             {
@@ -41,13 +41,13 @@ namespace OpenNos.GameObject
                             character?.AddBuff(new Buff(SecondData, character.Level));
                         }
                     }
-                    else if (session.GetType() == typeof(MapMonster))
+                    else if (session.GetType() == typeof(MapMonster) && secondarysession?.GetType() == typeof(Character))
                     {
                         if (ServerManager.Instance.RandomNumber() < FirstData)
                         {
                             MapMonster monster = session as MapMonster;
-                            // TO DO : 1 --> Character Lvl
-                            monster?.AddBuff(new Buff(SecondData, 1));
+                            Character character = session as Character;
+                            monster?.AddBuff(new Buff(SecondData, character.Level));
                         }
                     }
                     else if (session.GetType() == typeof(MapNpc))
@@ -237,6 +237,50 @@ namespace OpenNos.GameObject
                     break;
 
                 case BCardType.CardType.Capture:
+                    if (session.GetType() == typeof(MapMonster) && secondarysession?.GetType() == typeof(Character))
+                    {
+                        MapMonster monster = session as MapMonster;
+                        Character character = secondarysession as Character;
+                        if ( monster == null || character == null || monster.Monster.RaceType == 1 && character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                        {
+                            if (monster.Monster.Level < character.Level)
+                            {
+                                if (monster.CurrentHp < (monster.Monster.MaxHP / 2))
+                                {
+                                    // Algo 
+                                    if (character.Mates.Any(m => m.IsTeamMember == true))
+                                    {
+                                        // remove current pet
+                                    }
+                                    monster.MapInstance.DespawnMonster(monster);
+                                    NpcMonster mateNpc = ServerManager.Instance.GetNpc(monster.Monster.NpcMonsterVNum);
+                                    byte lvl = 0;
+                                    lvl += monster.Monster.Level;
+                                    lvl -= 10;
+                                    if (lvl <= 0)
+                                    {
+                                        lvl = 1;
+                                    }
+                                    Mate mate = new Mate(character, mateNpc, lvl, MateType.Pet);
+                                    character.Mates.Add(mate);
+                                    mate.IsTeamMember = true;
+                                    character.Session.SendPacket($"ctl 2 {mate.PetId} 3");
+                                    character.MapInstance.Broadcast(mate.GenerateIn());
+                                    character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 0));
+                                    character.Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
+                                    character.Session.SendPackets(character.GenerateScP());
+                                    character.Session.SendPackets(character.GenerateScN());
+                                    character.Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
+                                    character.Session.SendPackets(character.GenerateScP());
+                                    character.Session.SendPackets(character.GenerateScN());
+                                    character.Session.SendPacket(character.GeneratePinit());
+                                    character.Session.SendPackets(character.GeneratePst());
+                                }
+                                else { /* 50% HP min */ }
+                            }
+                            else {/* Mob lvl must be less than char lvl */ }
+                        }
+                    }
                     break;
 
                 case BCardType.CardType.SpecialDamageAndExplosions:

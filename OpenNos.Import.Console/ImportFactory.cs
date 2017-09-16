@@ -945,6 +945,7 @@ namespace OpenNos.Import.Console
             // basicMpLoad
             for (int i = 0; i < 100; i++)
             {
+                //FIX IT
                 basicMp[i] = basicHp[i];
             }
 

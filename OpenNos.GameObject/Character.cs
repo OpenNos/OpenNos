@@ -1150,7 +1150,7 @@ namespace OpenNos.GameObject
         {
             #region Definitions
 
-            if (monsterToAttack == null)
+            if (monsterToAttack == null || skill.Type == 0)
             {
                 return 0;
             }
@@ -3563,15 +3563,17 @@ namespace OpenNos.GameObject
                                                 {
                                                     case (byte)EquipmentType.Armor:
                                                         Armor = wearableInstance;
+                                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                     case (byte)EquipmentType.MainWeapon:
                                                         WeaponPrimary = wearableInstance;
+                                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                     case (byte)EquipmentType.SecondaryWeapon:
                                                         WeaponSecondary = wearableInstance;
+                                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                 }
-                                                EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                 break;
                                             case ItemType.Jewelery:
                                                 if (wearableInstance.Slot == (short)EquipmentType.Bracelet || wearableInstance.Slot == (short)EquipmentType.Ring || wearableInstance.Slot == (short)EquipmentType.Amulet)

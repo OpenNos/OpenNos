@@ -475,6 +475,16 @@ namespace OpenNos.GameObject
             });
         }
 
+        public void DespawnMonster(MapMonster monster)
+        {
+            monster.IsAlive = false;
+            monster.LastMove = DateTime.Now;
+            monster.CurrentHp = 0;
+            monster.CurrentMp = 0;
+            monster.Death = DateTime.Now;
+            Broadcast(monster.GenerateOut());
+        }
+
         internal void CreatePortal(Portal portal)
         {
             portal.SourceMapInstanceId = MapInstanceId;
