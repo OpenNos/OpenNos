@@ -217,19 +217,12 @@ namespace OpenNos.GameObject
                 {
                     if (Level + 1 < Owner.Level)
                     {
-                        while (Experience >= XpLoad() && Level + 1 < Owner.Level)
-                        {
-                            Experience = (long)(Experience - XpLoad());
-                            Level++;
-                        }
+                        Experience = (long) (Experience - XpLoad());
+                        Level++;
                         Hp = MaxHp;
                         Mp = MaxMp;
                         Owner.MapInstance?.Broadcast(GenerateEff(6), PositionX, PositionY);
                         Owner.MapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
-                    }
-                    if (Level++ == Owner.Level && Experience >= XpLoad())
-                    {
-                        Experience = (long)XpLoad();
                     }
                 }
             }
@@ -290,7 +283,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                return MateHelper.Instance.XPData[Level - 1];
+                return MateHelper.Instance.XpData[Level - 1];
             }
             catch
             {
