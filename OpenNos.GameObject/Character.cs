@@ -2573,7 +2573,7 @@ namespace OpenNos.GameObject
             return $"pairy 1 {CharacterId} 4 {fairy.Item.Element} {fairy.ElementRate + fairy.Item.ElementRate} {fairy.Item.Morph + (isBuffed ? 5 : 0)}";
         }
 
-        public string GenerateParcel(MailDTO mail)
+        private string GenerateParcel(MailDTO mail)
         {
             return mail.AttachmentVNum != null ? $"parcel 1 1 {MailList.First(s => s.Value.MailId == mail.MailId).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.AttachmentVNum} {mail.AttachmentAmount} {(byte)ServerManager.Instance.GetItem((short)mail.AttachmentVNum).Type}" : string.Empty;
         }
@@ -3498,7 +3498,7 @@ namespace OpenNos.GameObject
             return $"shop 1 {CharacterId} 1 3 0 {shopname}";
         }
 
-        public string GenerateShopEnd()
+        private string GenerateShopEnd()
         {
             return $"shop 1 {CharacterId} 0 0";
         }
@@ -6100,6 +6100,13 @@ namespace OpenNos.GameObject
         {
             return Buff.Any(buff => buff.Card.BCards.Any(b => b.Type == (byte)type && b.SubType == subtype && (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))) ||
                    EquipmentBCards.Any(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype));
+        }
+
+        public void TeleportOnMap(short x, short y)
+        {
+            Session.Character.PositionX = x;
+            Session.Character.PositionY = y;
+            Session.SendPacket($"tp {1} {CharacterId} {x} {y} 0");
         }
 
         #endregion
