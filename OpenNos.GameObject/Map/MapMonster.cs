@@ -187,6 +187,7 @@ namespace OpenNos.GameObject
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
             Buff = new ConcurrentBag<Buff>();
             SkillBcards = new ConcurrentBag<BCard>();
+            Monster.BCards.ForEach(b => b.ApplyBCards(this));
         }
 
         /// <summary>
