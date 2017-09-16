@@ -135,17 +135,15 @@ namespace OpenNos.GameObject
         public MapCell GetRandomPosition()
         {
             ConcurrentBag<MapCell> cells = new ConcurrentBag<MapCell>();
-            short x = (short)ServerManager.Instance.RandomNumber(0, XLength);
-            short y = (short)ServerManager.Instance.RandomNumber(0, YLength);
-            if (!IsBlockedZone(x, y))
+            Parallel.For(0, YLength, y => Parallel.For(0, XLength, x =>
             {
-                cells.Add(new MapCell { X = x, Y = y });
-            }
-            else
-            {
-                return GetRandomPosition();
-            }
-            return cells.OrderBy(s => _random.Next(short.MaxValue)).FirstOrDefault();
+                if (!IsBlockedZone(x, y))
+                {
+                    cells.Add(new MapCell { X = (short)x, Y = (short)y });
+                }
+            }));
+
+            return cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
         }
 
         public bool IsBlockedZone(int x, int y)
