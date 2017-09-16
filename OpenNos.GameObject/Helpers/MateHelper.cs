@@ -4,6 +4,15 @@ namespace OpenNos.GameObject.Helpers
 {
     public class MateHelper
     {
+        #region Instantiation
+
+        public MateHelper()
+        {
+            LoadXpData();
+        }
+
+        #endregion
+
         #region Members
 
         private double[] _xpData;
@@ -12,7 +21,7 @@ namespace OpenNos.GameObject.Helpers
 
         #region Properties
 
-        public double[] XPData
+        public double[] XpData
         {
             get
             {
@@ -28,7 +37,7 @@ namespace OpenNos.GameObject.Helpers
 
         #region Methods
 
-        private void LoadXPData()
+        private void LoadXpData()
         {
             // Load XpData
             _xpData = new double[256];
