@@ -473,7 +473,7 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.SPAWNMONSTERS:
-                    evt.MapInstance.SummonMonsters((ConcurrentBag<MonsterToSummon>)evt.Parameter);
+                    evt.MapInstance.SummonMonsters(((ConcurrentBag<MonsterToSummon>)evt.Parameter).ToList());
                     break;
                 case EventActionType.REFRESHRAIDGOAL:
                     ClientSession cl = evt.MapInstance.Sessions.FirstOrDefault();
