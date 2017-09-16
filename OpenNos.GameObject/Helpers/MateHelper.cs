@@ -4,24 +4,24 @@ namespace OpenNos.GameObject.Helpers
 {
     public class MateHelper
     {
-        #region Members
+        #region Instantiation
 
-        private static double[] _xpData;
+        public MateHelper()
+        {
+            LoadXpData();
+        }
 
         #endregion
 
-        #region Instantiation
+        #region Members
 
-        private MateHelper()
-        {
-            LoadXPData();
-        }
+        private double[] _xpData;
 
         #endregion
 
         #region Properties
 
-        public static double[] XPData
+        public double[] XpData
         {
             get
             {
@@ -37,7 +37,7 @@ namespace OpenNos.GameObject.Helpers
 
         #region Methods
 
-        private static void LoadXPData()
+        private void LoadXpData()
         {
             // Load XpData
             _xpData = new double[256];
@@ -85,6 +85,17 @@ namespace OpenNos.GameObject.Helpers
                     _xpData[i] = Convert.ToInt64(_xpData[i - 1] + var * (i + 2) * (i + 2));
                 }
             }
+        }
+
+        #endregion
+
+        #region Singleton
+
+        private static MateHelper _instance;
+
+        public static MateHelper Instance
+        {
+            get { return _instance ?? (_instance = new MateHelper()); }
         }
 
         #endregion

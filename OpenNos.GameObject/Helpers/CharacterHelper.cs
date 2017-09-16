@@ -723,12 +723,30 @@ namespace OpenNos.GameObject.Helpers
 
         private void LoadHeroXpData()
         {
-            // Load SpData
+            int index = 1;
+            int increment = 118980;
+            int increment2 = 9120;
+            int increment3 = 360;
+
             _heroXpData = new double[256];
             _heroXpData[0] = 949560;
-            for (int i = 1; i < _heroXpData.Length; i++)
+            for (int lvl = 1; lvl < 50; lvl++)
             {
-                _heroXpData[i] = Convert.ToInt64(_heroXpData[i - 1] * 1.08);
+                _heroXpData[lvl] = _heroXpData[lvl - 1] + increment;
+                increment2 += increment3;
+                increment = increment + increment2;
+                index++;
+                if (index % 10 == 0)
+                {
+                    if (index / 10 < 3)
+                    {
+                        increment3 -= index / 10 * 30;
+                    }
+                    else
+                    {
+                        increment3 -= 30;
+                    }
+                }
             }
         }
 

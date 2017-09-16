@@ -12,7 +12,7 @@ namespace OpenNos.GameObject
     public class SuctlPacket : PacketDefinition
     {
         [PacketIndex(0)]
-        public int Unknown1 { get; set; }
+        public int CastId { get; set; }
 
         [PacketIndex(1)]
         public int Unknown2 { get; set; }
@@ -25,5 +25,10 @@ namespace OpenNos.GameObject
 
         [PacketIndex(4)]
         public int TargetId { get; set; }
+
+        public override string ToString()
+        {
+            return $"{CastId} {Unknown2} {MateTransportId} {TargetType} {TargetId}";
+        }
     }
 }
