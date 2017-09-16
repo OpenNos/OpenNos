@@ -1550,11 +1550,13 @@ namespace OpenNos.Handler
                                 if (cellon.Item.EffectValue > inventory.Item.MaxCellonLvl)
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLON_LEVEL_TOO_HIGH"), 0));
+                                    Session.SendPacket("shop_end 1");
                                     return;
                                 }
                                 if (inventory.Item.MaxCellon <= inventory.EquipmentOptions.Count)
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLON_FULL"), 0));
+                                    Session.SendPacket("shop_end 1");
                                     return;
                                 }
                                 int gold;
@@ -1593,6 +1595,7 @@ namespace OpenNos.Handler
                                 if (Session.Character.Gold < gold)
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_GOLD"), 0));
+                                    Session.SendPacket("shop_end 1");
                                     return;
                                 }
                                 // REMOVE ITEMS TO USE
@@ -1607,12 +1610,14 @@ namespace OpenNos.Handler
                                 if (option == null || inventory.EquipmentOptions.Any(s => s.Type == option.Type))
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLONING_FAILED"), 0));
+                                    Session.SendPacket("shop_end 1");
                                     return;
                                 }
 
                                 // SUCCESS
                                 inventory.EquipmentOptions.Add(option);
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CELLONING_SUCCESS"), 0));
+                                Session.SendPacket("shop_end 1");
                             }
                         }
                     }
