@@ -1102,11 +1102,6 @@ namespace OpenNos.Handler
 
             Session.CurrentMapInstance = Session.Character.MapInstance;
 
-            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4 || m.MapTypeId == (short)MapTypeEnum.Act42))
-            {
-                Session.Character.ConnectAct4();
-            }
-
             if (ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType == "Connection") < 2)
             {
                 Session.SendPacket("scene 40");
@@ -1175,6 +1170,12 @@ namespace OpenNos.Handler
             Session.SendPacket("zzim");
             Session.SendPacket($"twk 2 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
 
+
+            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4 || m.MapTypeId == (short)MapTypeEnum.Act42) &&
+                Session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance)
+            {
+                Session.Character.ConnectAct4();
+            }
             // qstlist target sqst bf
             Session.SendPacket("act6");
             Session.SendPacket(Session.Character.GenerateFaction());

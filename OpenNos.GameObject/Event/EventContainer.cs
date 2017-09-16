@@ -18,7 +18,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public EventActionType EventActionType { get; set; }
+        public EventActionType EventActionType { get; private set; }
 
         public MapInstance MapInstance { get; set; }
 

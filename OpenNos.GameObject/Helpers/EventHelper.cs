@@ -18,6 +18,7 @@ using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Event.ARENA;
 using OpenNos.PathFinder;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -333,7 +334,7 @@ namespace OpenNos.GameObject.Helpers
                                                     rare = (sbyte) ServerManager.Instance.RandomNumber(-2, 7);
                                                 }
                                                 //TODO add random rarity for some object
-                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, (byte)rare, gift.Design);
+                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
                                             }
                                         }
                                     }
@@ -472,7 +473,7 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.SPAWNMONSTERS:
-                    evt.MapInstance.SummonMonsters((List<MonsterToSummon>)evt.Parameter);
+                    evt.MapInstance.SummonMonsters((ConcurrentBag<MonsterToSummon>)evt.Parameter);
                     break;
                 case EventActionType.REFRESHRAIDGOAL:
                     ClientSession cl = evt.MapInstance.Sessions.FirstOrDefault();

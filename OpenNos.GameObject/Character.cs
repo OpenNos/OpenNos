@@ -1211,7 +1211,7 @@ namespace OpenNos.GameObject
             #endregion
 
 
-            skill.BCards?.ToList().ForEach(s => SkillBcards.Add(s));
+            skill?.BCards?.ToList().ForEach(s => SkillBcards.Add(s));
             #region Switch skill.Type
 
             int boost, boostpercentage;
@@ -2319,10 +2319,9 @@ namespace OpenNos.GameObject
                                 if (dropOwner.HasValue)
                                 {
                                     group.Characters.ToList()
-                                        .ForEach(s => s.SendPacket(
-                                            s.Character.GenerateSay(
-                                                string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop.ItemVNum).Name,
-                                                    group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop.Amount), 10)));
+                                        .ForEach(s => s.SendPacket(s.Character.GenerateSay(
+                                            string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop.ItemVNum).Name,
+                                                group.Characters.Single(c => c.Character.CharacterId == dropOwner).Character.Name, drop.Amount), 10)));
                                 }
                             }
                             else
@@ -4229,7 +4228,7 @@ namespace OpenNos.GameObject
             return Reput <= 5000000 ? 26 : 27;
         }
 
-        public void GiftAdd(short itemVNum, byte amount, byte rare = 0, short design = 0, byte upgrade = 0)
+        public void GiftAdd(short itemVNum, byte amount, sbyte rare = 0, short design = 0, byte upgrade = 0)
         {
             //TODO add the rare support
             if (Inventory == null)
@@ -4238,7 +4237,7 @@ namespace OpenNos.GameObject
             }
             lock (Inventory)
             {
-                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, CharacterId, amount, (sbyte)rare);
+                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, CharacterId, amount, rare);
                 if (newItem == null)
                 {
                     return;
