@@ -809,17 +809,17 @@ namespace OpenNos.Handler
             {
                 case 1:
                     equipment = InventoryType.FirstPartnerInventory;
-                    mate = Session.Character.Mates.FirstOrDefault(s => s.PetId == removePacket.Type - 1);
+                    mate = Session.Character.Mates.FirstOrDefault(s => s.PetId == removePacket.Type - 1 && s.MateType == MateType.Partner);
                     break;
 
                 case 2:
                     equipment = InventoryType.SecondPartnerInventory;
-                    mate = Session.Character.Mates.FirstOrDefault(s => s.PetId == removePacket.Type - 1);
+                    mate = Session.Character.Mates.FirstOrDefault(s => s.PetId == removePacket.Type - 1 && s.MateType == MateType.Partner);
                     break;
 
                 case 3:
                     equipment = InventoryType.ThirdPartnerInventory;
-                    mate = Session.Character.Mates.FirstOrDefault(s => s.PetId == removePacket.Type - 1);
+                    mate = Session.Character.Mates.FirstOrDefault(s => s.PetId == removePacket.Type - 1 && s.MateType == MateType.Partner);
                     break;
 
                 default:
@@ -885,6 +885,31 @@ namespace OpenNos.Handler
             }
             else if (mate != null)
             {
+                switch (inv.Item.EquipmentSlot)
+                {
+                    case EquipmentType.Armor:
+                        mate.ArmorInstance = null;
+                        break;
+
+                    case EquipmentType.MainWeapon:
+                        mate.WeaponInstance = null;
+                        break;
+
+                    case EquipmentType.Gloves:
+                        mate.GlovesInstance = null;
+                        break;
+
+                    case EquipmentType.Boots:
+                        mate.BootsInstance = null;
+                        break;
+
+                    case EquipmentType.Sp:
+                        mate.SpInstance = null;
+                        break;
+
+                    default:
+                        break;
+                }
                 Session.SendPacket(mate.GenerateScPacket());
             }
         }

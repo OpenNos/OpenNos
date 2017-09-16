@@ -129,14 +129,13 @@ namespace OpenNos.Handler
             }
             else
             {
-                ItemInstance sp = mate.GetInventory().FirstOrDefault(s => s.Item.EquipmentSlot == EquipmentType.Sp);
-                if (sp == null)
+                if (mate.SpInstance == null)
                 {
                     return;                    
                 }
                 mate.IsUsingSp = true;
                 Session.SendPacket(mate.GenerateCond());
-                Session.Character.MapInstance.Broadcast(mate.GenerateCMode(sp.Item.Morph));
+                Session.Character.MapInstance.Broadcast(mate.GenerateCMode(mate.SpInstance.Item.Morph));
                 //pski 1236 1238 1240
                 Session.SendPacket(mate.GenerateScPacket());
                 Session.Character.MapInstance.Broadcast(mate.GenerateOut());

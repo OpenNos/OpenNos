@@ -61,6 +61,12 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public ItemInstance ArmorInstance { get; set; }
+
+        public ItemInstance BootsInstance { get; set; }
+
+        public ItemInstance GlovesInstance { get; set; }
+
         public bool IsSitting { get; set; }
 
         public bool IsUsingSp { get; set; }
@@ -113,6 +119,10 @@ namespace OpenNos.GameObject
 
         public short PositionY { get; set; }
 
+        public ItemInstance SpInstance { get; set; }
+
+        public ItemInstance WeaponInstance { get; set; }
+
         #endregion
 
         #region Methods
@@ -161,8 +171,7 @@ namespace OpenNos.GameObject
             {
                 faction = (byte)Owner.Faction + 2;
             }
-            ItemInstance sp = GetInventory().FirstOrDefault(s => s.Slot == (short)EquipmentType.Sp);
-            return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 {faction} 3 {CharacterId} 1 0 {(IsUsingSp && sp != null ? sp.Item.Morph : (Skin != 0 ? Skin : -1))} {name} 0 -1 0 0 0 0 0 0 0 0";
+            return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 {faction} 3 {CharacterId} 1 0 {(IsUsingSp && SpInstance != null ? SpInstance.Item.Morph : (Skin != 0 ? Skin : -1))} {name} 0 -1 0 0 0 0 0 0 0 0";
         }
 
         public string GenerateOut()
@@ -186,13 +195,7 @@ namespace OpenNos.GameObject
             switch (MateType)
             {
                 case MateType.Partner:
-                    List<ItemInstance> items = GetInventory();
-                    ItemInstance weapon = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.MainWeapon);
-                    ItemInstance armor = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Armor);
-                    ItemInstance gloves = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Gloves);
-                    ItemInstance boots = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Boots);
-                    ItemInstance sp = items.FirstOrDefault(s => s.Slot == (short) EquipmentType.Sp);
-                    return $"sc_n {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(weapon != null ? $"{weapon.ItemVNum}.{weapon.Rare}.{weapon.Upgrade}" : "-1")} {(armor != null ? $"{armor.ItemVNum}.{armor.Rare}.{armor.Upgrade}" : "-1")} {(gloves != null ? $"{gloves.ItemVNum}.0.0" : "-1")} {(boots != null ? $"{boots.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {(IsUsingSp ? "SP_NAME" : Name.Replace(' ', '^'))} {(IsUsingSp ? sp.Item.Morph : (Skin != 0 ? Skin : -1))} {(IsSummonable ? 1 : 0)} {(sp != null ? $"{sp.ItemVNum}.100" : "-1" )} -1 -1 -1";
+                    return $"sc_n {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(WeaponInstance != null ? $"{WeaponInstance.ItemVNum}.{WeaponInstance.Rare}.{WeaponInstance.Upgrade}" : "-1")} {(ArmorInstance != null ? $"{ArmorInstance.ItemVNum}.{ArmorInstance.Rare}.{ArmorInstance.Upgrade}" : "-1")} {(GlovesInstance != null ? $"{GlovesInstance.ItemVNum}.0.0" : "-1")} {(BootsInstance != null ? $"{BootsInstance.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {(IsUsingSp ? "SP_NAME" : Name.Replace(' ', '^'))} {(IsUsingSp ? SpInstance.Item.Morph : (Skin != 0 ? Skin : -1))} {(IsSummonable ? 1 : 0)} {(SpInstance != null ? $"{SpInstance.ItemVNum}.100" : "-1" )} -1 -1 -1";
 
                 case MateType.Pet:
                     return $"sc_p {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.Element} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(IsSummonable ? 1 : 0)}";
@@ -233,7 +236,7 @@ namespace OpenNos.GameObject
             ServerManager.Instance.GetSessionByCharacterId(Owner.CharacterId).SendPacket(GenerateScPacket());
         }
 
-        public List<ItemInstance> GetInventory()
+        private List<ItemInstance> GetInventory()
         {
             List<ItemInstance> items = new List<ItemInstance>();
             switch (PetId)
@@ -267,6 +270,20 @@ namespace OpenNos.GameObject
         public bool IsInRange(int xCoordinate, int yCoordinate, int range)
         {
             return Math.Abs(PositionX - xCoordinate) <= range && Math.Abs(PositionY - yCoordinate) <= range;
+        }
+
+        public void LoadInventory()
+        {
+            List<ItemInstance> inv = GetInventory();
+            if (inv.Count == 0)
+            {
+                return;
+            }
+            WeaponInstance = inv.FirstOrDefault(s => s.Item.EquipmentSlot == EquipmentType.MainWeapon);
+            ArmorInstance = inv.FirstOrDefault(s => s.Item.EquipmentSlot == EquipmentType.Armor);
+            GlovesInstance = inv.FirstOrDefault(s => s.Item.EquipmentSlot == EquipmentType.Gloves);
+            BootsInstance = inv.FirstOrDefault(s => s.Item.EquipmentSlot == EquipmentType.Boots);
+            SpInstance = inv.FirstOrDefault(s => s.Item.EquipmentSlot == EquipmentType.Sp);
         }
 
         private double XpLoad()

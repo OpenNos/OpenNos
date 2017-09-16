@@ -1173,7 +1173,6 @@ namespace OpenNos.Handler
             // qstlist target sqst bf
             Session.SendPacket("act6");
             Session.SendPacket(Session.Character.GenerateFaction());
-
             // MATES
             Session.SendPackets(Session.Character.GenerateScP());
             Session.SendPackets(Session.Character.GenerateScN());

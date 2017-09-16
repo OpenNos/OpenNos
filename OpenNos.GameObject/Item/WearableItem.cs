@@ -141,10 +141,57 @@ namespace OpenNos.GameObject
                     }
                     else if (mate != null)
                     {
-                        if (EquipmentSlot != EquipmentType.Gloves && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Sp && EquipmentSlot != EquipmentType.MainWeapon && EquipmentSlot != EquipmentType.Armor || EquipmentSlot == EquipmentType.Sp && ItemSubType != 4 || EquipmentSlot == EquipmentType.Armor && ItemSubType != 4 || EquipmentSlot == EquipmentType.MainWeapon && ItemSubType != 12 || LevelMinimum > mate.Level)
+                        if (mate.Level < LevelMinimum)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                             return;
+                        }
+                        switch (EquipmentSlot)
+                        {
+                            case EquipmentType.Armor:
+                                if (ItemSubType == 4)
+                                {
+                                    mate.ArmorInstance = inv;
+                                    break;
+                                }
+                                else
+                                {
+                                    goto default;
+                                }
+
+                            case EquipmentType.MainWeapon:
+                                if (ItemSubType == 12)
+                                {
+                                    mate.WeaponInstance = inv;
+                                    break;
+                                }
+                                else
+                                {
+                                    goto default;
+                                }
+
+                            case EquipmentType.Gloves:
+                                mate.GlovesInstance = inv;
+                                break;
+
+                            case EquipmentType.Boots:
+                                mate.BootsInstance = inv;
+                                break;
+
+                            case EquipmentType.Sp:
+                                if (ItemSubType == 4)
+                                {
+                                    mate.SpInstance = inv;
+                                    break;
+                                }
+                                else
+                                {
+                                    goto default;
+                                }
+
+                            default:
+                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
+                                return;
                         }
                     }
 
