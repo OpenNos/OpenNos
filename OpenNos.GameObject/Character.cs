@@ -4238,7 +4238,7 @@ namespace OpenNos.GameObject
             }
             lock (Inventory)
             {
-                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, CharacterId, amount, rare);
+                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, CharacterId, amount, (sbyte)rare);
                 if (newItem == null)
                 {
                     return;

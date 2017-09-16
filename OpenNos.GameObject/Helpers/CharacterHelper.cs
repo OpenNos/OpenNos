@@ -60,6 +60,7 @@ namespace OpenNos.GameObject.Helpers
 
         // difference between class
         private int[,] _minHit;
+        private double[] _heroXpData;
 
         // STAT DATA
 

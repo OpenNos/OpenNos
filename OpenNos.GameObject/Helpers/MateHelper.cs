@@ -20,7 +20,7 @@ namespace OpenNos.GameObject.Helpers
 
         #region Properties
 
-        public double[] XPData { get; private set; }
+        public double[] XpData { get; private set; }
 
         #endregion
 
@@ -29,17 +29,17 @@ namespace OpenNos.GameObject.Helpers
         private void LoadXPData()
         {
             // Load XpData
-            XPData = new double[256];
+            XpData = new double[256];
             double[] v = new double[256];
             double var = 1;
             v[0] = 540;
             v[1] = 960;
-            XPData[0] = 300;
+            XpData[0] = 300;
             for (int i = 2; i < v.Length; i++)
             {
                 v[i] = v[i - 1] + 420 + 120 * (i - 1);
             }
-            for (int i = 1; i < XPData.Length; i++)
+            for (int i = 1; i < XpData.Length; i++)
             {
                 if (i < 79)
                 {
@@ -55,7 +55,7 @@ namespace OpenNos.GameObject.Helpers
                             var = 70 / 3d;
                             break;
                     }
-                    XPData[i] = Convert.ToInt64(XPData[i - 1] + var * v[i - 1]);
+                    XpData[i] = Convert.ToInt64(XpData[i - 1] + var * v[i - 1]);
                 }
                 if (i < 79)
                 {
@@ -73,7 +73,7 @@ namespace OpenNos.GameObject.Helpers
                         var = 13000;
                         break;
                 }
-                XPData[i] = Convert.ToInt64(XPData[i - 1] + var * (i + 2) * (i + 2));
+                XpData[i] = Convert.ToInt64(XpData[i - 1] + var * (i + 2) * (i + 2));
             }
         }
 
