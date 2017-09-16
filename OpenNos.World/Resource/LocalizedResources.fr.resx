@@ -157,7 +157,7 @@
     <value>Ne^donnez^JAMAIS^vos^identifiants^de^connexion^!</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>Besoin^d´un^GM^?^http://support.nostale.fr/</value>
+    <value>Besoin^d´un^GM^?^Go^sur^Discord</value>
   </data>
   <data name="BN3" xml:space="preserve">
     <value>Peur^d´un^vol^?^Lisez^le^guide^anti-arnaques^!</value>
@@ -166,10 +166,10 @@
     <value>Besoin^d´aide^pour^un^TS^?^Contactez^un^NosHelper^!</value>
   </data>
   <data name="BN5" xml:space="preserve">
-    <value>Forum^officiel:^http://board.fr.nostale.gameforge.com</value>
+    <value>Site^officiel:^https://noswings.fr/</value>
   </data>
   <data name="BN6" xml:space="preserve">
-    <value>Entrez^dans^la^légende,^découvrez^le^Panthéon</value>
+    <value>Bon^jeu^sur^Noswings^!</value>
   </data>
   <data name="BUFF_BLOCKED" xml:space="preserve">
     <value>À partir de maintenant, le décompte de buff sera masqué.</value>

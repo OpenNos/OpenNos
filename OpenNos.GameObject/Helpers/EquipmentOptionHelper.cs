@@ -3,24 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class EquipmentOptionHelper
+    public class EquipmentOptionHelper : Singleton<EquipmentOptionHelper>
     {
-        #region Singleton
-
-        private static EquipmentOptionHelper _instance;
-
-        public static EquipmentOptionHelper Instance
-        {
-            get { return _instance ?? (_instance = new EquipmentOptionHelper()); }
-        }
-
-        #endregion
-        
         #region Cellons
 
         public List<BCard> CellonToBCards(List<EquipmentOptionDTO> optionList, short itemVnum)

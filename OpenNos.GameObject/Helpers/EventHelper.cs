@@ -26,23 +26,8 @@ using OpenNos.GameObject.CommandPackets;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class EventHelper
+    public class EventHelper : Singleton<EventHelper>
     {
-        #region Members
-
-        private static EventHelper _instance;
-
-        #endregion
-
-        #region Properties
-
-        public static EventHelper Instance
-        {
-            get { return _instance ?? (_instance = new EventHelper()); }
-        }
-
-        #endregion
-
         #region Methods
 
         public int CalculateComboPoint(int n)
@@ -92,15 +77,11 @@ namespace OpenNos.GameObject.Helpers
                         case EventType.ICEBREAKER:
                             IceBreaker.GenerateIceBreaker(useTimer);
                             break;
-
-                        case EventType.ACT4SHIP:
-                            Act4Ship.GenerateAct4Ship(FactionType.Angel);
-                            Act4Ship.GenerateAct4Ship(FactionType.Demon);
-                            break;
                     }
                 });
             }
         }
+
 
         public TimeSpan GetMilisecondsBeforeTime(TimeSpan time)
         {
@@ -113,6 +94,12 @@ namespace OpenNos.GameObject.Helpers
             return timeLeftUntilFirstRun;
         }
 
+        /// <summary>
+        /// Run Event
+        /// </summary>
+        /// <param name="evt">Event Container</param>
+        /// <param name="session">Character Session that run the event</param>
+        /// <param name="monster">Monster that run the event</param>
         public void RunEvent(EventContainer evt, ClientSession session = null, MapMonster monster = null)
         {
             if (session != null)
@@ -336,17 +323,27 @@ namespace OpenNos.GameObject.Helpers
                                             // RAID CERTIFICATE
                                             sess.Character.GiftAdd(2320, 1);
                                         }
-                                        foreach (Gift gift in grp.Raid?.GiftItems)
+                                        else
                                         {
-                                            byte rare = 0;
-                                            if (gift.IsRandomRare)
+                                            foreach (Gift gift in grp.Raid?.GiftItems)
                                             {
-                                                rare = (byte) ServerManager.Instance.RandomNumber(0, 7);
+                                                sbyte rare = 0;
+                                                if (gift.IsRandomRare)
+                                                {
+                                                    rare = (sbyte) ServerManager.Instance.RandomNumber(-2, 7);
+                                                }
+                                                //TODO add random rarity for some object
+                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
                                             }
-                                            //TODO add random rarity for some object
-                                            sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
                                         }
                                     }
+                                    // Remove monster when raid is over
+                                    foreach (MapMonster e in evt.MapInstance.Monsters.Where(s => !s.IsBoss))
+                                    {
+                                        evt.MapInstance.DespawnMonster(e.MonsterVNum);
+                                    }
+                                    evt.MapInstance.WaveEvents.Clear();
+
                                     ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(
                                         string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
 

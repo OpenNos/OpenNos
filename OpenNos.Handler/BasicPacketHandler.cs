@@ -1102,6 +1102,11 @@ namespace OpenNos.Handler
 
             Session.CurrentMapInstance = Session.Character.MapInstance;
 
+            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4 || m.MapTypeId == (short)MapTypeEnum.Act42))
+            {
+                Session.Character.ConnectAct4();
+            }
+
             if (ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType == "Connection") < 2)
             {
                 Session.SendPacket("scene 40");
@@ -1234,10 +1239,6 @@ namespace OpenNos.Handler
             foreach (StaticBuffDTO sb in DAOFactory.StaticBuffDAO.LoadByCharacterId(Session.Character.CharacterId))
             {
                 Session.Character.AddStaticBuff(sb);
-            }
-            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4 || m.MapTypeId == (short)MapTypeEnum.Act42))
-            {
-                Session.Character.ConnectAct4();
             }
         }
 

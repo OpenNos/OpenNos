@@ -76,17 +76,26 @@ namespace OpenNos.GameObject
                     }
                     else if (session.GetType() == typeof(MapMonster))
                     {
+                        MapMonster monster = session as MapMonster;
                         ConcurrentBag<MonsterToSummon> summonParameters = new ConcurrentBag<MonsterToSummon>();
                         for (int i = 0; i < FirstData; i++)
                         {
-                            MapMonster monster = session as MapMonster;
                             if (monster == null)
                             {
                                 continue;
                             }
-                            short x = (short)(ServerManager.Instance.RandomNumber(-3, 3) + monster.MapX);
-                            MapMonster mapMonster = monster;
-                            short y = (short)(ServerManager.Instance.RandomNumber(-3, 3) + mapMonster.MapY);
+
+                            short x, y;
+                            if (SubType == 11)
+                            {
+                                x = (short)(i + monster.MapX);
+                                y = monster.MapY;
+                            }
+                            else
+                            {
+                                x = (short)(ServerManager.Instance.RandomNumber(-3, 3) + monster.MapX);
+                                y = (short)(ServerManager.Instance.RandomNumber(-3, 3) + monster.MapY);
+                            }
                             summonParameters.Add(new MonsterToSummon((short)SecondData, new MapCell { X = x, Y = y }, -1, true));
                         }
                         int rnd = ServerManager.Instance.RandomNumber();
@@ -94,16 +103,13 @@ namespace OpenNos.GameObject
                         {
                             switch (SubType)
                             {
-                                case 2:
-                                    if (session is MapMonster monster)
-                                    {
+                                case 31:
                                         EventHelper.Instance.RunEvent(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
-                                    }
                                     break;
                                 default:
-                                    if (session is MapMonster monster1 && monster1.OnDeathEvents.All(s => s.EventActionType != EventActionType.SPAWNMONSTERS))
+                                    if (!monster.OnDeathEvents.Any(s => s.EventActionType == EventActionType.SPAWNMONSTERS))
                                     {
-                                        monster1.OnDeathEvents.Add(new EventContainer(monster1.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
+                                        monster.OnDeathEvents.Add(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     }
                                     break;
                             }

@@ -142,7 +142,7 @@ namespace OpenNos.GameObject
                     cells.Add(new MapCell { X = (short)x, Y = (short)y });
                 }
             }));
-            
+
             return cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
         }
 

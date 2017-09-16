@@ -95,6 +95,7 @@ namespace OpenNos.GameObject
                                         continue;
                                     }
                                     session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {rollitem.ItemGeneratedAmount})", 12));
+                                    session.SendPacket($"rdi {rollitem.ItemGeneratedVNum} {rollitem.ItemGeneratedAmount}");
                                     newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
                                     session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
                                 }

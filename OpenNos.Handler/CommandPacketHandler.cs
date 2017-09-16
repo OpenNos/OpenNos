@@ -610,18 +610,19 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX, Session.Character.PositionY);
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), Session.Character.PositionX, Session.Character.PositionY);
                     ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
-                    if (Session.Character.Family != null)
+                    if (Session.Character.Family == null)
                     {
-                        ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-                        CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
-                        {
-                            DestinationCharacterId = Session.Character.Family.FamilyId,
-                            SourceCharacterId = Session.Character.CharacterId,
-                            SourceWorldId = ServerManager.Instance.WorldId,
-                            Message = "fhis_stc",
-                            Type = MessageType.Family
-                        });
+                        return;
                     }
+                    ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                    CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
+                    {
+                        DestinationCharacterId = Session.Character.Family.FamilyId,
+                        SourceCharacterId = Session.Character.CharacterId,
+                        SourceWorldId = ServerManager.Instance.WorldId,
+                        Message = "fhis_stc",
+                        Type = MessageType.Family
+                    });
                 }
                 else
                 {

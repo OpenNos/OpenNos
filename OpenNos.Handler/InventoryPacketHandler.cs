@@ -860,6 +860,18 @@ namespace OpenNos.Handler
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
                             string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int) Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                         return;
+
+                    case (byte) EquipmentType.Armor:
+                        Session.Character.Armor = null;
+                        break;
+
+                    case (byte) EquipmentType.MainWeapon:
+                        Session.Character.WeaponPrimary = null;
+                        break;
+
+                    case (byte) EquipmentType.SecondaryWeapon:
+                        Session.Character.WeaponSecondary = null;
+                        break;
                 }
                 Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != inventory.ItemVNum);
             }
@@ -953,6 +965,10 @@ namespace OpenNos.Handler
             Session.SendPacket(previousInventory != null ? (reposPacket.PartnerBackpack ? previousInventory.GeneratePStash() : previousInventory.GenerateStash()) : (reposPacket.PartnerBackpack ? UserInterfaceHelper.Instance.GeneratePStashRemove(reposPacket.OldSlot) : UserInterfaceHelper.Instance.GenerateStashRemove(reposPacket.OldSlot)));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="packet"></param>
         [Packet("sortopen")]
         public void SortOpen(string packet)
         {
@@ -1036,7 +1052,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
                 }
-                if (CharacterHelper.Instance.SPPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
+                if (CharacterHelper.Instance.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
                 {
                     return;
                 }
