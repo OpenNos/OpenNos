@@ -141,7 +141,7 @@ namespace OpenNos.GameObject
                     }
                     else if (mate != null)
                     {
-                        if (EquipmentSlot != EquipmentType.Gloves && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Sp && EquipmentSlot != EquipmentType.MainWeapon && EquipmentSlot != EquipmentType.Armor || LevelMinimum > mate.Level)
+                        if (EquipmentSlot != EquipmentType.Gloves && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Sp && EquipmentSlot != EquipmentType.MainWeapon && EquipmentSlot != EquipmentType.Armor || EquipmentSlot == EquipmentType.Sp && ItemSubType != 4 || EquipmentSlot == EquipmentType.Armor && ItemSubType != 4 || EquipmentSlot == EquipmentType.MainWeapon && ItemSubType != 12 || LevelMinimum > mate.Level)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                             return;
