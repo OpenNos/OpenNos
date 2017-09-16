@@ -3,7 +3,7 @@ using System.Web.Http;
 
 namespace OpenNos.Master.Server
 {
-    public abstract class Startup
+    public class Startup
     {
         // This code configures Web API. The Startup class is specified as a type
         // parameter in the WebApp.Start method.
