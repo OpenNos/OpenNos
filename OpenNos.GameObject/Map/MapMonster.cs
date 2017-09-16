@@ -979,7 +979,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    hitRequest.Skill.BCards.ToList().ForEach(b => b.ApplyBCards(this));
+                    hitRequest.Skill.BCards.ToList().ForEach(b => b.ApplyBCards(this, hitRequest.Session.Character));
                 }
             }
 
