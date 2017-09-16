@@ -4349,7 +4349,6 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
-            new Random();
             ExchangeInfo = null;
             SpCooldown = 30;
             SaveX = 0;
