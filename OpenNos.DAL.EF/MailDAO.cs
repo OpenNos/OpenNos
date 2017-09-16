@@ -36,11 +36,12 @@ namespace OpenNos.DAL.EF
                 {
                     Mail mail = context.Mail.First(i => i.MailId.Equals(mailId));
 
-                    if (mail != null)
+                    if (mail == null)
                     {
-                        context.Mail.Remove(mail);
-                        context.SaveChanges();
+                        return DeleteResult.Deleted;
                     }
+                    context.Mail.Remove(mail);
+                    context.SaveChanges();
 
                     return DeleteResult.Deleted;
                 }

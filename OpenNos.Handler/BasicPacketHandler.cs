@@ -234,6 +234,10 @@ namespace OpenNos.Handler
             {
                 return;
             }
+            if (DAOFactory.MailDAO.LoadById(giftId) == null)
+            {
+                return;
+            }
             MailDTO mail = Session.Character.MailList[giftId];
             if (getGiftPacket.Type == 4 && mail.AttachmentVNum != null)
             {
@@ -251,6 +255,7 @@ namespace OpenNos.Handler
                     }
                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
 
+                    ServerManager.Instance.Mails.Remove(mail);
                     if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                     {
                         DAOFactory.MailDAO.DeleteById(mail.MailId);
