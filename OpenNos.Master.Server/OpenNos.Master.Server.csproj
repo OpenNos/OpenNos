@@ -143,6 +143,7 @@
   <ItemGroup>
     <Compile Include="AccountConnection.cs" />
     <Compile Include="CommunicationService.cs" />
+    <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="MSManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
