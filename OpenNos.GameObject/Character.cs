@@ -1144,7 +1144,7 @@ namespace OpenNos.GameObject
         {
             #region Definitions
 
-            if (monsterToAttack == null || skill.Type == 0)
+            if (monsterToAttack == null)
             {
                 return 0;
             }
@@ -1794,6 +1794,7 @@ namespace OpenNos.GameObject
                 monsterToAttack.CurrentMp = 0;
                 monsterToAttack.Death = DateTime.Now;
                 monsterToAttack.LastMove = DateTime.Now;
+                monsterToAttack.Buff.Clear();
             }
             else
             {
@@ -2718,14 +2719,14 @@ namespace OpenNos.GameObject
 
             #region Switch skill.Type
 
-            int boost, boostpercentage;
-            int enemyboost, enemyboostpercentage;
+            int boost;
+            int enemyboostpercentage;
 
-            boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased)[0]
-                            - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageDecreased)[0];
+            int boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased)[0]
+                                  - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageDecreased)[0];
 
-            enemyboost = target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllIncreased)[0]
-                       - target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllDecreased)[0];
+            int enemyboost = target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllIncreased)[0]
+                             - target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllDecreased)[0];
 
             switch (skill.Type)
             {
@@ -3499,7 +3500,7 @@ namespace OpenNos.GameObject
 
         public string GenerateSki()
         {
-            List<CharacterSkill> characterSkills = UseSp ? SkillsSp.Values.OrderBy(s => s.Skill.LevelMinimum).ToList() : Skills.Values.OrderBy(s => s.Skill.LevelMinimum).ToList();
+            List<CharacterSkill> characterSkills = UseSp ? SkillsSp.Values.OrderBy(s => s.Skill.CastId).ToList() : Skills.Values.OrderBy(s => s.Skill.CastId).ToList();
             string skibase = string.Empty;
             if (!UseSp)
             {
@@ -3556,15 +3557,12 @@ namespace OpenNos.GameObject
                                                 switch (wearableInstance.Slot)
                                                 {
                                                     case (byte)EquipmentType.Armor:
-                                                        Inventory.Armor = wearableInstance;
                                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                     case (byte)EquipmentType.MainWeapon:
-                                                        Inventory.PrimaryWeapon = wearableInstance;
                                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                     case (byte)EquipmentType.SecondaryWeapon:
-                                                        Inventory.SecondaryWeapon = wearableInstance;
                                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                 }
@@ -3618,6 +3616,10 @@ namespace OpenNos.GameObject
             Session.SendPacket(inv6);
             Session.SendPacket(inv7);
             Session.SendPacket(GetMinilandObjectList());
+
+            Inventory.Armor = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Equipment);
+            Inventory.PrimaryWeapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Equipment);
+            Inventory.SecondaryWeapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Equipment);
         }
 
         public string GenerateStashAll()
@@ -4222,7 +4224,7 @@ namespace OpenNos.GameObject
             return Reput <= 5000000 ? 26 : 27;
         }
 
-        public void GiftAdd(short itemVNum, byte amount, sbyte rare = 0, short design = 0, byte upgrade = 0)
+        public void GiftAdd(short itemVNum, byte amount, short design = 0, byte upgrade = 0, sbyte rare = 0)
         {
             //TODO add the rare support
             if (Inventory == null)

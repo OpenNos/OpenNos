@@ -55,15 +55,7 @@ namespace OpenNos.GameObject
 
         public Skill Skill
         {
-            get
-            {
-                if (skill == null)
-                {
-                    skill = ServerManager.Instance.GetSkill(SkillVNum);
-                }
-
-                return skill;
-            }
+            get { return skill ?? (skill = ServerManager.Instance.GetSkill(SkillVNum)); }
         }
 
         #endregion

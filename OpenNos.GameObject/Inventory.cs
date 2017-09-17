@@ -174,6 +174,10 @@ namespace OpenNos.GameObject
             newItem.Rare = Rare;
             newItem.Upgrade = Upgrade;
             newItem.Design = Design;
+            if (newItem.Rare != 0 && newItem is WearableInstance wearable)
+            {
+                wearable.SetRarityPoint();
+            }
             return AddToInventory(newItem, type);
         }
 

@@ -208,7 +208,7 @@ namespace OpenNos.Handler
         public void LoadCharacters(string packet)
         {
             string[] loginPacketParts = packet.Split(' ');
-
+            
             // Load account by given SessionId
             bool isCrossServerLogin = false;
             if (Session.Account == null)

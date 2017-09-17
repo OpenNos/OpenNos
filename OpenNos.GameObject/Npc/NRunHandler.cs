@@ -400,7 +400,7 @@ namespace OpenNos.GameObject
                     {
                         if (Session.Character.Family != null)
                         {
-                            if (Session.Character.Family.LandOfDeath != null && !npc.EffectActivated)
+                            if (Session.Character.Family.LandOfDeath != null && npc.EffectActivated)
                             {
                                 if (Session.Character.Level >= 55)
                                 {
