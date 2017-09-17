@@ -3531,6 +3531,16 @@ namespace OpenNos.GameObject
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
             if (Inventory != null)
             {
+                foreach (WearableInstance item in Inventory.Values.Where(i => i.Type == InventoryType.Wear && i.Item.EquipmentSlot != EquipmentType.Sp))
+                {
+                    if (item.Slot == (byte) EquipmentType.MainWeapon)
+                    { Inventory.SecondaryWeapon = item; }
+                    else if (item.Slot == (byte) EquipmentType.SecondaryWeapon)
+                    { Inventory.PrimaryWeapon = item; }
+                    else if (item.Slot == (byte) EquipmentType.Armor)
+                    { Inventory.Armor = item; }
+                }
+
                 foreach (ItemInstance inv in Inventory.Select(s => s.Value))
                 {
                     inv.Item.BCards.ForEach(s=>EquipmentBCards.Add(s));
@@ -3548,6 +3558,15 @@ namespace OpenNos.GameObject
                             {
                                 if (inv is WearableInstance wearableInstance)
                                 {
+                                    if (wearableInstance.Slot == (byte) EquipmentType.MainWeapon)
+                                    { Inventory.SecondaryWeapon = wearableInstance; }
+
+                                    else if (wearableInstance.Slot == (byte) EquipmentType.SecondaryWeapon)
+                                    { Inventory.PrimaryWeapon = wearableInstance; }
+
+                                    else if (wearableInstance.Slot == (byte) EquipmentType.Armor)
+                                    { Inventory.Armor = wearableInstance; }
+
                                     if (wearableInstance.EquipmentOptions != null)
                                     {
                                         switch (wearableInstance.Item.ItemType)
@@ -3616,10 +3635,6 @@ namespace OpenNos.GameObject
             Session.SendPacket(inv6);
             Session.SendPacket(inv7);
             Session.SendPacket(GetMinilandObjectList());
-
-            Inventory.Armor = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Equipment);
-            Inventory.PrimaryWeapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Equipment);
-            Inventory.SecondaryWeapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Equipment);
         }
 
         public string GenerateStashAll()
