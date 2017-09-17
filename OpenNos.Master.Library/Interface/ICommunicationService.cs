@@ -128,6 +128,13 @@ namespace OpenNos.Master.Library.Interface
         /// <param name="relationId">Id of the Relation that should be updated</param>
         void UpdateRelation(string worldGroup, long relationId);
 
+
+        /// <summary>
+        /// Updates the mails on the given Character Id
+        /// </summary>
+        /// <param name="accountId"></param>
+        void UpdateMails(long accountId);
+
         /// <summary>
         /// Shutdown given WorldGroup or WorldServer
         /// </summary>

@@ -495,6 +495,17 @@ namespace OpenNos.Master.Server
             }
         }
 
+        public void UpdateMails(long accountId)
+        {
+            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+
+            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(s => s.AccountId == accountId);
+            account?.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().UpdateMails(accountId);
+        }
+
         public void PulseAccount(long accountId)
         {
             Logger.Log.Debug("PulseAccount");
