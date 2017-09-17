@@ -1726,4 +1726,19 @@ Veux-tu continuer ?</value>
   <data name="DIGNITY_RESTORED" xml:space="preserve">
     <value />
   </data>
+  <data name="MONSTER_LVL_MUST_BE_LESS" xml:space="preserve">
+    <value>Tu peux uniquement capturer des animaux qui ont un niveau inférieur au tien.</value>
+  </data>
+  <data name="MONSTER_AREN'T_CAPTURABLE" xml:space="preserve">
+    <value>Les monstres ne peuvent pas être capturés.</value>
+  </data>
+  <data name="MONSTER_MUST_BE_LOW_HP" xml:space="preserve">
+    <value>Tu peux uniquement capturer des animaux qui n'ont plus que 50 % ou moins de leur HP.</value>
+  </data>
+  <data name="CAPTURE_FAILED" xml:space="preserve">
+    <value>La capture a échoué.</value>
+  </data>
+  <data name="MAX_MATES_COUNT" xml:space="preserve">
+    <value>Tu ne peux pas adopter encore plus de familiers.</value>
+  </data>
 </root>
