@@ -27,6 +27,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Channels;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenNos.GameObject.Event;
@@ -1680,8 +1681,6 @@ namespace OpenNos.GameObject
 
             Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x => { BotProcess(); });
 
-            Observable.Interval(TimeSpan.FromSeconds(60)).Subscribe(x => { MailProcess(); });
-
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x => { RemoveItemProcess(); });
 
             EventHelper.Instance.RunEvent(new EventContainer(Instance.GetMapInstance(Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, false));
@@ -1698,6 +1697,7 @@ namespace OpenNos.GameObject
             CommunicationServiceClient.Instance.FamilyRefresh += OnFamilyRefresh;
             CommunicationServiceClient.Instance.RelationRefresh += OnRelationRefresh;
             CommunicationServiceClient.Instance.BazaarRefresh += OnBazaarRefresh;
+            CommunicationServiceClient.Instance.MailRefresh += OnMailRefresh;
             CommunicationServiceClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
             CommunicationServiceClient.Instance.ShutdownEvent += OnShutdown;
             _lastGroupId = 1;
@@ -1903,17 +1903,11 @@ namespace OpenNos.GameObject
             });
         }
 
-
-        private void MailProcess()
+        private void OnMailRefresh(object sender, EventArgs e)
         {
-            try
-            {
-                Parallel.ForEach(Sessions.Where(c => c.IsConnected), session => session.Character?.RefreshMail());
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
+            long accountId = (long)sender;
+            ClientSession session = Sessions.FirstOrDefault(s => s.Account.AccountId == accountId);
+            session?.Character.RefreshMail();
         }
 
         private void OnBazaarRefresh(object sender, EventArgs e)

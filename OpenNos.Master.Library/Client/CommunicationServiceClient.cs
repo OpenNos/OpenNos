@@ -49,6 +49,8 @@ namespace OpenNos.Master.Library.Client
 
         public event EventHandler BazaarRefresh;
 
+        public event EventHandler MailRefresh;
+
         public event EventHandler CharacterConnectedEvent;
 
         public event EventHandler CharacterDisconnectedEvent;
@@ -198,6 +200,11 @@ namespace OpenNos.Master.Library.Client
             return _client.ServiceProxy.SendMessageToCharacter(message);
         }
 
+        public void UpdateMails(long accountId)
+        {
+            _client.ServiceProxy.UpdateMails(accountId);
+        }
+
         public void Shutdown(string worldGroup)
         {
             _client.ServiceProxy.Shutdown(worldGroup);
@@ -268,6 +275,11 @@ namespace OpenNos.Master.Library.Client
         internal void OnUpdateRelation(long relationId)
         {
             RelationRefresh?.Invoke(relationId, null);
+        }
+
+        internal void OnMailRefresh(long accountId)
+        {
+            MailRefresh?.Invoke(accountId, null);
         }
 
         #endregion

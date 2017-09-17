@@ -21,6 +21,8 @@ namespace OpenNos.Master.Library.Interface
 
         void UpdateRelation(long relationId);
 
+        void UpdateMails(long accountId);
+
         void KickSession(long? accountId, long? sessionId);
 
     }

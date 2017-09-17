@@ -54,6 +54,11 @@ namespace OpenNos.Master.Library.Client
             Task.Run(() => CommunicationServiceClient.Instance.OnUpdateRelation(relationId));
         }
 
+        public void UpdateMails(long accountId)
+        {
+            Task.Run(() => CommunicationServiceClient.Instance.OnMailRefresh(accountId));
+        }
+
         #endregion
     }
 }

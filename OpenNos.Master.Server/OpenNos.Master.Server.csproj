@@ -157,6 +157,7 @@
     <Compile Include="AuthorizationServerProvider.cs" />
     <Compile Include="AuthorizeRoleAttribute.cs" />
     <Compile Include="CommunicationService.cs" />
+    <Compile Include="Controllers\MailsController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="MSManager.cs" />
     <Compile Include="Program.cs" />
