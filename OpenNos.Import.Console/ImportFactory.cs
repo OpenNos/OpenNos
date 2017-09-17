@@ -3312,7 +3312,7 @@ namespace OpenNos.Import.Console
                                         {
                                             // (item.VNum > 8104 && item.VNum < 8115) <= disaled for now
                                             // because doesn't work!
-                                            item.ItemValidTime = 3600;
+                                            item.ItemValidTime = 10800;
                                         }
                                         else
                                         {
@@ -3622,6 +3622,33 @@ namespace OpenNos.Import.Console
 
                                     case 1982:
                                         item.Effect = 6969; // imagined number as for I = √(-1), complex z = a + bi
+                                        break;
+
+                                    case 1894:
+                                    case 1895:
+                                    case 1896:
+                                    case 1897:
+                                    case 1898:
+                                    case 1899:
+                                    case 1900:
+                                    case 1901:
+                                    case 1902:
+                                    case 1903:
+                                        item.Effect = 789;
+                                        item.EffectValue = item.VNum + 2152; 
+                                        break;
+
+                                    case 8105:
+                                    case 8106:
+                                    case 8107:
+                                    case 8108:
+                                    case 8109:
+                                    case 8110:
+                                    case 8111:
+                                    case 8112:
+                                    case 8113:
+                                    case 8114:
+                                        item.Effect = 790;
                                         break;
 
                                     default:

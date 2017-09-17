@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenNos.DAL;
+using OpenNos.DAL.EF;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 
@@ -491,6 +492,14 @@ namespace OpenNos.GameObject
                     session.Character.GetReput(ReputPrice);
                     session.SendPacket(session.Character.GenerateFd());
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    break;
+
+                case 789:
+                    session.Character.GiftAdd((short)inv.Item.EffectValue, 1);
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    break;
+
+                case 790:
                     break;
 
                 case 1003:
