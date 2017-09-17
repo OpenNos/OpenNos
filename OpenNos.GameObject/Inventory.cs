@@ -58,9 +58,9 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static ItemInstance InstantiateItemInstance(short vnum, long ownerId, byte amount = 1)
+        public static ItemInstance InstantiateItemInstance(short vnum, long ownerId, byte amount = 1, sbyte rare = 0)
         {
-            ItemInstance newItem = new ItemInstance { ItemVNum = vnum, Amount = amount, CharacterId = ownerId};
+            ItemInstance newItem = new ItemInstance { ItemVNum = vnum, Amount = amount, CharacterId = ownerId, Rare = rare};
             if (newItem.Item != null)
             {
                 switch (newItem.Item.Type)
@@ -174,6 +174,10 @@ namespace OpenNos.GameObject
             newItem.Rare = Rare;
             newItem.Upgrade = Upgrade;
             newItem.Design = Design;
+            if (newItem.Rare != 0 && newItem is WearableInstance wearable)
+            {
+                wearable.SetRarityPoint();
+            }
             return AddToInventory(newItem, type);
         }
 

@@ -334,7 +334,7 @@ namespace OpenNos.GameObject.Helpers
                                                     rare = (sbyte) ServerManager.Instance.RandomNumber(-2, 7);
                                                 }
                                                 //TODO add random rarity for some object
-                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design);
+                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
                                             }
                                         }
                                     }
