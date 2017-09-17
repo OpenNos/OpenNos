@@ -1300,7 +1300,7 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.OnAreaEntryEvents?.Where(s => s != null && s.InZone(Session.Character.PositionX, Session.Character.PositionY)).ToList()
                         .ForEach(e =>
                         {
-                            e?.Events?.ForEach(evt => EventHelper.Instance?.RunEvent(evt));
+                            e?.Events?.ToList().ForEach(evt => EventHelper.Instance?.RunEvent(evt));
                         });
                     Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s != null && s.InZone(Session.Character.PositionX, Session.Character.PositionY));
                 }

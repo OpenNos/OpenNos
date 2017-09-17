@@ -18,6 +18,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using OpenNos.PathFinder;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -56,7 +57,7 @@ namespace OpenNos.GameObject
 
         public MapInstance MapInstance { get; set; }
 
-        public List<EventContainer> OnDeathEvents { get; set; }
+        public ConcurrentBag<EventContainer> OnDeathEvents { get; set; }
 
         public List<Node> Path { get; set; }
 
@@ -153,7 +154,7 @@ namespace OpenNos.GameObject
         public void RunDeathEvent()
         {
             MapInstance.InstanceBag.NpcsKilled++;
-            OnDeathEvents.ForEach(e =>
+            OnDeathEvents.ToList().ForEach(e =>
             {
                 if(e.EventActionType == EventActionType.THROWITEMS)
                 {
@@ -162,10 +163,10 @@ namespace OpenNos.GameObject
                 }
                 EventHelper.Instance.RunEvent(e);
             });
-            OnDeathEvents.RemoveAll(s => s != null);
+            OnDeathEvents.Clear();
         }
 
-        internal void StartLife()
+        private void StartLife()
         {
             Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {

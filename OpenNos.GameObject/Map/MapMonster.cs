@@ -1120,7 +1120,7 @@ namespace OpenNos.GameObject
                             MapX = mapX;
                             MapY = mapY;
 
-                            MoveEvent?.Events.ForEach(e =>
+                            MoveEvent?.Events.ToList().ForEach(e =>
                             {
                                 EventHelper.Instance.RunEvent(e, monster: this);
                             });

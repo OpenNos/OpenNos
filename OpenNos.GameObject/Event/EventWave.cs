@@ -14,6 +14,7 @@
 
 using OpenNos.Domain;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Xml;
@@ -25,16 +26,16 @@ namespace OpenNos.GameObject
         #region Methods
 
         #endregion
-        public byte Delay { get; set; }
+        public byte Delay { get; private set; }
         public byte Offset { get; set; }
         public DateTime LastStart { get; set; }
-        public List<EventContainer> Events { get; set; }
+        public ConcurrentBag<EventContainer> Events { get; private set; }
 
-        public EventWave(byte Delay, List<EventContainer> Events, byte Offset = 0)
+        public EventWave(byte delay, ConcurrentBag<EventContainer> events, byte offset = 0)
         {
-            this.Delay = Delay;
-            this.Offset = Offset;
-            this.Events = Events;
+            Delay = delay;
+            Offset = offset;
+            Events = events;
         }
     }
 }

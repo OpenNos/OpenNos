@@ -123,7 +123,7 @@ namespace OpenNos.GameObject
             return summonParameters;
         }
 
-        public List<NpcToSummon> GenerateNpcs(short vnum, short amount, List<EventContainer> deathEvents, bool isMate, bool isProtected)
+        public List<NpcToSummon> GenerateNpcs(short vnum, short amount, ConcurrentBag<EventContainer> deathEvents, bool isMate, bool isProtected)
         {
             List<NpcToSummon> summonParameters = new List<NpcToSummon>();
             for (int i = 0; i < amount; i++)

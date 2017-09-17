@@ -551,7 +551,7 @@ namespace OpenNos.GameObject
                     }
                     if (s.Offset == 0)
                     {
-                        s.Events.ForEach(e => EventHelper.Instance.RunEvent(e));
+                        s.Events.ToList().ForEach(e => EventHelper.Instance.RunEvent(e));
                     }
                     s.Offset = s.Offset > 0 ? (byte) (s.Offset - 1) : (byte) 0;
                     s.LastStart = DateTime.Now;
