@@ -1267,18 +1267,19 @@ namespace OpenNos.Handler
         /// <param name="walkPacket"></param>
         public void Walk(WalkPacket walkPacket)
         {
-            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-            double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
-
-            if (!Session.HasCurrentMapInstance || Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) || Session.Character.IsChangingMapInstance ||
+            if (Session?.Character == null || !Session.HasCurrentMapInstance || Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) ||
+                Session.Character.IsChangingMapInstance ||
                 Session.Character.HasShopOpened)
             {
                 return;
             }
+            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+            double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
+            int distance = Map.GetDistance(new MapCell {X = Session.Character.PositionX, Y = Session.Character.PositionY}, new MapCell {X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate});
+
             if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(1) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
             {
-                if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || Session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance)
+                if (Session.Character.MapInstance?.MapInstanceType == MapInstanceType.BaseMapInstance || Session.Character.MapInstance?.MapInstanceType == MapInstanceType.Act4Instance)
                 {
                     Session.Character.MapX = walkPacket.XCoordinate;
                     Session.Character.MapY = walkPacket.YCoordinate;
@@ -1292,17 +1293,21 @@ namespace OpenNos.Handler
                 }, Session.CurrentMapInstance.Map.Grid);
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
                 Session.SendPacket(Session.Character.GenerateCond());
-                Session.Character.LastMove = DateTime.Now;
-
-                Session.CurrentMapInstance?.OnAreaEntryEvents?.Where(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY)).ToList().ForEach(e =>
+                if (Session.Character != null)
                 {
-                    e.Events.ForEach(evt => EventHelper.Instance.RunEvent(evt));
-                });
-                Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY));
+                    Session.Character.LastMove = DateTime.Now;
+
+                    Session.CurrentMapInstance?.OnAreaEntryEvents?.Where(s => s != null && s.InZone(Session.Character.PositionX, Session.Character.PositionY)).ToList()
+                        .ForEach(e =>
+                        {
+                            e?.Events?.ForEach(evt => EventHelper.Instance?.RunEvent(evt));
+                        });
+                    Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s != null && s.InZone(Session.Character.PositionX, Session.Character.PositionY));
+                }
 
                 Session.CurrentMapInstance?.OnMoveOnMapEvents?.ForEach(e =>
                 {
-                    EventHelper.Instance.RunEvent(e);
+                    EventHelper.Instance?.RunEvent(e);
                 });
                 Session.CurrentMapInstance?.OnMoveOnMapEvents?.RemoveAll(s => s != null);
             }
