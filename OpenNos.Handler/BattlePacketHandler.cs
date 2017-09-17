@@ -338,7 +338,7 @@ namespace OpenNos.Handler
                                     hitRequest.Session.SendPacket(hitRequest.Session.Character.GenerateLev());
                                 }
                             }
-                            foreach (ClientSession sess in ServerManager.Instance.Sessions.Where(s => s.HasSelectedCharacter && s.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance))
+                            foreach (ClientSession sess in ServerManager.Instance.Sessions.Where(s => s.HasSelectedCharacter && s.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance))
                             {
                                 if (sess.Character.Faction == Session.Character.Faction)
                                 {
