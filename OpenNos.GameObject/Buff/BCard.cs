@@ -77,15 +77,13 @@ namespace OpenNos.GameObject
                     }
                     else if (session.GetType() == typeof(MapMonster))
                     {
-                        MapMonster monster = session as MapMonster;
+                        if (!(session is MapMonster monster))
+                        {
+                            return;
+                        }
                         ConcurrentBag<MonsterToSummon> summonParameters = new ConcurrentBag<MonsterToSummon>();
                         for (int i = 0; i < FirstData; i++)
                         {
-                            if (monster == null)
-                            {
-                                continue;
-                            }
-
                             short x, y;
                             if (SubType == 11)
                             {
@@ -108,7 +106,7 @@ namespace OpenNos.GameObject
                                         EventHelper.Instance.RunEvent(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     break;
                                 default:
-                                    if (!monster.OnDeathEvents.Any(s => s.EventActionType == EventActionType.SPAWNMONSTERS))
+                                    if (monster.OnDeathEvents.All(s => s.EventActionType != EventActionType.SPAWNMONSTERS))
                                     {
                                         monster.OnDeathEvents.Add(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     }

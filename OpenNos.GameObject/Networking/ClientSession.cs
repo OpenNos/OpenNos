@@ -408,7 +408,7 @@ namespace OpenNos.GameObject
                 {
                     string packetstring = packet.Replace('^', ' ');
                     string[] packetsplit = packetstring.Split(' ');
-
+                    
                     if (_encryptor.HasCustomParameter)
                     {
                         // keep alive
