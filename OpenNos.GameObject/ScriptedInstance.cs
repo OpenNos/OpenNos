@@ -153,16 +153,13 @@ namespace OpenNos.GameObject
                 int.TryParse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value, out int reputation);
                 Reputation = reputation;
 
-                short startx = 0;
-                short.TryParse(def.SelectSingleNode("StartX")?.Attributes["Value"].Value, out startx);
+                short.TryParse(def.SelectSingleNode("StartX")?.Attributes["Value"].Value, out short startx);
                 StartX = startx;
 
-                short starty = 0;
-                short.TryParse(def.SelectSingleNode("StartY")?.Attributes["Value"].Value, out starty);
+                short.TryParse(def.SelectSingleNode("StartY")?.Attributes["Value"].Value, out short starty);
                 StartY = starty;
 
-                byte lives;
-                byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out lives);
+                byte.TryParse(def.SelectSingleNode("Lives")?.Attributes["Value"].Value, out byte lives);
                 Lives = lives;
                 if (def.SelectSingleNode("RequieredItems")?.ChildNodes != null)
                 {
@@ -204,60 +201,65 @@ namespace OpenNos.GameObject
         public void LoadScript(MapInstanceType mapinstancetype)
         {
             XmlDocument doc = new XmlDocument();
-            if (Script != null)
+            if (Script == null)
             {
-                doc.LoadXml(Script);
-                XmlNode InstanceEvents = doc.SelectSingleNode("Definition");
+                return;
+            }
+            doc.LoadXml(Script);
+            XmlNode instanceEvents = doc.SelectSingleNode("Definition");
 
-                //CreateMaps
-                foreach (XmlNode variable in InstanceEvents.SelectSingleNode("InstanceEvents").ChildNodes)
+            //CreateMaps
+            XmlNodeList xmlNodeList = instanceEvents?.SelectSingleNode("InstanceEvents")?.ChildNodes;
+            if (xmlNodeList != null)
+            {
+                foreach (XmlNode variable in xmlNodeList)
                 {
-                    if (variable.Name == "CreateMap")
+                    if (variable.Name != "CreateMap")
                     {
-                        _instancebag.Lives = Lives;
-                        MapInstance newmap = ServerManager.Instance.GenerateMapInstance(short.Parse(variable?.Attributes["VNum"].Value), mapinstancetype, _instancebag);
-                        byte indexx;
-                        byte.TryParse(variable?.Attributes["IndexX"]?.Value, out indexx);
-                        newmap.MapIndexX = indexx;
+                        continue;
+                    }
+                    _instancebag.Lives = Lives;
+                    MapInstance newmap = ServerManager.Instance.GenerateMapInstance(short.Parse(variable?.Attributes?["VNum"].Value), mapinstancetype, _instancebag);
+                    byte.TryParse(variable?.Attributes["IndexX"]?.Value, out byte indexx);
+                    newmap.MapIndexX = indexx;
 
-                        byte indexy;
-                        byte.TryParse(variable?.Attributes["IndexY"]?.Value, out indexy);
-                        newmap.MapIndexY = indexy;
+                    byte.TryParse(variable?.Attributes["IndexY"]?.Value, out byte indexy);
+                    newmap.MapIndexY = indexy;
 
-                        if (!_mapinstancedictionary.ContainsKey(int.Parse(variable?.Attributes["Map"].Value)))
-                        {
-                            _mapinstancedictionary.Add(int.Parse(variable?.Attributes["Map"].Value), newmap);
-                        }
+                    if (!_mapinstancedictionary.ContainsKey(int.Parse(variable?.Attributes["Map"].Value)))
+                    {
+                        _mapinstancedictionary.Add(int.Parse(variable?.Attributes["Map"].Value), newmap);
                     }
                 }
-
-                FirstMap = _mapinstancedictionary.Values.FirstOrDefault();
-                Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(
-                   x =>
-                   {
-                       if (!FirstMap.InstanceBag.Lock)
-                       {
-                           _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
-                           Dispose();
-                       }
-                   });
-                obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
-                {
-                    if (_instancebag.Lives - _instancebag.DeadList.Count() < 0)
-                    {
-                        _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)3)));
-                        Dispose();
-                        obs.Dispose();
-                    }
-                    if (_instancebag.Clock.DeciSecondRemaining <= 0)
-                    {
-                        _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
-                        Dispose();
-                        obs.Dispose();
-                    }
-                });
-                GenerateEvent(InstanceEvents, FirstMap);
             }
+
+            FirstMap = _mapinstancedictionary.Values.FirstOrDefault();
+            Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(
+                x =>
+                {
+                    if (FirstMap.InstanceBag.Lock)
+                    {
+                        return;
+                    }
+                    _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
+                    Dispose();
+                });
+            obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
+            {
+                if (_instancebag.Lives - _instancebag.DeadList.Count() < 0)
+                {
+                    _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)3)));
+                    Dispose();
+                    obs.Dispose();
+                }
+                if (_instancebag.Clock.DeciSecondRemaining <= 0)
+                {
+                    _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
+                    Dispose();
+                    obs.Dispose();
+                }
+            });
+            GenerateEvent(instanceEvents, FirstMap);
         }
 
         private ConcurrentBag<EventContainer> GenerateEvent(XmlNode node, MapInstance parentmapinstance)
@@ -273,16 +275,16 @@ namespace OpenNos.GameObject
                 short toY = -1;
                 short toX = -1;
                 Guid destmapInstanceId = default(Guid);
-                if (!int.TryParse(mapevent.Attributes["Map"]?.Value, out var mapid))
+                if (!int.TryParse(mapevent.Attributes["Map"]?.Value, out int mapid))
                 {
                     mapid = -1;
                 }
-                if (!short.TryParse(mapevent.Attributes["PositionX"]?.Value, out var positionX) || !short.TryParse(mapevent.Attributes["PositionY"]?.Value, out var positionY))
+                if (!short.TryParse(mapevent.Attributes["PositionX"]?.Value, out short positionX) || !short.TryParse(mapevent.Attributes["PositionY"]?.Value, out short positionY))
                 {
                     positionX = -1;
                     positionY = -1;
                 }
-                if (int.TryParse(mapevent.Attributes["ToMap"]?.Value, out var toMap))
+                if (int.TryParse(mapevent.Attributes["ToMap"]?.Value, out int toMap))
                 {
                     MapInstance destmap = _mapinstancedictionary.First(s => s.Key == toMap).Value;
                     if (!short.TryParse(mapevent?.Attributes["ToY"]?.Value, out toY) || !short.TryParse(mapevent?.Attributes["ToX"]?.Value, out toX))
