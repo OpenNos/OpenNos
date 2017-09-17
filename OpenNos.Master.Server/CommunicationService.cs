@@ -316,7 +316,7 @@ namespace OpenNos.Master.Server
             {
                 return null;
             }
-            string channelPacket = $"NsTeST {account} {sessionId} ";
+            string channelPacket = $"NsTeST {account.AccountName} {sessionId} ";
             foreach (WorldServer world in MSManager.Instance.WorldServers.OrderBy(w => w.WorldGroup))
             {
                 if (lastGroup != world.WorldGroup)
@@ -331,7 +331,6 @@ namespace OpenNos.Master.Server
                 channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:{channelcolor}:{worldCount}.{world.ChannelId}.{world.WorldGroup} ";
             }
             channelPacket += "-1:-1:-1:10000.10000.1";
-            Logger.Log.Debug($"channelpacket = {channelPacket}");
             return MSManager.Instance.WorldServers.Any() ? channelPacket : null;
         }
 
