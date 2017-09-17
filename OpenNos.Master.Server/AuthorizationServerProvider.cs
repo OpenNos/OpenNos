@@ -24,8 +24,8 @@ namespace OpenNos.Master.Server
             if (account != null && account.Password.ToLower().Equals(EncryptionBase.Sha512(context.Password)))
             {
                 var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-                identity.AddClaim(new Claim("sub", context.UserName));
-                identity.AddClaim(new Claim("role", account.Authority.ToString()));
+                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, context.UserName));
+                identity.AddClaim(new Claim(ClaimTypes.Role, account.Authority.ToString()));
                 context.Validated(identity);
             }
             else

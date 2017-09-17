@@ -155,6 +155,7 @@
   <ItemGroup>
     <Compile Include="AccountConnection.cs" />
     <Compile Include="AuthorizationServerProvider.cs" />
+    <Compile Include="AuthorizeRoleAttribute.cs" />
     <Compile Include="CommunicationService.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="MSManager.cs" />
