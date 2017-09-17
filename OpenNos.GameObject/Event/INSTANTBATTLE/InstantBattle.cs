@@ -24,7 +24,7 @@ using System.Threading;
 
 namespace OpenNos.GameObject.Event
 {
-    public class InstantBattle
+    public static class InstantBattle
     {
         #region Methods
 
