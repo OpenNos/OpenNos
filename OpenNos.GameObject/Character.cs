@@ -3556,15 +3556,12 @@ namespace OpenNos.GameObject
                                                 switch (wearableInstance.Slot)
                                                 {
                                                     case (byte)EquipmentType.Armor:
-                                                        Inventory.Armor = wearableInstance;
                                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                     case (byte)EquipmentType.MainWeapon:
-                                                        Inventory.PrimaryWeapon = wearableInstance;
                                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                     case (byte)EquipmentType.SecondaryWeapon:
-                                                        Inventory.SecondaryWeapon = wearableInstance;
                                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                                         break;
                                                 }
@@ -3618,6 +3615,10 @@ namespace OpenNos.GameObject
             Session.SendPacket(inv6);
             Session.SendPacket(inv7);
             Session.SendPacket(GetMinilandObjectList());
+
+            Inventory.Armor = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Equipment);
+            Inventory.PrimaryWeapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Equipment);
+            Inventory.SecondaryWeapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Equipment);
         }
 
         public string GenerateStashAll()
