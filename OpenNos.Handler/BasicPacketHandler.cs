@@ -234,10 +234,6 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (DAOFactory.MailDAO.LoadById(giftId) == null)
-            {
-                return;
-            }
             MailDTO mail = Session.Character.MailList[giftId];
             if (getGiftPacket.Type == 4 && mail.AttachmentVNum != null)
             {

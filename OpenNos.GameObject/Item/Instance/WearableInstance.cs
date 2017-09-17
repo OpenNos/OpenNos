@@ -129,8 +129,6 @@ namespace OpenNos.GameObject
             byte subtype = Item.ItemSubType;
             DateTime test = ItemDeleteTime ?? DateTime.Now;
             long time = ItemDeleteTime != null ? (long)(test - DateTime.Now).TotalSeconds : 0;
-            Logger.Log.Info($"ItemDeleteTime = {ItemDeleteTime}");
-            Logger.Log.Info($"test = {test}");
             long seconds = IsBound ? time : Item.ItemValidTime;
             List<EquipmentOptionDTO> options = EquipmentOptions.Where(s => s.Level <= (s.Level > 12 ? 20 : 8)).OrderBy(s => s.Level).ToList();
             options.AddRange(EquipmentOptions.Where(s => s.Level > (s.Level > 12 ? 20 : 8)).OrderByDescending(s => s.Level));
