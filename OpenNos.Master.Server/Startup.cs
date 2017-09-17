@@ -23,9 +23,10 @@ namespace OpenNos.Master.Server
             appBuilder.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
             appBuilder.UseWebApi(config);
         }
+
         public void ConfigureOAuth(IAppBuilder app)
         {
-            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
+            OAuthAuthorizationServerOptions oAuthServerOptions = new OAuthAuthorizationServerOptions()
             {
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/token"),
@@ -34,7 +35,7 @@ namespace OpenNos.Master.Server
             };
 
             // Token Generation
-            app.UseOAuthAuthorizationServer(OAuthServerOptions);
+            app.UseOAuthAuthorizationServer(oAuthServerOptions);
             app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
 
         }
