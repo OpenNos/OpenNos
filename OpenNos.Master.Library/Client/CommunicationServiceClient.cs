@@ -148,9 +148,9 @@ namespace OpenNos.Master.Library.Client
             _client.ServiceProxy.RefreshPenalty(penaltyId);
         }
 
-        public void RegisterAccountLogin(long accountId, long sessionId)
+        public void RegisterAccountLogin(long accountId, long sessionId, string accountName)
         {
-            _client.ServiceProxy.RegisterAccountLogin(accountId, sessionId);
+            _client.ServiceProxy.RegisterAccountLogin(accountId, sessionId, accountName);
         }
         
         public bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId)

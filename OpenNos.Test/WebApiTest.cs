@@ -19,7 +19,7 @@ namespace OpenNos.Test
             {
                 await Task.Factory.StartNew(() =>
                  {
-                     CommunicationServiceClient.Instance.RegisterAccountLogin(x, x);
+                     CommunicationServiceClient.Instance.RegisterAccountLogin(x, x, "");
                      bool hasRegisteredAccountLogin = CommunicationServiceClient.Instance.IsLoginPermitted(x, x);
                      Assert.IsTrue(hasRegisteredAccountLogin);
                  });

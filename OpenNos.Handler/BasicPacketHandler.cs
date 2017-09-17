@@ -259,6 +259,15 @@ namespace OpenNos.Handler
                         WearableInstance wearable = newInv as WearableInstance;
                         wearable?.SetRarityPoint();
                     }
+                    GeneralLogDTO log = new GeneralLogDTO
+                    {
+                        LogType = "CLAIM_GIFT",
+                        LogData = $"CLAIM GIFT {giftId}",
+                        IpAddress = Session.IpAddress,
+                        Timestamp = DateTime.Now,
+                    };
+                    DAOFactory.GeneralLogDAO.Insert(log);
+
                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
 
                     ServerManager.Instance.Mails.Remove(mail);

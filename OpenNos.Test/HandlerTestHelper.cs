@@ -42,7 +42,7 @@ namespace OpenNos.Test
             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
 
             // register for account login
-            CommunicationServiceClient.Instance.RegisterAccountLogin(account.AccountId, 12345);
+            CommunicationServiceClient.Instance.RegisterAccountLogin(account.AccountId, 12345, account.Name);
 
             // OpenNosEntryPoint -> LoadCharacterList
             client.ReceivePacket("12345");

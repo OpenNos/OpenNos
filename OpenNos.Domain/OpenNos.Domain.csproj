@@ -71,6 +71,7 @@
     <Compile Include="BazaarListType.cs" />
     <Compile Include="ChatType.cs" />
     <Compile Include="FactionType.cs" />
+    <Compile Include="LoginFailType.cs" />
     <Compile Include="ShellOptionType.cs" />
     <Compile Include="TalentArenaOptionType.cs" />
     <Compile Include="BuffType.cs" />

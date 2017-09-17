@@ -230,14 +230,14 @@ namespace OpenNos.Master.Server
             }
         }
 
-        public void RegisterAccountLogin(long accountId, long sessionId)
+        public void RegisterAccountLogin(long accountId, long sessionId, string accountName)
         {
             if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
             {
                 return;
             }
             MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(a => !a.AccountId.Equals(accountId));
-            MSManager.Instance.ConnectedAccounts.Add(new AccountConnection(accountId, sessionId));
+            MSManager.Instance.ConnectedAccounts.Add(new AccountConnection(accountId, sessionId, accountName));
         }
 
         public void RegisterInternalAccountLogin(long accountId, int sessionId)
@@ -311,7 +311,12 @@ namespace OpenNos.Master.Server
         {
             string lastGroup = string.Empty;
             byte worldCount = 0;
-            string channelPacket = $"NsTeST {sessionId} ";
+            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(s => s.SessionId == sessionId);
+            if (account == null)
+            {
+                return null;
+            }
+            string channelPacket = $"NsTeST {account} {sessionId} ";
             foreach (WorldServer world in MSManager.Instance.WorldServers.OrderBy(w => w.WorldGroup))
             {
                 if (lastGroup != world.WorldGroup)
@@ -325,6 +330,8 @@ namespace OpenNos.Master.Server
 
                 channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:{channelcolor}:{worldCount}.{world.ChannelId}.{world.WorldGroup} ";
             }
+            channelPacket += "-1:-1:-1:10000.10000.1";
+            Logger.Log.Debug($"channelpacket = {channelPacket}");
             return MSManager.Instance.WorldServers.Any() ? channelPacket : null;
         }
 

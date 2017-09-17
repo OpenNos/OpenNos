@@ -119,7 +119,7 @@ namespace OpenNos.Master.Library.Interface
         /// </summary>
         /// <param name="accountId">Id of the Account to register</param>
         /// <param name="sessionId">Id of the Session to register</param>
-        void RegisterAccountLogin(long accountId, long sessionId);
+        void RegisterAccountLogin(long accountId, long sessionId, string accountName);
 
         /// <summary>
         /// Updates the Relations on the given WorldGroup

@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System.Collections.Generic;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
@@ -40,6 +41,11 @@ namespace OpenNos.DAL.Mock
             }
             Insert(mail);
             return SaveResult.Inserted;
+        }
+
+        public IEnumerable<MailDTO> LoadByCharacterId(long characterId)
+        {
+            return new List<MailDTO>();
         }
 
         public MailDTO LoadById(long mailId)

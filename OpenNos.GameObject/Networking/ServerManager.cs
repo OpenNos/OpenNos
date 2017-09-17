@@ -1673,7 +1673,7 @@ namespace OpenNos.GameObject
 
             Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x => { BotProcess(); });
 
-            Observable.Interval(TimeSpan.FromSeconds(90)).Subscribe(x => { MailProcess(); });
+            Observable.Interval(TimeSpan.FromSeconds(60)).Subscribe(x => { MailProcess(); });
 
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x => { RemoveItemProcess(); });
 
@@ -1901,7 +1901,6 @@ namespace OpenNos.GameObject
         {
             try
             {
-                Mails = DAOFactory.MailDAO.LoadAll().ToList();
                 Parallel.ForEach(Sessions.Where(c => c.IsConnected), session => session.Character?.RefreshMail());
             }
             catch (Exception e)

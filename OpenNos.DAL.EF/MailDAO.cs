@@ -80,6 +80,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<MailDTO> LoadByCharacterId(long characterId)
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                foreach (Mail mail in context.Mail.Where(s => !s.IsSenderCopy && s.ReceiverId == characterId))
+                {
+                    yield return _mapper.Map<MailDTO>(mail);
+                }
+            }
+        }
+
         public IEnumerable<MailDTO> LoadAll()
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())

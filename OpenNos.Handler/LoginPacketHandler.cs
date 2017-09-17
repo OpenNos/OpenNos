@@ -48,13 +48,14 @@ namespace OpenNos.Handler
         {
             string channelpacket = CommunicationServiceClient.Instance.RetrieveRegisteredWorldServers(sessionId);
 
-            if (channelpacket == null)
+            if (channelpacket != null)
             {
-                Logger.Log.Error("Could not retrieve Worldserver groups. Please make sure they've already been registered.");
-                _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"), DateTime.Now)}");
+                return channelpacket;
             }
+            Logger.Log.Error("Could not retrieve Worldserver groups. Please make sure they've already been registered.");
+            _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"), DateTime.Now)}");
 
-            return channelpacket;
+            return null;
         }
 
         /// <summary>
@@ -85,27 +86,28 @@ namespace OpenNos.Handler
                     PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
                     if (penalty != null)
                     {
-                        _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, penalty.DateEnd.ToString("yyyy-MM-dd-HH:mm"))}");
+                        _session.SendPacket($"failc 7");
                     }
                     else
                     {
                         switch (type)
                         {
+                            // TODO TO ENUM
                             case AuthorityType.Unconfirmed:
                                 {
-                                    _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("NOTVALIDATE")}");
+                                    _session.SendPacket($"failc {LoginFailType.CantConnect}");
                                 }
                                 break;
 
                             case AuthorityType.Banned:
                                 {
-                                    _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("IDERROR")}");
+                                    _session.SendPacket($"failc {LoginFailType.Banned}");
                                 }
                                 break;
 
                             case AuthorityType.Closed:
                                 {
-                                    _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("IDERROR")}");
+                                    _session.SendPacket($"failc {LoginFailType.CantConnect}");
                                 }
                                 break;
 
@@ -114,10 +116,13 @@ namespace OpenNos.Handler
                                     int newSessionId = SessionFactory.Instance.GenerateSessionId();
                                     Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
+                                    // TODO MAINTENANCE MODE (MASTER SERVER)
+                                    // IF MAINTENANCE 
+                                    // _session.SendPacket($"failc 2");
                                     // inform communication service about new player from login server
                                     try
                                     {
-                                        CommunicationServiceClient.Instance.RegisterAccountLogin(loadedAccount.AccountId, newSessionId);
+                                        CommunicationServiceClient.Instance.RegisterAccountLogin(loadedAccount.AccountId, newSessionId, loadedAccount.Name);
                                     }
                                     catch (Exception ex)
                                     {
@@ -131,12 +136,12 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("ALREADY_CONNECTED"))}");
+                    _session.SendPacket($"failc {LoginFailType.AlreadyConnected}");
                 }
             }
             else
             {
-                _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("IDERROR"))}");
+                _session.SendPacket($"failc {LoginFailType.AccountOrPasswordWrong}");
             }
         }
 

@@ -4642,7 +4642,7 @@ namespace OpenNos.GameObject
             int j = 0;
             try
             {
-                List<MailDTO> mails = ServerManager.Instance.Mails.Where(s => s.ReceiverId == CharacterId && !s.IsSenderCopy && MailList.All(m => m.Value.MailId != s.MailId)).Take(50).ToList();
+                List<MailDTO> mails = DAOFactory.MailDAO.LoadByCharacterId(CharacterId).Where(s => MailList.All(m => m.Value.MailId != s.MailId)).Take(50).ToList();
                 for (int x = 0; x < mails.Count; x++)
                 {
                     MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mails.ElementAt(x));

@@ -20,16 +20,19 @@ namespace OpenNos.Master.Library.Data
     {
         #region Instantiation
 
-        public AccountConnection(long accountId, long session)
+        public AccountConnection(long accountId, long session, string accountName)
         {
             AccountId = accountId;
             SessionId = session;
             LastPulse = DateTime.Now;
+            AccountName = accountName;
         }
 
         #endregion
 
         #region Properties
+
+        public string AccountName { get; private set; }
 
         public long AccountId { get; private set; }
 
