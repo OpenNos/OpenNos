@@ -60,7 +60,6 @@ namespace OpenNos.GameObject.Helpers
 
         // difference between class
         private int[,] _minHit;
-        private double[] _heroXpData;
 
         // STAT DATA
 
@@ -693,11 +692,11 @@ namespace OpenNos.GameObject.Helpers
             int increment2 = 9120;
             int increment3 = 360;
 
-            _heroXpData = new double[256];
-            _heroXpData[0] = 949560;
+            HeroXpData = new double[256];
+            HeroXpData[0] = 949560;
             for (int lvl = 1; lvl < 50; lvl++)
             {
-                _heroXpData[lvl] = _heroXpData[lvl - 1] + increment;
+                HeroXpData[lvl] = HeroXpData[lvl - 1] + increment;
                 increment2 += increment3;
                 increment = increment + increment2;
                 index++;
