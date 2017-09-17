@@ -212,13 +212,13 @@ namespace OpenNos.GameObject
                         switch (currentlyEquippedItem.Slot)
                         {
                             case (byte) EquipmentType.Armor:
-                                session.Character.Armor = null;
+                                session.Character.Inventory.Armor = null;
                                 break;
                             case (byte) EquipmentType.MainWeapon:
-                                session.Character.WeaponPrimary = null;
+                                session.Character.Inventory.PrimaryWeapon = null;
                                 break;
                             case (byte) EquipmentType.SecondaryWeapon:
-                                session.Character.WeaponSecondary = null;
+                                session.Character.Inventory.SecondaryWeapon = null;
                                 break;
                         }
                     }
@@ -235,13 +235,13 @@ namespace OpenNos.GameObject
                                     switch (wearableInstance.Slot)
                                     {
                                         case (byte)EquipmentType.Armor:
-                                            session.Character.Armor = wearableInstance;
+                                            session.Character.Inventory.Armor = wearableInstance;
                                             break;
                                         case (byte)EquipmentType.MainWeapon:
-                                            session.Character.WeaponPrimary = wearableInstance;
+                                            session.Character.Inventory.PrimaryWeapon = wearableInstance;
                                             break;
                                         case (byte)EquipmentType.SecondaryWeapon:
-                                            session.Character.WeaponSecondary = wearableInstance;
+                                            session.Character.Inventory.SecondaryWeapon = wearableInstance;
                                             break;
                                     }
                                     EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => session.Character.EquipmentBCards.Add(s));
