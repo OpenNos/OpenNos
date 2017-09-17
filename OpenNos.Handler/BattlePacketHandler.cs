@@ -338,15 +338,15 @@ namespace OpenNos.Handler
                                     hitRequest.Session.SendPacket(hitRequest.Session.Character.GenerateLev());
                                 }
                             }
-                            foreach (ClientSession sess in ServerManager.Instance.Sessions.Where(s => s.HasSelectedCharacter && s.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance))
+                            foreach (ClientSession sess in ServerManager.Instance.Sessions.Where(s => s.HasSelectedCharacter && s.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance))
                             {
                                 if (sess.Character.Faction == Session.Character.Faction)
                                 {
-                                    sess.SendPacket(sess.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey($"ACT4_PVP_KILL{target.Character.Faction}"), Session.Character.Name), 12));
+                                    sess.SendPacket(sess.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey($"ACT4_PVP_KILL"), target.Character.Faction, Session.Character.Name), 12));
                                 }
                                 else if (sess.Character.Faction == target.Character.Faction)
                                 {
-                                    sess.SendPacket(sess.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey($"ACT4_PVP_DEATH{target.Character.Faction}"), target.Character.Name), 11));
+                                    sess.SendPacket(sess.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey($"ACT4_PVP_DEATH"), target.Character.Faction, target.Character.Name), 11));
                                 }
                             }
                             target.SendPacket(target.Character.GenerateFd());
