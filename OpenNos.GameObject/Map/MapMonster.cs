@@ -366,9 +366,9 @@ namespace OpenNos.GameObject
             int Morale = Monster.Level + GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleIncreased)[0]
                                        - GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleDecreased)[0];
 
-            if (targetCharacter.Armor != null)
+            if (targetCharacter.Inventory.Armor != null)
             {
-                playerDefenseUpgrade += targetCharacter.Armor.Upgrade;
+                playerDefenseUpgrade += targetCharacter.Inventory.Armor.Upgrade;
             }
 
             short mainUpgrade = Monster.AttackUpgrade;

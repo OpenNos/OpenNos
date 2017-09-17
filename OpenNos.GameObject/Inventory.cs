@@ -48,6 +48,12 @@ namespace OpenNos.GameObject
 
         private Character Owner { get; }
 
+        public WearableInstance PrimaryWeapon { get; set; }
+
+        public WearableInstance SecondaryWeapon { get; set; }
+
+        public WearableInstance Armor { get; set; }
+
         #endregion
 
         #region Methods
