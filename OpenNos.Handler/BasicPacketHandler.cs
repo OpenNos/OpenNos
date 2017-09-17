@@ -234,15 +234,21 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (DAOFactory.MailDAO.LoadById(giftId) == null)
-            {
-                return;
-            }
             MailDTO mail = Session.Character.MailList[giftId];
             if (getGiftPacket.Type == 4 && mail.AttachmentVNum != null)
             {
                 if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                 {
+                    if (DAOFactory.MailDAO.LoadById(mail.MailId) == null)
+                    {
+                        if (Session.Character.MailList.ContainsKey(giftId))
+                        {
+                            Session.Character.MailList.Remove(giftId);
+                        }
+                        ServerManager.Instance.Mails.Remove(mail);
+                        Session.SendPacket("parcel 5 1 0");
+                        return;
+                    }
                     ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity).FirstOrDefault();
                     if (newInv == null)
                     {
