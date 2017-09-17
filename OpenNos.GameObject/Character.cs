@@ -1144,7 +1144,7 @@ namespace OpenNos.GameObject
         {
             #region Definitions
 
-            if (monsterToAttack == null || skill.Type == 0)
+            if (monsterToAttack == null)
             {
                 return 0;
             }
@@ -4222,7 +4222,7 @@ namespace OpenNos.GameObject
             return Reput <= 5000000 ? 26 : 27;
         }
 
-        public void GiftAdd(short itemVNum, byte amount, sbyte rare = 0, short design = 0, byte upgrade = 0)
+        public void GiftAdd(short itemVNum, byte amount, short design = 0, byte upgrade = 0)
         {
             //TODO add the rare support
             if (Inventory == null)
@@ -4231,7 +4231,7 @@ namespace OpenNos.GameObject
             }
             lock (Inventory)
             {
-                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, CharacterId, amount, rare);
+                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, CharacterId, amount);
                 if (newItem == null)
                 {
                     return;

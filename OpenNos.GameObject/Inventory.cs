@@ -58,9 +58,9 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static ItemInstance InstantiateItemInstance(short vnum, long ownerId, byte amount = 1, sbyte rare = 0)
+        public static ItemInstance InstantiateItemInstance(short vnum, long ownerId, byte amount = 1)
         {
-            ItemInstance newItem = new ItemInstance { ItemVNum = vnum, Amount = amount, CharacterId = ownerId, Rare = rare};
+            ItemInstance newItem = new ItemInstance { ItemVNum = vnum, Amount = amount, CharacterId = ownerId};
             if (newItem.Item != null)
             {
                 switch (newItem.Item.Type)
