@@ -1794,6 +1794,7 @@ namespace OpenNos.GameObject
                 monsterToAttack.CurrentMp = 0;
                 monsterToAttack.Death = DateTime.Now;
                 monsterToAttack.LastMove = DateTime.Now;
+                monsterToAttack.Buff.Clear();
             }
             else
             {
