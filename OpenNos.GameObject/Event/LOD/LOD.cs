@@ -26,7 +26,7 @@ namespace OpenNos.GameObject.Event
     {
         #region Methods
 
-        public static void GenerateLod(int lodtime = 120)
+        public static void GenerateLod(int lodtime = 60)
         {
             const int hornTime = 30;
             const int hornRepawn = 4;
@@ -125,11 +125,11 @@ namespace OpenNos.GameObject.Event
             }
         }
 
-        private void SpawnDH(MapInstance LandOfDeath)
+        private void SpawnDH(MapInstance landOfDeath)
         {
-            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SPAWNONLASTENTRY, 443));
-            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SENDPACKET, "df 2"));
-            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
+            EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SPAWNONLASTENTRY, 443));
+            EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET, "df 2"));
+            EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
         }
 
         #endregion

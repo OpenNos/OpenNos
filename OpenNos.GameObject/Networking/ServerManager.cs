@@ -1466,8 +1466,11 @@ namespace OpenNos.GameObject
 
         public void SaveAll()
         {
-            List<ClientSession> sessions = Sessions.Where(c => c.IsConnected).ToList();
-            sessions.ForEach(s => s.Character?.Save());
+            // AFTER
+            Parallel.ForEach(Sessions.Where(s => s.HasSelectedCharacter && s.IsConnected), session =>
+            {
+                session.Character?.Save();
+            });
             DAOFactory.BazaarItemDAO.RemoveOutDated();
         }
 
@@ -1555,6 +1558,10 @@ namespace OpenNos.GameObject
                 return;
             }
             MapCell pos = map.Map.GetRandomPosition();
+            if (pos == null)
+            {
+                return;
+            }
             ChangeMapInstance(session.Character.CharacterId, guid, pos.X, pos.Y);
         }
 
