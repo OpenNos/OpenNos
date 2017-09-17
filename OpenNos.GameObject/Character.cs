@@ -3551,11 +3551,11 @@ namespace OpenNos.GameObject
                                     switch (wearableInstance.Slot)
                                     {
                                         case (byte) EquipmentType.MainWeapon:
-                                            Inventory.SecondaryWeapon = wearableInstance;
+                                            Inventory.PrimaryWeapon = wearableInstance;
                                             EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                             break;
                                         case (byte) EquipmentType.SecondaryWeapon:
-                                            Inventory.PrimaryWeapon = wearableInstance;
+                                            Inventory.SecondaryWeapon = wearableInstance;
                                             EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
                                             break;
                                         case (byte) EquipmentType.Armor:

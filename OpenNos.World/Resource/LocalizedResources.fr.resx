@@ -1729,7 +1729,7 @@ Veux-tu continuer ?</value>
   <data name="MONSTER_LVL_MUST_BE_LESS" xml:space="preserve">
     <value>Tu peux uniquement capturer des animaux qui ont un niveau inférieur au tien.</value>
   </data>
-  <data name="MONSTER_CANNOT_BE_CAPTURABLE" xml:space="preserve">
+  <data name="MONSTER_CANNOT_BE_CAPTURED" xml:space="preserve">
     <value>Les monstres ne peuvent pas être capturés.</value>
   </data>
   <data name="MONSTER_MUST_BE_LOW_HP" xml:space="preserve">
