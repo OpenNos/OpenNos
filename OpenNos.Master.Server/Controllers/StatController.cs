@@ -10,10 +10,10 @@ using System.Web.Http;
 namespace OpenNos.Master.Server
 {
 
-    public class StatsController : ApiController
+    public class StatController : ApiController
     {
         [AuthorizeRole(AuthorityType.Moderator)]
-        // GET /stats 
+        // GET /stat
         public IEnumerable<string> Get()
         {
             return CommunicationServiceClient.Instance.RetrieveServerStatistics();

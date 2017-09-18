@@ -157,7 +157,8 @@
     <Compile Include="AuthorizationServerProvider.cs" />
     <Compile Include="AuthorizeRoleAttribute.cs" />
     <Compile Include="CommunicationService.cs" />
-    <Compile Include="Controllers\MailsController.cs" />
+    <Compile Include="Controllers\ControllersParameters\MailPostParameter.cs" />
+    <Compile Include="Controllers\MailController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="MSManager.cs" />
     <Compile Include="Program.cs" />
@@ -192,7 +193,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Controllers\StatsController.cs" />
+    <Compile Include="Controllers\StatController.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
