@@ -8,6 +8,7 @@ using OpenNos.Master.Library.Interface;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using OpenNos.Data;
 
 namespace OpenNos.Master.Library.Client
 {
@@ -42,14 +43,12 @@ namespace OpenNos.Master.Library.Client
                 }
             }
         }
-
+        
         #endregion
 
         #region Events
 
         public event EventHandler BazaarRefresh;
-
-        public event EventHandler MailRefresh;
 
         public event EventHandler CharacterConnectedEvent;
 
@@ -59,6 +58,8 @@ namespace OpenNos.Master.Library.Client
 
         public event EventHandler MessageSentToCharacter;
 
+        public event EventHandler MailSent;
+
         public event EventHandler PenaltyLogRefresh;
 
         public event EventHandler RelationRefresh;
@@ -66,6 +67,7 @@ namespace OpenNos.Master.Library.Client
         public event EventHandler SessionKickedEvent;
 
         public event EventHandler ShutdownEvent;
+
 
         #endregion
 
@@ -80,6 +82,7 @@ namespace OpenNos.Master.Library.Client
                 return _client.CommunicationState;
             }
         }
+
 
         #endregion
 
@@ -200,11 +203,7 @@ namespace OpenNos.Master.Library.Client
             return _client.ServiceProxy.SendMessageToCharacter(message);
         }
 
-        public void UpdateMails(long accountId)
-        {
-            _client.ServiceProxy.UpdateMails(accountId);
-        }
-
+   
         public void Shutdown(string worldGroup)
         {
             _client.ServiceProxy.Shutdown(worldGroup);
@@ -277,11 +276,17 @@ namespace OpenNos.Master.Library.Client
             RelationRefresh?.Invoke(relationId, null);
         }
 
-        internal void OnMailRefresh(long accountId)
+        internal void OnSendMail(MailDTO mail)
         {
-            MailRefresh?.Invoke(accountId, null);
+            MailSent?.Invoke(mail, null);
         }
 
+        public void SendMail(string worldGroup, MailDTO mail)
+        {
+            _client.ServiceProxy.SendMail(worldGroup, mail);
+        }
+
+    
         #endregion
     }
 }

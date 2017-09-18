@@ -17,6 +17,7 @@ using System;
 
 namespace OpenNos.Data
 {
+    [Serializable]
     public class MailDTO : MappingBaseDTO
     {
         #region Properties

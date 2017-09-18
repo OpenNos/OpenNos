@@ -139,8 +139,6 @@ namespace OpenNos.GameObject
 
         public bool InFamilyRefreshMode { get; set; }
 
-        public List<MailDTO> Mails { get; private set; }
-
         public List<int> MateIds { get; internal set; } = new List<int>();
 
         public long MaxGold { get; set; }
@@ -938,7 +936,6 @@ namespace OpenNos.GameObject
             MaxHeroLevel = byte.Parse(ConfigurationManager.AppSettings["MaxHeroLevel"]);
             HeroicStartLevel = byte.Parse(ConfigurationManager.AppSettings["HeroicStartLevel"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
-            Mails = DAOFactory.MailDAO.LoadAll().ToList();
             Act4RaidStart = DateTime.Now;
             Act4AngelStat = new Act4Stat();
             Act4DemonStat = new Act4Stat();
@@ -1694,10 +1691,10 @@ namespace OpenNos.GameObject
 
             CommunicationServiceClient.Instance.SessionKickedEvent += OnSessionKicked;
             CommunicationServiceClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
+            CommunicationServiceClient.Instance.MailSent += OnMailSent;
             CommunicationServiceClient.Instance.FamilyRefresh += OnFamilyRefresh;
             CommunicationServiceClient.Instance.RelationRefresh += OnRelationRefresh;
             CommunicationServiceClient.Instance.BazaarRefresh += OnBazaarRefresh;
-            CommunicationServiceClient.Instance.MailRefresh += OnMailRefresh;
             CommunicationServiceClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
             CommunicationServiceClient.Instance.ShutdownEvent += OnShutdown;
             _lastGroupId = 1;
@@ -1903,12 +1900,6 @@ namespace OpenNos.GameObject
             });
         }
 
-        private void OnMailRefresh(object sender, EventArgs e)
-        {
-            long accountId = (long)sender;
-            ClientSession session = Sessions.FirstOrDefault(s => s.Account.AccountId == accountId);
-            session?.Character.RefreshMail();
-        }
 
         private void OnBazaarRefresh(object sender, EventArgs e)
         {
@@ -2014,6 +2005,24 @@ namespace OpenNos.GameObject
                 }
             }
             InFamilyRefreshMode = false;
+        }
+
+        private void OnMailSent(object sender, EventArgs e)
+        {
+            if (sender == null)
+            {
+                return;
+            }
+            MailDTO message = (MailDTO)sender;
+            ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == message.ReceiverId);
+            if (targetSession == null || targetSession.Character == null)
+            {
+                return;
+            }
+            else
+            {
+                targetSession.Character.GenerateMail(message);
+            }
         }
 
         private void OnMessageSentToCharacter(object sender, EventArgs e)

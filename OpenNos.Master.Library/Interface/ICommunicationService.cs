@@ -2,6 +2,7 @@
 using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
+using OpenNos.Data;
 
 namespace OpenNos.Master.Library.Interface
 {
@@ -129,12 +130,7 @@ namespace OpenNos.Master.Library.Interface
         void UpdateRelation(string worldGroup, long relationId);
 
 
-        /// <summary>
-        /// Updates the mails on the given Character Id
-        /// </summary>
-        /// <param name="accountId"></param>
-        void UpdateMails(long accountId);
-
+  
         /// <summary>
         /// Shutdown given WorldGroup or WorldServer
         /// </summary>
@@ -186,5 +182,7 @@ namespace OpenNos.Master.Library.Interface
         SerializableWorldServer GetAct4ChannelInfo(string worldGroup);
 
         bool IsCrossServerLoginPermitted(long accountId, int sessionId);
+
+        void SendMail(string worldGroup, MailDTO mail);
     }
 }

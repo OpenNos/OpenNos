@@ -80,11 +80,6 @@ namespace OpenNos.Handler
             // Not needed for now. (pictures)
         }
 
-        [Packet("%Nosmall")]
-        public void UpdateMails()
-        {
-            CommunicationServiceClient.Instance.UpdateMails(Session.Character.AccountId);
-        }
 
         #endregion
     }

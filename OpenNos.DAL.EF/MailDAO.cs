@@ -84,7 +84,7 @@ namespace OpenNos.DAL.EF
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                foreach (Mail mail in context.Mail.Where(s => !s.IsSenderCopy && s.ReceiverId == characterId))
+                foreach (Mail mail in context.Mail.Where(s => (!s.IsSenderCopy && s.ReceiverId == characterId) || (s.IsSenderCopy && s.SenderId == characterId)))
                 {
                     yield return _mapper.Map<MailDTO>(mail);
                 }

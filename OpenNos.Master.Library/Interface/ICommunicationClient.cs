@@ -1,4 +1,5 @@
-﻿using OpenNos.Master.Library.Data;
+﻿using OpenNos.Data;
+using OpenNos.Master.Library.Data;
 
 namespace OpenNos.Master.Library.Interface
 {
@@ -21,9 +22,7 @@ namespace OpenNos.Master.Library.Interface
 
         void UpdateRelation(long relationId);
 
-        void UpdateMails(long accountId);
-
         void KickSession(long? accountId, long? sessionId);
-
+        void SendMail(MailDTO mail);
     }
 }

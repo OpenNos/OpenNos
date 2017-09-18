@@ -1,5 +1,8 @@
-﻿namespace OpenNos.Data
+﻿using System;
+
+namespace OpenNos.Data
 {
+    [Serializable]
     public class MappingBaseDTO
     {
         #region Methods

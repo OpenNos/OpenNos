@@ -239,16 +239,6 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                 {
-                    if (DAOFactory.MailDAO.LoadById(mail.MailId) == null)
-                    {
-                        if (Session.Character.MailList.ContainsKey(giftId))
-                        {
-                            Session.Character.MailList.Remove(giftId);
-                        }
-                        ServerManager.Instance.Mails.Remove(mail);
-                        Session.SendPacket("parcel 5 1 0");
-                        return;
-                    }
                     ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity).FirstOrDefault();
                     if (newInv == null)
                     {
@@ -270,11 +260,8 @@ namespace OpenNos.Handler
 
                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
 
-                    ServerManager.Instance.Mails.Remove(mail);
-                    if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
-                    {
-                        DAOFactory.MailDAO.DeleteById(mail.MailId);
-                    }
+                    Session.Character.MailList.Remove(giftId);
+
                     Session.SendPacket($"parcel 2 1 {giftId}");
                     if (Session.Character.MailList.ContainsKey(giftId))
                     {
@@ -291,10 +278,6 @@ namespace OpenNos.Handler
             {
                 Session.SendPacket($"parcel 7 1 {giftId}");
 
-                if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
-                {
-                    DAOFactory.MailDAO.DeleteById(mail.MailId);
-                }
                 if (Session.Character.MailList.ContainsKey(giftId))
                 {
                     Session.Character.MailList.Remove(giftId);
@@ -969,9 +952,9 @@ namespace OpenNos.Handler
                         EqPacket = Session.Character.GenerateEqListForPacket(),
                         SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)(Session.Character.Morph > short.MaxValue ? 0 : Session.Character.Morph)
                     };
-
-                    DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
+                    
                     DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+                    CommunicationServiceClient.Instance.SendMail(ServerManager.Instance.ServerGroup,mail);
 
                     Session.Character.MailList.Add((Session.Character.MailList.Any() ? Session.Character.MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mailcopy);
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
@@ -999,8 +982,6 @@ namespace OpenNos.Handler
                             if (!Session.Character.MailList[id].IsOpened)
                             {
                                 Session.Character.MailList[id].IsOpened = true;
-                                MailDTO mailupdate = Session.Character.MailList[id];
-                                DAOFactory.MailDAO.InsertOrUpdate(ref mailupdate);
                             }
                             Session.SendPacket(Session.Character.GeneratePostMessage(Session.Character.MailList[id], type));
                         }
@@ -1011,10 +992,7 @@ namespace OpenNos.Handler
                             MailDTO mail = Session.Character.MailList[id];
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAIL_DELETED"), 11));
                             Session.SendPacket($"post 2 {type} {id}");
-                            if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
-                            {
-                                DAOFactory.MailDAO.DeleteById(mail.MailId);
-                            }
+
                             if (Session.Character.MailList.ContainsKey(id))
                             {
                                 Session.Character.MailList.Remove(id);
@@ -1247,8 +1225,21 @@ namespace OpenNos.Handler
             }
 
             // finfo - friends info
-            Session.Character.RefreshMail();
-            Session.Character.LoadSentMail();
+            List<MailDTO> mails = DAOFactory.MailDAO.LoadByCharacterId(Session.Character.CharacterId).ToList();
+            foreach (MailDTO mail in mails)
+            {
+                Session.Character.GenerateMail(mail);
+            }
+            int giftcount = mails.Count(mail => !mail.IsSenderCopy && mail.ReceiverId == Session.Character.CharacterId && mail.AttachmentVNum != null && !mail.IsOpened);
+            int mailcount = mails.Count(mail => !mail.IsSenderCopy && mail.ReceiverId == Session.Character.CharacterId && mail.AttachmentVNum == null && !mail.IsOpened);
+            if (giftcount > 0)
+            {
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GIFTED"), giftcount), 11));
+            }
+            if (mailcount > 0)
+            {
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"), mailcount), 10));
+            }
             Session.Character.DeleteTimeout();
 
             foreach (StaticBuffDTO sb in DAOFactory.StaticBuffDAO.LoadByCharacterId(Session.Character.CharacterId))

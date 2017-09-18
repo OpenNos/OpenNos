@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
+using OpenNos.Data;
 
 namespace OpenNos.Master.Server
 {
@@ -495,17 +496,6 @@ namespace OpenNos.Master.Server
             }
         }
 
-        public void UpdateMails(long accountId)
-        {
-            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
-            {
-                return;
-            }
-
-            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(s => s.AccountId == accountId);
-            account?.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().UpdateMails(accountId);
-        }
-
         public void PulseAccount(long accountId)
         {
             Logger.Log.Debug("PulseAccount");
@@ -532,6 +522,24 @@ namespace OpenNos.Master.Server
                 KickSession(account.AccountId, null);
             }
         }
+
+        public void SendMail(string worldGroup, MailDTO mail)
+        {
+            if (!IsCharacterConnected(worldGroup, mail.ReceiverId))
+            {
+                CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(mail.ReceiverId);
+                DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+            }
+            else
+            {
+                AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.CharacterId.Equals(mail.ReceiverId));
+                if (account != null && account.ConnectedWorld != null)
+                {
+                    account.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().SendMail(mail);
+                }
+            }
+        }
+
 
         #endregion
     }
