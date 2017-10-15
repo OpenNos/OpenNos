@@ -20,7 +20,6 @@ using OpenNos.GameObject;
 using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.Master.Library.Client;
 using System;
-using System.Configuration;
 using System.Linq;
 
 namespace OpenNos.Handler
@@ -95,19 +94,19 @@ namespace OpenNos.Handler
                             // TODO TO ENUM
                             case AuthorityType.Unconfirmed:
                                 {
-                                    _session.SendPacket($"failc {LoginFailType.CantConnect}");
+                                    _session.SendPacket($"failc {(byte)LoginFailType.CantConnect}");
                                 }
                                 break;
 
                             case AuthorityType.Banned:
                                 {
-                                    _session.SendPacket($"failc {LoginFailType.Banned}");
+                                    _session.SendPacket($"failc {(byte)LoginFailType.Banned}");
                                 }
                                 break;
 
                             case AuthorityType.Closed:
                                 {
-                                    _session.SendPacket($"failc {LoginFailType.CantConnect}");
+                                    _session.SendPacket($"failc {(byte)LoginFailType.CantConnect}");
                                 }
                                 break;
 
@@ -136,12 +135,12 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    _session.SendPacket($"failc {LoginFailType.AlreadyConnected}");
+                    _session.SendPacket($"failc {(byte)LoginFailType.AlreadyConnected}");
                 }
             }
             else
             {
-                _session.SendPacket($"failc {LoginFailType.AccountOrPasswordWrong}");
+                _session.SendPacket($"failc {(byte)LoginFailType.AccountOrPasswordWrong}");
             }
         }
 
