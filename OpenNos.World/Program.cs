@@ -189,7 +189,7 @@ namespace OpenNos.World
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(BoxInstance));
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(SpecialistInstance));
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.IteminstanceDAO.RegisterMapping(typeof(ItemInstance)).InitializeMapper();
+            DAOFactory.IteminstanceDAO.InitializeMapper(typeof(ItemInstance));
 
 
             // entities

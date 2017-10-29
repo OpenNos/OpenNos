@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace OpenNos.DAL.EF
 {
-    public interface IGenericDAO<TEntity, TDTO> where TEntity : class
+    public interface IGenericDAO<TEntity, TDTO> : IMappingBaseDAO where TEntity : class
     {
         IEnumerable<TDTO> LoadAll();
 
@@ -19,9 +19,5 @@ namespace OpenNos.DAL.EF
 
         DeleteResult Delete(object entitykey);
         
-
-        IGenericDAO<TEntity, TDTO> RegisterMapping(Type gameObjectType);
-
-        void InitializeMapper();
     }
 }

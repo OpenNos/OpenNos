@@ -19,6 +19,7 @@ namespace OpenNos.DAL.EF
     {
         protected readonly IDictionary<Type, Type> Mappings = new Dictionary<Type, Type>();
         protected IMapper Mapper;
+        private Type _baseType;
 
         private PropertyInfo PrimaryKey { get; set; }
 
@@ -40,7 +41,7 @@ namespace OpenNos.DAL.EF
             Mapper = config.CreateMapper();
         }
 
-        public virtual IGenericDAO<TEntity, TDTO> RegisterMapping(Type gameObjectType)
+        public virtual IMappingBaseDAO RegisterMapping(Type gameObjectType)
         {
             try
             {
@@ -68,9 +69,7 @@ namespace OpenNos.DAL.EF
                 Logger.Error(e);
                 return null;
             }
-        }
-
-      
+        }    
 
         public DeleteResult Delete(object dtokey)
         {
@@ -257,5 +256,36 @@ namespace OpenNos.DAL.EF
             }
 
         }
+
+
+        public void InitializeMapper(Type baseType)
+        {
+            _baseType = baseType;
+            MapperConfiguration config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap(baseType, typeof(ItemInstance))
+                    .ForMember("Item", opts => opts.Ignore());
+
+                cfg.CreateMap(typeof(ItemInstance), typeof(ItemInstanceDTO)).As(baseType);
+
+                Type itemInstanceType = typeof(ItemInstance);
+                foreach (KeyValuePair<Type, Type> entry in Mappings)
+                {
+                    // GameObject -> Entity
+                    cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
+                                    .IncludeBase(baseType, typeof(ItemInstance));
+
+                    // Entity -> GameObject
+                    cfg.CreateMap(entry.Value, entry.Key)
+                                    .IncludeBase(typeof(ItemInstance), baseType);
+
+                    // Entity -> GameObject
+                    cfg.CreateMap(entry.Value, typeof(ItemInstanceDTO)).As(entry.Key);
+                }
+            });
+
+            Mapper = config.CreateMapper();
+        }
+
     }
 }

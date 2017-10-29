@@ -261,7 +261,7 @@ namespace OpenNos.Handler
                             PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.FirstOrDefault(s => s.AccountId == account.AccountId && s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
                             if (penalty != null)
                             {
-                                Session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, penalty.DateEnd.ToString("yyyy-MM-dd-HH:mm"))}");
+                                Session.SendPacket($"failc {(byte)LoginFailType.Banned}");
                                 Logger.Log.Info($"[LOG] {account.Name} connected from {Session.IpAddress} while being banned");
                                 Session.Disconnect();
                                 return;
@@ -331,11 +331,13 @@ namespace OpenNos.Handler
                 {
                     IEnumerable<ItemInstanceDTO> inventory = DAOFactory.IteminstanceDAO.Where(s => s.CharacterId == character.CharacterId && s.Type == (byte)InventoryType.Wear);
 
-                    ItemInstanceDTO[] equipment = new ItemInstanceDTO[16];
+                    WearableInstance[] equipment = new WearableInstance[16];
                     foreach (ItemInstanceDTO equipmentEntry in inventory)
                     {
                         // explicit load of iteminstance
-                        equipment[(int)ServerManager.Instance.GetItem((short)equipmentEntry.ItemVNum).EquipmentSlot] = equipmentEntry;
+                        WearableInstance currentInstance = equipmentEntry as WearableInstance;
+                        equipment[(short)currentInstance.Item.EquipmentSlot] = currentInstance;
+
                     }
                     string petlist = string.Empty;
                     List<MateDTO> mates = DAOFactory.MateDAO.Where(s => s.CharacterId == character.CharacterId).ToList();
@@ -346,7 +348,7 @@ namespace OpenNos.Handler
                     }
 
                     // 1 1 before long string of -1.-1 = act completion
-                    Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {equipment[(byte)EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte)EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte)EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 {petlist} {(equipment[(byte)EquipmentType.Hat] != null && ServerManager.Instance.GetItem(equipment[(byte)EquipmentType.Hat].ItemVNum).IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
+                    Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {equipment[(byte)EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte)EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte)EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 {petlist} {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
                 }
                 Session.SendPacket("clist_end");
             }

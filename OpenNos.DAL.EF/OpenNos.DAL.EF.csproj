@@ -100,6 +100,7 @@
     <Compile Include="Entities\ScriptedInstance.cs" />
     <Compile Include="Entities\BCard.cs" />
     <Compile Include="IGenericDAO.cs" />
+    <Compile Include="IMappingBaseDAO.cs" />
     <Compile Include="Migrations\201706141825546_Aphrodite55.cs" />
     <Compile Include="Migrations\201706141825546_Aphrodite55.Designer.cs">
       <DependentUpon>201706141825546_Aphrodite55.cs</DependentUpon>
