@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
 using OpenNos.Domain;
 
 namespace OpenNos.Data
@@ -24,6 +25,7 @@ namespace OpenNos.Data
 
         public GenderType FamilyHeadGender { get; set; }
 
+        [Key]
         public long FamilyId { get; set; }
 
         public byte FamilyLevel { get; set; }

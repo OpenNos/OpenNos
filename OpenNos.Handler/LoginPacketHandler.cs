@@ -20,7 +20,9 @@ using OpenNos.GameObject;
 using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.Master.Library.Client;
 using System;
+using System.Configuration;
 using System.Linq;
+using OpenNos.DAL.EF;
 
 namespace OpenNos.Handler
 {
@@ -73,16 +75,16 @@ namespace OpenNos.Handler
                 Name = loginPacket.Name,
                 Password = ConfigurationManager.AppSettings["UseOldCrypto"] == "true" ? EncryptionBase.Sha512(LoginEncryption.GetPassword(loginPacket.Password)).ToUpper() : loginPacket.Password
             };
-            AccountDTO loadedAccount = DAOFactory.AccountDAO.LoadByName(user.Name);
+            AccountDTO loadedAccount = DAOFactory.AccountDAO.FirstOrDefault(s => s.Name == user.Name);
             if (loadedAccount != null && loadedAccount.Password.ToUpper().Equals(user.Password))
             {
-                DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.IpAddress, null, GeneralLogType.Connection, "LoginServer");
+                // TODO LOG LOGIN
 
                 //check if the account is connected
                 if (!CommunicationServiceClient.Instance.IsAccountConnected(loadedAccount.AccountId))
                 {
                     AuthorityType type = loadedAccount.Authority;
-                    PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
+                    PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.FirstOrDefault(s => s.AccountId.Equals(loadedAccount.AccountId) && s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
                     if (penalty != null)
                     {
                         _session.SendPacket($"failc 7");

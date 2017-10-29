@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
 using OpenNos.Domain;
 
 namespace OpenNos.Data
@@ -46,6 +47,7 @@ namespace OpenNos.Data
 
         public short MapY { get; set; }
 
+        [Key]
         public long MateId { get; set; }
 
         public MateType MateType { get; set; }

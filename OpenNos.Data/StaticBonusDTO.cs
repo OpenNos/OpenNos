@@ -14,6 +14,7 @@
 
 using OpenNos.Domain;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.Data
 {
@@ -25,6 +26,7 @@ namespace OpenNos.Data
 
         public DateTime DateEnd { get; set; }
 
+        [Key]
         public long StaticBonusId { get; set; }
 
         public StaticBonusType StaticBonusType { get; set; }

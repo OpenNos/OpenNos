@@ -174,6 +174,7 @@ namespace OpenNos.GameObject
             newItem.Rare = Rare;
             newItem.Upgrade = Upgrade;
             newItem.Design = Design;
+            newItem.CharacterId = Owner.CharacterId;
             if (newItem.Rare != 0 && newItem is WearableInstance wearable)
             {
                 wearable.SetRarityPoint();
@@ -388,7 +389,8 @@ namespace OpenNos.GameObject
             }
             MoveItem(inventory, InventoryType.FamilyWareHouse, slot, amount, newSlot, out item, out itemdest);
             itemdest.CharacterId = fhead.CharacterId;
-            DAOFactory.IteminstanceDAO.InsertOrUpdate(itemdest);
+            ItemInstanceDTO itemdest2 = itemdest;
+            DAOFactory.IteminstanceDAO.InsertOrUpdate(ref itemdest2);
             Owner.Session.SendPacket(item != null ? item.GenerateInventoryAdd()
                 : UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory, slot));
 

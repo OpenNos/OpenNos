@@ -277,10 +277,6 @@
       <Project>{4AECC47D-098A-4493-8E1E-D10EDBB7A189}</Project>
       <Name>OpenNos.DAL.EF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.DAL.Interface\OpenNos.DAL.Interface.csproj">
-      <Project>{175c851b-8dc8-43a5-af93-af32d106cd77}</Project>
-      <Name>OpenNos.DAL.Interface</Name>
-    </ProjectReference>
     <ProjectReference Include="..\OpenNos.DAL\OpenNos.DAL.csproj">
       <Project>{d8c8a266-3d46-42c5-a492-28c75db85ba8}</Project>
       <Name>OpenNos.DAL</Name>

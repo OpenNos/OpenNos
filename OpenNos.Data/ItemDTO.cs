@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
 using OpenNos.Domain;
 
 namespace OpenNos.Data
@@ -166,6 +167,7 @@ namespace OpenNos.Data
 
         public InventoryType Type { get; set; }
 
+        [Key]
         public short VNum { get; set; }
 
         public short WaitDelay { get; set; }

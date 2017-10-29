@@ -83,13 +83,9 @@
       <Project>{4aecc47d-098a-4493-8e1e-d10edbb7a189}</Project>
       <Name>OpenNos.DAL.EF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.DAL.Interface\OpenNos.DAL.Interface.csproj">
-      <Project>{175c851b-8dc8-43a5-af93-af32d106cd77}</Project>
-      <Name>OpenNos.DAL.Interface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.DAL.Mock\OpenNos.DAL.Mock.csproj">
-      <Project>{17391a4a-68fd-49c9-87ea-61cf0b30934b}</Project>
-      <Name>OpenNos.DAL.Mock</Name>
+    <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
+      <Project>{F1071DED-3D92-4416-9B9C-8664441ADE64}</Project>
+      <Name>OpenNos.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

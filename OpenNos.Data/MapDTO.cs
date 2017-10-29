@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class MapDTO : MappingBaseDTO, IMapDTO
@@ -20,6 +22,7 @@ namespace OpenNos.Data
 
         public byte[] Data { get; set; }
 
+        [Key]
         public short MapId { get; set; }
 
         public int Music { get; set; }

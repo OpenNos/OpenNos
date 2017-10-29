@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
         public override void Initialize()
         {
             Items = new List<RecipeItemDTO>();
-            foreach (RecipeItemDTO rec in DAOFactory.RecipeItemDAO.LoadByRecipe(RecipeId).ToList())
+            foreach (RecipeItemDTO rec in DAOFactory.RecipeItemDAO.Where(s=>s.RecipeId == RecipeId).ToList())
             {
                 Items.Add(rec);
             }

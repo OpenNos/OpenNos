@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class ShopItemDTO : MappingBaseDTO
@@ -26,6 +28,7 @@ namespace OpenNos.Data
 
         public int ShopId { get; set; }
 
+        [Key]
         public int ShopItemId { get; set; }
 
         public byte Slot { get; set; }

@@ -14,6 +14,7 @@
 
 using OpenNos.Domain;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.Data
 {
@@ -31,6 +32,7 @@ namespace OpenNos.Data
 
         public PenaltyType Penalty { get; set; }
 
+        [Key]
         public int PenaltyLogId { get; set; }
 
         public string Reason { get; set; }

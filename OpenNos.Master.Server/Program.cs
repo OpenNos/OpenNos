@@ -28,8 +28,29 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net.Http;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
+using OpenNos.DAL.EF;
+using Account = OpenNos.GameObject.Account;
+using BoxInstance = OpenNos.GameObject.BoxInstance;
+using Character = OpenNos.GameObject.Character;
+using CharacterSkill = OpenNos.GameObject.CharacterSkill;
+using Family = OpenNos.GameObject.Family;
+using FamilyCharacter = OpenNos.GameObject.FamilyCharacter;
+using ItemInstance = OpenNos.GameObject.ItemInstance;
+using MapMonster = OpenNos.GameObject.MapMonster;
+using MapNpc = OpenNos.GameObject.MapNpc;
+using NpcMonster = OpenNos.GameObject.NpcMonster;
+using NpcMonsterSkill = OpenNos.GameObject.NpcMonsterSkill;
+using Portal = OpenNos.GameObject.Portal;
+using Recipe = OpenNos.GameObject.Recipe;
+using ScriptedInstance = OpenNos.GameObject.ScriptedInstance;
+using Shop = OpenNos.GameObject.Shop;
+using Skill = OpenNos.GameObject.Skill;
+using SpecialistInstance = OpenNos.GameObject.SpecialistInstance;
+using WearableInstance = OpenNos.GameObject.WearableInstance;
 
 namespace OpenNos.Master.Server
 {
@@ -84,6 +105,16 @@ namespace OpenNos.Master.Server
                     server.ClientDisconnected += OnClientDisconnected;
                     WebApp.Start<Startup>(url: ConfigurationManager.AppSettings["WebAppURL"]);
                     server.Start();
+
+                    // AUTO SESSION KICK
+                    Observable.Interval(TimeSpan.FromMinutes(3)).Subscribe(x =>
+                    {
+                        Parallel.ForEach(MSManager.Instance.ConnectedAccounts.Where(s => s.LastPulse.AddMinutes(3) <= DateTime.Now), connection =>
+                        {
+                            CommunicationServiceClient.Instance.KickSession(connection.AccountId, null);
+                        });
+                    });
+
                     CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
                     Console.Title = $"MASTER SERVER - Channels :{MSManager.Instance.WorldServers.Count} - Players : {MSManager.Instance.ConnectedAccounts.Count}";
@@ -118,7 +149,8 @@ namespace OpenNos.Master.Server
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(BoxInstance));
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(SpecialistInstance));
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.IteminstanceDAO.InitializeMapper(typeof(ItemInstance));
+            DAOFactory.IteminstanceDAO.RegisterMapping(typeof(ItemInstance));
+            DAOFactory.IteminstanceDAO.RegisterMapping(typeof(ItemInstanceDTO)).InitializeMapper();
 
             // entities
             DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();

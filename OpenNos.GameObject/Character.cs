@@ -223,7 +223,7 @@ namespace OpenNos.GameObject
 
         public int MagicalDefence { get; set; }
 
-        public IDictionary<int, MailDTO> MailList { get; set; }
+        public IDictionary<long, MailDTO> MailList { get; set; }
 
         public MapInstance MapInstance
         {
@@ -520,9 +520,9 @@ namespace OpenNos.GameObject
 
             Session.SendPacket(GenerateSki());
 
-            foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.LoadByCharacterId(CharacterId).Where(quicklists => QuicklistEntries.Any(qle => qle.Id == quicklists.Id)))
+            foreach (Guid quicklists in DAOFactory.QuicklistEntryDAO.Where(s => s.CharacterId == CharacterId).Where(quicklists => QuicklistEntries.Any(qle => qle.Id == quicklists.Id)).Select(s=>s.Id))
             {
-                DAOFactory.QuicklistEntryDAO.Delete(quicklists.Id);
+                DAOFactory.QuicklistEntryDAO.Delete(quicklists);
             }
 
             QuicklistEntries = new List<QuicklistEntryDTO>
@@ -1001,9 +1001,8 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            long id = chara.CharacterRelationId;
-            DAOFactory.CharacterRelationDAO.Delete(id);
-            ServerManager.Instance.RelationRefresh(id);
+            DAOFactory.CharacterRelationDAO.Delete(chara.CharacterRelationId);
+            ServerManager.Instance.RelationRefresh(chara.CharacterRelationId);
             Session.SendPacket(GenerateBlinit());
         }
 
@@ -1027,6 +1026,22 @@ namespace OpenNos.GameObject
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(result.Item2, result.Item1));
         }
 
+        public void LearnSpSkill()
+        {
+            byte skillSpCount = (byte)SkillsSp.Count;
+            SkillsSp = new ConcurrentDictionary<int, CharacterSkill>();
+            foreach (Skill ski in ServerManager.Instance.GetAllSkill())
+            {
+                if (SpInstance != null && ski.Class == (Morph + 31) && SpInstance.SpLevel >= ski.LevelMinimum)
+                {
+                    SkillsSp[ski.SkillVNum] = new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = CharacterId };
+                }
+            }
+            if (SkillsSp.Count != skillSpCount)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+            }
+        }
         public void DeleteRelation(long characterId)
         {
             CharacterRelationDTO chara = CharacterRelations.FirstOrDefault(s => s.RelatedCharacterId == characterId || s.CharacterId == characterId);
@@ -1035,12 +1050,12 @@ namespace OpenNos.GameObject
                 return;
             }
             long id = chara.CharacterRelationId;
-            CharacterDTO charac = DAOFactory.CharacterDAO.LoadById(characterId);
-            DAOFactory.CharacterRelationDAO.Delete(id);
+            CharacterDTO charac = DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId == characterId);
+            DAOFactory.CharacterRelationDAO.Delete(chara.CharacterRelationId);
             ServerManager.Instance.RelationRefresh(id);
 
             Session.SendPacket(GenerateFinit());
-            if (charac == null)
+            if (chara == null)
             {
                 return;
             }
@@ -1050,7 +1065,7 @@ namespace OpenNos.GameObject
             {
                 long id2 = relation.RelatedCharacterId == CharacterId ? relation.CharacterId : relation.RelatedCharacterId;
                 bool isOnline = CommunicationServiceClient.Instance.IsCharacterConnected(ServerManager.Instance.ServerGroup, id2);
-                result += $" {id2}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(id2).Name}";
+                result += $" {id2}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId == id2).Name}";
             }
             CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
             {
@@ -1116,7 +1131,7 @@ namespace OpenNos.GameObject
         public string GenerateBlinit()
         {
             return CharacterRelations.Where(s => s.CharacterId == CharacterId && s.RelationType == CharacterRelationType.Blocked).Aggregate("blinit",
-                (current, relation) => current + $" {relation.RelatedCharacterId}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}");
+                (current, relation) => current + $" {relation.RelatedCharacterId}|{DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId == relation.RelatedCharacterId).Name}");
         }
 
         public string GenerateCInfo()
@@ -2138,7 +2153,7 @@ namespace OpenNos.GameObject
             {
                 long id = relation.RelatedCharacterId == CharacterId ? relation.CharacterId : relation.RelatedCharacterId;
                 bool isOnline = CommunicationServiceClient.Instance.IsCharacterConnected(ServerManager.Instance.ServerGroup, id);
-                result += $" {id}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(id).Name}";
+                result += $" {id}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId == id).Name}";
             }
             return result;
         }
@@ -2494,7 +2509,7 @@ namespace OpenNos.GameObject
                 return;
             }
             Miniland = ServerManager.Instance.GenerateMapInstance(20001, MapInstanceType.NormalInstance, new InstanceBag());
-            foreach (MinilandObjectDTO obj in DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId))
+            foreach (MinilandObjectDTO obj in DAOFactory.MinilandObjectDAO.Where(s => s.CharacterId == CharacterId))
             {
                 MapDesignObject mapobj = (MapDesignObject)obj;
                 if (mapobj.ItemInstanceId == null)
@@ -2636,12 +2651,12 @@ namespace OpenNos.GameObject
 
         public string GeneratePost(MailDTO mail, byte type)
         {
-            return $"post 1 {type} {MailList.First(s => s.Value.MailId == mail.MailId).Key} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddHHmm")} {(type == 2 ? DAOFactory.CharacterDAO.LoadById(mail.ReceiverId).Name : DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name)} {mail.Title}";
+            return $"post 1 {type} {MailList.First(s => s.Value.MailId == mail.MailId).Key} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddHHmm")} {(type == 2 ? DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId == mail.ReceiverId).Name : DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId == mail.SenderId).Name)} {mail.Title}";
         }
 
         public string GeneratePostMessage(MailDTO mailDto, byte type)
         {
-            CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDto.SenderId);
+            CharacterDTO sender = DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId == mailDto.SenderId);
 
             return $"post 5 {type} {MailList.First(s => s.Value == mailDto).Key} 0 0 {(byte)mailDto.SenderClass} {(byte)mailDto.SenderGender} {mailDto.SenderMorphId} {(byte)mailDto.SenderHairStyle} {(byte)mailDto.SenderHairColor} {mailDto.EqPacket} {sender.Name} {mailDto.Title} {mailDto.Message}";
         }
@@ -3401,7 +3416,7 @@ namespace OpenNos.GameObject
                     if (bz.Item is WearableInstance item)
                     {
                         item.EquipmentOptions.Clear();
-                        item.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
+                        item.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.Where(s => s.WearableInstanceId == item.Id));
                         info = item.GenerateEInfo().Replace(' ', '^').Replace("e_info^", "");
                     }
                 }
@@ -4365,7 +4380,7 @@ namespace OpenNos.GameObject
             LastGroupJoin = DateTime.Now;
             LastEffect = DateTime.Now;
             Session = null;
-            MailList = new Dictionary<int, MailDTO>();
+            MailList = new Dictionary<long, MailDTO>();
             Group = null;
             GmPvtBlock = false;
         }
@@ -4498,12 +4513,25 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void ChangeFaction(FactionType faction)
+        {
+            Faction = faction;
+            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{(int)Faction}"), 0));
+            Session.SendPacket("scr 0 0 0 0 0 0");
+            Session.SendPacket(GenerateFaction());
+            Session.SendPacket(GenerateStatChar());
+            Session.SendPacket(GenerateEff(4799 + (int)Faction));
+            Session.SendPacket(GenerateCond());
+            Session.SendPacket(GenerateLev());
+
+        }
+
         public void LoadInventory()
         {
-            IEnumerable<ItemInstanceDTO> inventories = DAOFactory.IteminstanceDAO.LoadByCharacterId(CharacterId).Where(s => s.Type != InventoryType.FamilyWareHouse).ToList();
-            IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
+            IEnumerable<ItemInstanceDTO> inventories = DAOFactory.IteminstanceDAO.Where(s => s.CharacterId == CharacterId).Where(s => s.Type != InventoryType.FamilyWareHouse).ToList();
+            IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.Where(s => s.AccountId == Session.Account.AccountId);
             inventories = characters.Where(s => s.CharacterId != CharacterId).Aggregate(inventories,
-                (current, character) => current.Concat(DAOFactory.IteminstanceDAO.LoadByCharacterId(character.CharacterId).Where(s => s.Type == InventoryType.Warehouse).ToList()));
+                (current, character) => current.Concat(DAOFactory.IteminstanceDAO.Where(s => s.CharacterId == character.CharacterId).Where(s => s.Type == InventoryType.Warehouse).ToList()));
             Inventory = new Inventory(this);
             foreach (ItemInstanceDTO inventory in inventories)
             {
@@ -4511,14 +4539,14 @@ namespace OpenNos.GameObject
                 Inventory[inventory.Id] = (ItemInstance)inventory;
                 WearableInstance wearinstance = inventory as WearableInstance;
                 wearinstance?.EquipmentOptions.Clear();
-                wearinstance?.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(wearinstance.Id));
+                wearinstance?.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.Where(s => s.WearableInstanceId == wearinstance.Id));
             }
         }
 
         public void LoadQuicklists()
         {
             QuicklistEntries = new List<QuicklistEntryDTO>();
-            IEnumerable<QuicklistEntryDTO> quicklistDto = DAOFactory.QuicklistEntryDAO.LoadByCharacterId(CharacterId).ToList();
+            IEnumerable<QuicklistEntryDTO> quicklistDto = DAOFactory.QuicklistEntryDAO.Where(s => s.CharacterId == CharacterId).ToList();
             foreach (QuicklistEntryDTO qle in quicklistDto)
             {
                 QuicklistEntries.Add(qle);
@@ -4529,7 +4557,7 @@ namespace OpenNos.GameObject
         public void LoadSkills()
         {
             Skills = new ConcurrentDictionary<int, CharacterSkill>();
-            IEnumerable<CharacterSkillDTO> characterskillDto = DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId).ToList();
+            IEnumerable<CharacterSkillDTO> characterskillDto = DAOFactory.CharacterSkillDAO.Where(s => s.CharacterId == CharacterId).ToList();
             foreach (CharacterSkillDTO characterskill in characterskillDto.OrderBy(s => s.SkillVNum))
             {
                 if (!Skills.ContainsKey(characterskill.SkillVNum))
@@ -4740,6 +4768,9 @@ namespace OpenNos.GameObject
             return true;
         }
 
+        /// <summary>
+        /// Save the Character
+        /// </summary>
         public void Save()
         {
             try
@@ -4757,16 +4788,11 @@ namespace OpenNos.GameObject
                     {
                         // load and concat inventory with equipment
                         IEnumerable<ItemInstance> inventories = Inventory.Select(s => s.Value);
-                        IEnumerable<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
-                        IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
+                        IEnumerable<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.Where(i => i.CharacterId.Equals(CharacterId)).Select(i => i.Id);
+                        IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.Where(s => s.AccountId == Session.Account.AccountId);
                         currentlySavedInventoryIds = characters.Where(s => s.CharacterId != CharacterId)
-                            .Aggregate(currentlySavedInventoryIds, (current, characteraccount) => current.Concat(DAOFactory.IteminstanceDAO.LoadByCharacterId(characteraccount.CharacterId).Where(s => s.Type == InventoryType.Warehouse).Select(i => i.Id).ToList()));
+                            .Aggregate(currentlySavedInventoryIds, (current, characteraccount) => current.Concat(DAOFactory.IteminstanceDAO.Where(s => s.CharacterId == characteraccount.CharacterId).Where(s => s.Type == InventoryType.Warehouse).Select(i => i.Id)));
 
-                        IEnumerable<MinilandObjectDTO> currentlySavedMinilandObjectEntries = DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId).ToList();
-                        foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Miniland.MapDesignObjects))
-                        {
-                            DAOFactory.MinilandObjectDAO.DeleteById(mobjToDelete.MinilandObjectId);
-                        }
 
                         // remove all which are saved but not in our current enumerable
                         IEnumerable<ItemInstance> itemInstances = inventories as IList<ItemInstance> ?? inventories.ToList();
@@ -4786,101 +4812,71 @@ namespace OpenNos.GameObject
                         // create or update all which are new or do still exist
                         foreach (ItemInstance itemInstance in itemInstances.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse))
                         {
-                            DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
+                            IEnumerable<ItemInstanceDTO> itemInsts = itemInstances.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse);
+                            DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInsts);
                             WearableInstance instance = itemInstance as WearableInstance;
 
+                            instance?.EquipmentOptions.ForEach(s => DAOFactory.EquipmentOptionDAO.Delete(s.Id));
                             if (instance?.EquipmentOptions.Any() != true)
                             {
                                 continue;
                             }
-                            DAOFactory.EquipmentOptionDAO.Delete(instance.Id);
-                            instance?.EquipmentOptions.ForEach(s => s.WearableInstanceId = instance.Id);
-                            DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
+                            instance.EquipmentOptions.ForEach(s => s.WearableInstanceId = instance.Id);
+                            IEnumerable<EquipmentOptionDTO> equipmentOptions = instance.EquipmentOptions;
+                            DAOFactory.EquipmentOptionDAO.InsertOrUpdate(equipmentOptions);
                         }
                     }
                 }
 
+                // SKILLS
                 if (Skills != null)
                 {
-                    IEnumerable<Guid> currentlySavedCharacterSkills = DAOFactory.CharacterSkillDAO.LoadKeysByCharacterId(CharacterId).ToList();
+                    IEnumerable<CharacterSkillDTO> characterSkillToUpdate = Skills.Values.ToList();
+                    IEnumerable<Guid> characterSkillToDelete = DAOFactory.CharacterSkillDAO.Where(s => s.CharacterId.Equals(CharacterId)).Except(characterSkillToUpdate).Select(s=>s.Id);
 
-                    foreach (Guid characterSkillToDeleteId in currentlySavedCharacterSkills.Except(Skills.Select(s => s.Value.Id)))
-                    {
-                        DAOFactory.CharacterSkillDAO.Delete(characterSkillToDeleteId);
-                    }
-
-                    foreach (CharacterSkill characterSkill in Skills.Select(s => s.Value))
-                    {
-                        DAOFactory.CharacterSkillDAO.InsertOrUpdate(characterSkill);
-                    }
+                    DAOFactory.CharacterSkillDAO.Delete(characterSkillToDelete);
+                    DAOFactory.CharacterSkillDAO.InsertOrUpdate(characterSkillToUpdate);
                 }
 
-                IEnumerable<long> currentlySavedMates = DAOFactory.MateDAO.LoadByCharacterId(CharacterId).Select(s => s.MateId);
+                // MATES
+                IEnumerable<MateDTO> matesToUpdate = Mates.ToList();
+                IEnumerable<long> matesToDelete = DAOFactory.MateDAO.Where(s => s.CharacterId.Equals(CharacterId)).Except(matesToUpdate).Select(s=>s.MateId);
+                DAOFactory.MateDAO.Delete(matesToDelete);
+                DAOFactory.MateDAO.InsertOrUpdate(matesToUpdate);
 
-                foreach (long matesToDeleteId in currentlySavedMates.Except(Mates.Select(s => s.MateId)))
-                {
-                    DAOFactory.MateDAO.Delete(matesToDeleteId);
-                }
 
-                foreach (Mate mate in Mates)
-                {
-                    MateDTO matesave = mate;
-                    DAOFactory.MateDAO.InsertOrUpdate(ref matesave);
-                }
+                // QUICKLISTS
+                IEnumerable<QuicklistEntryDTO> quicklistToUpdate = QuicklistEntries.ToList();
+                IEnumerable<Guid> quicklistToDelete = DAOFactory.QuicklistEntryDAO.Where(s => s.CharacterId.Equals(CharacterId)).Except(quicklistToUpdate).Select(s=>s.Id);
+                DAOFactory.QuicklistEntryDAO.Delete(quicklistToDelete);
+                DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistToUpdate);
 
-                IEnumerable<QuicklistEntryDTO> quickListEntriesToInsertOrUpdate = QuicklistEntries.ToList();
 
-                IEnumerable<Guid> currentlySavedQuicklistEntries = DAOFactory.QuicklistEntryDAO.LoadKeysByCharacterId(CharacterId).ToList();
-                foreach (Guid quicklistEntryToDelete in currentlySavedQuicklistEntries.Except(QuicklistEntries.Select(s => s.Id)))
-                {
-                    DAOFactory.QuicklistEntryDAO.Delete(quicklistEntryToDelete);
-                }
-                foreach (QuicklistEntryDTO quicklistEntry in quickListEntriesToInsertOrUpdate)
-                {
-                    DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
-                }
+                // MAILS
+                IEnumerable<MailDTO> mailsToUpdate = MailList.Values.ToList();
+                IEnumerable<long> mailsToDelete = DAOFactory.MailDAO.Where(s => s.ReceiverId.Equals(CharacterId)).Except(mailsToUpdate).Select(s=>s.MailId);
+                DAOFactory.MailDAO.Delete(mailsToDelete);
+                DAOFactory.MailDAO.InsertOrUpdate(mailsToUpdate);
 
-                IEnumerable<MailDTO> mailDTOToInsertOrUpdate = MailList.Values.ToList();
+                // MINILAND OBJECTS
+                IEnumerable<MinilandObjectDTO> minilandToUpdate = Miniland.MapDesignObjects;
+                IEnumerable<long> minilandToDelete = DAOFactory.MinilandObjectDAO.Where(s => s.CharacterId == CharacterId).Except(minilandToUpdate).Select(s=>s.MinilandObjectId);
+                DAOFactory.MinilandObjectDAO.Delete(minilandToDelete);
+                DAOFactory.MinilandObjectDAO.InsertOrUpdate(minilandToUpdate);
 
-                IEnumerable<long> currentlySavedMailistEntries = DAOFactory.MailDAO.LoadByCharacterId(CharacterId).Select(s => s.MailId).ToList();
-                foreach (long maildtoEntryToDelete in currentlySavedMailistEntries.Except(MailList.Values.Select(s => s.MailId)))
-                {
-                    DAOFactory.MailDAO.DeleteById(maildtoEntryToDelete);
-                }
-                foreach (MailDTO mailEntry in mailDTOToInsertOrUpdate)
-                {
-                    MailDTO save = mailEntry;
-                    DAOFactory.MailDAO.InsertOrUpdate(ref save);
-                }
+                // STATIC BONUS
+                IEnumerable<StaticBonusDTO> staticBonusToUpdate = StaticBonusList.ToArray();
+                IEnumerable<long> staticBonusToDelete = DAOFactory.StaticBonusDAO.Where(s => s.CharacterId.Equals(CharacterId)).Except(staticBonusToUpdate).Select(s=>s.StaticBonusId);
+                DAOFactory.StaticBonusDAO.Delete(staticBonusToDelete);
+                DAOFactory.StaticBonusDAO.InsertOrUpdate(staticBonusToUpdate);
 
-                IEnumerable<MinilandObjectDTO> minilandobjectEntriesToInsertOrUpdate = Miniland.MapDesignObjects.ToList();
-
-                foreach (MinilandObjectDTO mobjEntry in minilandobjectEntriesToInsertOrUpdate)
-                {
-                    MinilandObjectDTO mobj = mobjEntry;
-                    DAOFactory.MinilandObjectDAO.InsertOrUpdate(ref mobj);
-                }
-
-                IEnumerable<short> currentlySavedBonus = DAOFactory.StaticBonusDAO.LoadTypeByCharacterId(CharacterId);
-                foreach (short bonusToDelete in currentlySavedBonus.Except(Buff.Select(s => s.Card.CardId)))
-                {
-                    DAOFactory.StaticBonusDAO.Delete(bonusToDelete, CharacterId);
-                }
-                foreach (StaticBonusDTO bonus in StaticBonusList.ToArray())
-                {
-                    StaticBonusDTO bonus2 = bonus;
-                    DAOFactory.StaticBonusDAO.InsertOrUpdate(ref bonus2);
-                }
-
-                IEnumerable<short> currentlySavedBuff = DAOFactory.StaticBuffDAO.LoadByTypeCharacterId(CharacterId);
-                foreach (short bonusToDelete in currentlySavedBuff.Except(Buff.Select(s => s.Card.CardId)))
-                {
-                    DAOFactory.StaticBuffDAO.Delete(bonusToDelete, CharacterId);
-                }
+                // STATIC BUFF
+                // TODO
+                IEnumerable<StaticBuffDTO> currentlySavedBuff = DAOFactory.StaticBuffDAO.Where(s => s.CharacterId.Equals(CharacterId));
 
                 foreach (Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
                 {
-                    StaticBuffDTO bf = new StaticBuffDTO()
+                    StaticBuffDTO bf = new StaticBuffDTO
                     {
                         CharacterId = CharacterId,
                         RemainingTime = (int)(buff.RemainingTime - (DateTime.Now - buff.Start).TotalSeconds),
@@ -4889,19 +4885,11 @@ namespace OpenNos.GameObject
                     DAOFactory.StaticBuffDAO.InsertOrUpdate(ref bf);
                 }
 
-                foreach (StaticBonusDTO bonus in StaticBonusList.ToArray())
-                {
-                    StaticBonusDTO bonus2 = bonus;
-                    DAOFactory.StaticBonusDAO.InsertOrUpdate(ref bonus2);
-                }
+                // GENERAL LOGS
+                IEnumerable<GeneralLogDTO> generalLogDtos = GeneralLogs;
+                DAOFactory.GeneralLogDAO.InsertOrUpdate(generalLogDtos);
 
-                foreach (GeneralLogDTO general in GeneralLogs)
-                {
-                    if (!DAOFactory.GeneralLogDAO.IdAlreadySet(general.LogId))
-                    {
-                        DAOFactory.GeneralLogDAO.Insert(general);
-                    }
-                }
+                // RESPAWNS
                 foreach (RespawnDTO resp in Respawns)
                 {
                     RespawnDTO res = resp;
@@ -4917,6 +4905,7 @@ namespace OpenNos.GameObject
                 Logger.Log.Error("Save Character failed. SessionId: " + Session.SessionId, e);
             }
         }
+
 
         public void SendGift(long id, short vnum, byte amount, sbyte rare, byte upgrade, bool isNosmall)
         {

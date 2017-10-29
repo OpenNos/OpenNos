@@ -317,7 +317,7 @@ namespace OpenNos.GameObject
 
         public void LoadMonsters()
         {
-            OrderablePartitioner<MapMonsterDTO> partitioner = Partitioner.Create(DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<MapMonsterDTO> partitioner = Partitioner.Create(DAOFactory.MapMonsterDAO.Where(s=>s.MapId == Map.MapId), EnumerablePartitionerOptions.None);
             Parallel.ForEach(partitioner, monster =>
             {
                 if (!(monster is MapMonster mapMonster))
@@ -333,7 +333,7 @@ namespace OpenNos.GameObject
 
         public void LoadNpcs()
         {
-            OrderablePartitioner<MapNpcDTO> partitioner = Partitioner.Create(DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<MapNpcDTO> partitioner = Partitioner.Create(DAOFactory.MapNpcDAO.Where(s => s.MapId == Map.MapId), EnumerablePartitionerOptions.None);
             Parallel.ForEach(partitioner, npc =>
             {
                 if (!(npc is MapNpc mapNpc))
@@ -349,7 +349,7 @@ namespace OpenNos.GameObject
 
         public void LoadPortals()
         {
-            OrderablePartitioner<PortalDTO> partitioner = Partitioner.Create(DAOFactory.PortalDAO.LoadByMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<PortalDTO> partitioner = Partitioner.Create(DAOFactory.PortalDAO.Where(s => s.SourceMapId == Map.MapId), EnumerablePartitionerOptions.None);
             ConcurrentDictionary<int, Portal> portalList = new ConcurrentDictionary<int, Portal>();
             Parallel.ForEach(partitioner, portal =>
             {

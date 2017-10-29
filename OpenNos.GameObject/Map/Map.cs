@@ -42,9 +42,9 @@ namespace OpenNos.GameObject
             Data = data;
             LoadZone();
             MapTypes = new List<MapTypeDTO>();
-            foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId).ToList())
+            foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.Where(s=>s.MapId == mapId).ToList())
             {
-                MapTypeDTO maptype = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
+                MapTypeDTO maptype = DAOFactory.MapTypeDAO.FirstOrDefault(s=>s.MapTypeId == maptypemap.MapTypeId);
                 MapTypes.Add(maptype);
             }
 
@@ -56,11 +56,11 @@ namespace OpenNos.GameObject
                     long? returnMapTypeId = MapTypes.ElementAt(0).ReturnMapTypeId;
                     if (respawnMapTypeId != null)
                     {
-                        DefaultRespawn = DAOFactory.RespawnMapTypeDAO.LoadById((long)respawnMapTypeId);
+                        DefaultRespawn = DAOFactory.RespawnMapTypeDAO.FirstOrDefault(s=>s.RespawnMapTypeId == respawnMapTypeId);
                     }
                     if (returnMapTypeId != null)
                     {
-                        DefaultReturn = DAOFactory.RespawnMapTypeDAO.LoadById((long)returnMapTypeId);
+                        DefaultReturn = DAOFactory.RespawnMapTypeDAO.FirstOrDefault(s => s.RespawnMapTypeId == returnMapTypeId);
                     }
                 }
             }

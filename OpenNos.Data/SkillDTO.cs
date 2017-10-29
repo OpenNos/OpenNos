@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class SkillDTO : MappingBaseDTO
@@ -66,6 +68,7 @@ namespace OpenNos.Data
 
         public byte SkillType { get; set; }
 
+        [Key]
         public short SkillVNum { get; set; }
 
         public byte TargetRange { get; set; }

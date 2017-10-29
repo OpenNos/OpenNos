@@ -12,12 +12,15 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class CharacterSkillDTO : SynchronizableBaseDTO
     {
         #region Properties
 
+        [Key]
         public long CharacterId { get; set; }
 
         public short SkillVNum { get; set; }

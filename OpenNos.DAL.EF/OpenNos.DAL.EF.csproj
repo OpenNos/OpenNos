@@ -92,11 +92,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\MappingBaseDAO.cs" />
-    <Compile Include="Base\SynchronizableBaseDAO.cs" />
-    <Compile Include="BazaarItemDAO.cs" />
-    <Compile Include="BCardDAO.cs" />
-    <Compile Include="CardDAO.cs" />
     <Compile Include="Entities\LogChat.cs" />
     <Compile Include="Entities\LogCommands.cs" />
     <Compile Include="Entities\LogPlayerAction.cs" />
@@ -104,8 +99,7 @@
     <Compile Include="Entities\Mate.cs" />
     <Compile Include="Entities\ScriptedInstance.cs" />
     <Compile Include="Entities\BCard.cs" />
-    <Compile Include="LogChatDAO.cs" />
-    <Compile Include="LogCommandsDAO.cs" />
+    <Compile Include="IGenericDAO.cs" />
     <Compile Include="Migrations\201706141825546_Aphrodite55.cs" />
     <Compile Include="Migrations\201706141825546_Aphrodite55.Designer.cs">
       <DependentUpon>201706141825546_Aphrodite55.cs</DependentUpon>
@@ -174,8 +168,6 @@
     <Compile Include="Migrations\201709031612531_Aphrodite71.Designer.cs">
       <DependentUpon>201709031612531_Aphrodite71.cs</DependentUpon>
     </Compile>
-    <Compile Include="RollGeneratedItemDAO.cs" />
-    <Compile Include="MateDAO.cs" />
     <Compile Include="Migrations\201702072152008_Aphrodite22.cs" />
     <Compile Include="Migrations\201702072152008_Aphrodite22.Designer.cs">
       <DependentUpon>201702072152008_Aphrodite22.cs</DependentUpon>
@@ -308,22 +300,17 @@
     <Compile Include="Migrations\201706141433315_Aphrodite54.Designer.cs">
       <DependentUpon>201706141433315_Aphrodite54.cs</DependentUpon>
     </Compile>
-    <Compile Include="MinilandObjectDAO.cs" />
-    <Compile Include="CharacterRelationDAO.cs" />
     <Compile Include="Entities\Account.cs" />
     <Compile Include="Entities\Base\SynchronizableBaseEntity.cs" />
     <Compile Include="Entities\BazaarItem.cs" />
     <Compile Include="Entities\BoxInstance.cs" />
     <Compile Include="Entities\Card.cs" />
     <Compile Include="Entities\EquipmentOption.cs" />
-    <Compile Include="EquipmentOptionDAO.cs" />
     <Compile Include="Entities\Character.cs" />
     <Compile Include="Entities\CharacterRelation.cs" />
     <Compile Include="Entities\CharacterSkill.cs" />
     <Compile Include="Entities\Combo.cs" />
-    <Compile Include="ComboDAO.cs" />
     <Compile Include="Entities\Drop.cs" />
-    <Compile Include="DropDAO.cs" />
     <Compile Include="Entities\Family.cs" />
     <Compile Include="Entities\FamilyCharacter.cs" />
     <Compile Include="Entities\FamilyLog.cs" />
@@ -343,17 +330,9 @@
     <Compile Include="Entities\StaticBuff.cs" />
     <Compile Include="Entities\UsableInstance.cs" />
     <Compile Include="Entities\WearableInstance.cs" />
-    <Compile Include="FamilyCharacterDAO.cs" />
-    <Compile Include="FamilyDAO.cs" />
-    <Compile Include="FamilyLogDAO.cs" />
-    <Compile Include="MailDAO.cs" />
-    <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="Entities\MapNpc.cs" />
-    <Compile Include="MapNpcDAO.cs" />
     <Compile Include="Entities\NpcMonster.cs" />
     <Compile Include="Entities\NpcMonsterSkill.cs" />
-    <Compile Include="MapTypeDAO.cs" />
-    <Compile Include="MapTypeMapDAO.cs" />
     <Compile Include="Migrations\201612092059142_Aphrodite.cs" />
     <Compile Include="Migrations\201612092059142_Aphrodite.Designer.cs">
       <DependentUpon>201612092059142_Aphrodite.cs</DependentUpon>
@@ -443,43 +422,20 @@
       <DependentUpon>201702062229059_Aphrodite21.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="NpcMonsterSkillDAO.cs" />
     <Compile Include="DB\OpenNosContext.cs" />
     <Compile Include="Entities\Portal.cs" />
     <Compile Include="Entities\QuicklistEntry.cs" />
-    <Compile Include="PenaltyLogDAO.cs" />
-    <Compile Include="QuicklistEntryDAO.cs" />
     <Compile Include="Entities\Recipe.cs" />
-    <Compile Include="RecipeDAO.cs" />
     <Compile Include="Entities\RecipeItem.cs" />
-    <Compile Include="RecipeItemDAO.cs" />
     <Compile Include="Entities\Respawn.cs" />
-    <Compile Include="RespawnDAO.cs" />
-    <Compile Include="GeneralLogDAO.cs" />
-    <Compile Include="ItemInstanceDAO.cs" />
     <Compile Include="Entities\Shop.cs" />
-    <Compile Include="RespawnMapTypeDAO.cs" />
-    <Compile Include="ShopDAO.cs" />
     <Compile Include="Entities\ShopItem.cs" />
-    <Compile Include="ShopItemDAO.cs" />
-    <Compile Include="ItemDAO.cs" />
-    <Compile Include="MapDAO.cs" />
-    <Compile Include="NpcMonsterDAO.cs" />
-    <Compile Include="PortalDAO.cs" />
-    <Compile Include="AccountDAO.cs" />
-    <Compile Include="CharacterDAO.cs" />
     <Compile Include="Helpers\DataAccessHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\Shopskill.cs" />
     <Compile Include="Entities\Skill.cs" />
-    <Compile Include="SkillDAO.cs" />
-    <Compile Include="ShopSkillDAO.cs" />
-    <Compile Include="CharacterSkillDAO.cs" />
     <Compile Include="Entities\Teleporter.cs" />
-    <Compile Include="StaticBuffDAO.cs" />
-    <Compile Include="StaticBonusDAO.cs" />
-    <Compile Include="TeleporterDAO.cs" />
-    <Compile Include="ScriptedInstanceDAO.cs" />
+    <Compile Include="GenericDAO.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -498,10 +454,6 @@
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
       <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
       <Name>OpenNos.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.DAL.Interface\OpenNos.DAL.Interface.csproj">
-      <Project>{175c851b-8dc8-43a5-af93-af32d106cd77}</Project>
-      <Name>OpenNos.DAL.Interface</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
       <Project>{f1071ded-3d92-4416-9b9c-8664441ade64}</Project>

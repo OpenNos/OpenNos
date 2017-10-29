@@ -494,7 +494,7 @@ namespace OpenNos.GameObject.Helpers
                     if (bzlink.Item is WearableInstance wear)
                     {
                         wear.EquipmentOptions.Clear();
-                        wear.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(wear.Id));
+                        wear.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.Where(s=>s.WearableInstanceId == wear.Id));
                     }
                     info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ?
                         (bzlink.Item as WearableInstance).GenerateEInfo() : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?

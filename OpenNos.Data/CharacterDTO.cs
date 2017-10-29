@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
 using OpenNos.Domain;
 
 namespace OpenNos.Data
@@ -34,6 +35,7 @@ namespace OpenNos.Data
 
         public bool BuffBlocked { get; set; }
 
+        [Key]
         public long CharacterId { get; set; }
 
         public ClassType Class { get; set; }

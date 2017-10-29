@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
 
         private bool _disposed;
 
-        private List<DropDTO> _generalDrops;
+        private List<DropDTO> _generalDrops = new List<DropDTO>();
 
         public ConcurrentDictionary<long, Group> GroupsThreadSafe;
 
@@ -343,9 +343,9 @@ namespace OpenNos.GameObject
                     session.SendPacket("eff_ob -1 -1 0 4269");
 
                     session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#revival^0 #revival^1 {(session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
-                        RespawnMapTypeDTO resp = session.Character.Respawn;
-                    session.Character.MapX = (short) (resp.DefaultX + RandomNumber(-3, 3));
-                    session.Character.MapY = (short) (resp.DefaultY + RandomNumber(-3, 3));
+                    RespawnMapTypeDTO resp = session.Character.Respawn;
+                    session.Character.MapX = (short)(resp.DefaultX + RandomNumber(-3, 3));
+                    session.Character.MapY = (short)(resp.DefaultY + RandomNumber(-3, 3));
                     Task.Factory.StartNew(async () =>
                     {
                         bool revive = true;
@@ -559,8 +559,8 @@ namespace OpenNos.GameObject
                 session.SendPackets(session.Character.GeneratePst());
                 session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
                 {
-                    s.PositionX = (short) (session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
-                    s.PositionY = (short) (session.Character.PositionY + 1);
+                    s.PositionX = (short)(session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
+                    s.PositionY = (short)(session.Character.PositionY + 1);
                     session.SendPacket(s.GenerateIn());
                 });
                 session.SendPacket(session.Character.GeneratePinit());
@@ -942,7 +942,7 @@ namespace OpenNos.GameObject
 
             OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DAOFactory.ItemDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
             ConcurrentDictionary<short, Item> item = new ConcurrentDictionary<short, Item>();
-            Parallel.ForEach(itemPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 4 }, itemDto =>
+            Parallel.ForEach(itemPartitioner, itemDto =>
             {
                 switch (itemDto.ItemType)
                 {
@@ -1056,7 +1056,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    _generalDrops = monsterDropGrouping.ToList();
+                    _generalDrops.AddRange(monsterDropGrouping.ToList());
                 }
             });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("DROPS_LOADED"), _monsterDrops.Sum(i => i.Value.Count)));
@@ -1083,7 +1083,7 @@ namespace OpenNos.GameObject
                 {
                     monster.BCards = new List<BCard>();
                 }
-                DAOFactory.BCardDAO.LoadByNpcMonsterVNum(npcMonster.NpcMonsterVNum).ToList().ForEach(s => npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard)s));
+                DAOFactory.BCardDAO.Where(s => s.NpcMonsterVNum == npcMonster.NpcMonsterVNum).ToList().ForEach(s => npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard)s));
             });
             _npcs.AddRange(npcMonsters.Select(s => s.Value));
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count));
@@ -1136,9 +1136,9 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                skillObj.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skillObj.SkillVNum).ToList());
+                skillObj.Combos.AddRange(DAOFactory.ComboDAO.Where(s => s.SkillVNum == skillObj.SkillVNum).ToList());
                 skillObj.BCards = new ConcurrentBag<BCard>();
-                DAOFactory.BCardDAO.LoadBySkillVNum(skillObj.SkillVNum).ToList().ForEach(o => skillObj.BCards.Add((BCard)o));
+                DAOFactory.BCardDAO.Where(s => s.SkillVNum == skillObj.SkillVNum).ToList().ForEach(o => skillObj.BCards.Add((BCard)o));
                 _skill[skillObj.SkillVNum] = skillObj;
             });
             _skills.AddRange(_skill.Select(s => s.Value));
@@ -1150,7 +1150,7 @@ namespace OpenNos.GameObject
             {
                 Card card = (Card)carddto;
                 card.BCards = new List<BCard>();
-                DAOFactory.BCardDAO.LoadByCardId(card.CardId).ToList().ForEach(o => card.BCards.Add((BCard)o));
+                DAOFactory.BCardDAO.Where(s => s.CardId == card.CardId).ToList().ForEach(o => card.BCards.Add((BCard)o));
                 Cards.Add(card);
             }
 
@@ -1217,7 +1217,7 @@ namespace OpenNos.GameObject
                 CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
                 PenaltyLogs = DAOFactory.PenaltyLogDAO.LoadAll().ToList();
 
-                if (DAOFactory.MapDAO.LoadById(2006) != null)
+                if (DAOFactory.MapDAO.Where(s => s.MapId == 2006).Any())
                 {
                     Logger.Log.Info("[ARENA] Arena Map Loaded");
                     ArenaInstance = GenerateMapInstance(2006, MapInstanceType.ArenaInstance, new InstanceBag());
@@ -1232,7 +1232,7 @@ namespace OpenNos.GameObject
                         SourceY = 15,
                     });
                 }
-                if (DAOFactory.MapDAO.LoadById(2106) != null)
+                if (DAOFactory.MapDAO.Where(s => s.MapId == 2106).Any())
                 {
                     Logger.Log.Info("[ARENA] Family Arena Map Loaded");
                     FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.ArenaInstance, new InstanceBag());
@@ -1247,7 +1247,7 @@ namespace OpenNos.GameObject
                         SourceY = 3,
                     });
                 }
-                if (DAOFactory.MapDAO.LoadById(148) != null)
+                if (DAOFactory.MapDAO.Where(s => s.MapId == 148).Any())
                 {
                     Logger.Log.Info("[ACT4] Demon Ship Loaded");
                     Act4ShipDemon = GenerateMapInstance(148, MapInstanceType.ArenaInstance, null);
@@ -1274,7 +1274,7 @@ namespace OpenNos.GameObject
                             SourceY = 171,
                             SourceMapId = 153,
                             IsDisabled = false,
-                            Type = (short) PortalType.MapPortal
+                            Type = (short)PortalType.MapPortal
                         });
                         // DEMON
                         act4Map.Portals.Add(new Portal
@@ -1286,7 +1286,7 @@ namespace OpenNos.GameObject
                             SourceY = 171,
                             SourceMapId = 153,
                             IsDisabled = false,
-                            Type = (short) PortalType.MapPortal
+                            Type = (short)PortalType.MapPortal
                         });
                     }
                     // TODO REMOVE THAT FOR RELEASE
@@ -1387,10 +1387,11 @@ namespace OpenNos.GameObject
 
         public void RefreshRanking()
         {
-            TopComplimented = DAOFactory.CharacterDAO.GetTopCompliment();
-            TopPoints = DAOFactory.CharacterDAO.GetTopPoints();
-            TopReputation = DAOFactory.CharacterDAO.GetTopReputation();
+            TopComplimented = DAOFactory.CharacterDAO.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList();
+            TopPoints = DAOFactory.CharacterDAO.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList();
+            TopReputation = DAOFactory.CharacterDAO.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Reput).Take(30).ToList();
         }
+
 
         public void RelationRefresh(long relationId)
         {
@@ -1424,14 +1425,14 @@ namespace OpenNos.GameObject
             {
                 case MapInstanceType.TimeSpaceInstance:
                 case MapInstanceType.RaidInstance:
-                    session.Character.Hp = (int) session.Character.HPLoad();
-                    session.Character.Mp = (int) session.Character.MPLoad();
+                    session.Character.Hp = (int)session.Character.HPLoad();
+                    session.Character.Mp = (int)session.Character.MPLoad();
                     session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRevive());
                     session.SendPacket(session.Character.GenerateStat());
                     break;
                 case MapInstanceType.Act4Instance:
-                    x = (short) (39 + Instance.RandomNumber(-2, 3));
-                    y = (short) (42 + Instance.RandomNumber(-2, 3));
+                    x = (short)(39 + Instance.RandomNumber(-2, 3));
+                    y = (short)(42 + Instance.RandomNumber(-2, 3));
                     MapInstance citadel = Instance.Act4Maps.FirstOrDefault(s => s.Map.MapId == (session.Character.Faction == FactionType.Angel ? 130 : 131));
                     if (citadel != null)
                     {
@@ -1447,8 +1448,8 @@ namespace OpenNos.GameObject
                     if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                     {
                         RespawnMapTypeDTO resp = session.Character.Respawn;
-                        x = (short) (resp.DefaultX + RandomNumber(-3, 3));
-                        y = (short) (resp.DefaultY + RandomNumber(-3, 3));
+                        x = (short)(resp.DefaultX + RandomNumber(-3, 3));
+                        y = (short)(resp.DefaultY + RandomNumber(-3, 3));
                         ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
                     }
                     else
@@ -1469,7 +1470,7 @@ namespace OpenNos.GameObject
             {
                 session.Character?.Save();
             });
-            DAOFactory.BazaarItemDAO.RemoveOutDated();
+            //DAOFactory.BazaarItemDAO.RemoveOutDated(); TODO REVIEW THIS
         }
 
         public void SetProperty(long charId, string property, object value)
@@ -1738,9 +1739,9 @@ namespace OpenNos.GameObject
                 MapMonster monster = new MapMonster
                 {
                     MonsterVNum = 556,
-                    MapY = faction == 1 ? (short) 92 : (short) 95,
-                    MapX = faction == 1 ? (short) 114 : (short) 20,
-                    MapId = (short) (131 + faction),
+                    MapY = faction == 1 ? (short)92 : (short)95,
+                    MapX = faction == 1 ? (short)114 : (short)20,
+                    MapId = (short)(131 + faction),
                     IsMoving = true,
                     MapMonsterId = instance.GetNextMonsterId(),
                     ShouldRespawn = false
@@ -1753,7 +1754,7 @@ namespace OpenNos.GameObject
             Act4RaidType CreateRaid(FactionType faction)
             {
                 IEnumerable<MapInstance> maps = Instance.GetMapInstancesByMapInstanceType(MapInstanceType.Act4Instance);
-                Act4RaidType raid = (Act4RaidType) random.Value.Next(0, 5);
+                Act4RaidType raid = (Act4RaidType)random.Value.Next(0, 5);
                 //MapInstance middleAct4Map = maps?.FirstOrDefault(s => s.Map.MapId == );
                 return raid;
             }
@@ -1821,6 +1822,7 @@ namespace OpenNos.GameObject
             Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance), sess => sess.SendPacket(sess.Character.GenerateFc()));
         }
 
+
         private void LoadBazaar()
         {
             BazaarList = new List<BazaarItemLink>();
@@ -1830,15 +1832,16 @@ namespace OpenNos.GameObject
                 {
                     BazaarItem = bz
                 };
-                CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
+                CharacterDTO chara = DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId.Equals(bz.SellerId));
                 if (chara != null)
                 {
                     item.Owner = chara.Name;
-                    item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                    item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.FirstOrDefault(m => m.Id.Equals(bz.ItemInstanceId));
                 }
                 BazaarList.Add(item);
             }
         }
+
 
         private void LoadFamilies()
         {
@@ -1849,7 +1852,7 @@ namespace OpenNos.GameObject
             {
                 Family family = (Family)familyDTO;
                 family.FamilyCharacters = new List<FamilyCharacter>();
-                foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(family.FamilyId).ToList())
+                foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.Where(s => s.FamilyId == family.FamilyId).ToList())
                 {
                     family.FamilyCharacters.Add((FamilyCharacter)famchar);
                 }
@@ -1857,13 +1860,13 @@ namespace OpenNos.GameObject
                 if (familyCharacter != null)
                 {
                     family.Warehouse = new Inventory((Character)familyCharacter.Character);
-                    foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                    foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.Where(s => s.CharacterId == familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
                     {
                         inventory.CharacterId = familyCharacter.CharacterId;
                         family.Warehouse[inventory.Id] = (ItemInstance)inventory;
                     }
                 }
-                family.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(family.FamilyId).ToList();
+                family.FamilyLogs = DAOFactory.FamilyLogDAO.Where(s => s.FamilyId == family.FamilyId).ToList();
                 families[family.FamilyId] = family;
             });
             FamilyList.AddRange(families.Select(s => s.Value));
@@ -1874,7 +1877,7 @@ namespace OpenNos.GameObject
             Raids = new List<ScriptedInstance>();
             Parallel.ForEach(_mapinstances, map =>
             {
-                foreach (ScriptedInstanceDTO scriptedInstanceDto in DAOFactory.ScriptedInstanceDAO.LoadByMap(map.Value.Map.MapId).ToList())
+                foreach (ScriptedInstanceDTO scriptedInstanceDto in DAOFactory.ScriptedInstanceDAO.Where(s => s.MapId == map.Value.Map.MapId).ToList())
                 {
                     ScriptedInstance si = (ScriptedInstance)scriptedInstanceDto;
                     switch (si.Type)
@@ -1901,23 +1904,24 @@ namespace OpenNos.GameObject
         }
 
 
+
         private void OnBazaarRefresh(object sender, EventArgs e)
         {
             // TODO: Parallelization of bazaar.
             long bazaarId = (long)sender;
-            BazaarItemDTO bzdto = DAOFactory.BazaarItemDAO.LoadById(bazaarId);
+            BazaarItemDTO bzdto = DAOFactory.BazaarItemDAO.FirstOrDefault(s => s.BazaarItemId.Equals(bazaarId));
             BazaarItemLink bzlink = BazaarList.FirstOrDefault(s => s.BazaarItem.BazaarItemId == bazaarId);
             lock (BazaarList)
             {
                 if (bzdto != null)
                 {
-                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bzdto.SellerId);
+                    CharacterDTO chara = DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId.Equals(bzdto.SellerId));
                     if (bzlink != null)
                     {
                         BazaarList.Remove(bzlink);
                         bzlink.BazaarItem = bzdto;
                         bzlink.Owner = chara.Name;
-                        bzlink.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bzdto.ItemInstanceId);
+                        bzlink.Item = (ItemInstance)DAOFactory.IteminstanceDAO.FirstOrDefault(s => s.Id.Equals(bzdto.ItemInstanceId));
                         BazaarList.Add(bzlink);
                     }
                     else
@@ -1929,7 +1933,7 @@ namespace OpenNos.GameObject
                         if (chara != null)
                         {
                             item.Owner = chara.Name;
-                            item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bzdto.ItemInstanceId);
+                            item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.FirstOrDefault(s => s.Id.Equals(bzdto.ItemInstanceId));
                         }
                         BazaarList.Add(item);
                     }
@@ -1945,8 +1949,9 @@ namespace OpenNos.GameObject
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
             // TODO: Parallelization of family.
-            long familyId = (long)sender;
-            FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(familyId);
+            Tuple<long, bool> tuple = (Tuple<long, bool>)sender;
+            long familyId = tuple.Item1;
+            FamilyDTO famdto = DAOFactory.FamilyDAO.FirstOrDefault(s => s.FamilyId.Equals(familyId));
             Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == familyId);
             lock (FamilyList)
             {
@@ -1958,45 +1963,58 @@ namespace OpenNos.GameObject
                         FamilyList.Remove(fam);
                         fam = (Family)famdto;
                         fam.FamilyCharacters = new List<FamilyCharacter>();
-                        foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fam.FamilyId).ToList())
+                        foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.Where(s => s.FamilyId.Equals(fam.FamilyId)))
                         {
                             fam.FamilyCharacters.Add((FamilyCharacter)famchar);
                         }
-                        FamilyCharacter familyCharacter = fam.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
-                        if (familyCharacter != null)
+                        FamilyCharacter familyLeader = fam.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                        if (familyLeader != null)
                         {
-                            fam.Warehouse = new Inventory((Character)familyCharacter.Character);
-                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse)
-                                .ToList())
+                            fam.Warehouse = new Inventory((Character)familyLeader.Character);
+                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.Where(s => s.CharacterId.Equals(familyLeader.CharacterId) && s.Type == (byte)InventoryType.FamilyWareHouse))
                             {
-                                inventory.CharacterId = familyCharacter.CharacterId;
-                                fam.Warehouse[inventory.Id] = (ItemInstance) inventory;
+                                inventory.CharacterId = familyLeader.CharacterId;
+                                fam.Warehouse[inventory.Id] = (ItemInstance)inventory;
                             }
                         }
-                        fam.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fam.FamilyId).ToList();
+                        fam.FamilyLogs = DAOFactory.FamilyLogDAO.Where(s => s.FamilyId.Equals(fam.FamilyId)).ToList();
                         fam.LandOfDeath = lod;
                         FamilyList.Add(fam);
+                        Parallel.ForEach(Sessions.Where(s => fam.FamilyCharacters.Any(m => m.CharacterId == s.Character.CharacterId)), session =>
+                        {
+                            session.Character.Family = fam;
+                            if (tuple.Item2)
+                            {
+                                session.Character.ChangeFaction((FactionType)fam.FamilyFaction);
+                            }
+                            session.CurrentMapInstance.Broadcast(session.Character.GenerateGidx());
+                        });
                     }
                     else
                     {
                         Family fami = (Family)famdto;
                         fami.FamilyCharacters = new List<FamilyCharacter>();
-                        foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
+                        foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.Where(s => s.FamilyId.Equals(fam.FamilyId)))
                         {
                             fami.FamilyCharacters.Add((FamilyCharacter)famchar);
                         }
-                        FamilyCharacter familyCharacter = fami.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
-                        if (familyCharacter != null)
+                        FamilyCharacter familyLeader = fami.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                        if (familyLeader != null)
                         {
-                            fami.Warehouse = new Inventory((Character)familyCharacter.Character);
-                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                            fami.Warehouse = new Inventory((Character)familyLeader.Character);
+                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.Where(s => s.CharacterId.Equals(familyLeader.CharacterId) && s.Type == (byte)InventoryType.FamilyWareHouse))
                             {
-                                inventory.CharacterId = familyCharacter.CharacterId;
+                                inventory.CharacterId = familyLeader.CharacterId;
                                 fami.Warehouse[inventory.Id] = (ItemInstance)inventory;
                             }
                         }
-                        fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
+                        fam.FamilyLogs = DAOFactory.FamilyLogDAO.Where(s => s.FamilyId.Equals(fam.FamilyId)).ToList();
                         FamilyList.Add(fami);
+                        Parallel.ForEach(Sessions.Where(s => fami.FamilyCharacters.Any(m => m.CharacterId == s.Character.CharacterId)), session =>
+                        {
+                            session.Character.Family = fami;
+                            session.CurrentMapInstance.Broadcast(session.Character.GenerateGidx());
+                        });
                     }
                 }
                 else if (fam != null)
@@ -2006,7 +2024,6 @@ namespace OpenNos.GameObject
             }
             InFamilyRefreshMode = false;
         }
-
         private void OnMailSent(object sender, EventArgs e)
         {
             if (sender == null)
@@ -2146,7 +2163,7 @@ namespace OpenNos.GameObject
         private void OnPenaltyLogRefresh(object sender, EventArgs e)
         {
             int relId = (int)sender;
-            PenaltyLogDTO reldto = DAOFactory.PenaltyLogDAO.LoadById(relId);
+            PenaltyLogDTO reldto = DAOFactory.PenaltyLogDAO.FirstOrDefault(s => s.PenaltyLogId == relId);
             PenaltyLogDTO rel = PenaltyLogs.FirstOrDefault(s => s.PenaltyLogId == relId);
             if (reldto != null)
             {
@@ -2170,7 +2187,7 @@ namespace OpenNos.GameObject
             long relId = (long)sender;
             lock (CharacterRelations)
             {
-                CharacterRelationDTO reldto = DAOFactory.CharacterRelationDAO.LoadById(relId);
+                CharacterRelationDTO reldto = DAOFactory.CharacterRelationDAO.FirstOrDefault(s => s.CharacterRelationId == relId);
                 CharacterRelationDTO rel = CharacterRelations.FirstOrDefault(s => s.CharacterRelationId == relId);
                 if (reldto != null)
                 {

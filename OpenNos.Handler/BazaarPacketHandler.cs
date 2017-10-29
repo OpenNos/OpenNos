@@ -19,9 +19,13 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using OpenNos.DAL.EF;
+using ItemInstance = OpenNos.GameObject.ItemInstance;
+using WearableInstance = OpenNos.GameObject.WearableInstance;
 
 namespace OpenNos.Handler
 {
@@ -54,7 +58,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == cBuyPacket.BazaarId);
+            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.FirstOrDefault(s => s.BazaarItemId == cBuyPacket.BazaarId);
             if (bz != null && cBuyPacket.Amount > 0)
             {
                 long price = cBuyPacket.Amount * bz.Price;
@@ -62,10 +66,10 @@ namespace OpenNos.Handler
                 if (Session.Character.Gold >= price)
                 {
                     BazaarItemLink bzcree = new BazaarItemLink { BazaarItem = bz };
-                    if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
+                    if (DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId == bz.SellerId && s.State == (byte)CharacterState.Active) != null)
                     {
-                        bzcree.Owner = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
-                        bzcree.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                        bzcree.Owner = DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId.Equals(bz.SellerId) && s.State == (byte)CharacterState.Active)?.Name;
+                        bzcree.Item = (ItemInstance)DAOFactory.IteminstanceDAO.FirstOrDefault(s => s.Id == bz.ItemInstanceId);
                     }
                     if (cBuyPacket.Amount <= bzcree.Item.Amount)
                     {
@@ -83,7 +87,7 @@ namespace OpenNos.Handler
                         {
                             return;
                         }
-                        ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDAO.LoadById(bzcree.BazaarItem.ItemInstanceId);
+                        ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDAO.FirstOrDefault(s => s.Id == bzcree.BazaarItem.ItemInstanceId);
                         if (bzitemdto.Amount < cBuyPacket.Amount)
                         {
                             return;
@@ -91,7 +95,7 @@ namespace OpenNos.Handler
                         bzitemdto.Amount -= cBuyPacket.Amount;
                         Session.Character.Gold -= price;
                         Session.SendPacket(Session.Character.GenerateGold());
-                        DAOFactory.IteminstanceDAO.InsertOrUpdate(bzitemdto);
+                        DAOFactory.IteminstanceDAO.InsertOrUpdate(ref bzitemdto);
                         ServerManager.Instance.BazaarRefresh(bzcree.BazaarItem.BazaarItemId);
                         Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {cBuyPacket.Amount} {cBuyPacket.Price} 0 0 0");
                         ItemInstance newBz = bzcree.Item.DeepCopy();
@@ -138,10 +142,10 @@ namespace OpenNos.Handler
                 return;
             }
             SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);
-            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == cScalcPacket.BazaarId);
+            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.FirstOrDefault(s => s.BazaarItemId == cScalcPacket.BazaarId);
             if (bz != null)
             {
-                ItemInstance item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                ItemInstance item = (ItemInstance)DAOFactory.IteminstanceDAO.FirstOrDefault(s => s.Id == bz.ItemInstanceId);
                 if (item == null || bz.SellerId != Session.Character.CharacterId)
                 {
                     return;
@@ -163,14 +167,14 @@ namespace OpenNos.Handler
                             newBz.Type = newBz.Item.Type;
                             if (newBz is WearableInstance wear)
                             {
-                                wear.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
+                                wear.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.Where(s => s.WearableInstanceId == item.Id));
                                 wear.EquipmentOptions.ForEach(s => s.WearableInstanceId = newBz.Id);
                             }
                             List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(newBz);
                         }
                         Session.SendPacket($"rc_scalc 1 {bz.Price} {bz.Amount - item.Amount} {bz.Amount} {taxes} {price + taxes}");
 
-                        if (DAOFactory.BazaarItemDAO.LoadById(bz.BazaarItemId) != null)
+                        if (DAOFactory.BazaarItemDAO.FirstOrDefault(s => s.BazaarItemId == bz.BazaarItemId) != null)
                         {
                             DAOFactory.BazaarItemDAO.Delete(bz.BazaarItemId);
                         }
@@ -318,8 +322,8 @@ namespace OpenNos.Handler
                 default:
                     return;
             }
-
-            DAOFactory.IteminstanceDAO.InsertOrUpdate(bazar);
+            ItemInstanceDTO bazarDto = bazar;
+            DAOFactory.IteminstanceDAO.InsertOrUpdate(ref bazarDto);
 
             BazaarItemDTO bazaarItem = new BazaarItemDTO
             {
@@ -337,7 +341,8 @@ namespace OpenNos.Handler
             if (bazar is WearableInstance wear)
             {
                 wear.EquipmentOptions.ForEach(s => s.WearableInstanceId = bazar.Id);
-                DAOFactory.EquipmentOptionDAO.InsertOrUpdate(wear.EquipmentOptions);
+                IEnumerable<EquipmentOptionDTO> equipmentOptionDtos = wear.EquipmentOptions;
+                DAOFactory.EquipmentOptionDAO.InsertOrUpdate(equipmentOptionDtos);
             }
             ServerManager.Instance.BazaarRefresh(bazaarItem.BazaarItemId);
 
