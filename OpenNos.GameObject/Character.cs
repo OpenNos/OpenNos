@@ -4872,19 +4872,21 @@ namespace OpenNos.GameObject
                 DAOFactory.StaticBonusDAO.InsertOrUpdate(staticBonusToUpdate);
 
                 // STATIC BUFF
-                // TODO
-                IEnumerable<StaticBuffDTO> currentlySavedBuff = DAOFactory.StaticBuffDAO.Where(s => s.CharacterId.Equals(CharacterId));
-
-                foreach (Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
+                ConcurrentBag<StaticBuffDTO> staticBuff = new ConcurrentBag<StaticBuffDTO>();
+                foreach (Buff buff in Buff.Where(s => s.StaticBuff))
                 {
-                    StaticBuffDTO bf = new StaticBuffDTO
+                    StaticBuffDTO staticBuffDto = new StaticBuffDTO
                     {
                         CharacterId = CharacterId,
-                        RemainingTime = (int)(buff.RemainingTime - (DateTime.Now - buff.Start).TotalSeconds),
+                        RemainingTime = buff.RemainingTime,
                         CardId = buff.Card.CardId
                     };
-                    DAOFactory.StaticBuffDAO.InsertOrUpdate(ref bf);
+                    staticBuff.Add(staticBuffDto);
                 }
+                IEnumerable<StaticBuffDTO> staticBuffToUpdate = staticBuff;
+                IEnumerable<long> staticBuffToDelete = DAOFactory.StaticBuffDAO.Where(s => s.CharacterId.Equals(CharacterId)).Except(staticBuffToUpdate).Select(s => s.StaticBuffId);
+                DAOFactory.StaticBuffDAO.Delete(staticBuffToDelete);
+                DAOFactory.StaticBuffDAO.InsertOrUpdate(staticBuffToUpdate);
 
                 // GENERAL LOGS
                 IEnumerable<GeneralLogDTO> generalLogDtos = GeneralLogs;

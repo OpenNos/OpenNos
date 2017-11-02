@@ -199,17 +199,16 @@ namespace OpenNos.DAL.EF
 
                             context.Entry(entityfound).CurrentValues.SetValues(entity);
                             context.SaveChanges();
-
-                            return SaveResult.Updated;
+                            
                         }
 
                         if (value == null || entityfound == null)
                         {
                             dbset.Add(entity);
-                            context.SaveChanges();
                         }
                     }
 
+                    context.SaveChanges();
                     return SaveResult.Inserted;
                 }
             }
