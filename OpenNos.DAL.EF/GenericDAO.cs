@@ -198,7 +198,6 @@ namespace OpenNos.DAL.EF
                             Mapper.Map(entity, entityfound);
 
                             context.Entry(entityfound).CurrentValues.SetValues(entity);
-                            context.SaveChanges();
                             
                         }
 
