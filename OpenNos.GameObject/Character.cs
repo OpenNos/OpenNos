@@ -4809,11 +4809,12 @@ namespace OpenNos.GameObject
                             }
                         }
 
+                        IEnumerable<ItemInstanceDTO> itemInsts = itemInstances.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse);
+                        DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInsts);
+
                         // create or update all which are new or do still exist
                         foreach (ItemInstance itemInstance in itemInstances.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse))
                         {
-                            IEnumerable<ItemInstanceDTO> itemInsts = itemInstances.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse);
-                            DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInsts);
                             WearableInstance instance = itemInstance as WearableInstance;
 
                             instance?.EquipmentOptions.ForEach(s => DAOFactory.EquipmentOptionDAO.Delete(s.Id));
