@@ -205,9 +205,10 @@ namespace OpenNos.DAL.EF
                         {
                             dbset.Add(entity);
                         }
+
+                        context.SaveChanges();
                     }
 
-                    context.SaveChanges();
                     return SaveResult.Inserted;
                 }
             }
