@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                Type targetType = typeof(TEntity);
+                Type targetType = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(t => t.Name.Equals(gameObjectType.Name));
                 Mappings.Add(gameObjectType, targetType);
 
                 foreach (PropertyInfo pi in gameObjectType.GetProperties())
