@@ -19,9 +19,8 @@ namespace OpenNos.DAL.EF
     {
         protected readonly IDictionary<Type, Type> Mappings = new Dictionary<Type, Type>();
         protected IMapper Mapper;
-        private Type _baseType;
 
-        private PropertyInfo PrimaryKey { get; set; }
+        public PropertyInfo PrimaryKey { get; set; }
 
         public virtual void InitializeMapper()
         {
@@ -69,7 +68,7 @@ namespace OpenNos.DAL.EF
                 Logger.Error(e);
                 return null;
             }
-        }    
+        }
 
         public DeleteResult Delete(object dtokey)
         {
@@ -124,7 +123,7 @@ namespace OpenNos.DAL.EF
                 return default(TDTO);
             }
         }
-
+       
         public SaveResult InsertOrUpdate(ref TDTO dto)
         {
             try
@@ -150,7 +149,7 @@ namespace OpenNos.DAL.EF
 
                         context.Entry(entityfound).CurrentValues.SetValues(entity);
                         context.SaveChanges();
-                        
+
                     }
                     if (value == null || entityfound == null)
                     {
@@ -198,7 +197,7 @@ namespace OpenNos.DAL.EF
                             Mapper.Map(entity, entityfound);
 
                             context.Entry(entityfound).CurrentValues.SetValues(entity);
-                            
+
                         }
 
                         if (value == null || entityfound == null)
@@ -252,38 +251,6 @@ namespace OpenNos.DAL.EF
                     yield return Mapper.Map<TDTO>(t);
                 }
             }
-
         }
-
-
-        public void InitializeMapper(Type baseType)
-        {
-            _baseType = baseType;
-            MapperConfiguration config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap(baseType, typeof(ItemInstance))
-                    .ForMember("Item", opts => opts.Ignore());
-
-                cfg.CreateMap(typeof(ItemInstance), typeof(ItemInstanceDTO)).As(baseType);
-
-                Type itemInstanceType = typeof(ItemInstance);
-                foreach (KeyValuePair<Type, Type> entry in Mappings)
-                {
-                    // GameObject -> Entity
-                    cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
-                                    .IncludeBase(baseType, typeof(ItemInstance));
-
-                    // Entity -> GameObject
-                    cfg.CreateMap(entry.Value, entry.Key)
-                                    .IncludeBase(typeof(ItemInstance), baseType);
-
-                    // Entity -> GameObject
-                    cfg.CreateMap(entry.Value, typeof(ItemInstanceDTO)).As(entry.Key);
-                }
-            });
-
-            Mapper = config.CreateMapper();
-        }
-
     }
 }

@@ -43,7 +43,7 @@ namespace OpenNos.DAL
         private static IGenericDAO<FamilyLog, FamilyLogDTO> _familylogDAO;
         private static IGenericDAO<GeneralLog, GeneralLogDTO> _generallogDAO;
         private static IGenericDAO<Item, ItemDTO> _itemDAO;
-        private static IGenericDAO<ItemInstance, ItemInstanceDTO> _iteminstanceDAO;
+        private static ItemInstanceDAO<ItemInstance, ItemInstanceDTO> _iteminstanceDAO;
         private static IGenericDAO<LogChat, LogChatDTO> _logChatDAO;
         private static IGenericDAO<LogCommands, LogCommandsDTO> _logCommandsDAO;
         private static IGenericDAO<Mail, MailDTO> _mailDAO;
@@ -162,9 +162,9 @@ namespace OpenNos.DAL
             get { return _itemDAO ?? (_itemDAO = new GenericDAO<Item, ItemDTO>()); }
         }
 
-        public static IGenericDAO<ItemInstance, ItemInstanceDTO> IteminstanceDAO
+        public static ItemInstanceDAO<ItemInstance, ItemInstanceDTO> IteminstanceDAO
         {
-            get { return _iteminstanceDAO ?? (_iteminstanceDAO = new GenericDAO<ItemInstance, ItemInstanceDTO>()); }
+            get { return _iteminstanceDAO ?? (_iteminstanceDAO = new ItemInstanceDAO<ItemInstance, ItemInstanceDTO>()); }
         }
 
         public static IGenericDAO<LogChat, LogChatDTO> LogChatDAO

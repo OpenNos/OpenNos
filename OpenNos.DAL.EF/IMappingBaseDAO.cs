@@ -12,11 +12,9 @@ namespace OpenNos.DAL.EF
         #region Methods
 
         void InitializeMapper();
-
-        void InitializeMapper(Type baseType);
-
+        
         IMappingBaseDAO RegisterMapping(Type gameObjectType);
-
+        
         #endregion
     }
 

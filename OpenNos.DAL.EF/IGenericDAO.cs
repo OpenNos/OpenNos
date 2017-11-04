@@ -18,6 +18,6 @@ namespace OpenNos.DAL.EF
         SaveResult InsertOrUpdate(IEnumerable<TDTO> dtos);
 
         DeleteResult Delete(object entitykey);
-        
+
     }
 }

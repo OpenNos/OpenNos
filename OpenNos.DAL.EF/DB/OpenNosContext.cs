@@ -138,6 +138,7 @@ namespace OpenNos.DAL.EF.DB
             modelBuilder.Entity<ItemInstance>()
                 .Map<WearableInstance>(m => m.Requires("WearableInstance"))
                 .Map<SpecialistInstance>(m => m.Requires("SpecialistInstance"))
+                .Map<BoxInstance>(m => m.Requires("BoxInstance"))
                 .Map<UsableInstance>(m => m.Requires("UsableInstance"));
 
             modelBuilder.Entity<Account>()
