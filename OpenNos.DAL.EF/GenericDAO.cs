@@ -177,6 +177,7 @@ namespace OpenNos.DAL.EF
                     context.Configuration.AutoDetectChangesEnabled = false;
 
                     DbSet<TEntity> dbset = context.Set<TEntity>();
+                    List<TEntity> entitytoadd = new List<TEntity>();
                     foreach (TDTO dto in dtos)
                     {
                         TEntity entity = Mapper.Map<TEntity>(dto);
@@ -202,12 +203,14 @@ namespace OpenNos.DAL.EF
 
                         if (value == null || entityfound == null)
                         {
-                            dbset.Add(entity);
+                            //add in a temp list in order to avoid find(default(PK)) to find this element before savechanges
+                            entitytoadd.Add(entity);
                         }
-
-                        context.SaveChanges();
                     }
 
+                    dbset.AddRange(entitytoadd);
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                     return SaveResult.Inserted;
                 }
             }
