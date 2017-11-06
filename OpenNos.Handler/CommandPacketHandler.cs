@@ -115,7 +115,6 @@ namespace OpenNos.Handler
                     MapId = Session.Character.MapInstance.Map.MapId,
                     Position = (byte)Session.Character.Direction,
                     IsMoving = addMonsterPacket.IsMoving,
-                    MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId()
                 };
                 MapMonsterDTO monst1 = monst;
                 if (DAOFactory.MapMonsterDAO.FirstOrDefault(s => s.MapMonsterId == monst1.MapMonsterId) == null)
