@@ -1949,8 +1949,7 @@ namespace OpenNos.GameObject
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
             // TODO: Parallelization of family.
-            Tuple<long, bool> tuple = (Tuple<long, bool>)sender;
-            long familyId = tuple.Item1;
+            long familyId = (long)sender;
             FamilyDTO famdto = DAOFactory.FamilyDAO.FirstOrDefault(s => s.FamilyId.Equals(familyId));
             Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == familyId);
             lock (FamilyList)
@@ -1983,10 +1982,9 @@ namespace OpenNos.GameObject
                         Parallel.ForEach(Sessions.Where(s => fam.FamilyCharacters.Any(m => m.CharacterId == s.Character.CharacterId)), session =>
                         {
                             session.Character.Family = fam;
-                            if (tuple.Item2)
-                            {
-                                session.Character.ChangeFaction((FactionType)fam.FamilyFaction);
-                            }
+
+                            session.Character.ChangeFaction((FactionType)fam.FamilyFaction);
+
                             session.CurrentMapInstance.Broadcast(session.Character.GenerateGidx());
                         });
                     }

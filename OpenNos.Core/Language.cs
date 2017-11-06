@@ -58,7 +58,7 @@ namespace OpenNos.Core
 
         public string GetMessageFromKey(string message)
         {
-            string resourceMessage = _manager != null ? _manager.GetString(message, _resourceCulture) : string.Empty;
+            string resourceMessage = _manager != null && message != null ? _manager.GetString(message, _resourceCulture) : string.Empty;
 
             return !string.IsNullOrEmpty(resourceMessage) ? resourceMessage : $"#<{message}>";
         }
