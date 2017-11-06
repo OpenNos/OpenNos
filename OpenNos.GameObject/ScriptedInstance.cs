@@ -410,7 +410,7 @@ namespace OpenNos.GameObject
 
                             }
                         }
-                        List<MonsterToSummon> lst = new List<MonsterToSummon>
+                        ConcurrentBag<MonsterToSummon> lst = new ConcurrentBag<MonsterToSummon>
                         {
                             new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, isTarget, isBonus, isHostile, isBoss)
                             {
@@ -419,7 +419,7 @@ namespace OpenNos.GameObject
                                 NoticeRange = noticerange
                             }
                         };
-                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, lst.AsEnumerable()));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, lst));
                         break;
 
                     case "SummonNps":

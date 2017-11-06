@@ -112,9 +112,9 @@ namespace OpenNos.GameObject
             return (int)Heuristic.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
 
-        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true, bool isBoss = false)
+        public ConcurrentBag<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true, bool isBoss = false)
         {
-            List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
+            ConcurrentBag<MonsterToSummon> summonParameters = new ConcurrentBag<MonsterToSummon>();
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();

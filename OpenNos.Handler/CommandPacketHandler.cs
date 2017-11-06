@@ -1736,7 +1736,7 @@ namespace OpenNos.Handler
             if (searchItemPacket != null)
             {
                 // TODO REVIEW COMMAND LOGGING
-                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.Where(s => s.Name == (string.IsNullOrEmpty(searchItemPacket.Data) ? string.Empty : searchItemPacket.Data)).OrderBy(s => s.VNum).Skip(0 * 200)
+                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.Where(s => s.Name.Contains(string.IsNullOrEmpty(searchItemPacket.Data) ? string.Empty : searchItemPacket.Data)).OrderBy(s => s.VNum).Skip(0 * 200)
                     .Take(200).ToList();
                 if (itemlist.Any())
                 {
@@ -1765,7 +1765,7 @@ namespace OpenNos.Handler
         {
             if (searchMonsterPacket != null)
             {
-                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.Where(s => s.Name == (string.IsNullOrEmpty(searchMonsterPacket.Name) ? string.Empty : searchMonsterPacket.Name))
+                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.Where(s => s.Name.Contains(string.IsNullOrEmpty(searchMonsterPacket.Name) ? string.Empty : searchMonsterPacket.Name))
                     .OrderBy(s => s.NpcMonsterVNum).Skip(searchMonsterPacket.Page * 200).Take(200).ToList();
                 if (monsterlist.Any())
                 {
