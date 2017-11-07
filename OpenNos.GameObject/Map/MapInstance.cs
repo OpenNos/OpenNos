@@ -105,20 +105,15 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (_isSleeping || (_isSleepingRequest && LastUnregister.AddSeconds(30) <= DateTime.Now))
+                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(30) >= DateTime.Now)
                 {
-                    if (!_isSleeping)
-                    {
-                        _isSleepingRequest = false;
-                    }
-                    else
-                    {
-                        _isSleeping = true;
-                    }
                     return _isSleeping;
                 }
-
-                return false;
+                _isSleeping = true;
+                _isSleepingRequest = false;
+                Monsters.Where(s => s.Life != null).ToList().ForEach(s => s.StopLife());
+                Npcs.Where(s => s.Life != null).ToList().ForEach(s => s.StopLife());
+                return true;
             }
             set
             {
@@ -548,8 +543,9 @@ namespace OpenNos.GameObject
 
         private void StartLife()
         {
-            Life = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
+            Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {
+
                 WaveEvents.ForEach(s =>
                 {
                     if (s.LastStart.AddSeconds(s.Delay) > DateTime.Now)
@@ -565,13 +561,17 @@ namespace OpenNos.GameObject
                 });
                 try
                 {
-                    if (Monsters.Count(s => s.IsAlive) == 0)
-                    {
-                        OnMapClean.ForEach(e => { EventHelper.Instance.RunEvent(e); });
-                        OnMapClean.RemoveAll(s => s != null);
-                    }
                     if (!IsSleeping)
                     {
+                        Monsters.Where(s=>s.Life == null).ToList().ForEach(s => s.StartLife());
+                        Npcs.Where(s => s.Life == null).ToList().ForEach(s => s.StartLife());
+
+                        if (Monsters.Count(s => s.IsAlive) == 0)
+                        {
+                            OnMapClean.ForEach(e => { EventHelper.Instance.RunEvent(e); });
+                            OnMapClean.RemoveAll(s => s != null);
+                        }
+
                         RemoveMapItem();
                     }
                 }

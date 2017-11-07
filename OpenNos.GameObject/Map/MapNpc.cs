@@ -165,7 +165,7 @@ namespace OpenNos.GameObject
             OnDeathEvents.Clear();
         }
 
-        private void StartLife()
+        public void StartLife()
         {
             Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {
@@ -337,6 +337,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        internal void StopLife()
+        {
+            Life.Dispose();
+            Life = null;
+        }
 
         /// <summary>
         /// Remove the current Target from Npc.

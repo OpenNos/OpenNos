@@ -142,6 +142,12 @@ namespace OpenNos.GameObject
             };
         }
 
+        internal void StopLife()
+        {
+            Life.Dispose();
+            Life = null;
+        }
+
         public string GenerateIn()
         {
             if (IsAlive && !IsDisabled)
@@ -165,7 +171,6 @@ namespace OpenNos.GameObject
         {
             MapInstance = currentMapInstance;
             Initialize();
-            StartLife();
         }
 
         public override void Initialize()
