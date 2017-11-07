@@ -248,7 +248,7 @@ namespace OpenNos.GameObject
                             ArenaTeamMember killer = team.OrderBy(s => s.Order).FirstOrDefault(s => !s.Dead && s.ArenaTeamType != member.ArenaTeamType);
                             session.CurrentMapInstance.Broadcast(session.Character.GenerateSay(string.Format("TEAM_WINNER_ARENA_ROUND", killer?.Session.Character.Name, killer?.ArenaTeamType), 10));
                             session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format("TEAM_WINNER_ARENA_ROUND", killer?.Session.Character.Name, killer?.ArenaTeamType), 0));
-                            session.CurrentMapInstance.Sessions.Except(team.Where(s => s.ArenaTeamType == killer?.ArenaTeamType).Select(s => s.Session)).ToList().ForEach(o =>
+                            session.CurrentMapInstance.Sessions.Except(team.Replace(s => s.ArenaTeamType == killer?.ArenaTeamType).Select(s => s.Session)).ToList().ForEach(o =>
                             {
                                 if (killer?.ArenaTeamType == ArenaTeamType.ERENIA)
                                 {
@@ -270,7 +270,7 @@ namespace OpenNos.GameObject
                         member.Session.Character.PositionY = member.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
                         session.CurrentMapInstance.Broadcast(member.Session, member.Session.Character.GenerateTp());
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
-                        team.Where(friends => friends.ArenaTeamType == member.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(friends.Session.Character.GenerateTaFc(0)); });
+                        team.Replace(friends => friends.ArenaTeamType == member.ArenaTeamType).ToList().ForEach(friends => { friends.Session.SendPacket(friends.Session.Character.GenerateTaFc(0)); });
                         team.ToList().ForEach(arenauser =>
                         {
                             arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true));
@@ -427,7 +427,7 @@ namespace OpenNos.GameObject
                         Group grp = session.Character.Group;
                         if (grp != null)
                         {
-                            grp.Characters.Where(s => s != null).ToList().ForEach(s =>
+                            grp.Characters.Replace(s => s != null).ToList().ForEach(s =>
                             {
                                 s.SendPacket(s.Character?.Group?.GeneraterRaidmbf());
                                 s.SendPacket(s.Character?.Group?.GenerateRdlst());

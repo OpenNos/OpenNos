@@ -18,6 +18,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using OpenNos.Core.Networking.Communication.Scs.Threading;
 using System;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Client
@@ -37,7 +38,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// <summary>
         /// This timer is used to send PingMessage messages to server periodically.
         /// </summary>
-        private readonly Timer _pingTimer;
+        private IDisposable _pingTimer;
 
         /// <summary>
         /// The communication channel that is used by client to send and receive messages.
@@ -56,8 +57,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </summary>
         protected ScsClientBase()
         {
-            _pingTimer = new Timer(30000);
-            _pingTimer.Elapsed += PingTimer_Elapsed;
             ConnectTimeout = DefaultConnectionAttemptTimeout;
             WireProtocol = WireProtocolManager.GetDefaultWireProtocol();
         }
@@ -177,7 +176,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
             _communicationChannel.MessageReceived += CommunicationChannel_MessageReceived;
             _communicationChannel.MessageSent += CommunicationChannel_MessageSent;
             _communicationChannel.Start();
-            _pingTimer.Start();
+            _pingTimer = Observable
+            .Interval(TimeSpan.FromSeconds(30))
+            .Subscribe(
+                x =>
+                {
+                    PingTimer_Elapsed();
+                });
             OnConnected();
         }
 
@@ -280,7 +285,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// <param name="e">Event arguments</param>
         private void CommunicationChannel_Disconnected(object sender, EventArgs e)
         {
-            _pingTimer.Stop();
+            _pingTimer.Dispose();
             OnDisconnected();
         }
 
@@ -314,7 +319,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </summary>
         /// <param name="sender">Source of event</param>
         /// <param name="e">Event arguments</param>
-        private void PingTimer_Elapsed(object sender, EventArgs e)
+        private void PingTimer_Elapsed()
         {
             if (CommunicationState != CommunicationStates.Connected)
             {

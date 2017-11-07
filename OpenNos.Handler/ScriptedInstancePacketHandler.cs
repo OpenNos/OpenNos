@@ -80,7 +80,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            IEnumerable<ArenaTeamMember> ownteam = arenateam.Where(s => s.ArenaTeamType == arenateam?.FirstOrDefault(e => e.Session == Session)?.ArenaTeamType);
+            IEnumerable<ArenaTeamMember> ownteam = arenateam.Replace(s => s.ArenaTeamType == arenateam?.FirstOrDefault(e => e.Session == Session)?.ArenaTeamType);
             ClientSession client = ownteam.Where(s => s.Session != Session).OrderBy(s => s.Order).Skip(packet.CalledIndex).FirstOrDefault()?.Session;
             ArenaTeamMember memb = arenateam.FirstOrDefault(s => s.Session == client);
             if (client == null || client.CurrentMapInstance != Session.CurrentMapInstance || memb == null || memb.LastSummoned != null || ownteam.Sum(s => s.SummonCount) >= 5)
@@ -290,7 +290,7 @@ namespace OpenNos.Handler
                 {
                     ServerManager.Instance.GroupList.Remove(Session.Character.Group);
                 }
-                Session.Character.Group.Characters.Where(s => s.CurrentMapInstance.MapInstanceId != Session.CurrentMapInstance.MapInstanceId).ToList().ForEach(session =>
+                Session.Character.Group.Characters.Replace(s => s.CurrentMapInstance.MapInstanceId != Session.CurrentMapInstance.MapInstanceId).ToList().ForEach(session =>
                 {
                     Session.Character.Group.LeaveGroup(session);
                     session.SendPacket(session.Character.GenerateRaid(1, true));

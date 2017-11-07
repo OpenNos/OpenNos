@@ -1091,7 +1091,7 @@ namespace OpenNos.GameObject
                     continue;
                 }
                 Inventory.DeleteById(item.Id);
-                Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != item.ItemVNum);
+                Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Replace(o => o.ItemVNum != item.ItemVNum);
                 Session.SendPacket(item.Type == InventoryType.Wear ? GenerateEquipment() : UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
                 Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
             }
@@ -2435,7 +2435,7 @@ namespace OpenNos.GameObject
                 Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId) && g.GroupType == GroupType.Group);
                 if (grp != null)
                 {
-                    foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceId == MapInstanceId))
+                    foreach (ClientSession targetSession in grp.Characters.Replace(g => g.Character.MapInstanceId == MapInstanceId))
                     {
                         if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
                         {
@@ -3961,7 +3961,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStatInfo()
         {
-            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}{Buff.Where(s => !s.StaticBuff).Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}")}";
+            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}{Buff.Replace(s => !s.StaticBuff).Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}")}";
         }
 
         public TalkPacket GenerateTalk(string message)
@@ -4873,7 +4873,7 @@ namespace OpenNos.GameObject
 
                 // STATIC BUFF
                 ConcurrentBag<StaticBuffDTO> staticBuff = new ConcurrentBag<StaticBuffDTO>();
-                foreach (Buff buff in Buff.Where(s => s.StaticBuff))
+                foreach (Buff buff in Buff.Replace(s => s.StaticBuff))
                 {
                     StaticBuffDTO staticBuffDto = new StaticBuffDTO
                     {
@@ -5594,7 +5594,7 @@ namespace OpenNos.GameObject
                     break;
                 case 3:
                     result = "raid 3";
-                    Group?.Characters?.Where(p => p.Character != null).ToList().ForEach(s =>
+                    Group?.Characters?.Replace(p => p.Character != null).ToList().ForEach(s =>
                     {
                         if (s.Character != null)
                         {
@@ -5637,7 +5637,7 @@ namespace OpenNos.GameObject
 
             if (Buff.Contains(indicator))
             {
-                Buff = Buff.Where(s => s != indicator);
+                Buff = Buff.Replace(s => s != indicator);
             }
             if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move && !s.SubType.Equals((byte)AdditionalTypes.Move.MovementImpossible)))
             {
@@ -5678,7 +5678,7 @@ namespace OpenNos.GameObject
             }
             else if (oldbuff != null)
             {
-                Buff = Buff.Where(s => !s.Card.CardId.Equals(bf.Card.CardId));
+                Buff = Buff.Replace(s => !s.Card.CardId.Equals(bf.Card.CardId));
 
                 bf.RemainingTime = bf.Card.Duration * 6 / 10 + oldbuff.RemainingTime;
                 Buff.Add(bf);
@@ -5716,7 +5716,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            Buff = Buff.Replace(s => !s.Card.CardId.Equals(indicator.Card.CardId));
             indicator.RemainingTime = indicator.Card.Duration;
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
@@ -5760,7 +5760,7 @@ namespace OpenNos.GameObject
             }
             if (Buff.Contains(indicator))
             {
-                Buff = Buff.Where(s => s.Card.CardId != id);
+                Buff = Buff.Replace(s => s.Card.CardId != id);
             }
             if (indicator.Card.BCards.All(s => s.Type != (byte)CardType.Move))
             {
@@ -5834,7 +5834,7 @@ namespace OpenNos.GameObject
         {
             lock (Buff)
             {
-                Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level < level).ToList()
+                Buff.Replace(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level < level).ToList()
                     .ForEach(s => RemoveBuff(s.Card.CardId));
             }
         }
@@ -5847,7 +5847,7 @@ namespace OpenNos.GameObject
         /// <returns></returns>
         public int GetMostValueEquipmentBuff(CardType type, byte subtype)
         {
-            return EquipmentBCards.Where(s => s.Type == (byte)type && s.SubType.Equals(subtype)).OrderByDescending(s => s.FirstData).FirstOrDefault()?.FirstData ?? 0;
+            return EquipmentBCards.Replace(s => s.Type == (byte)type && s.SubType.Equals(subtype)).OrderByDescending(s => s.FirstData).FirstOrDefault()?.FirstData ?? 0;
         }
 
         /// <summary>
@@ -5863,7 +5863,7 @@ namespace OpenNos.GameObject
         {
             int value1 = 0;
             int value2 = 0;
-            foreach (BCard entry in EquipmentBCards.Where(
+            foreach (BCard entry in EquipmentBCards.Replace(
                 s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10))))
             {
                 if (entry.IsLevelScaled)
@@ -5974,7 +5974,7 @@ namespace OpenNos.GameObject
                 return $"ta_m {type} {score1} {score2} {(type == 3 ? MapInstance.InstanceBag.Clock.DeciSecondRemaining / 10 : 0)} 0";
             }
             ArenaTeamMember tmem = tm.FirstOrDefault(s => s.Session == Session);
-            IEnumerable<long> ids = tm.Where(s => tmem != null && tmem.ArenaTeamType != s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
+            IEnumerable<long> ids = tm.Replace(s => tmem != null && tmem.ArenaTeamType != s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
             score1 = MapInstance.InstanceBag.DeadList.Count(s => ids.Contains(s));
             score2 = MapInstance.InstanceBag.DeadList.Count(s => !ids.Contains(s));
             return $"ta_m {type} {score1} {score2} {(type == 3 ? MapInstance.InstanceBag.Clock.DeciSecondRemaining / 10 : 0)} 0";
@@ -6000,9 +6000,9 @@ namespace OpenNos.GameObject
                 return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
             }
             atype = tmem.ArenaTeamType;
-            IEnumerable<long> ids = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
-            ConcurrentBag<ArenaTeamMember> oposit = tm.Where(s => tmem.ArenaTeamType != s.ArenaTeamType);
-            ConcurrentBag<ArenaTeamMember> own = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType);
+            IEnumerable<long> ids = tm.Replace(s => tmem.ArenaTeamType == s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
+            ConcurrentBag<ArenaTeamMember> oposit = tm.Replace(s => tmem.ArenaTeamType != s.ArenaTeamType);
+            ConcurrentBag<ArenaTeamMember> own = tm.Replace(s => tmem.ArenaTeamType == s.ArenaTeamType);
             score1 = 3 - MapInstance.InstanceBag.DeadList.Count(s => ids.Contains(s));
             score2 = 3 - MapInstance.InstanceBag.DeadList.Count(s => !ids.Contains(s));
             life1 = 3 - own.Count(s => s.Dead);
@@ -6064,7 +6064,7 @@ namespace OpenNos.GameObject
             Session.Character.Hp = (int)Session.Character.HPLoad();
             Session.Character.Mp = (int)Session.Character.MPLoad();
             ServerManager.Instance.ArenaTeams.Remove(tm);
-            tm = tm.Where(s => s.Session != Session);
+            tm = tm.Replace(s => s.Session != Session);
             if (tm.Any())
             {
                 ServerManager.Instance.ArenaTeams.Add(tm);

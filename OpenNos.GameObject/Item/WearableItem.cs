@@ -208,7 +208,7 @@ namespace OpenNos.GameObject
                         // move from wear to equipment and back
                         session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment, itemToWearType, inv.Slot);
                         session.SendPacket(currentlyEquippedItem.GenerateInventoryAdd());
-                        session.Character.EquipmentBCards = session.Character.EquipmentBCards.Where(o => o.ItemVNum != currentlyEquippedItem.ItemVNum);
+                        session.Character.EquipmentBCards = session.Character.EquipmentBCards.Replace(o => o.ItemVNum != currentlyEquippedItem.ItemVNum);
                         switch (currentlyEquippedItem.Slot)
                         {
                             case (byte) EquipmentType.Armor:

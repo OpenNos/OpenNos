@@ -284,7 +284,7 @@ namespace OpenNos.Handler
                         return;
                     }
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_SHARE_INFO")));
-                    Session.Character.Group.Characters.Where(s => s.Character.CharacterId != Session.Character.CharacterId).ToList().ForEach(s =>
+                    Session.Character.Group.Characters.Replace(s => s.Character.CharacterId != Session.Character.CharacterId).ToList().ForEach(s =>
                     {
                         s.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#pjoin^6^{ Session.Character.CharacterId} #pjoin^7^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU_SHARE"), Session.Character.Name)}"));
                         Session.Character.GroupSentRequestCharacterIds.Add(s.Character.CharacterId);

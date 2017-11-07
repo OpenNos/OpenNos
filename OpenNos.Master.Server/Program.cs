@@ -109,7 +109,7 @@ namespace OpenNos.Master.Server
                     // AUTO SESSION KICK
                     Observable.Interval(TimeSpan.FromMinutes(3)).Subscribe(x =>
                     {
-                        Parallel.ForEach(MSManager.Instance.ConnectedAccounts.Where(s => s.LastPulse.AddMinutes(3) <= DateTime.Now), connection =>
+                        Parallel.ForEach(MSManager.Instance.ConnectedAccounts.Replace(s => s.LastPulse.AddMinutes(3) <= DateTime.Now), connection =>
                         {
                             CommunicationServiceClient.Instance.KickSession(connection.AccountId, null);
                         });

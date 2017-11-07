@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -18,16 +19,10 @@ namespace OpenNos.Core
             }
         }
 
-        public static ConcurrentBag<T> Where<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate)
+        public static ConcurrentBag<T> Replace<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate)
         {
-            ConcurrentBag<T> Temp = new ConcurrentBag<T>();
-            queue.ToList().Where(predicate).ToList().ForEach(Line =>
-            {
-                Temp.Add(Line);
-            });
-            return Temp;
+            return new ConcurrentBag<T>(queue.ToList().Where(predicate));
         }
-
         #endregion
     }
 }

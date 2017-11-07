@@ -64,8 +64,7 @@ namespace OpenNos.GameObject
         public List<Recipe> Recipes { get; set; }
 
         public Shop Shop { get; set; }
-
-        public bool Started { get; internal set; }
+        
 
         public long Target { get; set; }
 
@@ -170,7 +169,6 @@ namespace OpenNos.GameObject
         {
             Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {
-                Started = true;
                 try
                 {
                     if (!MapInstance.IsSleeping)

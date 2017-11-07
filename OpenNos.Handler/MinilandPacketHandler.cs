@@ -416,7 +416,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.WareHouseSize = 0;
                 }
-                Session.Character.MapInstance.MapDesignObjects = Session.Character.MapInstance.MapDesignObjects.Where(s => s != minilandObject);
+                Session.Character.MapInstance.MapDesignObjects = Session.Character.MapInstance.MapDesignObjects.Replace(s => s != minilandObject);
                 Session.SendPacket(minilandObject.GenerateEffect(true));
                 Session.SendPacket(Session.Character.GenerateMinilandPoint());
                 Session.SendPacket(minilandObject.GenerateMapDesignObject(true));

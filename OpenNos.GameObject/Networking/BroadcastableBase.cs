@@ -166,93 +166,46 @@ namespace OpenNos.GameObject
             switch (sentPacket.Receiver)
             {
                 case ReceiverType.All: // send packet to everyone
-                    if (sentPacket.Packet.StartsWith("out"))
+                    Parallel.ForEach(Sessions, session =>
                     {
-                        foreach (ClientSession session in Sessions)
+                        if (!session.HasSelectedCharacter)
                         {
-                            if (!session.HasSelectedCharacter)
-                            {
-                                continue;
-                            }
-                            if (sentPacket.Sender != null)
-                            {
-                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
-                                {
-                                    session.SendPacket(sentPacket.Packet);
-                                }
-                            }
-                            else
+                            return;
+                        }
+                        if (sentPacket.Sender != null)
+                        {
+                            if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
                             {
                                 session.SendPacket(sentPacket.Packet);
                             }
                         }
-                    }
-                    else
-                    {
-                        Parallel.ForEach(Sessions, session =>
+                        else
                         {
-                            if (!session.HasSelectedCharacter)
-                            {
-                                return;
-                            }
-                            if (sentPacket.Sender != null)
-                            {
-                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
-                                {
-                                    session.SendPacket(sentPacket.Packet);
-                                }
-                            }
-                            else
-                            {
-                                session.SendPacket(sentPacket.Packet);
-                            }
-                        });
-                    }
+                            session.SendPacket(sentPacket.Packet);
+                        }
+                    });
                     break;
-                case ReceiverType.AllExceptMe: // send to everyone except the sender
-                    if (sentPacket.Packet.StartsWith("out"))
-                    {
 
-                        foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId))
+                case ReceiverType.AllExceptMe: // send to everyone except the sender
+                    Parallel.ForEach(Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId), session =>
+                    {
+                        if (!session.HasSelectedCharacter)
                         {
-                            if (!session.HasSelectedCharacter)
-                            {
-                                continue;
-                            }
-                            if (sentPacket.Sender != null)
-                            {
-                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
-                                {
-                                    session.SendPacket(sentPacket.Packet);
-                                }
-                            }
-                            else
+                            return;
+                        }
+                        if (sentPacket.Sender != null)
+                        {
+                            if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
                             {
                                 session.SendPacket(sentPacket.Packet);
                             }
                         }
-                    }
-                    else
-                    {
-                        Parallel.ForEach(Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId), session =>
+                        else
                         {
-                            if (!session.HasSelectedCharacter)
-                            {
-                                return;
-                            }
-                            if (sentPacket.Sender != null)
-                            {
-                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
-                                {
-                                    session.SendPacket(sentPacket.Packet);
-                                }
-                            }
-                            else
-                            {
-                                session.SendPacket(sentPacket.Packet);
-                            }
-                        });
-                    }
+                            session.SendPacket(sentPacket.Packet);
+                        }
+                    });
+
                     break;
                 case ReceiverType.AllExceptGroup:
                     foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId && (s.Character?.Group == null || s.Character?.Group?.GroupId != sentPacket.Sender?.Character?.Group?.GroupId)))

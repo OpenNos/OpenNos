@@ -126,8 +126,8 @@ namespace OpenNos.GameObject.Event.ARENA
                             IDisposable obs5 = Observable.Interval(TimeSpan.FromMilliseconds(500)).Subscribe(start3 =>
                             {
                                 map.Broadcast(arenamembers.FirstOrDefault(o => o.Session != null)?.Session.Character.GenerateTaPs());
-                                List<ArenaTeamMember> erenia = arenaTeam.Where(team => team.ArenaTeamType == ArenaTeamType.ERENIA).ToList();
-                                List<ArenaTeamMember> zenas = arenaTeam.Where(team => team.ArenaTeamType == ArenaTeamType.ZENAS).ToList();
+                                List<ArenaTeamMember> erenia = arenaTeam.Replace(team => team.ArenaTeamType == ArenaTeamType.ERENIA).ToList();
+                                List<ArenaTeamMember> zenas = arenaTeam.Replace(team => team.ArenaTeamType == ArenaTeamType.ZENAS).ToList();
                                 BuffTeam(erenia);
                                 BuffTeam(zenas);
                             });
@@ -321,7 +321,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                             map.Broadcast(tm2.Session, tm2.Session.Character.GenerateTp());
                                             tm.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
                                             tm2.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
-                                            arenaTeam.Where(friends => friends.ArenaTeamType == tm.ArenaTeamType).ToList().ForEach(friends =>
+                                            arenaTeam.Replace(friends => friends.ArenaTeamType == tm.ArenaTeamType).ToList().ForEach(friends =>
                                             {
                                                 friends.Session.SendPacket(friends.Session.Character.GenerateTaFc(0));
                                             });
@@ -334,7 +334,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                     if (tm != null && tm2 != null)
                                     {
                                         map.IsPVP = false;
-                                        arenaTeam.Where(at => at.LastSummoned != null).ToList().ForEach(at =>
+                                        arenaTeam.Replace(at => at.LastSummoned != null).ToList().ForEach(at =>
                                         {
                                             at.LastSummoned = null;
                                             at.Session.Character.PositionX = at.ArenaTeamType == ArenaTeamType.ERENIA ? (short) 120 : (short) 19;

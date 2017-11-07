@@ -93,7 +93,7 @@ namespace OpenNos.GameObject
             lock (_syncObj)
             {
                 _order++;
-                List<ClientSession> sessions = Characters.Where(s => Map.GetDistance(s.Character, character) < 50).ToList();
+                List<ClientSession> sessions = Characters.Replace(s => Map.GetDistance(s.Character, character) < 50).ToList();
                 if (_order > sessions.Count - 1) // if order wents out of amount of ppl, reset it -> zero based index
                 {
                     _order = 0;
@@ -149,7 +149,7 @@ namespace OpenNos.GameObject
             {
                 Characters.ToList().ForEach(s=> s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TEAM_LEADER_CHANGE"), Characters.ElementAt(0).Character?.Name), 0)));
             }
-            Characters = Characters.Where(s => s?.Character.CharacterId != session.Character.CharacterId);
+            Characters = Characters.Replace(s => s?.Character.CharacterId != session.Character.CharacterId);
         }
 
         public bool IsLeader(ClientSession session)

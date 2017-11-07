@@ -366,7 +366,7 @@ namespace OpenNos.GameObject
                 case 300:
                     if (session.Character.Group != null && session.Character.Group.GroupType != GroupType.Group && session.Character.Group.IsLeader(session) && session.CurrentMapInstance.Portals.Any(s => s.Type == (short)PortalType.Raid))
                     {
-                        Parallel.ForEach(session.Character.Group.Characters.Where(s => s.Character.Group?.GroupId == session.Character.Group?.GroupId), sess =>
+                        Parallel.ForEach(session.Character.Group.Characters.Replace(s => s.Character.Group?.GroupId == session.Character.Group?.GroupId), sess =>
                         {
                             ServerManager.Instance.TeleportOnRandomPlaceInMap(sess, session.CurrentMapInstance.MapInstanceId);
                         });

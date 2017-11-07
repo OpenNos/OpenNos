@@ -132,7 +132,7 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(s => s.AccountId != accountId);
+            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Replace(s => s.AccountId != accountId);
         }
 
         public void DisconnectCharacter(Guid worldId, long characterId)
@@ -142,7 +142,7 @@ namespace OpenNos.Master.Server
                 return;
             }
 
-            foreach (AccountConnection account in MSManager.Instance.ConnectedAccounts.Where(c => c.CharacterId.Equals(characterId) && c.ConnectedWorld.Id.Equals(worldId)))
+            foreach (AccountConnection account in MSManager.Instance.ConnectedAccounts.Replace(c => c.CharacterId.Equals(characterId) && c.ConnectedWorld.Id.Equals(worldId)))
             {
                 foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(account.ConnectedWorld.WorldGroup)))
                 {
@@ -206,11 +206,11 @@ namespace OpenNos.Master.Server
             }
             if (accountId.HasValue)
             {
-                MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(s => !s.AccountId.Equals(accountId.Value));
+                MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Replace(s => !s.AccountId.Equals(accountId.Value));
             }
             else if (sessionId.HasValue)
             {
-                MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(s => !s.SessionId.Equals(sessionId.Value));
+                MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Replace(s => !s.SessionId.Equals(sessionId.Value));
             }
         }
 
@@ -237,7 +237,7 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(a => !a.AccountId.Equals(accountId));
+            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Replace(a => !a.AccountId.Equals(accountId));
             MSManager.Instance.ConnectedAccounts.Add(new AccountConnection(accountId, sessionId, accountName));
         }
 
@@ -430,7 +430,7 @@ namespace OpenNos.Master.Server
             {
                 return;
             }
-            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Where(a => a == null || a.ConnectedWorld?.Id.Equals(worldId) != true);
+            MSManager.Instance.ConnectedAccounts = MSManager.Instance.ConnectedAccounts.Replace(a => a == null || a.ConnectedWorld?.Id.Equals(worldId) != true);
             MSManager.Instance.WorldServers.RemoveAll(w => w.Id.Equals(worldId));
         }
 
@@ -507,19 +507,6 @@ namespace OpenNos.Master.Server
             if (account != null)
             {
                 account.LastPulse = DateTime.Now;
-            }
-        }
-
-        public void CleanupOutdatedSession()
-        {
-            AccountConnection[] tmp = new AccountConnection[MSManager.Instance.ConnectedAccounts.Count + 20];
-            lock (MSManager.Instance.ConnectedAccounts)
-            {
-                MSManager.Instance.ConnectedAccounts.ToList().CopyTo(tmp);
-            }
-            foreach (AccountConnection account in tmp.Where(a => a != null && a.LastPulse.AddMinutes(5) <= DateTime.Now))
-            {
-                KickSession(account.AccountId, null);
             }
         }
 
