@@ -105,13 +105,20 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(30) >= DateTime.Now)
+                if (_isSleeping || (_isSleepingRequest && LastUnregister.AddSeconds(30) <= DateTime.Now))
                 {
+                    if (!_isSleeping)
+                    {
+                        _isSleepingRequest = false;
+                    }
+                    else
+                    {
+                        _isSleeping = true;
+                    }
                     return _isSleeping;
                 }
-                _isSleeping = true;
-                _isSleepingRequest = false;
-                return true;
+
+                return false;
             }
             set
             {
@@ -209,14 +216,14 @@ namespace OpenNos.GameObject
                 {
                     for (short y = -1; y < 2; y++)
                     {
-                        possibilities.Add(new MapCell {X = x, Y = y});
+                        possibilities.Add(new MapCell { X = x, Y = y });
                     }
                 }
 
                 foreach (MapCell possibilitie in possibilities.OrderBy(s => ServerManager.Instance.RandomNumber()))
                 {
-                    localMapX = (short) (mapX + possibilitie.X);
-                    localMapY = (short) (mapY + possibilitie.Y);
+                    localMapX = (short)(mapX + possibilitie.X);
+                    localMapY = (short)(mapY + possibilitie.Y);
                     if (!Map.IsBlockedZone(localMapX, localMapY))
                     {
                         break;
@@ -317,7 +324,7 @@ namespace OpenNos.GameObject
 
         public void LoadMonsters()
         {
-            OrderablePartitioner<MapMonsterDTO> partitioner = Partitioner.Create(DAOFactory.MapMonsterDAO.Where(s=>s.MapId == Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<MapMonsterDTO> partitioner = Partitioner.Create(DAOFactory.MapMonsterDAO.Where(s => s.MapId == Map.MapId), EnumerablePartitionerOptions.None);
             Parallel.ForEach(partitioner, monster =>
             {
                 if (!(monster is MapMonster mapMonster))
@@ -396,7 +403,7 @@ namespace OpenNos.GameObject
             {
                 for (short y = -2; y < 3; y++)
                 {
-                    possibilities.Add(new GridPos {X = x, Y = y});
+                    possibilities.Add(new GridPos { X = x, Y = y });
                 }
             }
 
@@ -405,8 +412,8 @@ namespace OpenNos.GameObject
             bool niceSpot = false;
             foreach (GridPos possibility in possibilities.OrderBy(s => _random.Next()))
             {
-                mapX = (short) (session.Character.PositionX + possibility.X);
-                mapY = (short) (session.Character.PositionY + possibility.Y);
+                mapX = (short)(session.Character.PositionX + possibility.X);
+                mapY = (short)(session.Character.PositionY + possibility.Y);
                 if (Map.IsBlockedZone(mapX, mapY))
                 {
                     continue;
@@ -499,7 +506,7 @@ namespace OpenNos.GameObject
             IEnumerable<ClientSession> clientSessions = cl as IList<ClientSession> ?? cl.ToList();
             for (int i = clientSessions.Count() - 1; i >= 0; i--)
             {
-                if (Map.GetDistance(new MapCell {X = mapX, Y = mapY}, new MapCell {X = clientSessions.ElementAt(i).Character.PositionX, Y = clientSessions.ElementAt(i).Character.PositionY}) <=
+                if (Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = clientSessions.ElementAt(i).Character.PositionX, Y = clientSessions.ElementAt(i).Character.PositionY }) <=
                     distance + 1)
                 {
                     characters.Add(clientSessions.ElementAt(i).Character);
@@ -530,8 +537,8 @@ namespace OpenNos.GameObject
             }
             for (int i = 0; i < parameter.Item3; i++)
             {
-                short destX = (short) (originX + ServerManager.Instance.RandomNumber(-10, 10));
-                short destY = (short) (originY + ServerManager.Instance.RandomNumber(-10, 10));
+                short destX = (short)(originX + ServerManager.Instance.RandomNumber(-10, 10));
+                short destY = (short)(originY + ServerManager.Instance.RandomNumber(-10, 10));
                 MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item2, amount);
                 DroppedList[droppedItem.TransportId] = droppedItem;
                 Broadcast(
@@ -553,7 +560,7 @@ namespace OpenNos.GameObject
                     {
                         s.Events.ToList().ForEach(e => EventHelper.Instance.RunEvent(e));
                     }
-                    s.Offset = s.Offset > 0 ? (byte) (s.Offset - 1) : (byte) 0;
+                    s.Offset = s.Offset > 0 ? (byte)(s.Offset - 1) : (byte)0;
                     s.LastStart = DateTime.Now;
                 });
                 try

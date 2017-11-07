@@ -3,11 +3,18 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.Domain;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Linq;
+using System.Reactive.Linq;
 
 namespace OpenNos.GameObject.Helpers
 {
     public class LogHelper : Singleton<LogHelper>
     {
+        ConcurrentBag<LogCommandsDTO> logCommands = new ConcurrentBag<LogCommandsDTO>();
+        ConcurrentBag<LogChatDTO> logChat = new ConcurrentBag<LogChatDTO>();
+
         public void InsertCommandLog(long characterId, PacketDefinition commandPacket, string ipAddress)
         {
             string withoutHeaderpacket = string.Empty;
@@ -24,7 +31,7 @@ namespace OpenNos.GameObject.Helpers
                 IpAddress = ipAddress,
                 Timestamp = DateTime.Now
             };
-            DAOFactory.LogCommandsDAO.InsertOrUpdate(ref command);
+            logCommands.Add(command);
         }
 
         public void InsertChatLog(ChatType type, long characterId, string message, string ipAddress)
@@ -34,10 +41,21 @@ namespace OpenNos.GameObject.Helpers
                 CharacterId = characterId,
                 ChatMessage = message,
                 IpAddress = ipAddress,
-                ChatType = (byte) type,
+                ChatType = (byte)type,
                 Timestamp = DateTime.Now
             };
-            DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
+            logChat.Add(log);
+        }
+
+        public void Flush()
+        {
+            List<LogChatDTO> logch = logChat.ToList();
+            List<LogCommandsDTO> logcom = logCommands.ToList();
+            logChat.Clear();
+            logCommands.Clear();
+            DAOFactory.LogChatDAO.InsertOrUpdate(logch);
+            DAOFactory.LogCommandsDAO.InsertOrUpdate(logcom);
+         
         }
     }
 }

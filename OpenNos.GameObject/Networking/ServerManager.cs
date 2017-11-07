@@ -31,6 +31,7 @@ using System.Runtime.Remoting.Channels;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenNos.GameObject.Event;
+using System.Data.Entity;
 
 namespace OpenNos.GameObject
 {
@@ -1470,7 +1471,11 @@ namespace OpenNos.GameObject
             {
                 session.Character?.Save();
             });
-            //DAOFactory.BazaarItemDAO.RemoveOutDated(); TODO REVIEW THIS
+            LogHelper.Instance.Flush();
+            foreach (long ientity in DAOFactory.BazaarItemDAO.Where(e => DbFunctions.AddDays(DbFunctions.AddHours(e.DateStart, e.Duration), e.MedalUsed ? 30 : 7) < DateTime.Now).Select(e=>e.BazaarItemId))
+            {
+                DAOFactory.BazaarItemDAO.Delete(ientity);
+            }
         }
 
         public void SetProperty(long charId, string property, object value)

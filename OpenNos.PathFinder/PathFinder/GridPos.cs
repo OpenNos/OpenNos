@@ -13,6 +13,15 @@
         #endregion
 
         #region Methods
+        public GridPos(short x, short y)
+        {
+            X = x;
+            Y = y;
+        }
+        public GridPos()
+        {
+
+        }
 
         public bool IsWalkable()
         {
