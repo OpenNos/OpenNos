@@ -123,7 +123,6 @@ namespace OpenNos.GameObject
         {
             MapInstance = currentMapInstance;
             Initialize();
-            StartLife();
         }
 
         public override void Initialize()
