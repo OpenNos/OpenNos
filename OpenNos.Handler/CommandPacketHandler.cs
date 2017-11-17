@@ -109,12 +109,13 @@ namespace OpenNos.Handler
                 }
                 MapMonsterDTO monst = new MapMonsterDTO
                 {
+                    MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId(),
                     MonsterVNum = addMonsterPacket.MonsterVNum,
                     MapY = Session.Character.PositionY,
                     MapX = Session.Character.PositionX,
                     MapId = Session.Character.MapInstance.Map.MapId,
                     Position = (byte)Session.Character.Direction,
-                    IsMoving = addMonsterPacket.IsMoving,
+                    IsMoving = addMonsterPacket.IsMoving
                 };
                 MapMonsterDTO monst1 = monst;
                 if (DAOFactory.MapMonsterDAO.FirstOrDefault(s => s.MapMonsterId == monst1.MapMonsterId) == null)
