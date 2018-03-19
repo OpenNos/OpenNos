@@ -61,20 +61,20 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
         /// <returns>Method invoke return message (to RealProxy base class)</returns>
         public override IMessage Invoke(IMessage msg)
         {
-            var message = msg as IMethodCallMessage;
+            IMethodCallMessage message = msg as IMethodCallMessage;
             if (message == null)
             {
                 return null;
             }
 
-            var requestMessage = new ScsRemoteInvokeMessage
+            ScsRemoteInvokeMessage requestMessage = new ScsRemoteInvokeMessage
             {
                 ServiceClassName = typeof(TProxy).Name,
                 MethodName = message.MethodName,
                 Parameters = message.InArgs
             };
 
-            var responseMessage = _clientMessenger.SendMessageAndWaitForResponse(requestMessage, 10) as ScsRemoteInvokeReturnMessage;
+            ScsRemoteInvokeReturnMessage responseMessage = _clientMessenger.SendMessageAndWaitForResponse(requestMessage, 10) as ScsRemoteInvokeReturnMessage;
             if (responseMessage == null)
             {
                 return null;

@@ -16,14 +16,13 @@ using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
-using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using OpenNos.DAL.EF;
 
 namespace OpenNos.Import.Console
 {
@@ -76,7 +75,6 @@ namespace OpenNos.Import.Console
             List<CardDTO> cards = new List<CardDTO>();
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             CardDTO card = new CardDTO();
-            BCardDTO bcard;
             List<BCardDTO> bcards = new List<BCardDTO>();
             string line;
             int counter = 0;
@@ -123,7 +121,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "EFFECT")
                     {
-                        card.EffectId = Convert.ToInt32(currentLine[3]);
+                        card.EffectId = Convert.ToInt32(currentLine[2]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "STYLE")
                     {
@@ -134,61 +132,76 @@ namespace OpenNos.Import.Console
                         card.Duration = Convert.ToInt32(currentLine[2]);
                         card.Delay = Convert.ToInt32(currentLine[3]);
                     }
-                    else if (currentLine.Length > 3 && currentLine[1] == "1ST")
+                    else
                     {
-                        for (int i = 0; i < 3; i++)
+                        BCardDTO bcard;
+                        if (currentLine.Length > 3 && currentLine[1] == "1ST")
                         {
-                            if (currentLine[2 + i * 6] != "-1" && currentLine[2 + i * 6] != "0")
+                            for (int i = 0; i < 3; i++)
                             {
-                                bcard = new BCardDTO()
+                                if (currentLine[2 + i * 6] == "-1" || currentLine[2 + i * 6] == "0")
+                                {
+                                    continue;
+                                }
+                                int first = int.Parse(currentLine[i * 6 + 6]);
+                                bcard = new BCardDTO
                                 {
                                     CardId = card.CardId,
-                                    Type = Convert.ToByte(currentLine[2 + i * 6]),
-                                    SubType = Convert.ToByte(currentLine[3 + i * 6]),
-                                    ThirdData = Convert.ToByte(currentLine[5 + i * 6]),
-                                    FirstData = Convert.ToInt32(currentLine[6 + i * 6]) / 4,
-                                    SecondData = Convert.ToInt32(currentLine[7 + i * 6]) / 4
+                                    Type = byte.Parse(currentLine[2 + i * 6]),
+                                    SubType = (byte)((Convert.ToByte(currentLine[3 + i * 6]) + 1) * 10 + 1 + (first < 0 ? 1 : 0)),
+                                    FirstData = (first > 0 ? first : -first) / 4,
+                                    SecondData = int.Parse(currentLine[7 + i * 6]) / 4,
+                                    ThirdData = int.Parse(currentLine[5 + i * 6]),
+                                    IsLevelScaled = Convert.ToBoolean(first % 4),
+                                    IsLevelDivided = (first % 4) == 2,
                                 };
                                 bcards.Add(bcard);
                             }
                         }
-                    }
-                    else if (currentLine.Length > 3 && currentLine[1] == "2ST")
-                    {
-                        for (int i = 0; i < 2; i++)
+                        else if (currentLine.Length > 3 && currentLine[1] == "2ST")
                         {
-                            if (currentLine[2 + i * 6] != "0" && currentLine[2 + i * 6] != "-1")
+                            for (int i = 0; i < 2; i++)
                             {
-                                bcard = new BCardDTO()
+                                if (currentLine[2 + i * 6] == "-1" || currentLine[2 + i * 6] == "0")
                                 {
-                                    CastType = 1,
+                                    continue;
+                                }
+                                int first = int.Parse(currentLine[i * 6 + 6]);
+                                bcard = new BCardDTO
+                                {
                                     CardId = card.CardId,
-                                    Type = byte.Parse(currentLine[2+i * 6]),
-                                    SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
-                                    FirstData = (short)(int.Parse(currentLine[5]) / 4),
-                                    SecondData = (short)(int.Parse(currentLine[6]) / 4),
-                                    ThirdData = (short)(int.Parse(currentLine[7]) / 4),
+                                    Type = byte.Parse(currentLine[2 + i * 6]),
+                                    SubType = (byte)((Convert.ToByte(currentLine[3 + i * 6]) + 1) * 10 + 1 + (first < 0 ? 1 : 0)),
+                                    FirstData = (first > 0 ? first : -first) / 4,
+                                    SecondData = int.Parse(currentLine[7 + i * 6]) / 4,
+                                    ThirdData = int.Parse(currentLine[5 + i * 6]),
+                                    IsLevelScaled = Convert.ToBoolean(first % 4),
+                                    IsLevelDivided = (first % 4) == 2,
                                 };
                                 bcards.Add(bcard);
                             }
                         }
-                    }
-                    else if (currentLine.Length > 3 && currentLine[1] == "LAST")
-                    {
-                        card.TimeoutBuff = Convert.ToInt16(currentLine[2]);
-                        card.TimeoutBuffChance = Convert.ToByte(currentLine[3]);
+                        else if (currentLine.Length > 3 && currentLine[1] == "LAST")
+                        {
+                            card.TimeoutBuff = short.Parse(currentLine[2]);
+                            card.TimeoutBuffChance = byte.Parse(currentLine[3]);
 
-                        // investigate
-                        if (DAOFactory.CardDAO.LoadById(card.CardId) == null)
-                        {
-                            cards.Add(card);
-                            counter++;
+                            // investigate
+                            if (DAOFactory.CardDAO.FirstOrDefault(s => s.CardId.Equals(card.CardId)) == null)
+                            {
+                                cards.Add(card);
+                                counter++;
+                            }
+                            itemAreaBegin = false;
                         }
-                        itemAreaBegin = false;
                     }
                 }
-                DAOFactory.CardDAO.Insert(cards);
-                DAOFactory.BCardDAO.Insert(bcards);
+
+                IEnumerable<CardDTO> cardDtos = cards;
+                IEnumerable<BCardDTO> bcardDtos = bcards;
+
+                DAOFactory.CardDAO.InsertOrUpdate(cardDtos);
+                DAOFactory.BCardDAO.InsertOrUpdate(bcardDtos);
 
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_PARSED"), counter));
                 npcIdStream.Close();
@@ -235,41 +248,43 @@ namespace OpenNos.Import.Console
                     map = short.Parse(currentPacket[2]);
                     continue;
                 }
-                if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "2")
+                if (currentPacket.Length <= 7 || currentPacket[0] != "in" || currentPacket[1] != "2")
                 {
-                    MapNpcDTO npctest = new MapNpcDTO
-                    {
-                        MapX = short.Parse(currentPacket[4]),
-                        MapY = short.Parse(currentPacket[5]),
-                        MapId = map,
-                        NpcVNum = short.Parse(currentPacket[2])
-                    };
-                    if (long.Parse(currentPacket[3]) > 20000)
-                    {
-                        continue;
-                    }
-                    npctest.MapNpcId = short.Parse(currentPacket[3]);
-                    if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
-                    {
-                        npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
-                    }
-                    npctest.EffectDelay = 4750;
-                    npctest.IsMoving = npcMvPacketsList.Contains(npctest.MapNpcId);
-                    npctest.Position = byte.Parse(currentPacket[6]);
-                    npctest.Dialog = short.Parse(currentPacket[9]);
-                    npctest.IsSitting = currentPacket[13] != "1";
-                    npctest.IsDisabled = false;
-
-                    if (DAOFactory.NpcMonsterDAO.LoadByVNum(npctest.NpcVNum) == null || DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null || npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0)
-                    {
-                        continue;
-                    }
-
-                    npcs.Add(npctest);
-                    npcCounter++;
+                    continue;
                 }
+                MapNpcDTO npctest = new MapNpcDTO
+                {
+                    MapX = short.Parse(currentPacket[4]),
+                    MapY = short.Parse(currentPacket[5]),
+                    MapId = map,
+                    NpcVNum = short.Parse(currentPacket[2])
+                };
+                if (long.Parse(currentPacket[3]) > 20000)
+                {
+                    continue;
+                }
+                npctest.MapNpcId = short.Parse(currentPacket[3]);
+                if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
+                {
+                    npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
+                }
+                npctest.EffectDelay = 4750;
+                npctest.IsMoving = npcMvPacketsList.Contains(npctest.MapNpcId);
+                npctest.Position = byte.Parse(currentPacket[6]);
+                npctest.Dialog = short.Parse(currentPacket[9]);
+                npctest.IsSitting = currentPacket[13] != "1";
+                npctest.IsDisabled = false;
+
+                if (DAOFactory.NpcMonsterDAO.FirstOrDefault(s => s.NpcMonsterVNum.Equals(npctest.NpcVNum)) == null || DAOFactory.MapNpcDAO.FirstOrDefault(s => s.MapNpcId.Equals(npctest.MapNpcId)) != null || npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0)
+                {
+                    continue;
+                }
+
+                npcs.Add(npctest);
+                npcCounter++;
             }
-            DAOFactory.MapNpcDAO.Insert(npcs);
+            IEnumerable<MapNpcDTO> npcDtos = npcs;
+            DAOFactory.MapNpcDAO.InsertOrUpdate(npcDtos);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
         }
 
@@ -354,14 +369,16 @@ namespace OpenNos.Import.Console
                     Data = File.ReadAllBytes(file.FullName),
                     ShopAllowed = short.Parse(file.Name) == 147
                 };
-                if (DAOFactory.MapDAO.LoadById(map.MapId) != null)
+                if (DAOFactory.MapDAO.FirstOrDefault(s => s.MapId.Equals(map.MapId)) != null)
                 {
                     continue; // Map already exists in list
                 }
                 maps.Add(map);
                 i++;
             }
-            DAOFactory.MapDAO.Insert(maps);
+
+            IEnumerable<MapDTO> mapDtos = maps;
+            DAOFactory.MapDAO.InsertOrUpdate(mapDtos);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
         }
 
@@ -378,7 +395,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt1.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt1);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt1);
             }
             MapTypeDTO mt2 = new MapTypeDTO
             {
@@ -390,7 +407,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt2.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt2);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt2);
             }
             MapTypeDTO mt3 = new MapTypeDTO
             {
@@ -402,7 +419,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt3.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt3);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt3);
             }
             MapTypeDTO mt4 = new MapTypeDTO
             {
@@ -412,7 +429,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt4.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt4);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt4);
             }
             MapTypeDTO mt5 = new MapTypeDTO
             {
@@ -424,7 +441,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt5.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt5);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt5);
             }
             MapTypeDTO mt6 = new MapTypeDTO
             {
@@ -436,7 +453,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt6.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt6);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt6);
             }
             MapTypeDTO mt7 = new MapTypeDTO
             {
@@ -448,23 +465,23 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt7.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt7);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt7);
             }
             MapTypeDTO mt8 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act62,
                 MapTypeName = "Act6.2",
                 PotionDelay = 300,
-                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct6,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (list.All(s => s.MapTypeId != mt8.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt8);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt8);
             }
             MapTypeDTO mt9 = new MapTypeDTO
             {
-                MapTypeId = (short)MapTypeEnum.Act61a,
+                MapTypeId = (short)MapTypeEnum.Act61A,
                 MapTypeName = "Act6.1a", // angel camp
                 PotionDelay = 300,
                 RespawnMapTypeId = (long)RespawnType.DefaultAct6,
@@ -472,11 +489,11 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt9.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt9);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt9);
             }
             MapTypeDTO mt10 = new MapTypeDTO
             {
-                MapTypeId = (short)MapTypeEnum.Act61d,
+                MapTypeId = (short)MapTypeEnum.Act61D,
                 MapTypeName = "Act6.1d", // demon camp
                 PotionDelay = 300,
                 RespawnMapTypeId = (long)RespawnType.DefaultAct6,
@@ -484,7 +501,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt10.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt10);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt10);
             }
             MapTypeDTO mt11 = new MapTypeDTO
             {
@@ -496,7 +513,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt11.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt11);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt11);
             }
             MapTypeDTO mt12 = new MapTypeDTO
             {
@@ -508,7 +525,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt12.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt12);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt12);
             }
             MapTypeDTO mt13 = new MapTypeDTO
             {
@@ -520,7 +537,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt13.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt13);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt13);
             }
             MapTypeDTO mt14 = new MapTypeDTO
             {
@@ -532,7 +549,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt14.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt14);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt14);
             }
             MapTypeDTO mt15 = new MapTypeDTO
             {
@@ -544,7 +561,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt15.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt15);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt15);
             }
             MapTypeDTO mt16 = new MapTypeDTO
             {
@@ -556,7 +573,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt16.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt16);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt16);
             }
             MapTypeDTO mt17 = new MapTypeDTO
             {
@@ -568,7 +585,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt17.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt17);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt17);
             }
             MapTypeDTO mt18 = new MapTypeDTO
             {
@@ -580,7 +597,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt18.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt18);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt18);
             }
             MapTypeDTO mt19 = new MapTypeDTO
             {
@@ -590,7 +607,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt19.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt19);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt19);
             }
             MapTypeDTO mt20 = new MapTypeDTO
             {
@@ -600,7 +617,7 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt20.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt20);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt20);
             }
             MapTypeDTO mt21 = new MapTypeDTO
             {
@@ -610,27 +627,49 @@ namespace OpenNos.Import.Console
             };
             if (list.All(s => s.MapTypeId != mt21.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt21);
-            }
-            MapTypeDTO mt22 = new MapTypeDTO
-            {
-                MapTypeId = (short)MapTypeEnum.PVPMap,
-                MapTypeName = "PVPMap",
-                PotionDelay = 300
-            };
-            if (list.All(s => s.MapTypeId != mt22.MapTypeId))
-            {
-                DAOFactory.MapTypeDAO.Insert(ref mt22);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt21);
             }
             MapTypeDTO mt23 = new MapTypeDTO
             {
-                MapTypeId = (short)MapTypeEnum.Citadel,
-                MapTypeName = "Citadel",
+                MapTypeId = (short)MapTypeEnum.CitadelAngel,
+                MapTypeName = "AngelCitadel",
                 PotionDelay = 300
             };
             if (list.All(s => s.MapTypeId != mt23.MapTypeId))
             {
-                DAOFactory.MapTypeDAO.Insert(ref mt23);
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt23);
+            }
+            MapTypeDTO mt24 = new MapTypeDTO
+            {
+                MapTypeId = (short)MapTypeEnum.CitadelDemon,
+                MapTypeName = "DemonCitadel",
+                PotionDelay = 300
+            };
+            if (list.All(s => s.MapTypeId != mt24.MapTypeId))
+            {
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt24);
+            }
+            MapTypeDTO mt25 = new MapTypeDTO
+            {
+                MapTypeId = (short)MapTypeEnum.Oasis,
+                MapTypeName = "Oasis",
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultOasis,
+                ReturnMapTypeId = (long)RespawnType.DefaultOasis
+            };
+            if (list.All(s => s.MapTypeId != mt25.MapTypeId))
+            {
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt25);
+            }
+            MapTypeDTO mt26 = new MapTypeDTO
+            {
+                MapTypeId = (short)MapTypeEnum.Act42,
+                MapTypeName = "Act42",
+                PotionDelay = 5000,
+            };
+            if (list.All(s => s.MapTypeId != mt26.MapTypeId))
+            {
+                DAOFactory.MapTypeDAO.InsertOrUpdate(ref mt26);
             }
             Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPES_PARSED"));
         }
@@ -666,10 +705,16 @@ namespace OpenNos.Import.Console
                     mapTypeId = (short)MapTypeEnum.Act32;
                     objectset = true;
                 }
-                else if (i > 129 && i <= 134 || i == 135 || i == 137 || i == 139 || i == 141 || i > 150 && i < 155)
+                else if (i > 129 && i <= 134 || i == 135 || i == 137 || i == 139 || i == 141 || i > 150 && i < 153)
                 {
                     // "act4"
                     mapTypeId = (short)MapTypeEnum.Act4;
+                    objectset = true;
+                }
+                else if (i == 153)
+                {
+                    // "act4.2"
+                    mapTypeId = (short)MapTypeEnum.Act42;
                     objectset = true;
                 }
                 else if (i > 169 && i < 205)
@@ -684,9 +729,15 @@ namespace OpenNos.Import.Console
                     mapTypeId = (short)MapTypeEnum.Act52;
                     objectset = true;
                 }
-                else if (i > 227 && i < 241)
+                else if (i > 228 && i < 233)
                 {
-                    // "act6.1"
+                    // "act6.1a"
+                    mapTypeId = (short)MapTypeEnum.Act61;
+                    objectset = true;
+                }
+                else if (i > 232 && i < 238)
+                {
+                    // "act6.1d"
                     mapTypeId = (short)MapTypeEnum.Act61;
                     objectset = true;
                 }
@@ -694,6 +745,12 @@ namespace OpenNos.Import.Console
                 {
                     // "act6.2"
                     mapTypeId = (short)MapTypeEnum.Act62;
+                    objectset = true;
+                }
+                else if (i > 260 && i < 264 || i > 2614 && i < 2621)
+                {
+                    // "Oasis"
+                    mapTypeId = (short)MapTypeEnum.Oasis;
                     objectset = true;
                 }
                 else if (i == 103)
@@ -756,26 +813,29 @@ namespace OpenNos.Import.Console
                     mapTypeId = (short)MapTypeEnum.CleftOfDarkness;
                     objectset = true;
                 }
-                else if (i == 9305)
-                {
-                    // "PVPMap"
-                    mapTypeId = (short)MapTypeEnum.PVPMap;
-                    objectset = true;
-                }
-                else if (i == 130 && i == 131)
+                else if (i == 130)
                 {
                     // "Citadel"
-                    mapTypeId = (short)MapTypeEnum.Citadel;
+                    mapTypeId = (short)MapTypeEnum.CitadelAngel;
+                    objectset = true;
+                }
+                else if (i == 131)
+                {
+                    mapTypeId = (short)MapTypeEnum.CitadelDemon;
                     objectset = true;
                 }
 
                 // add "act6.1a" and "act6.1d" when ids found
-                if (objectset && DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.MapTypeMapDAO.LoadByMapAndMapType((short)i, mapTypeId) == null)
+                short i1 = (short)i;
+                short id = mapTypeId;
+                if (objectset && DAOFactory.MapDAO.FirstOrDefault(s => s.MapId.Equals((short)i)) != null && DAOFactory.MapTypeMapDAO.FirstOrDefault(s => s.MapId.Equals(i1) && s.MapTypeId.Equals(id)) == null)
                 {
                     maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = mapTypeId });
                 }
             }
-            DAOFactory.MapTypeMapDAO.Insert(maptypemaps);
+
+            IEnumerable<MapTypeMapDTO> mapDtos = maptypemaps;
+            DAOFactory.MapTypeMapDAO.InsertOrUpdate(mapDtos);
         }
 
         public void ImportMonsters()
@@ -800,31 +860,34 @@ namespace OpenNos.Import.Console
                     map = short.Parse(currentPacket[2]);
                     continue;
                 }
-                if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "3")
+                if (currentPacket.Length <= 7 || currentPacket[0] != "in" || currentPacket[1] != "3")
                 {
-                    MapMonsterDTO monster = new MapMonsterDTO
-                    {
-                        MapId = map,
-                        MonsterVNum = short.Parse(currentPacket[2]),
-                        MapMonsterId = int.Parse(currentPacket[3]),
-                        MapX = short.Parse(currentPacket[4]),
-                        MapY = short.Parse(currentPacket[5]),
-                        Position = (byte)(currentPacket[6] == string.Empty ? 0 : byte.Parse(currentPacket[6])),
-                        IsDisabled = false
-                    };
-                    monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
-
-                    if (DAOFactory.NpcMonsterDAO.LoadByVNum(monster.MonsterVNum) == null || DAOFactory.MapMonsterDAO.LoadById(monster.MapMonsterId) != null || monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0)
-                    {
-                        continue;
-                    }
-
-                    monsters.Add(monster);
-                    monsterCounter++;
+                    continue;
                 }
+                MapMonsterDTO monster = new MapMonsterDTO
+                {
+                    MapId = map,
+                    MonsterVNum = short.Parse(currentPacket[2]),
+                    MapMonsterId = int.Parse(currentPacket[3]),
+                    MapX = short.Parse(currentPacket[4]),
+                    MapY = short.Parse(currentPacket[5]),
+                    Position = (byte)(currentPacket[6] == string.Empty ? 0 : byte.Parse(currentPacket[6])),
+                    IsDisabled = false
+                };
+                monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
+
+                if (DAOFactory.NpcMonsterDAO.FirstOrDefault(s => s.NpcMonsterVNum.Equals(monster.MonsterVNum)) == null || DAOFactory.MapMonsterDAO.FirstOrDefault(s => s.MapMonsterId.Equals(monster.MapMonsterId)) != null || monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0)
+                {
+                    continue;
+                }
+
+                monsters.Add(monster);
+                monsterCounter++;
             }
 
-            DAOFactory.MapMonsterDAO.Insert(monsters);
+
+            IEnumerable<MapMonsterDTO> mapMonsterDtos = monsters;
+            DAOFactory.MapMonsterDAO.InsertOrUpdate(mapMonsterDtos);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERS_PARSED"), monsterCounter));
         }
 
@@ -834,7 +897,8 @@ namespace OpenNos.Import.Console
             {
                 if (currentPacket.Length > 25)
                 {
-                    NpcMonsterDTO npcMonster = DAOFactory.NpcMonsterDAO.LoadByVNum(short.Parse(currentPacket[2]));
+                    short npcvnum = short.Parse(currentPacket[2]);
+                    NpcMonsterDTO npcMonster = DAOFactory.NpcMonsterDAO.FirstOrDefault(s => s.NpcMonsterVNum == npcvnum);
                     if (npcMonster == null)
                     {
                         continue;
@@ -857,7 +921,6 @@ namespace OpenNos.Import.Console
                     npcMonster.LightResistance = sbyte.Parse(currentPacket[21]);
                     npcMonster.DarkResistance = sbyte.Parse(currentPacket[22]);
 
-                    // TODO: BCard Buff parsing
                     DAOFactory.NpcMonsterDAO.InsertOrUpdate(ref npcMonster);
                 }
             }
@@ -866,37 +929,99 @@ namespace OpenNos.Import.Console
         public void ImportNpcMonsters()
         {
             int[] basicHp = new int[100];
-            int[] basicMp = new int[100];
+            int[] basicPrimaryMp = new int[100];
+            int[] basicSecondaryMp = new int[100];
             int[] basicXp = new int[100];
             int[] basicJXp = new int[100];
 
-            // basicHpLoad
+            // basicHPLoad
             int baseHp = 138;
-            int basup = 17;
+            int HPbasup = 18;
             for (int i = 0; i < 100; i++)
             {
                 basicHp[i] = baseHp;
-                basup++;
-                baseHp += basup;
+                HPbasup++;
+                baseHp += HPbasup;
 
                 if (i == 37)
                 {
                     baseHp = 1765;
-                    basup = 65;
+                    HPbasup = 65;
                 }
-                if (i >= 41)
+                if (i < 41)
                 {
-                    if ((99 - i) % 8 == 0)
-                    {
-                        basup++;
-                    }
+                    continue;
+                }
+                if (((99 - i) % 8) == 0)
+                {
+                    HPbasup++;
                 }
             }
 
-            // basicMpLoad
-            for (int i = 0; i < 100; i++)
+            //Race == 0
+            basicPrimaryMp[0] = 10;
+            basicPrimaryMp[1] = 10;
+            basicPrimaryMp[2] = 15;
+
+            int primaryBasup = 5;
+            byte count = 0;
+            bool isStable = true;
+            bool isDouble = false;
+
+            for (int i = 3; i < 100; i++)
             {
-                basicMp[i] = basicHp[i];
+                if (i % 10 == 1)
+                {
+                    basicPrimaryMp[i] += basicPrimaryMp[i - 1] + primaryBasup * 2;
+                    continue;
+                }
+                if (!isStable)
+                {
+                    primaryBasup++;
+                    count++;
+
+                    if (count == 2)
+                    {
+                        if (isDouble)
+                        { isDouble = false; }
+                        else
+                        { isStable = true; isDouble = true; count = 0; }
+                    }
+
+                    if (count == 4)
+                    { isStable = true; count = 0; }
+                }
+                else
+                {
+                    count++;
+                    if (count == 2)
+                    { isStable = false; count = 0; }
+                }
+                basicPrimaryMp[i] = basicPrimaryMp[i - (i % 10 == 2 ? 2 : 1)] + primaryBasup;
+            }
+
+            // Race == 2
+            basicSecondaryMp[0] = 60;
+            basicSecondaryMp[1] = 60;
+            basicSecondaryMp[2] = 78;
+
+            int secondaryBasup = 18;
+            bool boostup = false;
+
+            for (int i = 3; i < 100; i++)
+            {
+                if (i % 10 == 1)
+                {
+                    basicSecondaryMp[i] += basicSecondaryMp[i - 1] + i + 10;
+                    continue;
+                }
+
+                if (boostup)
+                { secondaryBasup += 3; boostup = false; }
+                else
+                { secondaryBasup++; boostup = true; }
+
+                basicSecondaryMp[i] = basicSecondaryMp[i - (i % 10 == 2 ? 2 : 1)] + secondaryBasup;
             }
 
             // basicXPLoad
@@ -981,7 +1106,7 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 3 && currentLine[1] == "HP/MP")
                     {
                         npc.MaxHP = Convert.ToInt32(currentLine[2]) + basicHp[npc.Level];
-                        npc.MaxMP = Convert.ToInt32(currentLine[3]) + basicMp[npc.Level];
+                        npc.MaxMP = Convert.ToInt32(currentLine[3]) + npc.Race == 0 ? basicPrimaryMp[npc.Level] : basicSecondaryMp[npc.Level];
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EXP")
                     {
@@ -990,51 +1115,167 @@ namespace OpenNos.Import.Console
                         switch (npc.NpcMonsterVNum)
                         {
                             case 2500:
-                                npc.HeroXp = 533;
+                                npc.HeroXp = 879;
                                 break;
 
                             case 2501:
-                                npc.HeroXp = 534;
+                                npc.HeroXp = 881;
                                 break;
 
                             case 2502:
-                                npc.HeroXp = 535;
+                                npc.HeroXp = 884;
                                 break;
 
                             case 2503:
-                                npc.HeroXp = 614;
+                                npc.HeroXp = 1013;
+                                break;
+
+                            case 2505:
+                                npc.HeroXp = 871;
+                                break;
+
+                            case 2506:
+                                npc.HeroXp = 765;
+                                break;
+
+                            case 2507:
+                                npc.HeroXp = 803;
+                                break;
+
+                            case 2508:
+                                npc.HeroXp = 825;
+                                break;
+
+                            case 2509:
+                                npc.HeroXp = 789;
                                 break;
 
                             case 2510:
-                                npc.HeroXp = 534;
+                                npc.HeroXp = 881;
                                 break;
 
                             case 2511:
-                                npc.HeroXp = 533;
+                                npc.HeroXp = 879;
                                 break;
 
                             case 2512:
-                                npc.HeroXp = 535;
+                                npc.HeroXp = 884;
                                 break;
 
                             case 2513:
-                                npc.HeroXp = 651;
+                                npc.HeroXp = 1075;
+                                break;
+
+                            case 2515:
+                                npc.HeroXp = 3803;
+                                break;
+
+                            case 2516:
+                                npc.HeroXp = 836;
+                                break;
+
+                            case 2517:
+                                npc.HeroXp = 450;
+                                break;
+
+                            case 2518:
+                                npc.HeroXp = 911;
+                                break;
+
+                            case 2519:
+                                npc.HeroXp = 845;
+                                break;
+
+                            case 2520:
+                                npc.HeroXp = 3682;
                                 break;
 
                             case 2521:
-                                npc.HeroXp = 170;
+                                npc.HeroXp = 401;
                                 break;
 
                             case 2522:
-                                npc.HeroXp = 286;
+                                npc.HeroXp = 471;
                                 break;
 
                             case 2523:
                                 npc.HeroXp = 328;
                                 break;
 
+                            case 2524:
+                                npc.HeroXp = 12718;
+                                break;
+
                             case 2525:
-                                npc.HeroXp = 261;
+                                npc.HeroXp = 412;
+                                break;
+
+                            case 2526:
+                                npc.HeroXp = 11157;
+                                break;
+
+                            case 2527:
+                                npc.HeroXp = 18057;
+                                break;
+
+                            case 2530:
+                                npc.HeroXp = 28756;
+                                break;
+
+                            case 2559:
+                                npc.HeroXp = 1308;
+                                break;
+
+                            case 2560:
+                                npc.HeroXp = 1234;
+                                break;
+
+                            case 2561:
+                                npc.HeroXp = 1168;
+                                break;
+
+                            case 2562:
+                                npc.HeroXp = 959;
+                                break;
+
+                            case 2563:
+                                npc.HeroXp = 947;
+                                break;
+
+                            case 2564:
+                                npc.HeroXp = 952;
+                                break;
+
+                            case 2566:
+                                npc.HeroXp = 1097;
+                                break;
+
+                            case 2567:
+                                npc.HeroXp = 1096;
+                                break;
+
+                            case 2568:
+                                npc.HeroXp = 4340;
+                                break;
+
+                            case 2569:
+                                npc.HeroXp = 3534;
+                                break;
+
+                            case 2570:
+                                npc.HeroXp = 4343;
+                                break;
+
+                            case 2571:
+                                npc.HeroXp = 2205;
+                                break;
+
+                            case 2572:
+                                npc.HeroXp = 5632;
+                                break;
+
+                            case 2573:
+                                npc.HeroXp = 3756;
                                 break;
 
                             default:
@@ -1051,19 +1292,20 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "WEAPON")
                     {
-                        if (currentLine[3] == "1")
+                        switch (currentLine[3])
                         {
-                            npc.DamageMinimum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 4 + 32 + Convert.ToInt16(currentLine[4]) + Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
-                            npc.DamageMaximum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 6 + 40 + Convert.ToInt16(currentLine[5]) - Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
-                            npc.Concentrate = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 5 + 27 + Convert.ToInt16(currentLine[6]));
-                            npc.CriticalChance = Convert.ToByte(4 + Convert.ToInt16(currentLine[7]));
-                            npc.CriticalRate = Convert.ToInt16(70 + Convert.ToInt16(currentLine[8]));
-                        }
-                        else if (currentLine[3] == "2")
-                        {
-                            npc.DamageMinimum = Convert.ToInt16(Convert.ToInt16(currentLine[2]) * 6.5f + 23 + Convert.ToInt16(currentLine[4]));
-                            npc.DamageMaximum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 8 + 38 + Convert.ToInt16(currentLine[5]));
-                            npc.Concentrate = Convert.ToInt16(70 + Convert.ToInt16(currentLine[6]));
+                            case "1":
+                                npc.DamageMinimum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 4 + 32 + Convert.ToInt16(currentLine[4]) + Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
+                                npc.DamageMaximum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 6 + 40 + Convert.ToInt16(currentLine[5]) - Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
+                                npc.Concentrate = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 5 + 27 + Convert.ToInt16(currentLine[6]));
+                                npc.CriticalChance = Convert.ToByte(4 + Convert.ToInt16(currentLine[7]));
+                                npc.CriticalRate = Convert.ToInt16(70 + Convert.ToInt16(currentLine[8]));
+                                break;
+                            case "2":
+                                npc.DamageMinimum = Convert.ToInt16(Convert.ToInt16(currentLine[2]) * 6.5f + 23 + Convert.ToInt16(currentLine[4]));
+                                npc.DamageMaximum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 8 + 38 + Convert.ToInt16(currentLine[5]));
+                                npc.Concentrate = Convert.ToInt16(70 + Convert.ToInt16(currentLine[6]));
+                                break;
                         }
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "ARMOR")
@@ -1077,20 +1319,23 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
                         unknownData = Convert.ToInt64(currentLine[2]);
-                        if (unknownData == -2147481593)
+                        switch (unknownData)
                         {
-                            npc.MonsterType = MonsterType.Special;
-                        }
-                        if (unknownData == -2147483616 || unknownData == -2147483647 || unknownData == -2147483646)
-                        {
-                            if (npc.Race == 8 && npc.RaceType == 0)
-                            {
-                                npc.NoAggresiveIcon = true;
-                            }
-                            else
-                            {
-                                npc.NoAggresiveIcon = false;
-                            }
+                            case -2147481593:
+                                npc.MonsterType = MonsterType.Special;
+                                break;
+                            case -2147483616:
+                            case -2147483647:
+                            case -2147483646:
+                                if (npc.Race == 8 && npc.RaceType == 0)
+                                {
+                                    npc.NoAggresiveIcon = true;
+                                }
+                                else
+                                {
+                                    npc.NoAggresiveIcon = false;
+                                }
+                                break;
                         }
                         if (npc.NpcMonsterVNum >= 588 && npc.NpcMonsterVNum <= 607)
                         {
@@ -1099,19 +1344,21 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "SETTING")
                     {
-                        if (currentLine[4] != "0")
+                        if (currentLine[4] == "0")
                         {
-                            npc.VNumRequired = Convert.ToInt16(currentLine[4]);
-                            npc.AmountRequired = 1;
+                            continue;
                         }
+                        npc.VNumRequired = Convert.ToInt16(currentLine[4]);
+                        npc.AmountRequired = 1;
                     }
                     else if (currentLine.Length > 4 && currentLine[1] == "PETINFO")
                     {
-                        if (npc.VNumRequired == 0 && (unknownData == -2147481593 || unknownData == -2147481599 || unknownData == -1610610681))
+                        if (npc.VNumRequired != 0 || (unknownData != -2147481593 && unknownData != -2147481599 && unknownData != -1610610681))
                         {
-                            npc.VNumRequired = Convert.ToInt16(currentLine[2]);
-                            npc.AmountRequired = Convert.ToByte(currentLine[3]);
+                            continue;
                         }
+                        npc.VNumRequired = Convert.ToInt16(currentLine[2]);
+                        npc.AmountRequired = Convert.ToByte(currentLine[3]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EFF")
                     {
@@ -1141,7 +1388,7 @@ namespace OpenNos.Import.Console
                             {
                                 break;
                             }
-                            if (DAOFactory.SkillDAO.LoadById(vnum) == null || DAOFactory.NpcMonsterSkillDAO.LoadByNpcMonster(npc.NpcMonsterVNum).Count(s => s.SkillVNum == vnum) != 0)
+                            if (DAOFactory.SkillDAO.FirstOrDefault(s => s.SkillVNum.Equals(vnum)) == null || DAOFactory.NpcMonsterSkillDAO.Where(s => s.NpcMonsterVNum.Equals(npc.NpcMonsterVNum)).Count(s => s.SkillVNum == vnum) != 0)
                             {
                                 continue;
                             }
@@ -1157,46 +1404,54 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 0; i < 4; i++)
                         {
-                            byte type = (byte)(Int32.Parse(currentLine[2 + 5 * i]));
-                            if (type != 0)
+                            byte type = (byte)int.Parse(currentLine[5 * i + 2]);
+                            if (type == 0 || type == 255)
                             {
-                                BCardDTO itemCard = new BCardDTO
-                                {
-                                    NpcMonsterVNum = npc.NpcMonsterVNum,
-                                    Type = type,
-                                    SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10),
-                                    FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
-                                    SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                    ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
-                                };
-                                monstercards.Add(itemCard);
+                                continue;
                             }
+                            int first = int.Parse(currentLine[5 * i + 3]);
+                            BCardDTO itemCard = new BCardDTO
+                            {
+                                NpcMonsterVNum = npc.NpcMonsterVNum,
+                                Type = type,
+                                SubType = (byte)(int.Parse(currentLine[5 * i + 5]) + 1 * 10 + 1 + (first > 0 ? 0 : 1)),
+                                IsLevelScaled = Convert.ToBoolean(first % 4),
+                                IsLevelDivided = (first % 4) == 2,
+                                FirstData = (short)((first > 0 ? first : -first) / 4),
+                                SecondData = (short)(int.Parse(currentLine[5 * i + 4]) / 4),
+                                ThirdData = (short)(int.Parse(currentLine[5 * i + 6]) / 4),
+                            };
+                            monstercards.Add(itemCard);
                         }
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "BASIC")
                     {
                         for (int i = 0; i < 4; i++)
                         {
-                            byte type = (byte)(Int32.Parse(currentLine[2 + 5 * i]));
-                            if (type != 0)
+                            byte type = (byte)int.Parse(currentLine[5 * i + 2]);
+                            if (type == 0)
                             {
-                                BCardDTO itemCard = new BCardDTO
-                                {
-                                    NpcMonsterVNum = npc.NpcMonsterVNum,
-                                    Type = type,
-                                    SubType = (byte)((int.Parse(currentLine[6 + 5 * i])) * 10),
-                                    FirstData = (short)(int.Parse(currentLine[5 + 5])),
-                                    SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4), 
-                                    ThirdData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
-                                    CastType = 1
-                                };
-                                monstercards.Add(itemCard);
+                                continue;
                             }
+                            int first = int.Parse(currentLine[5 * i + 5]);
+                            BCardDTO itemCard = new BCardDTO
+                            {
+                                NpcMonsterVNum = npc.NpcMonsterVNum,
+                                Type = type,
+                                SubType = (byte)((int.Parse(currentLine[5 * i + 6]) + 1) * 10 + 1 + (first > 0 ? 0 : 1)),
+                                FirstData = (short)((first > 0 ? first : -first) / 4),
+                                SecondData = (short)(int.Parse(currentLine[5 * i + 4]) / 4),
+                                ThirdData = (short)(int.Parse(currentLine[5 * i + 3]) / 4),
+                                CastType = 1,
+                                IsLevelScaled = false,
+                                IsLevelDivided = false
+                            };
+                            monstercards.Add(itemCard);
                         }
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "ITEM")
                     {
-                        if (DAOFactory.NpcMonsterDAO.LoadByVNum(npc.NpcMonsterVNum) == null)
+                        if (DAOFactory.NpcMonsterDAO.FirstOrDefault(s => s.NpcMonsterVNum.Equals(npc.NpcMonsterVNum)) == null)
                         {
                             npcs.Add(npc);
                             counter++;
@@ -1208,7 +1463,7 @@ namespace OpenNos.Import.Console
                             {
                                 break;
                             }
-                            if (DAOFactory.DropDAO.LoadByMonster(npc.NpcMonsterVNum).Count(s => s.ItemVNum == vnum) != 0)
+                            if (DAOFactory.DropDAO.Where(s => s.MonsterVNum == npc.NpcMonsterVNum).Count(s => s.ItemVNum == vnum) != 0)
                             {
                                 continue;
                             }
@@ -1223,15 +1478,25 @@ namespace OpenNos.Import.Console
                         itemAreaBegin = false;
                     }
                 }
-                DAOFactory.NpcMonsterDAO.Insert(npcs);
-                DAOFactory.NpcMonsterSkillDAO.Insert(skills);
-                DAOFactory.BCardDAO.Insert(monstercards);
+                IEnumerable<NpcMonsterDTO> npcMonsterDtos = npcs;
+                IEnumerable<NpcMonsterSkillDTO> npcMonsterSkillDtos = skills;
+                IEnumerable<BCardDTO> monsterBCardDtos = monstercards;
+
+                DAOFactory.NpcMonsterDAO.InsertOrUpdate(npcMonsterDtos);
+                DAOFactory.NpcMonsterSkillDAO.InsertOrUpdate(npcMonsterSkillDtos);
+                DAOFactory.BCardDAO.InsertOrUpdate(monsterBCardDtos);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
 
             // Act 1
+            drops.Add(new DropDTO { ItemVNum = 1002, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act1 });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 12000, MapTypeId = (short)MapTypeEnum.Act1 });
+            drops.Add(new DropDTO { ItemVNum = 2015, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act1 });
+            drops.Add(new DropDTO { ItemVNum = 2016, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act1 });
+            drops.Add(new DropDTO { ItemVNum = 2023, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act1 });
+            drops.Add(new DropDTO { ItemVNum = 2024, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act1 });
+            drops.Add(new DropDTO { ItemVNum = 2028, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act1 });
 
             // Act2
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act2 });
@@ -1263,6 +1528,9 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act2 });
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 250, MapTypeId = (short)MapTypeEnum.Act2 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 30, MapTypeId = (short)MapTypeEnum.Act2 });
+            drops.Add(new DropDTO { ItemVNum = 5853, Amount = 1, MonsterVNum = null, DropChance = 80, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 5854, Amount = 1, MonsterVNum = null, DropChance = 80, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 5855, Amount = 1, MonsterVNum = null, DropChance = 80, MapTypeId = (short)MapTypeEnum.Oasis });
 
             // Act3
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act3 });
@@ -1282,57 +1550,106 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2100, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2101, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2102, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act3 });
-            drops.Add(new DropDTO { ItemVNum = 2114, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act3 });
-            drops.Add(new DropDTO { ItemVNum = 2115, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act3 });
-            drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act3 });
-            drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act3 });
-            drops.Add(new DropDTO { ItemVNum = 2118, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act3 });
+            drops.Add(new DropDTO { ItemVNum = 2114, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Act3 });
+            drops.Add(new DropDTO { ItemVNum = 2115, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Act3 });
+            drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Act3 });
+            drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Act3 });
+            drops.Add(new DropDTO { ItemVNum = 2118, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2129, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2205, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2206, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2207, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2208, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act3 });
-            drops.Add(new DropDTO { ItemVNum = 2282, Amount = 1, MonsterVNum = null, DropChance = 4500, MapTypeId = (short)MapTypeEnum.Act3 });
+            drops.Add(new DropDTO { ItemVNum = 2282, Amount = 1, MonsterVNum = null, DropChance = 4000, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2283, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 350, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2285, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 30, MapTypeId = (short)MapTypeEnum.Act3 });
+            drops.Add(new DropDTO { ItemVNum = 5853, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act3 });
+            drops.Add(new DropDTO { ItemVNum = 5854, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act3 });
+            drops.Add(new DropDTO { ItemVNum = 5855, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act3 });
 
-            // Act3.2
+            // Act3.2 (Midgard)
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act32 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 8000, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 6000, MapTypeId = (short)MapTypeEnum.Act32 });
             drops.Add(new DropDTO { ItemVNum = 1086, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 1078, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 1078, Amount = 1, MonsterVNum = null, DropChance = 250, MapTypeId = (short)MapTypeEnum.Act32 });
             drops.Add(new DropDTO { ItemVNum = 1114, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 1235, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 1237, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 1238, Amount = 1, MonsterVNum = null, DropChance = 30, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 1239, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 1240, Amount = 1, MonsterVNum = null, DropChance = 30, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 1241, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2098, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2099, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2100, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2101, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2102, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2114, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2115, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2118, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 1235, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 1237, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 1238, Amount = 1, MonsterVNum = null, DropChance = 20, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 1239, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 1240, Amount = 1, MonsterVNum = null, DropChance = 20, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 1241, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2098, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2099, Amount = 1, MonsterVNum = null, DropChance = 60, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2100, Amount = 1, MonsterVNum = null, DropChance = 40, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2101, Amount = 1, MonsterVNum = null, DropChance = 60, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2102, Amount = 1, MonsterVNum = null, DropChance = 40, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2114, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2115, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2118, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act32 });
             drops.Add(new DropDTO { ItemVNum = 2129, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
             drops.Add(new DropDTO { ItemVNum = 2205, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act32 });
             drops.Add(new DropDTO { ItemVNum = 2206, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act32 });
             drops.Add(new DropDTO { ItemVNum = 2207, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act32 });
             drops.Add(new DropDTO { ItemVNum = 2208, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2282, Amount = 1, MonsterVNum = null, DropChance = 4500, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2283, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 350, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2285, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act32 });
-            drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2282, Amount = 1, MonsterVNum = null, DropChance = 3500, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2283, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2285, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2600, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 2605, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act32 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 30, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 5857, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 5853, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 5854, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act32 });
+            drops.Add(new DropDTO { ItemVNum = 5855, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act32 });
+
+
+            // Act 3.4 Oasis 
+            drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 7000, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 1086, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 1078, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 1114, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 1235, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 1237, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 1238, Amount = 1, MonsterVNum = null, DropChance = 30, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 1239, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 1240, Amount = 1, MonsterVNum = null, DropChance = 30, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 1241, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2098, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2099, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2100, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2101, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2102, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2114, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2115, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2118, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2129, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2205, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2206, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2207, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2208, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2282, Amount = 1, MonsterVNum = null, DropChance = 3000, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2283, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2285, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 30, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 5853, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 5854, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 5855, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
+            drops.Add(new DropDTO { ItemVNum = 5999, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Oasis });
 
             // Act4
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act4 });
@@ -1348,6 +1665,28 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act4 });
             drops.Add(new DropDTO { ItemVNum = 2307, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = (short)MapTypeEnum.Act4 });
             drops.Add(new DropDTO { ItemVNum = 2308, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = (short)MapTypeEnum.Act4 });
+
+            //Act4.2
+            drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 1010, Amount = 3, MonsterVNum = null, DropChance = 1500, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 2, MonsterVNum = null, DropChance = 3000, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 1241, Amount = 3, MonsterVNum = null, DropChance = 3000, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 1078, Amount = 3, MonsterVNum = null, DropChance = 1500, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 1246, Amount = 1, MonsterVNum = null, DropChance = 2500, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 1247, Amount = 1, MonsterVNum = null, DropChance = 2500, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 1248, Amount = 1, MonsterVNum = null, DropChance = 2500, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 1429, Amount = 1, MonsterVNum = null, DropChance = 2500, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 2307, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 2308, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 2445, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 2448, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 2449, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 2450, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 2451, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act42 });
+            drops.Add(new DropDTO { ItemVNum = 5986, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act42 });
+
 
             // Act5
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act51 });
@@ -1374,6 +1713,9 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2351, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Act51 });
             drops.Add(new DropDTO { ItemVNum = 2379, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act51 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 30, MapTypeId = (short)MapTypeEnum.Act51 });
+            drops.Add(new DropDTO { ItemVNum = 5853, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act51 });
+            drops.Add(new DropDTO { ItemVNum = 5854, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act51 });
+            drops.Add(new DropDTO { ItemVNum = 5855, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act51 });
 
             // Act5.2
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act52 });
@@ -1396,44 +1738,119 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2380, Amount = 1, MonsterVNum = null, DropChance = 6000, MapTypeId = (short)MapTypeEnum.Act52 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act52 });
 
-            // Act6.1
-            drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
+            // Act6.1 Angel
+            drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 1010, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 5000, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 1028, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 1078, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 1086, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 1092, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 1093, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 1094, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 1114, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2098, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2099, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2102, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2114, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2115, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2129, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2206, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2282, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2283, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2285, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2446, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2806, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2807, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2813, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2815, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2816, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2818, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 2819, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 5853, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 5854, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 5855, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act61A });
+            drops.Add(new DropDTO { ItemVNum = 5880, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act61A });
+
+            // Act6.1 Demon
+            drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 1010, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 5000, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 1028, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 1078, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 1086, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 1092, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 1093, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 1094, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 1114, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2098, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2099, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2102, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2114, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2115, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2129, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2206, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2282, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2283, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2285, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2446, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2806, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2807, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2813, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2815, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2816, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2818, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 2819, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 5853, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 5854, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 5855, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act61D });
+            drops.Add(new DropDTO { ItemVNum = 5881, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act61D });
+
+            // Act6.2
+            drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act62 });
             drops.Add(new DropDTO { ItemVNum = 1010, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 5000, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 1028, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 1078, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 1086, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 1092, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 1093, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 1094, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 1114, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2098, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2099, Amount = 1, MonsterVNum = null, DropChance = 1200, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2102, Amount = 1, MonsterVNum = null, DropChance = 1200, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2114, Amount = 1, MonsterVNum = null, DropChance = 1200, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2115, Amount = 1, MonsterVNum = null, DropChance = 1200, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 1200, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2129, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2206, Amount = 1, MonsterVNum = null, DropChance = 1200, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2803, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2804, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2805, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2806, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2807, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61 });
-
-            // drops.Add(new DropDTO { ItemVNum = 2815, Amount = 1, MonsterVNum = null, DropChance =
-            // 450, MapTypeId = 9 }); //Only for angel camp need group act6.1 angel
-            drops.Add(new DropDTO { ItemVNum = 2816, Amount = 1, MonsterVNum = null, DropChance = 350, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2818, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 2819, Amount = 1, MonsterVNum = null, DropChance = 350, MapTypeId = (short)MapTypeEnum.Act61 });
-            drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act61 });
-
-            // drops.Add(new DropDTO { ItemVNum = 5881, Amount = 1, MonsterVNum = null, DropChance =
-            // 450, MapTypeId = 10 }); //Only for demon camp need group act6.1 demon
-
-            // Act6.2 (need some information) > soon )
+            drops.Add(new DropDTO { ItemVNum = 1010, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 6000, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1028, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1078, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1086, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1092, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1093, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1094, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1114, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1191, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1192, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1193, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 1194, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2098, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2099, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2102, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2114, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2115, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2129, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2206, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2452, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2453, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2454, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2455, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 2456, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 5853, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 5854, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act62 });
+            drops.Add(new DropDTO { ItemVNum = 5855, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act62 });
 
             // Comet plain
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.CometPlain });
@@ -1479,7 +1896,9 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 1005, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 10000, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
             drops.Add(new DropDTO { ItemVNum = 2016, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
-            drops.Add(new DropDTO { ItemVNum = 2023, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
+            drops.Add(new DropDTO { ItemVNum = 2023, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
+            drops.Add(new DropDTO { ItemVNum = 2024, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
+            drops.Add(new DropDTO { ItemVNum = 2028, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
             drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
             drops.Add(new DropDTO { ItemVNum = 2118, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
 
@@ -1577,7 +1996,9 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 1211, Amount = 1, MonsterVNum = null, DropChance = 250, MapTypeId = (short)MapTypeEnum.LandOfTheDead });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.LandOfTheDead });
 
-            DAOFactory.DropDAO.Insert(drops);
+
+            IEnumerable<DropDTO> dropDtos = drops;
+            DAOFactory.DropDAO.InsertOrUpdate(dropDtos);
         }
 
         public void ImportPackets()
@@ -1611,7 +2032,7 @@ namespace OpenNos.Import.Console
                 DestinationY = 36,
                 IsDisabled = false
             };
-            DAOFactory.PortalDAO.Insert(lodPortal);
+            DAOFactory.PortalDAO.InsertOrUpdate(ref lodPortal);
 
             PortalDTO minilandPortal = new PortalDTO
             {
@@ -1624,7 +2045,7 @@ namespace OpenNos.Import.Console
                 DestinationY = 132,
                 IsDisabled = false
             };
-            DAOFactory.PortalDAO.Insert(minilandPortal);
+            DAOFactory.PortalDAO.InsertOrUpdate(ref minilandPortal);
 
             PortalDTO weddingPortal = new PortalDTO
             {
@@ -1637,7 +2058,7 @@ namespace OpenNos.Import.Console
                 DestinationY = 165,
                 IsDisabled = false
             };
-            DAOFactory.PortalDAO.Insert(weddingPortal);
+            DAOFactory.PortalDAO.InsertOrUpdate(ref weddingPortal);
 
             PortalDTO glacerusCavernPortal = new PortalDTO
             {
@@ -1650,7 +2071,7 @@ namespace OpenNos.Import.Console
                 DestinationY = 156,
                 IsDisabled = false
             };
-            DAOFactory.PortalDAO.Insert(glacerusCavernPortal);
+            DAOFactory.PortalDAO.InsertOrUpdate(ref glacerusCavernPortal);
 
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("gp")))
             {
@@ -1701,12 +2122,13 @@ namespace OpenNos.Import.Console
             }
 
             // foreach portal in the new list of Portals where none (=> !Any()) are found in the existing
-            int portalCounter = listPortals2.Count(portal => !DAOFactory.PortalDAO.LoadByMap(portal.SourceMapId).Any(
+            int portalCounter = listPortals2.Count(portal => !DAOFactory.PortalDAO.Where(s => s.SourceMapId.Equals(portal.SourceMapId)).Any(
                 s => s.DestinationMapId == portal.DestinationMapId && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY));
 
             // so this dude doesnt exist yet in DAOFactory -> insert it
-            DAOFactory.PortalDAO.Insert(listPortals2.Where(portal => !DAOFactory.PortalDAO.LoadByMap(portal.SourceMapId).Any(
-                s => s.DestinationMapId == portal.DestinationMapId && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY)).ToList());
+            IEnumerable<PortalDTO> portalsDtos = listPortals2.Where(portal => !DAOFactory.PortalDAO.Where(s => s.SourceMapId.Equals(portal.SourceMapId)).Any(
+                s => s.DestinationMapId == portal.DestinationMapId && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY));
+            DAOFactory.PortalDAO.InsertOrUpdate(portalsDtos);
 
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), portalCounter));
         }
@@ -1729,20 +2151,23 @@ namespace OpenNos.Import.Console
                 {
                     for (int i = 2; i < currentPacket.Length - 1; i++)
                     {
-                        if (DAOFactory.MapNpcDAO.LoadById(mapnpcid) != null)
+                        if (DAOFactory.MapNpcDAO.FirstOrDefault(s => s.MapNpcId.Equals(mapnpcid)) == null)
                         {
-                            recipe = new RecipeDTO
-                            {
-                                ItemVNum = short.Parse(currentPacket[i]),
-                                MapNpcId = mapnpcid
-                            };
-                            if (DAOFactory.RecipeDAO.LoadByNpc(mapnpcid).Any(s => s.ItemVNum == recipe.ItemVNum))
-                            {
-                                continue;
-                            }
-                            DAOFactory.RecipeDAO.Insert(recipe);
-                            count++;
+                            continue;
                         }
+                        recipe = new RecipeDTO
+                        {
+                            ItemVNum = short.Parse(currentPacket[i]),
+                            MapNpcId = mapnpcid
+                        };
+                        int mapnpcid1 = mapnpcid;
+                        RecipeDTO recipe1 = recipe;
+                        if (DAOFactory.RecipeDAO.FirstOrDefault(s => s.MapNpcId.Equals(mapnpcid1) && s.ItemVNum == recipe1.ItemVNum) == null)
+                        {
+                            continue;
+                        }
+                        DAOFactory.RecipeDAO.InsertOrUpdate(ref recipe);
+                        count++;
                     }
                     continue;
                 }
@@ -1751,36 +2176,41 @@ namespace OpenNos.Import.Console
                     item = short.Parse(currentPacket[2]);
                     continue;
                 }
-                if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && (currentPacket[1] == "3" || currentPacket[1] == "5"))
+                if (currentPacket.Length <= 1 || currentPacket[0] != "m_list" || (currentPacket[1] != "3" && currentPacket[1] != "5"))
                 {
-                    for (int i = 3; i < currentPacket.Length - 1; i += 2)
-                    {
-                        RecipeDTO rec = DAOFactory.RecipeDAO.LoadByNpc(mapnpcid).FirstOrDefault(s => s.ItemVNum == item);
-                        if (rec != null)
-                        {
-                            rec.Amount = byte.Parse(currentPacket[2]);
-                            DAOFactory.RecipeDAO.Update(rec);
-                            RecipeDTO recipedto = DAOFactory.RecipeDAO.LoadByNpc(mapnpcid).FirstOrDefault(s => s.ItemVNum == item);
-                            if (recipedto != null)
-                            {
-                                short recipeId = recipedto.RecipeId;
-
-                                RecipeItemDTO recipeitem = new RecipeItemDTO
-                                {
-                                    ItemVNum = short.Parse(currentPacket[i]),
-                                    Amount = byte.Parse(currentPacket[i + 1]),
-                                    RecipeId = recipeId
-                                };
-
-                                if (!DAOFactory.RecipeItemDAO.LoadByRecipeAndItem(recipeId, recipeitem.ItemVNum).Any())
-                                {
-                                    DAOFactory.RecipeItemDAO.Insert(recipeitem);
-                                }
-                            }
-                        }
-                    }
-                    item = -1;
+                    continue;
                 }
+                for (int i = 3; i < currentPacket.Length - 1; i += 2)
+                {
+                    short item1 = item;
+                    int mapnpcid1 = mapnpcid;
+                    RecipeDTO rec = DAOFactory.RecipeDAO.FirstOrDefault(s => s.MapNpcId.Equals(mapnpcid1) && s.ItemVNum == item1);
+                    if (rec == null)
+                    {
+                        continue;
+                    }
+                    rec.Amount = byte.Parse(currentPacket[2]);
+                    DAOFactory.RecipeDAO.InsertOrUpdate(ref rec);
+                    RecipeDTO recipedto = DAOFactory.RecipeDAO.FirstOrDefault(s => s.MapNpcId.Equals(mapnpcid1) && s.ItemVNum == item1);
+                    if (recipedto == null)
+                    {
+                        continue;
+                    }
+                    short recipeId = recipedto.RecipeId;
+
+                    RecipeItemDTO recipeitem = new RecipeItemDTO
+                    {
+                        ItemVNum = short.Parse(currentPacket[i]),
+                        Amount = byte.Parse(currentPacket[i + 1]),
+                        RecipeId = recipeId
+                    };
+
+                    if (DAOFactory.RecipeItemDAO.FirstOrDefault(s => s.RecipeId.Equals(recipeId) && s.ItemVNum.Equals(recipeitem.ItemVNum)) == null)
+                    {
+                        DAOFactory.RecipeItemDAO.InsertOrUpdate(ref recipeitem);
+                    }
+                }
+                item = -1;
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_PARSED"), count));
         }
@@ -1829,9 +2259,26 @@ namespace OpenNos.Import.Console
                     DefaultX = 72,
                     DefaultY = 102,
                     Name = "DefaultAct6"
+                },
+                 new RespawnMapTypeDTO
+                {
+                    RespawnMapTypeId = (long)RespawnType.DefaultAct62,
+                    DefaultMapId = 228,
+                    DefaultX = 72,
+                    DefaultY = 102,
+                    Name = "DefaultAct62"
+                },
+                    new RespawnMapTypeDTO
+                {
+                    RespawnMapTypeId = (long)RespawnType.DefaultOasis,
+                    DefaultMapId = 261,
+                    DefaultX = 66,
+                    DefaultY = 70,
+                    Name = "DefaultOasis"
                 }
             };
-            DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
+            IEnumerable<RespawnMapTypeDTO> respawnMapTypeDtos = respawnmaptypemaps;
+            DAOFactory.RespawnMapTypeDAO.InsertOrUpdate(respawnMapTypeDtos);
             Logger.Log.Info(Language.Instance.GetMessageFromKey("RESPAWNTYPE_PARSED"));
         }
 
@@ -1844,44 +2291,46 @@ namespace OpenNos.Import.Console
             {
                 if (currentPacket[0].Equals("n_inv"))
                 {
-                    if (DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])) != null)
+                    short npcid = short.Parse(currentPacket[2]);
+                    if (DAOFactory.ShopDAO.FirstOrDefault(s => s.MapNpcId == npcid) == null)
                     {
-                        for (int i = 5; i < currentPacket.Length; i++)
+                        continue;
+                    }
+                    for (int i = 5; i < currentPacket.Length; i++)
+                    {
+                        string[] item = currentPacket[i].Split('.');
+                        ShopItemDTO sitem = null;
+
+                        if (item.Length == 5)
                         {
-                            string[] item = currentPacket[i].Split('.');
-                            ShopItemDTO sitem = null;
-
-                            if (item.Length == 5)
+                            sitem = new ShopItemDTO
                             {
-                                sitem = new ShopItemDTO
-                                {
-                                    ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
-                                    Type = type,
-                                    Slot = byte.Parse(item[1]),
-                                    ItemVNum = short.Parse(item[2])
-                                };
-                            }
-                            else if (item.Length == 6)
-                            {
-                                sitem = new ShopItemDTO
-                                {
-                                    ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
-                                    Type = type,
-                                    Slot = byte.Parse(item[1]),
-                                    ItemVNum = short.Parse(item[2]),
-                                    Rare = sbyte.Parse(item[3]),
-                                    Upgrade = byte.Parse(item[4])
-                                };
-                            }
-
-                            if (sitem == null || shopitems.Any(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) || DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).Any(s => s.ItemVNum.Equals(sitem.ItemVNum)))
-                            {
-                                continue;
-                            }
-
-                            shopitems.Add(sitem);
-                            itemCounter++;
+                                ShopId = DAOFactory.ShopDAO.FirstOrDefault(s => s.MapNpcId == npcid).ShopId,
+                                Type = type,
+                                Slot = byte.Parse(item[1]),
+                                ItemVNum = short.Parse(item[2])
+                            };
                         }
+                        else if (item.Length == 6)
+                        {
+                            sitem = new ShopItemDTO
+                            {
+                                ShopId = DAOFactory.ShopDAO.FirstOrDefault(s => s.MapNpcId == npcid).ShopId,
+                                Type = type,
+                                Slot = byte.Parse(item[1]),
+                                ItemVNum = short.Parse(item[2]),
+                                Rare = sbyte.Parse(item[3]),
+                                Upgrade = byte.Parse(item[4])
+                            };
+                        }
+
+                        if (sitem == null || shopitems.Any(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) || DAOFactory.ShopItemDAO.Where(s => s.ShopId == sitem.ShopId).Any(s => s.ItemVNum.Equals(sitem.ItemVNum)))
+                        {
+                            continue;
+                        }
+
+                        shopitems.Add(sitem);
+                        itemCounter++;
                     }
                 }
                 else
@@ -1893,7 +2342,9 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            DAOFactory.ShopItemDAO.Insert(shopitems);
+            IEnumerable<ShopItemDTO> shopItemDtos = shopitems;
+
+            DAOFactory.ShopItemDAO.InsertOrUpdate(shopItemDtos);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), itemCounter));
         }
 
@@ -1903,7 +2354,8 @@ namespace OpenNos.Import.Console
             List<ShopDTO> shops = new List<ShopDTO>();
             foreach (string[] currentPacket in _packetList.Where(o => o.Length > 6 && o[0].Equals("shop") && o[1].Equals("2")))
             {
-                MapNpcDTO npc = DAOFactory.MapNpcDAO.LoadById(short.Parse(currentPacket[2]));
+                short npcid = short.Parse(currentPacket[2]);
+                MapNpcDTO npc = DAOFactory.MapNpcDAO.FirstOrDefault(s => s.MapNpcId == npcid);
                 if (npc == null)
                 {
                     continue;
@@ -1923,14 +2375,17 @@ namespace OpenNos.Import.Console
                     ShopType = byte.Parse(currentPacket[5])
                 };
 
-                if (DAOFactory.ShopDAO.LoadByNpc(npc.MapNpcId) == null && shops.All(s => s.MapNpcId != npc.MapNpcId))
+                if (DAOFactory.ShopDAO.FirstOrDefault(s => s.MapNpcId == npc.MapNpcId) != null || shops.Any(s => s.MapNpcId == npc.MapNpcId))
                 {
-                    shops.Add(shop);
-                    shopCounter++;
+                    continue;
                 }
+                shops.Add(shop);
+                shopCounter++;
             }
 
-            DAOFactory.ShopDAO.Insert(shops);
+            IEnumerable<ShopDTO> shopDtos = shops;
+
+            DAOFactory.ShopDAO.InsertOrUpdate(shopDtos);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
         }
 
@@ -1943,29 +2398,30 @@ namespace OpenNos.Import.Console
             {
                 if (currentPacket[0].Equals("n_inv"))
                 {
-                    if (DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])) != null)
+                    short npcid = short.Parse(currentPacket[2]);
+                    if (DAOFactory.ShopDAO.FirstOrDefault(s => s.MapNpcId == npcid) != null)
                     {
                         for (int i = 5; i < currentPacket.Length; i++)
                         {
-                            ShopSkillDTO sskill;
-                            if (!currentPacket[i].Contains("."))
+                            if (currentPacket[i].Contains("."))
                             {
-                                sskill = new ShopSkillDTO
-                                {
-                                    ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
-                                    Type = type,
-                                    Slot = (byte)(i - 5),
-                                    SkillVNum = short.Parse(currentPacket[i])
-                                };
-
-                                if (shopskills.Any(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).Any(s => s.SkillVNum.Equals(sskill.SkillVNum)))
-                                {
-                                    continue;
-                                }
-
-                                shopskills.Add(sskill);
-                                itemCounter++;
+                                continue;
                             }
+                            ShopSkillDTO sskill = new ShopSkillDTO
+                            {
+                                ShopId = DAOFactory.ShopDAO.FirstOrDefault(s => s.MapNpcId == npcid).ShopId,
+                                Type = type,
+                                Slot = (byte)(i - 5),
+                                SkillVNum = short.Parse(currentPacket[i])
+                            };
+
+                            if (shopskills.Any(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) || DAOFactory.ShopSkillDAO.FirstOrDefault(s => s.ShopId == sskill.ShopId && s.SkillVNum == sskill.SkillVNum) != null)
+                            {
+                                continue;
+                            }
+
+                            shopskills.Add(sskill);
+                            itemCounter++;
                         }
                     }
                 }
@@ -1978,7 +2434,9 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            DAOFactory.ShopSkillDAO.Insert(shopskills);
+            IEnumerable<ShopSkillDTO> shopSkillDtos = shopskills;
+
+            DAOFactory.ShopSkillDAO.InsertOrUpdate(shopSkillDtos);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_PARSED"), itemCounter));
         }
 
@@ -1991,7 +2449,7 @@ namespace OpenNos.Import.Console
 
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             SkillDTO skill = new SkillDTO();
-            List<ComboDTO> Combo = new List<ComboDTO>();
+            List<ComboDTO> combo = new List<ComboDTO>();
             List<BCardDTO> skillCards = new List<BCardDTO>();
             string line;
             int counter = 0;
@@ -2045,12 +2503,13 @@ namespace OpenNos.Import.Console
                                 Effect = short.Parse(currentLine[i + 2])
                             };
 
-                            if (comb.Hit != 0 || comb.Animation != 0 || comb.Effect != 0)
+                            if (comb.Hit == 0 && comb.Animation == 0 && comb.Effect == 0)
                             {
-                                if (!DAOFactory.ComboDAO.LoadByVNumHitAndEffect(comb.SkillVNum, comb.Hit, comb.Effect).Any())
-                                {
-                                    Combo.Add(comb);
-                                }
+                                continue;
+                            }
+                            if (DAOFactory.ComboDAO.FirstOrDefault(s => s.SkillVNum.Equals(comb.SkillVNum) && s.Hit.Equals(comb.Hit) && s.Effect.Equals(comb.Effect)) == null)
+                            {
+                                combo.Add(comb);
                             }
                         }
                     }
@@ -2205,20 +2664,24 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
                     {
-                        int type = Int32.Parse(currentLine[3]);
-                        if (type != 0 && type!=-1)
+                        byte type = (byte)int.Parse(currentLine[3]);
+                        if (type == 0 || type == 255)
                         {
-                            BCardDTO itemCard = new BCardDTO
-                            {
-                                SkillVNum = skill.SkillVNum,
-                                Type =(byte)type,
-                                SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10),
-                                FirstData = (short)(int.Parse(currentLine[5]) / 4),
-                                SecondData = (short)(int.Parse(currentLine[6]) / 4),
-                                ThirdData = (short)(int.Parse(currentLine[7]) / 4),
-                            };
-                            skillCards.Add(itemCard);
+                            continue;
                         }
+                        int first = int.Parse(currentLine[5]);
+                        BCardDTO itemCard = new BCardDTO
+                        {
+                            SkillVNum = skill.SkillVNum,
+                            Type = type,
+                            SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10 + 1 + (first < 0 ? 1 : 0)),
+                            IsLevelScaled = Convert.ToBoolean(first % 4),
+                            IsLevelDivided = (first % 4) == 2,
+                            FirstData = (short)(first > 0 ? first : -first / 4),
+                            SecondData = (short)(int.Parse(currentLine[6]) / 4),
+                            ThirdData = (short)(int.Parse(currentLine[7]) / 4),
+                        };
+                        skillCards.Add(itemCard);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
                     {
@@ -2251,16 +2714,24 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 1 && currentLine[1] == "Z_DESC")
                     {
                         // investigate
-                        if (DAOFactory.SkillDAO.LoadById(skill.SkillVNum) == null)
+                        SkillDTO skill1 = skill;
+                        if (DAOFactory.SkillDAO.FirstOrDefault(s => s.SkillVNum.Equals(skill1.SkillVNum)) != null)
                         {
-                            skills.Add(skill);
-                            counter++;
+                            continue;
                         }
+                        skills.Add(skill);
+                        counter++;
                     }
                 }
-                DAOFactory.SkillDAO.Insert(skills);
-                DAOFactory.ComboDAO.Insert(Combo);
-                DAOFactory.BCardDAO.Insert(skillCards);
+
+                IEnumerable<SkillDTO> skillDtos = skills;
+                IEnumerable<ComboDTO> comboDtos = combo;
+                IEnumerable<BCardDTO> bCardDtos = skillCards;
+
+
+                DAOFactory.SkillDAO.InsertOrUpdate(skillDtos);
+                DAOFactory.ComboDAO.InsertOrUpdate(comboDtos);
+                DAOFactory.BCardDAO.InsertOrUpdate(bCardDtos);
 
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_PARSED"), counter));
                 skillIdStream.Close();
@@ -2275,7 +2746,8 @@ namespace OpenNos.Import.Console
             {
                 if (currentPacket.Length > 4 && currentPacket[0] == "n_run")
                 {
-                    if (DAOFactory.MapNpcDAO.LoadById(int.Parse(currentPacket[4])) == null)
+                    int npcid = int.Parse(currentPacket[4]);
+                    if (DAOFactory.MapNpcDAO.FirstOrDefault(s => s.MapNpcId == npcid) == null)
                     {
                         continue;
                     }
@@ -2296,11 +2768,12 @@ namespace OpenNos.Import.Console
                     teleporter.MapX = short.Parse(currentPacket[3]);
                     teleporter.MapY = short.Parse(currentPacket[4]);
 
-                    if (DAOFactory.TeleporterDAO.LoadFromNpc(teleporter.MapNpcId).Any(s => s.Index == teleporter.Index))
+                    if (DAOFactory.TeleporterDAO.Where(s => s.MapNpcId == teleporter.MapNpcId).Any(s => s.Index == teleporter.Index))
                     {
                         continue;
                     }
-                    DAOFactory.TeleporterDAO.Insert(teleporter);
+
+                    DAOFactory.TeleporterDAO.InsertOrUpdate(ref teleporter);
                     teleporterCounter++;
                     teleporter = null;
                 }
@@ -2313,18 +2786,19 @@ namespace OpenNos.Import.Console
         {
             short map = 0;
             List<ScriptedInstanceDTO> listtimespace = new List<ScriptedInstanceDTO>();
-            List<ScriptedInstanceDTO> bddlist = new List<ScriptedInstanceDTO>(); ;
+            List<ScriptedInstanceDTO> bddlist = new List<ScriptedInstanceDTO>();
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("wp") || o[0].Equals("gp") || o[0].Equals("rbr")))
             {
                 if (currentPacket.Length > 5 && currentPacket[0] == "at")
                 {
                     map = short.Parse(currentPacket[2]);
-                    bddlist = DAOFactory.ScriptedInstanceDAO.LoadByMap(map).ToList();
+                    short mapId = map;
+                    bddlist = DAOFactory.ScriptedInstanceDAO.Where(s => s.MapId.Equals(mapId)).ToList();
                     continue;
                 }
-                else if (currentPacket.Length > 6 && currentPacket[0] == "wp")
+                if (currentPacket.Length > 6 && currentPacket[0] == "wp")
                 {
-                    ScriptedInstanceDTO ts = new ScriptedInstanceDTO()
+                    ScriptedInstanceDTO ts = new ScriptedInstanceDTO
                     {
                         PositionX = short.Parse(currentPacket[1]),
                         PositionY = short.Parse(currentPacket[2]),
@@ -2336,31 +2810,68 @@ namespace OpenNos.Import.Console
                         listtimespace.Add(ts);
                     }
                 }
-                else if (currentPacket[0] == "gp")
+                else
                 {
-                    if (sbyte.Parse(currentPacket[4])==(byte)PortalType.Raid)
+                    switch (currentPacket[0])
                     {
-                        ScriptedInstanceDTO ts = new ScriptedInstanceDTO()
-                        {
-                            PositionX = short.Parse(currentPacket[1]),
-                            PositionY = short.Parse(currentPacket[2]),
-                            MapId = map,
-                            Type = ScriptedInstanceType.Raid,
-                        };
+                        case "gp":
+                            if (sbyte.Parse(currentPacket[4]) == (byte)PortalType.Raid)
+                            {
+                                ScriptedInstanceDTO ts = new ScriptedInstanceDTO
+                                {
+                                    PositionX = short.Parse(currentPacket[1]),
+                                    PositionY = short.Parse(currentPacket[2]),
+                                    MapId = map,
+                                    Type = ScriptedInstanceType.Raid,
+                                };
 
-                        if (!bddlist.Concat(listtimespace).Any(s => s.MapId == ts.MapId && s.PositionX == ts.PositionX && s.PositionY == ts.PositionY))
-                        {
-                            listtimespace.Add(ts);
-                        }
+                                if (!bddlist.Concat(listtimespace).Any(s => s.MapId == ts.MapId && s.PositionX == ts.PositionX && s.PositionY == ts.PositionY))
+                                {
+                                    listtimespace.Add(ts);
+                                }
+                            }
+                            break;
+                        case "rbr":
+                            //someinfo
+                            break;
                     }
-
-                }
-                else if (currentPacket[0] == "rbr")
-                {
-                    //someinfo
                 }
             }
-            DAOFactory.ScriptedInstanceDAO.Insert(listtimespace);
+            listtimespace.Add(new ScriptedInstanceDTO
+            {
+                Name = "Hatus",
+                MapId = 134,
+                PositionX = 53,
+                PositionY = 53,
+                Type = ScriptedInstanceType.RaidAct4
+            });
+            listtimespace.Add(new ScriptedInstanceDTO
+            {
+                Name = "Berios",
+                MapId = 134,
+                PositionX = 53,
+                PositionY = 53,
+                Type = ScriptedInstanceType.RaidAct4
+            });
+            listtimespace.Add(new ScriptedInstanceDTO
+            {
+                Name = "Calvina",
+                MapId = 134,
+                PositionX = 53,
+                PositionY = 53,
+                Type = ScriptedInstanceType.RaidAct4
+            });
+            listtimespace.Add(new ScriptedInstanceDTO
+            {
+                Name = "Morcos",
+                MapId = 134,
+                PositionX = 53,
+                PositionY = 53,
+                Type = ScriptedInstanceType.RaidAct4
+            });
+            IEnumerable<ScriptedInstanceDTO> scriptedInstanceDtos = listtimespace;
+
+            DAOFactory.ScriptedInstanceDAO.InsertOrUpdate(scriptedInstanceDtos);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TIMESPACES_PARSED"), listtimespace.Count));
         }
 
@@ -2413,7 +2924,7 @@ namespace OpenNos.Import.Console
                         {
                             continue;
                         }
-                        if (DAOFactory.ItemDAO.LoadById(item.VNum) == null)
+                        if (DAOFactory.ItemDAO.FirstOrDefault(s => s.VNum.Equals(item.VNum)) == null)
                         {
                             items.Add(item);
                             itemCounter++;
@@ -2624,6 +3135,12 @@ namespace OpenNos.Import.Console
                                 item.WaitDelay = 3000;
                                 break;
 
+                            case 5997:
+                                item.Morph = 3679;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
                             case 9054:
                                 item.Morph = 2368;
                                 item.Speed = 20;
@@ -2756,6 +3273,12 @@ namespace OpenNos.Import.Console
                                 item.WaitDelay = 3000;
                                 break;
 
+                            case 9115:
+                                item.Morph = 3679;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
                             default:
                                 if (item.EquipmentSlot.Equals(EquipmentType.Amulet))
                                 {
@@ -2767,6 +3290,31 @@ namespace OpenNos.Import.Console
 
                                         case 4504:
                                             item.EffectValue = 4294;
+                                            break;
+
+                                        case 282: // Red amulet
+                                            item.Effect = 791;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 283: // Blue amulet
+                                            item.Effect = 792;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 284: // Reinforcement amulet
+                                            item.Effect = 793;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 4264: // Heroic
+                                            item.Effect = 794;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 4262: // Random heroic
+                                            item.Effect = 795;
+                                            item.EffectValue = 3;
                                             break;
 
                                         default:
@@ -2791,28 +3339,26 @@ namespace OpenNos.Import.Console
                         item.IsSoldable = currentLine[5] == "0";
                         item.IsDroppable = currentLine[6] == "0";
                         item.IsTradable = currentLine[7] == "0";
-                        item.IsBlocked = currentLine[8] == "1";
-                        item.IsMinilandObject = currentLine[9] == "1";
-                        item.IsHolder = currentLine[10] == "1";
+                        item.IsMinilandActionable = currentLine[8] == "1";
+                        item.IsWarehouse = currentLine[9] == "1";
+                        item.Flag9 = currentLine[10] == "1";
+                        item.Flag1 = currentLine[11] == "1";
+                        item.Flag2 = currentLine[12] == "1";
+                        item.Flag3 = currentLine[13] == "1";
+                        item.Flag4 = currentLine[14] == "1";
+                        item.Flag5 = currentLine[15] == "1";
                         item.IsColored = currentLine[16] == "1";
                         item.Sex = currentLine[18] == "1" ? (byte)1 : currentLine[17] == "1" ? (byte)2 : (byte)0;
+                        //not used item.Flag6 = currentLine[19] == "1";
+                        item.Flag6 = currentLine[20] == "1";
                         if (currentLine[21] == "1")
                         {
                             item.ReputPrice = item.Price;
                         }
                         item.IsHeroic = currentLine[22] == "1";
-                        /*
-                        item.IsVehicle = currentLine[11] == "1" ? true : false; // (?)
-                        item.BoxedVehicle = currentLine[12] == "1" ? true : false; // (?)
-                        linesave[4]  unknown
-                        linesave[11] unknown
-                        linesave[12] unknown
-                        linesave[13] unknown
-                        linesave[14] unknown
-                        linesave[15] unknown
-                        linesave[19] unknown
-                        linesave[20] unknown
-                        */
+                        item.Flag7 = currentLine[23] == "1";
+                        item.Flag8 = currentLine[24] == "1";
+
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "DATA")
                     {
@@ -2865,6 +3411,14 @@ namespace OpenNos.Import.Console
                                         item.EffectValue = 4;
                                         break;
 
+                                    case 185: // Hatus
+                                    case 302: // Classic
+                                    case 882: // Morcos
+                                    case 942: // Calvina
+                                    case 999: //Berios
+                                        item.Effect = 999;
+                                        break;
+
                                     default:
                                         item.Effect = Convert.ToInt16(currentLine[2]);
                                         item.EffectValue = Convert.ToInt32(currentLine[3]);
@@ -2891,75 +3445,75 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case ItemType.Jewelery:
-                                if (item.EquipmentSlot.Equals(EquipmentType.Amulet))
+                                switch (item.EquipmentSlot)
                                 {
-                                    item.LevelMinimum = Convert.ToByte(currentLine[2]);
-                                    if (item.VNum > 4055 && item.VNum < 4061 || item.VNum > 4172 && item.VNum < 4176)
-                                    {
-                                        item.ItemValidTime = 10800;
-                                    }
-                                    else if (item.VNum > 4045 && item.VNum < 4056 || item.VNum == 967 || item.VNum == 968)
-                                    {
-                                        // (item.VNum > 8104 && item.VNum < 8115) <= disaled for now
-                                        // because doesn't work!
-                                        item.ItemValidTime = 3600;
-                                    }
-                                    else
-                                    {
-                                        item.ItemValidTime = Convert.ToInt32(currentLine[3]) / 10;
-                                    }
-                                }
-                                else if (item.EquipmentSlot.Equals(EquipmentType.Fairy))
-                                {
-                                    item.Element = Convert.ToByte(currentLine[2]);
-                                    item.ElementRate = Convert.ToInt16(currentLine[3]);
-                                    if (item.VNum <= 256)
-                                    {
-                                        item.MaxElementRate = 50;
-                                    }
-                                    else
-                                    {
-                                        if (item.ElementRate == 0)
+                                    case EquipmentType.Amulet:
+                                        item.LevelMinimum = Convert.ToByte(currentLine[2]);
+                                        if (item.VNum > 4055 && item.VNum < 4061 || item.VNum > 4172 && item.VNum < 4176)
                                         {
-                                            if (item.VNum >= 800 && item.VNum <= 804)
+                                            item.ItemValidTime = 10800;
+                                        }
+                                        else if (item.VNum > 4045 && item.VNum < 4056 || item.VNum == 967 || item.VNum == 968)
+                                        {
+                                            // (item.VNum > 8104 && item.VNum < 8115) <= disaled for now
+                                            // because doesn't work!
+                                            item.ItemValidTime = 10800;
+                                        }
+                                        else
+                                        {
+                                            item.ItemValidTime = Convert.ToInt32(currentLine[3]) / 10;
+                                        }
+                                        break;
+                                    case EquipmentType.Fairy:
+                                        item.Element = Convert.ToByte(currentLine[2]);
+                                        item.ElementRate = Convert.ToInt16(currentLine[3]);
+                                        if (item.VNum <= 256)
+                                        {
+                                            item.MaxElementRate = 50;
+                                        }
+                                        else
+                                        {
+                                            if (item.ElementRate == 0)
                                             {
-                                                item.MaxElementRate = 50;
+                                                if (item.VNum >= 800 && item.VNum <= 804)
+                                                {
+                                                    item.MaxElementRate = 50;
+                                                }
+                                                else
+                                                {
+                                                    item.MaxElementRate = 70;
+                                                }
                                             }
-                                            else
+                                            else if (item.ElementRate == 30)
+                                            {
+                                                if (item.VNum >= 884 && item.VNum <= 887)
+                                                {
+                                                    item.MaxElementRate = 50;
+                                                }
+                                                else
+                                                {
+                                                    item.MaxElementRate = 30;
+                                                }
+                                            }
+                                            else if (item.ElementRate == 35)
+                                            {
+                                                item.MaxElementRate = 35;
+                                            }
+                                            else if (item.ElementRate == 40)
                                             {
                                                 item.MaxElementRate = 70;
                                             }
-                                        }
-                                        else if (item.ElementRate == 30)
-                                        {
-                                            if (item.VNum >= 884 && item.VNum <= 887)
+                                            else if (item.ElementRate == 50)
                                             {
-                                                item.MaxElementRate = 50;
-                                            }
-                                            else
-                                            {
-                                                item.MaxElementRate = 30;
+                                                item.MaxElementRate = 80;
                                             }
                                         }
-                                        else if (item.ElementRate == 35)
-                                        {
-                                            item.MaxElementRate = 35;
-                                        }
-                                        else if (item.ElementRate == 40)
-                                        {
-                                            item.MaxElementRate = 70;
-                                        }
-                                        else if (item.ElementRate == 50)
-                                        {
-                                            item.MaxElementRate = 80;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    item.LevelMinimum = Convert.ToByte(currentLine[2]);
-                                    item.MaxCellonLvl = Convert.ToByte(currentLine[3]);
-                                    item.MaxCellon = Convert.ToByte(currentLine[4]);
+                                        break;
+                                    default:
+                                        item.LevelMinimum = Convert.ToByte(currentLine[2]);
+                                        item.MaxCellonLvl = Convert.ToByte(currentLine[3]);
+                                        item.MaxCellon = Convert.ToByte(currentLine[4]);
+                                        break;
                                 }
                                 break;
 
@@ -3215,6 +3769,33 @@ namespace OpenNos.Import.Console
                                         item.Effect = 6969; // imagined number as for I = √(-1), complex z = a + bi
                                         break;
 
+                                    case 1894:
+                                    case 1895:
+                                    case 1896:
+                                    case 1897:
+                                    case 1898:
+                                    case 1899:
+                                    case 1900:
+                                    case 1901:
+                                    case 1902:
+                                    case 1903:
+                                        item.Effect = 789;
+                                        item.EffectValue = item.VNum + 2152;
+                                        break;
+
+                                    case 4046:
+                                    case 4047:
+                                    case 4048:
+                                    case 4049:
+                                    case 4050:
+                                    case 4051:
+                                    case 4052:
+                                    case 4053:
+                                    case 4054:
+                                    case 4055:
+                                        item.Effect = 790;
+                                        break;
+
                                     default:
                                         if (item.VNum > 5891 && item.VNum < 5900 || item.VNum > 9100 && item.VNum < 9109)
                                         {
@@ -3450,39 +4031,46 @@ namespace OpenNos.Import.Console
                             item.Height = Convert.ToByte(currentLine[10]);
                         }
 
-                        if ((item.EquipmentSlot == EquipmentType.Boots || item.EquipmentSlot == EquipmentType.Gloves) && item.Type == 0)
+                        if (item.EquipmentSlot != EquipmentType.Boots && item.EquipmentSlot != EquipmentType.Gloves || item.Type != 0)
                         {
-                            item.FireResistance = Convert.ToByte(currentLine[7]);
-                            item.WaterResistance = Convert.ToByte(currentLine[8]);
-                            item.LightResistance = Convert.ToByte(currentLine[9]);
-                            item.DarkResistance = Convert.ToByte(currentLine[11]);
+                            continue;
                         }
+                        item.FireResistance = Convert.ToByte(currentLine[7]);
+                        item.WaterResistance = Convert.ToByte(currentLine[8]);
+                        item.LightResistance = Convert.ToByte(currentLine[9]);
+                        item.DarkResistance = Convert.ToByte(currentLine[11]);
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "BUFF")
                     {
                         for (int i = 0; i < 5; i++)
                         {
-                            int type = Int32.Parse(currentLine[2 + 5 * i]);
-                            if (type != 0 && type != -1)
+                            byte type = (byte)int.Parse(currentLine[2 + 5 * i]);
+                            if (type == 0 || type == 255)
                             {
-                                BCardDTO itemCard = new BCardDTO
-                                {
-                                    ItemVNum = item.VNum,
-                                    Type = (byte)type,
-                                    SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1)),
-                                    FirstData = (short)(int.Parse(currentLine[3 + 5 * i]) / 4),
-                                    SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                    ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
-                                };
-                                itemCards.Add(itemCard);
+                                continue;
                             }
-
+                            int first = int.Parse(currentLine[3 + 5 * i]);
+                            BCardDTO itemCard = new BCardDTO
+                            {
+                                ItemVNum = item.VNum,
+                                Type = type,
+                                SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10 + 1),
+                                IsLevelScaled = Convert.ToBoolean(first % 4),
+                                IsLevelDivided = (first % 4) == 2,
+                                FirstData = (short)(first / 4),
+                                SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
+                                ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                            };
+                            itemCards.Add(itemCard);
                         }
                     }
                 }
 
-                DAOFactory.ItemDAO.Insert(items);
-                DAOFactory.BCardDAO.Insert(itemCards);
+                IEnumerable<ItemDTO> itemDtos = items;
+                IEnumerable<BCardDTO> bCardDtos = itemCards;
+
+                DAOFactory.ItemDAO.InsertOrUpdate(itemDtos);
+                DAOFactory.BCardDAO.InsertOrUpdate(bCardDtos);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_PARSED"), itemCounter));
                 npcIdStream.Close();
             }

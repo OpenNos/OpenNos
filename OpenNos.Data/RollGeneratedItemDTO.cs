@@ -15,6 +15,7 @@
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.Data
 {
@@ -22,6 +23,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
+        [Key]
         public short RollGeneratedItemId { get; set; }   
 
         public short OriginalItemDesign { get; set; }
@@ -39,6 +41,10 @@ namespace OpenNos.Data
         public byte MinimumOriginalItemRare { get; set; }
 
         public byte MaximumOriginalItemRare { get; set; }
+
+        public bool IsSuperReward { get; set; }
+
+        public byte ItemGeneratedUpgrade { get; set; }
 
         #endregion
     }

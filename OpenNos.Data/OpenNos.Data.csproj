@@ -75,9 +75,11 @@
     <Compile Include="BazaarItemDTO.cs" />
     <Compile Include="BCardDTO.cs" />
     <Compile Include="BoxItemDTO.cs" />
+    <Compile Include="LogChatDTO.cs" />
+    <Compile Include="LogCommandsDTO.cs" />
     <Compile Include="RollGeneratedItemDTO.cs" />
     <Compile Include="CardDTO.cs" />
-    <Compile Include="CellonOptionDTO.cs" />
+    <Compile Include="EquipmentOptionDTO.cs" />
     <Compile Include="CharacterRelationDTO.cs" />
     <Compile Include="ComboDTO.cs" />
     <Compile Include="DropDTO.cs" />

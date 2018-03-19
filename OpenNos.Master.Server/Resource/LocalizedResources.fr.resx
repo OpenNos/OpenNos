@@ -133,7 +133,7 @@
     <value>La configuration a été chargée.</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
-    <value>Connection {0} Connecté -- Session : {1}</value>
+    <value>Connexion {0} Connecté -- Session : {1}</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>La base de données a été initialisée !</value>
@@ -160,7 +160,7 @@
     <value>Échec de l'envoi de paquets {0} au client {1}, {2}.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Le serveur à démarré sans problèmes !</value>
+    <value>MasterServer à démarré sans problèmes !</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Le message est trop grand ({0} bytes). La longueur maximum permise est {1} bytes</value>
@@ -178,8 +178,9 @@
     <value>Erreur : Votre identifiant ou mot de passe est incorrect. La saisie répétée de données incorrectes entrainera un blocage temporaire de votre compte.                                                                                                                                                                               </value>
   </data>
   <data name="MAINTENANCE" xml:space="preserve">
+    <value>Maintenance en cours.                                                                                                                                                              </value>
   </data>
   <data name="CONNECTION_CLOSED" xml:space="preserve">
-    <value>Connection closed.</value>
+    <value>Connexion fermée.</value>
   </data>
 </root>

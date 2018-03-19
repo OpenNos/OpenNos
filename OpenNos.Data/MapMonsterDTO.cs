@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class MapMonsterDTO : MappingBaseDTO
@@ -22,6 +24,7 @@ namespace OpenNos.Data
 
         public bool IsMoving { get; set; }
 
+        [Key]
         public short MapId { get; set; }
 
         public int MapMonsterId { get; set; }

@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class RecipeDTO : MappingBaseDTO
@@ -24,6 +26,7 @@ namespace OpenNos.Data
 
         public int MapNpcId { get; set; }
 
+        [Key]
         public short RecipeId { get; set; }
 
         #endregion

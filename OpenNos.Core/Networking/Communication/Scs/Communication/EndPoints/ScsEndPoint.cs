@@ -41,22 +41,22 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints
             }
 
             // If not protocol specified, assume TCP.
-            var endPointAddr = endPointAddress;
+            string endPointAddr = endPointAddress;
             if (!endPointAddr.Contains("://"))
             {
                 endPointAddr = "tcp://" + endPointAddr;
             }
 
             // Split protocol and address parts
-            var splittedEndPoint = endPointAddr.Split(new[] { "://" }, StringSplitOptions.RemoveEmptyEntries);
+            string[] splittedEndPoint = endPointAddr.Split(new[] { "://" }, StringSplitOptions.RemoveEmptyEntries);
             if (splittedEndPoint.Length != 2)
             {
                 throw new ApplicationException(endPointAddress + " is not a valid endpoint address.");
             }
 
             // Split end point, find protocol and address
-            var protocol = splittedEndPoint[0].Trim().ToLower();
-            var address = splittedEndPoint[1].Trim();
+            string protocol = splittedEndPoint[0].Trim().ToLower();
+            string address = splittedEndPoint[1].Trim();
             switch (protocol)
             {
                 case "tcp":

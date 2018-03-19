@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.Data
 {
@@ -15,6 +16,7 @@ namespace OpenNos.Data
 
         #region Properties
 
+        [Key]
         public Guid Id { get; set; }
 
         #endregion

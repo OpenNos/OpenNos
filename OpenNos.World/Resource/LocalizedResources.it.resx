@@ -1437,4 +1437,43 @@
   <data name="GOLD_TS_END" xml:space="preserve">
     <value>Sei stato ricompensato per aver portato a termine una missione. Hai ricevuto: [{0} Oro]. E' possibile che riceva meno esperienza e oro perchè il tuo livello è troppo alto.</value>
   </data>
+  <data name="ADD_OPTION_ON_STUFF" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ADD_OPTION_ON_STUFF_NOT_EMPTY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NEED_PARFUM_TO_CHANGE_SHELL" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_BROKEN" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_ERASED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_FOR_ARMOR_ONLY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_FOR_WEAPON_ONLY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_LEVEL_TOO_HIGH" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_MUST_BE_IDENTIFIED" xml:space="preserve">
+    <value>La rune doit être identifiée pour pouvoir être utilisable.</value>
+  </data>
+  <data name="SHELL_OPTION_SET" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SHELL_RARITY_TOO_HIGH" xml:space="preserve">
+    <value />
+  </data>
+  <data name="INSTANTBATTLE_NOT_ENOUGH_PLAYERS" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DIGNITY_RESTORED" xml:space="preserve">
+    <value />
+  </data>
 </root>

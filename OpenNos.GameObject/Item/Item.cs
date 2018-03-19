@@ -23,11 +23,11 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public Item()
+        protected Item()
         {
         }
 
-        public Item(ItemDTO item)
+        protected Item(ItemDTO item)
         {
             InitializeItem(item);
         }
@@ -72,15 +72,15 @@ namespace OpenNos.GameObject
             HitRate = item.HitRate;
             Hp = item.Hp;
             HpRegeneration = item.HpRegeneration;
-            IsBlocked = item.IsBlocked;
+            IsMinilandActionable = item.IsMinilandActionable;
             IsColored = item.IsColored;
             IsConsumable = item.IsConsumable;
             IsDroppable = item.IsDroppable;
             IsHeroic = item.IsHeroic;
-            IsMinilandObject = item.IsMinilandObject;
+            IsWarehouse = item.IsWarehouse;
             IsSoldable = item.IsSoldable;
             IsTradable = item.IsTradable;
-            IsHolder = item.IsHolder;
+            Flag9 = item.Flag9;
             ItemSubType = item.ItemSubType;
             ItemType = item.ItemType;
             ItemValidTime = item.ItemValidTime;
@@ -115,12 +115,12 @@ namespace OpenNos.GameObject
             WaterElement = item.WaterElement;
             WaterResistance = item.WaterResistance;
             BCards = new List<BCard>();
-            DAOFactory.BCardDAO.LoadByItemVNum(item.VNum).ToList().ForEach(o => BCards.Add((BCard)o));
-            RollGeneratedItems = DAOFactory.RollGeneratedItemDAO.LoadByItemVNum(item.VNum).ToList();
+            DAOFactory.BCardDAO.Where(s=>s.ItemVNum == item.VNum).ToList().ForEach(o => BCards.Add((BCard)o));
+            RollGeneratedItems = DAOFactory.RollGeneratedItemDAO.Where(s => s.OriginalItemVNum == item.VNum).ToList();
         }
 
         //TODO: Convert to PacketDefinition
-        public abstract void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null);
+        public abstract void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null);
 
         #endregion
     }

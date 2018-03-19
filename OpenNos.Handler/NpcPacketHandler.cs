@@ -60,7 +60,6 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Logger.Debug(Session.Character.GenerateIdentity(), buyPacket.ToString());
 
             byte amount = buyPacket.Amount;
 
@@ -142,14 +141,14 @@ namespace OpenNos.Handler
                                     return;
                                 }
 
-                                if (Session.Character.Skills.GetAllItems().Any(s=>s.LastUse.AddMilliseconds(s.Skill.Cooldown *100) > DateTime.Now))
+                                if (Session.Character.Skills.Any(s=>s.Value.LastUse.AddMilliseconds(s.Value.Skill.Cooldown *100) > DateTime.Now))
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_NEED_COOLDOWN"), 0));
                                     return;
                                 }
 
                                 Skill skillinfo = ServerManager.Instance.GetSkill(buyPacket.Slot);
-                                if (Session.Character.Skills.GetAllItems().Any(s => s.SkillVNum == buyPacket.Slot) || skillinfo == null)
+                                if (Session.Character.Skills.Any(s => s.Value.SkillVNum == buyPacket.Slot) || skillinfo == null)
                                 {
                                     return;
                                 }
@@ -202,11 +201,11 @@ namespace OpenNos.Handler
                                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                                             return;
                                         }
-                                        foreach (CharacterSkill skill in Session.Character.Skills.GetAllItems())
+                                        foreach (CharacterSkill skill in Session.Character.Skills.Select(s=>s.Value))
                                         {
                                             if (skillinfo.CastId == skill.Skill.CastId && skill.Skill.SkillVNum < 200)
                                             {
-                                                Session.Character.Skills.Remove(skill.SkillVNum);
+                                                Session.Character.Skills.TryRemove(skill.SkillVNum, out CharacterSkill value);
                                             }
                                         }
                                     }
@@ -224,10 +223,10 @@ namespace OpenNos.Handler
                                         }
                                         if (skillinfo.UpgradeSkill != 0)
                                         {
-                                            CharacterSkill oldupgrade = Session.Character.Skills.GetAllItems().FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
+                                            CharacterSkill oldupgrade = Session.Character.Skills.FirstOrDefault(s => s.Value.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Value.Skill.UpgradeType == skillinfo.UpgradeType && s.Value.Skill.UpgradeSkill != 0).Value;
                                             if (oldupgrade != null)
                                             {
-                                                Session.Character.Skills.Remove(oldupgrade.SkillVNum);
+                                                Session.Character.Skills.TryRemove(oldupgrade.SkillVNum, out CharacterSkill value);
                                             }
                                         }
                                     }
@@ -345,147 +344,149 @@ namespace OpenNos.Handler
         [Packet("m_shop")]
         public void CreateShop(string packet)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             InventoryType[] type = new InventoryType[20];
             long[] gold = new long[20];
             short[] slot = new short[20];
             byte[] qty = new byte[20];
             string shopname = string.Empty;
-            if (packetsplit.Length > 2)
+            if (packetsplit.Length <= 2)
             {
-                if (!short.TryParse(packetsplit[2], out short typePacket))
+                return;
+            }
+            if (!short.TryParse(packetsplit[2], out short typePacket))
+            {
+                return;
+            }
+            if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMapInstance || Session.Character.IsExchanging || Session.Character.ExchangeInfo != null)
+            {
+                return;
+            }
+            if (Session.CurrentMapInstance.Portals.Any(por => Session.Character.PositionX < por.SourceX + 6 && Session.Character.PositionX > por.SourceX - 6 && Session.Character.PositionY < por.SourceY + 6 && Session.Character.PositionY > por.SourceY - 6))
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"), 0));
+                return;
+            }
+            if (Session.Character.Group != null && Session.Character.Group?.GroupType != GroupType.Group)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NOT_ALLOWED_IN_RAID"), 0));
+                return;
+            }
+            if (!Session.CurrentMapInstance.ShopAllowed)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NOT_ALLOWED"), 0));
+                return;
+            }
+            if (typePacket == 2)
+            {
+                Session.SendPacket("ishop");
+            }
+            else if (typePacket == 0)
+            {
+                if (Session.CurrentMapInstance.UserShops.Count(s => s.Value.OwnerId == Session.Character.CharacterId) != 0)
                 {
                     return;
                 }
-                if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMapInstance || Session.Character.IsExchanging || Session.Character.ExchangeInfo != null)
-                {
-                    return;
-                }
-                if (Session.CurrentMapInstance.Portals.Any(por => Session.Character.PositionX < por.SourceX + 6 && Session.Character.PositionX > por.SourceX - 6 && Session.Character.PositionY < por.SourceY + 6 && Session.Character.PositionY > por.SourceY - 6))
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"), 0));
-                    return;
-                }
-                if (Session.Character.Group != null && Session.Character.Group?.GroupType != GroupType.Group)
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NOT_ALLOWED_IN_RAID"), 0));
-                    return;
-                }
-                if (!Session.CurrentMapInstance.ShopAllowed)
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NOT_ALLOWED"), 0));
-                    return;
-                }
-                if (typePacket == 2)
-                {
-                    Session.SendPacket("ishop");
-                }
-                else if (typePacket == 0)
-                {
-                    if (Session.CurrentMapInstance.UserShops.Count(s => s.Value.OwnerId == Session.Character.CharacterId) != 0)
-                    {
-                        return;
-                    }
-                    MapShop myShop = new MapShop();
+                MapShop myShop = new MapShop();
 
-                    if (packetsplit.Length > 82)
-                    {
-                        short shopSlot = 0;
+                if (packetsplit.Length > 82)
+                {
+                    short shopSlot = 0;
 
-                        for (short j = 3, i = 0; j < 82; j += 4, i++)
+                    for (short j = 3, i = 0; j < 82; j += 4, i++)
+                    {
+                        Enum.TryParse(packetsplit[j], out type[i]);
+                        short.TryParse(packetsplit[j + 1], out slot[i]);
+                        byte.TryParse(packetsplit[j + 2], out qty[i]);
+
+                        long.TryParse(packetsplit[j + 3], out gold[i]);
+                        if (gold[i] < 0)
                         {
-                            Enum.TryParse(packetsplit[j], out type[i]);
-                            short.TryParse(packetsplit[j + 1], out slot[i]);
-                            byte.TryParse(packetsplit[j + 2], out qty[i]);
-
-                            long.TryParse(packetsplit[j + 3], out gold[i]);
-                            if (gold[i] < 0)
-                            {
-                                return;
-                            }
-                            if (qty[i] > 0)
-                            {
-                                ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot[i], type[i]);
-                                if (inv != null)
-                                {
-                                    if (inv.Amount < qty[i])
-                                    {
-                                        return;
-                                    }
-                                    if (!inv.Item.IsTradable || inv.IsBound)
-                                    {
-                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
-                                        Session.SendPacket("shop_end 0");
-                                        return;
-                                    }
-
-                                    PersonalShopItem personalshopitem = new PersonalShopItem
-                                    {
-                                        ShopSlot = shopSlot,
-                                        Price = gold[i],
-                                        ItemInstance = inv,
-                                        SellAmount = qty[i]
-                                    };
-                                    myShop.Items.Add(personalshopitem);
-                                    shopSlot++;
-                                }
-                            }
+                            return;
                         }
-                    }
-                    if (myShop.Items.Count != 0)
-                    {
-                        if (!myShop.Items.Any(s => !s.ItemInstance.Item.IsSoldable || s.ItemInstance.IsBound))
+                        if (qty[i] <= 0)
                         {
-                            for (int i = 83; i < packetsplit.Length; i++)
-                            {
-                                shopname += $"{packetsplit[i]} ";
-                            }
-
-                            // trim shopname
-                            shopname = shopname.TrimEnd(' ');
-
-                            // create default shopname if it's empty
-                            if (string.IsNullOrWhiteSpace(shopname) || string.IsNullOrEmpty(shopname))
-                            {
-                                shopname = Language.Instance.GetMessageFromKey("SHOP_PRIVATE_SHOP");
-                            }
-
-                            // truncate the string to a max-length of 20
-                            shopname = shopname.Truncate(20);
-                            myShop.OwnerId = Session.Character.CharacterId;
-                            myShop.Name = shopname;
-                            Session.CurrentMapInstance.UserShops.Add(Session.CurrentMapInstance.LastUserShopId++, myShop);
-
-                            Session.Character.HasShopOpened = true;
-
-                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMapInstance.LastUserShopId), ReceiverType.AllExceptMe);
-                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateShop(shopname));
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
-
-                            Session.Character.IsSitting = true;
-                            Session.Character.IsShopping = true;
-
-                            Session.Character.LoadSpeed();
-                            Session.SendPacket(Session.Character.GenerateCond());
-                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRest());
+                            continue;
                         }
-                        else
+                        ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot[i], type[i]);
+                        if (inv == null)
                         {
+                            continue;
+                        }
+                        if (inv.Amount < qty[i])
+                        {
+                            return;
+                        }
+                        if (!inv.Item.IsTradable || inv.IsBound)
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 10));
                             Session.SendPacket("shop_end 0");
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"), 10));
+                            return;
                         }
+
+                        PersonalShopItem personalshopitem = new PersonalShopItem
+                        {
+                            ShopSlot = shopSlot,
+                            Price = gold[i],
+                            ItemInstance = inv,
+                            SellAmount = qty[i]
+                        };
+                        myShop.Items.Add(personalshopitem);
+                        shopSlot++;
+                    }
+                }
+                if (myShop.Items.Count != 0)
+                {
+                    if (!myShop.Items.Any(s => !s.ItemInstance.Item.IsSoldable || s.ItemInstance.IsBound))
+                    {
+                        for (int i = 83; i < packetsplit.Length; i++)
+                        {
+                            shopname += $"{packetsplit[i]} ";
+                        }
+
+                        // trim shopname
+                        shopname = shopname.TrimEnd(' ');
+
+                        // create default shopname if it's empty
+                        if (string.IsNullOrWhiteSpace(shopname) || string.IsNullOrEmpty(shopname))
+                        {
+                            shopname = Language.Instance.GetMessageFromKey("SHOP_PRIVATE_SHOP");
+                        }
+
+                        // truncate the string to a max-length of 20
+                        shopname = shopname.Truncate(20);
+                        myShop.OwnerId = Session.Character.CharacterId;
+                        myShop.Name = shopname;
+                        Session.CurrentMapInstance.UserShops.Add(Session.CurrentMapInstance.LastUserShopId++, myShop);
+
+                        Session.Character.HasShopOpened = true;
+
+                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMapInstance.LastUserShopId), ReceiverType.AllExceptMe);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateShop(shopname));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
+
+                        Session.Character.IsSitting = true;
+                        Session.Character.IsShopping = true;
+
+                        Session.Character.LoadSpeed();
+                        Session.SendPacket(Session.Character.GenerateCond());
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRest());
                     }
                     else
                     {
                         Session.SendPacket("shop_end 0");
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_EMPTY"), 10));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"), 10));
                     }
                 }
-                else if (typePacket == 1)
+                else
                 {
-                    Session.Character.CloseShop();
+                    Session.SendPacket("shop_end 0");
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_EMPTY"), 10));
                 }
+            }
+            else if (typePacket == 1)
+            {
+                Session.Character.CloseShop();
             }
         }
 
@@ -495,7 +496,6 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void NpcRunFunction(NRunPacket packet)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet.ToString());
             Session.Character.LastNRunId = packet.NpcId;
             if (Session.Character.Hp > 0)
             {
@@ -509,91 +509,95 @@ namespace OpenNos.Handler
         /// <param name="pdtsePacket"></param>
         public void Pdtse(PdtsePacket pdtsePacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), pdtsePacket.ToString());
             if (!Session.HasCurrentMapInstance)
             {
                 return;
             }
-            short VNum = pdtsePacket.VNum;
+            short vNum = pdtsePacket.VNum;
             if (pdtsePacket.Type == 1)
             {
                 MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-                if (npc != null)
+                if (npc == null)
                 {
-                    int distance = Map.GetDistance(new MapCell
-                    {
-                        X = Session.Character.PositionX,
-                        Y = Session.Character.PositionY
-                    }, new MapCell
-                    {
-                        X = npc.MapX,
-                        Y = npc.MapY
-                    });
-                    if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
-                    {
-                        Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
-                        if (rec != null && rec.Amount > 0)
-                        {
-                            string rece = $"m_list 3 {rec.Amount}";
-                            foreach (RecipeItemDTO ite in rec.Items)
-                            {
-                                if (ite.Amount > 0) rece = rece + $" {ite.ItemVNum} {ite.Amount}";
-                            }
-                            rece += " -1";
-                            Session.SendPacket(rece);
-                        }
-                    }
+                    return;
                 }
+                int distance = Map.GetDistance(new MapCell
+                {
+                    X = Session.Character.PositionX,
+                    Y = Session.Character.PositionY
+                }, new MapCell
+                {
+                    X = npc.MapX,
+                    Y = npc.MapY
+                });
+                if (npc.MapInstance != Session.CurrentMapInstance || distance > 5)
+                {
+                    return;
+                }
+                Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == vNum);
+                if (rec == null || rec.Amount <= 0)
+                {
+                    return;
+                }
+                string rece = $"m_list 3 {rec.Amount}";
+                rece = rec.Items.Where(ite => ite.Amount > 0).Aggregate(rece, (current, ite) => current + $" {ite.ItemVNum} {ite.Amount}");
+                rece += " -1";
+                Session.SendPacket(rece);
             }
             else
             {
                 MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-                if (npc != null)
+                if (npc == null)
                 {
-                    int distance = Map.GetDistance(new MapCell
-                    {
-                        X = Session.Character.PositionX,
-                        Y = Session.Character.PositionY
-                    }, new MapCell
-                    {
-                        X = npc.MapX,
-                        Y = npc.MapY
-                    });
-                    if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
-                    {
-                        Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
-                        if (rec != null)
-                        {
-                            if (rec.Amount <= 0)
-                            {
-                                return;
-                            }
-                            if (rec.Items.Any(ite => Session.Character.Inventory.CountItem(ite.ItemVNum) < ite.Amount))
-                            {
-                                return;
-                            }
+                    return;
+                }
+                int distance = Map.GetDistance(new MapCell
+                {
+                    X = Session.Character.PositionX,
+                    Y = Session.Character.PositionY
+                }, new MapCell
+                {
+                    X = npc.MapX,
+                    Y = npc.MapY
+                });
+                if (npc.MapInstance != Session.CurrentMapInstance || distance > 5)
+                {
+                    return;
+                }
+                Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == vNum);
+                if (rec == null)
+                {
+                    return;
+                }
+                if (rec.Amount <= 0)
+                {
+                    return;
+                }
+                if (rec.Items.Any(ite => Session.Character.Inventory.CountItem(ite.ItemVNum) < ite.Amount))
+                {
+                    return;
+                }
 
-                            ItemInstance inv = Session.Character.Inventory.AddNewToInventory(rec.ItemVNum, rec.Amount).FirstOrDefault();
-                            if (inv != null)
-                            {
-                                if (inv.GetType() == typeof(WearableInstance))
-                                {
-                                    if (inv is WearableInstance item && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
-                                    {
-                                        item.SetRarityPoint();
-                                    }
-                                }
-                                foreach (RecipeItemDTO ite in rec.Items)
-                                {
-                                    Session.Character.Inventory.RemoveItemAmount(ite.ItemVNum, ite.Amount);
-                                }
-                                Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, Session.Character.CharacterId, 1324));
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
-                            }
-                        }
+                ItemInstance inv = Session.Character.Inventory.AddNewToInventory(rec.ItemVNum, rec.Amount).FirstOrDefault();
+                if (inv == null)
+                {
+                    return;
+                }
+                if (inv.GetType() == typeof(WearableInstance))
+                {
+                    if (inv is WearableInstance item && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon ||
+                                                         item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
+                    {
+                        item.SetRarityPoint();
                     }
                 }
+                foreach (RecipeItemDTO ite in rec.Items)
+                {
+                    Session.Character.Inventory.RemoveItemAmount(ite.ItemVNum, ite.Amount);
+                }
+                Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, Session.Character.CharacterId, 1324));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
             }
         }
 
@@ -606,33 +610,32 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.PacketEnd.Split(' ');
             for (int i = 0; i < packet.Amount * 3; i += 3)
             {
-                if (packetsplit.Count() >= packet.Amount * 3)
+                if (packetsplit.Length < packet.Amount * 3)
                 {
-                    int PetId = int.Parse(packetsplit[i]);
-                    short PositionX = short.Parse(packetsplit[i + 1]);
-                    short PositionY = short.Parse(packetsplit[i + 2]);
+                    continue;
+                }
+                if (!int.TryParse(packetsplit[i], out int petId))
+                {
+                    return;
+                }
+                if (!short.TryParse(packetsplit[i + 1], out short positionX))
+                {
+                    return;
+                }
+                if (!short.TryParse(packetsplit[i + 2], out short positionY))
+                {
+                    return;
+                }
 
-                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
-                    if (mate != null)
-                    {
-                        mate.PositionX = PositionX;
-                        mate.PositionY = PositionY;
-                        Session.CurrentMapInstance.Broadcast($"mv 2 {PetId} {PositionX} {PositionY} {mate.Monster.Speed}");
-                    }
-                }
-            }
-            /*
-            packet.Users.ForEach(u =>
-            {
-                Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId);
-                if (mate != null)
+                Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == petId);
+                if (mate == null)
                 {
-                    mate.PositionX = u.UserX;
-                    mate.PositionY = u.UserY;
-                    Session.CurrentMapInstance.Broadcast($"mv 2 {u.UserId} { u.UserX} { u.UserY} {mate.Monster.Speed}");
+                    continue;
                 }
-            });
-             */
+                mate.PositionX = positionX;
+                mate.PositionY = positionY;
+                Session.CurrentMapInstance.Broadcast($"mv 2 {petId} {positionX} {positionY} {mate.Monster.Speed}");
+            }
         }
 
         /// <summary>
@@ -658,7 +661,6 @@ namespace OpenNos.Handler
         /// <param name="sellPacket"></param>
         public void SellShop(SellPacket sellPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), sellPacket.ToString());
             if (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
             {
                 return;
@@ -677,7 +679,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                if (Session.Character.MinilandObjects.Any(s => s.ItemInstanceId == inv.Id))
+                if (Session.Character.MapInstance.MapDesignObjects.Any(s => s.ItemInstanceId == inv.Id))
                 {
                     return;
                 }
@@ -711,15 +713,15 @@ namespace OpenNos.Handler
                 Session.Character.Gold -= skill.Skill.Price;
                 Session.SendPacket(Session.Character.GenerateGold());
 
-                foreach (CharacterSkill loadedSkill in Session.Character.Skills.GetAllItems())
+                foreach (CharacterSkill loadedSkill in Session.Character.Skills.Select(s=>s.Value))
                 {
                     if (skill.Skill.SkillVNum == loadedSkill.Skill.UpgradeSkill)
                     {
-                        Session.Character.Skills.Remove(loadedSkill.SkillVNum);
+                        Session.Character.Skills.TryRemove(loadedSkill.SkillVNum, out CharacterSkill characterSkill);
                     }
                 }
 
-                Session.Character.Skills.Remove(skill.SkillVNum);
+                Session.Character.Skills.TryRemove(skill.SkillVNum, out CharacterSkill CharacterSkill);
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());
                 Session.SendPacket(Session.Character.GenerateLev());
@@ -732,14 +734,13 @@ namespace OpenNos.Handler
         /// <param name="shoppingPacket"></param>
         public void Shopping(ShoppingPacket shoppingPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), shoppingPacket.ToString());
             byte type = shoppingPacket.Type, typeshop = 0;
-            int NpcId = shoppingPacket.NpcId;
+            int npcId = shoppingPacket.NpcId;
             if (Session.Character.IsShopping || !Session.HasCurrentMapInstance)
             {
                 return;
             }
-            MapNpc mapnpc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(NpcId));
+            MapNpc mapnpc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(npcId));
             if (mapnpc?.Shop == null)
             {
                 return;
@@ -846,7 +847,6 @@ namespace OpenNos.Handler
         /// <param name="requestNpcPacket"></param>
         public void ShowShop(RequestNpcPacket requestNpcPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), requestNpcPacket.ToString());
             long owner = requestNpcPacket.Owner;
             if (!Session.HasCurrentMapInstance)
             {
@@ -933,7 +933,7 @@ namespace OpenNos.Handler
             else
             {
                 // remove equipment
-                shopOwnerSession.Character.Inventory.Remove(shopitem.ItemInstance.Id);
+                shopOwnerSession.Character.Inventory.TryRemove(shopitem.ItemInstance.Id, out ItemInstance value);
 
                 // send empty slot to owners inventory
                 shopOwnerSession.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(shopitem.ItemInstance.Type, shopitem.ItemInstance.Slot));

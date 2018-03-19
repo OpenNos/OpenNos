@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class MapNpcDTO : MappingBaseDTO
@@ -32,6 +34,7 @@ namespace OpenNos.Data
 
         public short MapId { get; set; }
 
+        [Key]
         public int MapNpcId { get; set; }
 
         public short MapX { get; set; }

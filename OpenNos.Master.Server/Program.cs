@@ -15,18 +15,42 @@
 using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using Hik.Communication.ScsServices.Service;
 using log4net;
+using Microsoft.Owin.Hosting;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
+using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Interface;
 using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net.Http;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
+using OpenNos.DAL.EF;
+using Account = OpenNos.GameObject.Account;
+using BoxInstance = OpenNos.GameObject.BoxInstance;
+using Character = OpenNos.GameObject.Character;
+using CharacterSkill = OpenNos.GameObject.CharacterSkill;
+using Family = OpenNos.GameObject.Family;
+using FamilyCharacter = OpenNos.GameObject.FamilyCharacter;
+using ItemInstance = OpenNos.GameObject.ItemInstance;
+using MapMonster = OpenNos.GameObject.MapMonster;
+using MapNpc = OpenNos.GameObject.MapNpc;
+using NpcMonster = OpenNos.GameObject.NpcMonster;
+using NpcMonsterSkill = OpenNos.GameObject.NpcMonsterSkill;
+using Portal = OpenNos.GameObject.Portal;
+using Recipe = OpenNos.GameObject.Recipe;
+using ScriptedInstance = OpenNos.GameObject.ScriptedInstance;
+using Shop = OpenNos.GameObject.Shop;
+using Skill = OpenNos.GameObject.Skill;
+using SpecialistInstance = OpenNos.GameObject.SpecialistInstance;
+using WearableInstance = OpenNos.GameObject.WearableInstance;
 
 namespace OpenNos.Master.Server
 {
@@ -75,14 +99,25 @@ namespace OpenNos.Master.Server
                     RegisterMappings();
 
                     // configure Services and Service Host
-                    IScsServiceApplication _server = ScsServiceBuilder.CreateService(new ScsTcpEndPoint(ipAddress, port));
+                    IScsServiceApplication server = ScsServiceBuilder.CreateService(new ScsTcpEndPoint(ipAddress, port));
+                    server.AddService<ICommunicationService, CommunicationService>(new CommunicationService());
+                    server.ClientConnected += OnClientConnected;
+                    server.ClientDisconnected += OnClientDisconnected;
+                    WebApp.Start<Startup>(url: ConfigurationManager.AppSettings["WebAppURL"]);
+                    server.Start();
 
-                    _server.AddService<ICommunicationService, CommunicationService>(new CommunicationService());
-                    _server.ClientConnected += OnClientConnected;
-                    _server.ClientDisconnected += OnClientDisconnected;
+                    // AUTO SESSION KICK
+                    Observable.Interval(TimeSpan.FromMinutes(3)).Subscribe(x =>
+                    {
+                        Parallel.ForEach(MSManager.Instance.ConnectedAccounts.Replace(s => s.LastPulse.AddMinutes(3) <= DateTime.Now), connection =>
+                        {
+                            CommunicationServiceClient.Instance.KickSession(connection.AccountId, null);
+                        });
+                    });
 
-                    _server.Start();
+                    CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
+                    Console.Title = $"MASTER SERVER - Channels :{MSManager.Instance.WorldServers.Count} - Players : {MSManager.Instance.ConnectedAccounts.Count}";
                 }
                 catch (Exception ex)
                 {
@@ -114,11 +149,12 @@ namespace OpenNos.Master.Server
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(BoxInstance));
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(SpecialistInstance));
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.IteminstanceDAO.InitializeMapper(typeof(ItemInstance));
+            DAOFactory.IteminstanceDAO.RegisterMapping(typeof(ItemInstance));
+            DAOFactory.IteminstanceDAO.RegisterMapping(typeof(ItemInstanceDTO)).InitializeMapper();
 
             // entities
             DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
-            DAOFactory.CellonOptionDAO.RegisterMapping(typeof(CellonOptionDTO)).InitializeMapper();
+            DAOFactory.EquipmentOptionDAO.RegisterMapping(typeof(EquipmentOptionDTO)).InitializeMapper();
             DAOFactory.CharacterDAO.RegisterMapping(typeof(Character)).InitializeMapper();
             DAOFactory.CharacterRelationDAO.RegisterMapping(typeof(CharacterRelationDTO)).InitializeMapper();
             DAOFactory.CharacterSkillDAO.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();
@@ -145,7 +181,7 @@ namespace OpenNos.Master.Server
             DAOFactory.RecipeDAO.RegisterMapping(typeof(Recipe)).InitializeMapper();
             DAOFactory.RecipeItemDAO.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();
             DAOFactory.MinilandObjectDAO.RegisterMapping(typeof(MinilandObjectDTO)).InitializeMapper();
-            DAOFactory.MinilandObjectDAO.RegisterMapping(typeof(MinilandObject)).InitializeMapper();
+            DAOFactory.MinilandObjectDAO.RegisterMapping(typeof(MapDesignObject)).InitializeMapper();
             DAOFactory.RespawnDAO.RegisterMapping(typeof(RespawnDTO)).InitializeMapper();
             DAOFactory.RespawnMapTypeDAO.RegisterMapping(typeof(RespawnMapTypeDTO)).InitializeMapper();
             DAOFactory.ShopDAO.RegisterMapping(typeof(Shop)).InitializeMapper();

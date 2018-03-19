@@ -76,7 +76,7 @@ namespace OpenNos.DAL.EF.Helpers
 
         public static bool Initialize()
         {
-            using (var context = CreateContext())
+            using (OpenNosContext context = CreateContext())
             {
                 try
                 {

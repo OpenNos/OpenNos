@@ -2,6 +2,7 @@
 using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
+using OpenNos.Data;
 
 namespace OpenNos.Master.Library.Interface
 {
@@ -119,7 +120,7 @@ namespace OpenNos.Master.Library.Interface
         /// </summary>
         /// <param name="accountId">Id of the Account to register</param>
         /// <param name="sessionId">Id of the Session to register</param>
-        void RegisterAccountLogin(long accountId, long sessionId);
+        void RegisterAccountLogin(long accountId, long sessionId, string accountName);
 
         /// <summary>
         /// Updates the Relations on the given WorldGroup
@@ -128,6 +129,8 @@ namespace OpenNos.Master.Library.Interface
         /// <param name="relationId">Id of the Relation that should be updated</param>
         void UpdateRelation(string worldGroup, long relationId);
 
+
+  
         /// <summary>
         /// Shutdown given WorldGroup or WorldServer
         /// </summary>
@@ -165,5 +168,21 @@ namespace OpenNos.Master.Library.Interface
         /// </summary>
         /// <param name="worldId">Id of the World to be unregistered</param>
         void UnregisterWorldServer(Guid worldId);
+
+
+        /*
+         * ACT 4
+         */
+        void RegisterInternalAccountLogin(long accountId, int sessionId);
+
+        bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId);
+
+        SerializableWorldServer GetPreviousChannelByAccountId(long accountId);
+
+        SerializableWorldServer GetAct4ChannelInfo(string worldGroup);
+
+        bool IsCrossServerLoginPermitted(long accountId, int sessionId);
+
+        void SendMail(string worldGroup, MailDTO mail);
     }
 }

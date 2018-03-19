@@ -13,37 +13,26 @@
  */
 
 using System.Collections.Generic;
+using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    public static class MappingHelper
+    public class MappingHelper : Singleton<MappingHelper>
     {
-        #region Instantiation
-
-        static MappingHelper()
-        {
-            // intialize hardcode in waiting for better solution
-            GuriItemEffects = new Dictionary<int, int>
-            {
-                {859, 1343},
-                {860, 1344},
-                {861, 1344},
-                {875, 1558},
-                {876, 1559},
-                {877, 1560},
-                {878, 1560},
-                {879, 1561},
-                {880, 1561}
-            };
-
-            // effect items aka. fireworks
-        }
-
-        #endregion
-
         #region Properties
 
-        public static Dictionary<int, int> GuriItemEffects { get; }
+        public Dictionary<int, int> GuriItemEffects = new Dictionary<int, int>
+        {
+            {859, 1343},
+            {860, 1344},
+            {861, 1344},
+            {875, 1558},
+            {876, 1559},
+            {877, 1560},
+            {878, 1560},
+            {879, 1561},
+            {880, 1561}
+        };
 
         #endregion
     }

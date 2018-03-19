@@ -130,7 +130,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                 }
 
                 // Wait for a message
-                var signalled = _receiveWaiter.Wait(timeout);
+                bool signalled = _receiveWaiter.Wait(timeout);
 
                 // If not signalled, throw exception
                 if (!signalled)
@@ -162,7 +162,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// <returns>Received message</returns>
         public TMessage ReceiveMessage<TMessage>(int timeout) where TMessage : IScsMessage
         {
-            var receivedMessage = ReceiveMessage(timeout);
+            IScsMessage receivedMessage = ReceiveMessage(timeout);
             if (!(receivedMessage is TMessage))
             {
                 throw new Exception("Unexpected message received." +

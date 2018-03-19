@@ -2,6 +2,7 @@
 using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
 using System.Threading.Tasks;
+using OpenNos.Data;
 
 namespace OpenNos.Master.Library.Client
 {
@@ -22,6 +23,11 @@ namespace OpenNos.Master.Library.Client
         public void KickSession(long? accountId, long? sessionId)
         {
             Task.Run(() => CommunicationServiceClient.Instance.OnKickSession(accountId, sessionId));
+        }
+
+        public void SendMail(MailDTO mail)
+        {
+            Task.Run(() => CommunicationServiceClient.Instance.OnSendMail(mail));
         }
 
         public void SendMessageToCharacter(SCSCharacterMessage message)
@@ -54,6 +60,7 @@ namespace OpenNos.Master.Library.Client
             Task.Run(() => CommunicationServiceClient.Instance.OnUpdateRelation(relationId));
         }
 
+      
         #endregion
     }
 }

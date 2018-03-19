@@ -16,7 +16,7 @@ namespace OpenNos.Domain
 {
     public enum MateType : byte
     {
-        Pet = 0,
-        Partner = 1
+        Partner = 0,
+        Pet = 1
     }
 }

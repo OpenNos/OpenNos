@@ -25,10 +25,6 @@ namespace OpenNos.DAL.EF
 
         public byte? Cellon { get; set; }
 
-        public virtual ICollection<CellonOption> CellonOption { get; set; }
-
-        public Guid? CellonOptionId { get; set; }
-
         public short? CloseDefence { get; set; }
 
         public short? Concentrate { get; set; }
@@ -76,6 +72,8 @@ namespace OpenNos.DAL.EF
         public short? MaxElementRate { get; set; }
 
         public short? MP { get; set; }
+
+        public byte? ShellRarity { get; set; }
 
         public byte? WaterElement { get; set; }
 

@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class ShopSkillDTO : MappingBaseDTO
@@ -20,6 +22,7 @@ namespace OpenNos.Data
 
         public int ShopId { get; set; }
 
+        [Key]
         public int ShopSkillId { get; set; }
 
         public short SkillVNum { get; set; }

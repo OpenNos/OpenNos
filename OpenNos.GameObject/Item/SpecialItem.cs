@@ -18,7 +18,12 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using OpenNos.DAL;
+using OpenNos.DAL.EF;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 
 namespace OpenNos.GameObject
 {
@@ -34,12 +39,121 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
         {
             inv.Item.BCards.ForEach(c => c.ApplyBCards(session.Character));
-
+            
             switch (Effect)
             {
+                case 0:
+                    switch (VNum)
+                    {
+                        case 1428:
+                            session.SendPacket("guri 18 1");
+                            break;
+                        case 1429:
+                            session.SendPacket("guri 18 0");
+                            break;
+                        case 1430:
+                            if (packetsplit == null)
+                            {
+                                return;
+                            }
+
+                            if (packetsplit.Length < 9)
+                            {
+                                // MODIFIED PACKET
+                                return;
+                            }
+
+                            if (!short.TryParse(packetsplit[9], out short eqSlot) || !Enum.TryParse(packetsplit[8], out InventoryType eqType))
+                            {
+                                return;
+                            }
+                            WearableInstance eq = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
+                            if (eq == null)
+                            {
+                                // PACKET MODIFIED
+                                return;
+                            }
+                            if (eq.Item.ItemType != ItemType.Armor && eq.Item.ItemType != ItemType.Weapon)
+                            {
+                                return;
+                            }
+                            eq.EquipmentOptions.Clear();
+                            eq.ShellRarity = null;
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_ERASED"), 0));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId));
+                            break;
+                        case 1904:
+                            short[] items = {1894, 1895, 1896, 1897, 1898, 1899, 1900, 1901, 1902, 1903, 1972, 1973};
+                            for (int i = 0; i < 5; i++)
+                            {
+                                session.Character.GiftAdd(items[ServerManager.Instance.RandomNumber(0, items.Length)], 1);
+                            }
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                            break;
+                        case 5916:
+                            session.Character.AddStaticBuff(new StaticBuffDTO
+                            {
+                                CardId = 340,
+                                CharacterId = session.Character.CharacterId,
+                                RemainingTime = 7200
+                            });
+                            session.Character.RemoveBuff(339);
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                            break;
+                        case 5929:
+                            session.Character.AddStaticBuff(new StaticBuffDTO
+                            {
+                                CardId = 340,
+                                CharacterId = session.Character.CharacterId,
+                                RemainingTime = 600
+                            });
+                            session.Character.RemoveBuff(339);
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                            break;
+                        default:
+                            IEnumerable<RollGeneratedItemDTO> roll = DAOFactory.RollGeneratedItemDAO.Where(s=>s.OriginalItemVNum == VNum);
+                            IEnumerable<RollGeneratedItemDTO> rollGeneratedItemDtos = roll as IList<RollGeneratedItemDTO> ?? roll.ToList();
+                            if (!rollGeneratedItemDtos.Any())
+                            {
+                                return;
+                            }
+                            int probabilities = rollGeneratedItemDtos.Sum(s => s.Probability);
+                            int rnd = ServerManager.Instance.RandomNumber(0, probabilities);
+                            int currentrnd = 0;
+                            foreach (RollGeneratedItemDTO rollitem in rollGeneratedItemDtos)
+                            {
+                                if (rollitem.Probability == 10000)
+                                {
+                                    session.Character.GiftAdd(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
+                                    continue;
+                                }
+                                currentrnd += rollitem.Probability;
+                                if (currentrnd < rnd)
+                                {
+                                    continue;
+                                }
+                                if (rollitem.IsSuperReward)
+                                {
+                                    CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
+                                    {
+                                        DestinationCharacterId = null,
+                                        SourceCharacterId = session.Character.CharacterId,
+                                        SourceWorldId = ServerManager.Instance.WorldId,
+                                        Message = Language.Instance.GetMessageFromKey("SUPER_REWARD"),
+                                        Type = MessageType.Shout
+                                    });
+                                }
+                                session.Character.GiftAdd(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, 0, rollitem.ItemGeneratedUpgrade);
+                                break;
+                            }
+                            session.Character.Inventory.RemoveItemAmount(VNum);
+                            break;
+                    }
+                    break;
                 // sp point potions
                 case 150:
                 case 151:
@@ -69,6 +183,28 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateSpPoint());
                     break;
 
+                case 250:
+                    if (session.Character.Buff.Any(s => s.Card.CardId == 131))
+                    {
+                        //TODO ADD MESSAGE ALREADY GOT BUFF
+                        return;
+                    }
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    session.Character.AddStaticBuff(new StaticBuffDTO { CardId = 131 });
+                    session.CurrentMapInstance.Broadcast(session.Character.GeneratePairy());
+                    session.SendPacket(session.Character.GeneratePairy());
+                    break;
+
+                case 208:
+                    if (session.Character.Buff.Any(s => s.Card.CardId == 121))
+                    {
+                        //TODO ADD MESSAGE ALREADY GOT BUFF
+                        return;
+                    }
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    session.Character.AddStaticBuff(new StaticBuffDTO {CardId = 121, CharacterId = session.Character.CharacterId, RemainingTime = 3600});
+                    break;
+
                 case 301:
                     if (ServerManager.Instance.IsCharacterMemberOfGroup(session.Character.CharacterId))
                     {
@@ -76,11 +212,11 @@ namespace OpenNos.GameObject
                         return;
                     }
                     ItemInstance raidSeal = session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
-                    session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
 
-                    ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj => obj.VNum == raidSeal.ItemVNum)).GetClone();
+                    ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj => obj.VNum == raidSeal.ItemVNum))?.GetClone();
                     if (raid != null)
                     {
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
                         Group group = new Group(GroupType.Team);
                         group.Raid = raid;
                         group.JoinGroup(session.Character.CharacterId);
@@ -99,6 +235,10 @@ namespace OpenNos.GameObject
                     break;
 
                 case 305:
+                    if (packetsplit == null || packetsplit.Length < 3)
+                    {
+                        return;
+                    }
                     Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == int.Parse(packetsplit[3]));
                     if (mate != null && EffectValue == mate.NpcMonsterVNum && mate.Skin == 0)
                     {
@@ -112,42 +252,69 @@ namespace OpenNos.GameObject
                 case 6600:
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
-
-                case 208:
-                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                    session.Character.AddStaticBuff(new StaticBuffDTO() { CardId = 121 });
-                    break;
                 // Divorce letter
                 case 6969: // this is imaginary number I = √(-1)
+                    CharacterRelationDTO rel = session.Character.CharacterRelations.FirstOrDefault(s => s.RelationType == CharacterRelationType.Spouse);
+                    if (rel != null)
+                    {
+                        session.Character.DeleteRelation(rel.CharacterId == session.Character.CharacterId ? rel.RelatedCharacterId : rel.CharacterId);
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("DIVORCED")));
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    }
                     break;
 
                 // Cupid's arrow
                 case 34: // this is imaginary number I = √(-1)
+                    if (packetsplit != null && packetsplit.Length > 3)
+                    {
+                        if (long.TryParse(packetsplit[3], out long characterId))
+                        {
+                            if (session.Character.CharacterRelations.Any(s => s.RelationType == CharacterRelationType.Spouse))
+                            {
+                                session.SendPacket($"info {Language.Instance.GetMessageFromKey("ALREADY_MARRIED")}");
+                                return;
+                            }
+                            if (session.Character.IsFriendOfCharacter(characterId))
+                            {
+                                ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
+                                if (otherSession != null)
+                                {
+                                    otherSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(
+                                        $"#fins^-34^{session.Character.CharacterId} #fins^-69^{session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("MARRY_REQUEST"), session.Character.Name)}"));
+                                    session.Character.FriendRequestCharacters.Add(characterId);
+                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+
+                                }
+                            }
+                            else
+                            {
+                                session.SendPacket($"info {Language.Instance.GetMessageFromKey("NOT_FRIEND")}");
+                            }
+                        }
+                    }
                     break;
 
                 case 570:
-                    if (session.Character.Faction == EffectValue)
+                    if (session.Character.Faction == (FactionType)EffectValue)
                     {
                         return;
                     }
                     session.SendPacket(session.Character.Family == null
                         ? $"qna #guri^750^{EffectValue} {Language.Instance.GetMessageFromKey($"ASK_CHANGE_FACTION{EffectValue}")}"
-                        : UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("IN_FAMILY"),
-                            0));
+                        : UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("IN_FAMILY"), 0));
                     break;
 
                 // wings
                 case 650:
-                    SpecialistInstance specialistInstance = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-                    if (session.Character.UseSp && specialistInstance != null)
+                    if (session.Character.UseSp && session.Character.SpInstance != null)
                     {
-                        if (Option == 0)
+                        if (option == 0)
                         {
-                            session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
+                            session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte) inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
                         }
                         else
                         {
-                            specialistInstance.Design = (byte)EffectValue;
+                            session.Character.SpInstance.Design = (byte) EffectValue;
                             session.Character.MorphUpgrade2 = EffectValue;
                             session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
                             session.SendPacket(session.Character.GenerateStat());
@@ -157,8 +324,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        session.SendPacket(
-                            UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                     }
                     break;
 
@@ -166,7 +332,7 @@ namespace OpenNos.GameObject
                 case 203:
                     if (!session.Character.IsVehicled)
                     {
-                        if (Option == 0)
+                        if (option == 0)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 2, session.Character.CharacterId, 1));
                         }
@@ -175,9 +341,9 @@ namespace OpenNos.GameObject
 
                 // magic lamps
                 case 651:
-                    if (session.Character.Inventory.GetAllItems().All(i => i.Type != InventoryType.Wear))
+                    if (session.Character.Inventory.All(i => i.Value.Type != InventoryType.Wear))
                     {
-                        if (Option == 0)
+                        if (option == 0)
                         {
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
                         }
@@ -195,9 +361,13 @@ namespace OpenNos.GameObject
 
                 // vehicles
                 case 1000:
+                    if (session.Character.HasShopOpened)
+                    {
+                        return;
+                    }
                     if (Morph > 0)
                     {
-                        if (Option == 0 && !session.Character.IsVehicled)
+                        if (option == 0 && !session.Character.IsVehicled)
                         {
                             if (session.Character.IsSitting)
                             {
@@ -209,7 +379,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            if (!session.Character.IsVehicled && Option != 0)
+                            if (!session.Character.IsVehicled && option != 0)
                             {
                                 DateTime delay = DateTime.Now.AddSeconds(-4);
                                 if (session.Character.LastDelay > delay && session.Character.LastDelay < delay.AddSeconds(2))
@@ -220,6 +390,7 @@ namespace OpenNos.GameObject
                                     session.Character.MorphUpgrade = 0;
                                     session.Character.MorphUpgrade2 = 0;
                                     session.Character.Morph = Morph + (byte)session.Character.Gender;
+                                    session.Character.Mates?.ForEach(x => session.CurrentMapInstance?.Broadcast(x.GenerateOut()));
                                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(196), session.Character.MapX, session.Character.MapY);
                                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
                                     session.SendPacket(session.Character.GenerateCond());
@@ -228,6 +399,12 @@ namespace OpenNos.GameObject
                             }
                             else if (session.Character.IsVehicled)
                             {
+                                session.Character.Mates?.ForEach(x =>
+                                {
+                                    x.PositionX = session.Character.PositionX;
+                                    x.PositionY = session.Character.PositionY;
+                                    session.CurrentMapInstance?.Broadcast(x.GenerateIn());
+                                });
                                 session.Character.RemoveVehicle();
                             }
                         }
@@ -235,6 +412,8 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1002:
+                    // TODO REVIEW THIS
+                    /*
                     if (EffectValue == 69)
                     {
                         int rnd = ServerManager.Instance.RandomNumber(0, 1000);
@@ -245,14 +424,14 @@ namespace OpenNos.GameObject
                                 5560, 5591, 4099, 907, 1160, 4705, 4706, 4707, 4708, 4709, 4710, 4711, 4712, 4713, 4714,
                                 4715, 4716
                             };
-                            byte[] counts = { 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+                            byte[] counts = {1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                             int item = ServerManager.Instance.RandomNumber(0, 17);
 
                             session.Character.GiftAdd(vnums[item], counts[item]);
                         }
                         else if (rnd < 30)
                         {
-                            short[] vnums = { 361, 362, 363, 366, 367, 368, 371, 372, 373 };
+                            short[] vnums = {361, 362, 363, 366, 367, 368, 371, 372, 373};
                             session.Character.GiftAdd(vnums[ServerManager.Instance.RandomNumber(0, 9)], 1);
                         }
                         else
@@ -273,48 +452,54 @@ namespace OpenNos.GameObject
                         }
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
-                    else
+                    */
+                    if (session.HasCurrentMapInstance)
                     {
-                        if (session.HasCurrentMapInstance)
+                        if (session.CurrentMapInstance.Map.MapTypes.All(m => m.MapTypeId != (short) MapTypeEnum.Act4))
                         {
-                            if (session.CurrentMapInstance.Map.MapTypes.All(m => m.MapTypeId != (short)MapTypeEnum.Act4))
+                            short[] vnums =
                             {
-                                short[] vnums =
-                                {
-                                    1386, 1387, 1388, 1389, 1390, 1391, 1392, 1393, 1394, 1395, 1396, 1397, 1398, 1399,
-                                    1400, 1401, 1402, 1403, 1404, 1405
-                                };
-                                short vnum = vnums[ServerManager.Instance.RandomNumber(0, 20)];
+                                1386, 1387, 1388, 1389, 1390, 1391, 1392, 1393, 1394, 1395, 1396, 1397, 1398, 1399,
+                                1400, 1401, 1402, 1403, 1404, 1405
+                            };
+                            short vnum = vnums[ServerManager.Instance.RandomNumber(0, 20)];
 
-                                NpcMonster npcmonster = ServerManager.Instance.GetNpc(vnum);
-                                if (npcmonster == null)
-                                {
-                                    return;
-                                }
-                                MapMonster monster = new MapMonster
-                                {
-                                    MonsterVNum = vnum,
-                                    MapY = session.Character.MapY,
-                                    MapX = session.Character.MapX,
-                                    MapId = session.Character.MapInstance.Map.MapId,
-                                    Position = (byte)session.Character.Direction,
-                                    IsMoving = true,
-                                    MapMonsterId = session.CurrentMapInstance.GetNextMonsterId(),
-                                    ShouldRespawn = false
-                                };
-                                monster.Initialize(session.CurrentMapInstance);
-                                session.CurrentMapInstance.AddMonster(monster);
-                                session.CurrentMapInstance.Broadcast(monster.GenerateIn());
-                                session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                            NpcMonster npcmonster = ServerManager.Instance.GetNpc(vnum);
+                            if (npcmonster == null)
+                            {
+                                return;
                             }
+                            MapMonster monster = new MapMonster
+                            {
+                                MonsterVNum = vnum,
+                                MapY = session.Character.MapY,
+                                MapX = session.Character.MapX,
+                                MapId = session.Character.MapInstance.Map.MapId,
+                                Position = (byte) session.Character.Direction,
+                                IsMoving = true,
+                                MapMonsterId = session.CurrentMapInstance.GetNextMonsterId(),
+                                ShouldRespawn = false
+                            };
+                            monster.Initialize(session.CurrentMapInstance);
+                            session.CurrentMapInstance.AddMonster(monster);
+                            session.CurrentMapInstance.Broadcast(monster.GenerateIn());
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         }
                     }
                     break;
 
                 case 69:
-                    session.Character.Reput += ReputPrice;
+                    session.Character.GetReput(ReputPrice);
                     session.SendPacket(session.Character.GenerateFd());
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    break;
+
+                case 789:
+                    session.Character.GiftAdd((short)inv.Item.EffectValue, 1);
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    break;
+
+                case 790:
                     break;
 
                 case 1003:
@@ -361,7 +546,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1006:
-                    if (Option == 0)
+                    if (option == 0)
                     {
                         session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2 {Language.Instance.GetMessageFromKey("ASK_PET_MAX")}");
                     }

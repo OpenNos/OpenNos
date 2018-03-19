@@ -14,6 +14,7 @@
 
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
+using System.Collections.Concurrent;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Server
 {
@@ -41,7 +42,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// <summary>
         /// A collection of clients that are connected to the server.
         /// </summary>
-        ThreadSafeSortedList<long, IScsServerClient> Clients { get; }
+        ConcurrentDictionary<long, IScsServerClient> Clients { get; }
 
         /// <summary>
         /// Gets/sets wire protocol factory to create IWireProtocol objects.

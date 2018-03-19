@@ -13,7 +13,9 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Core.Handling;
 using OpenNos.GameObject;
+using OpenNos.Master.Library.Client;
 
 namespace OpenNos.Handler
 {
@@ -77,6 +79,7 @@ namespace OpenNos.Handler
         {
             // Not needed for now. (pictures)
         }
+
 
         #endregion
     }

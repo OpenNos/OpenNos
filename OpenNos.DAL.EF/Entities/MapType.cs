@@ -13,6 +13,8 @@
  */
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenNos.DAL.EF
 {
@@ -32,6 +34,7 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<Drop> Drops { get; set; }
 
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public short MapTypeId { get; set; }
 
         public virtual ICollection<MapTypeMap> MapTypeMap { get; set; }

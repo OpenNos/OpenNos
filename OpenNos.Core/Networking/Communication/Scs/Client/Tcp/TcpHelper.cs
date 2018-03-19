@@ -37,7 +37,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
         /// </exception>
         public static Socket ConnectToServer(EndPoint endPoint, int timeoutMs)
         {
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
                 socket.Blocking = false;

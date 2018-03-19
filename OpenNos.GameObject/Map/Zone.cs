@@ -1,5 +1,6 @@
 ﻿using OpenNos.Domain;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace OpenNos.GameObject
@@ -15,11 +16,11 @@ namespace OpenNos.GameObject
 
         public short Range { get; set; }
 
-        public List<EventContainer> Events { get; set; }
+        public ConcurrentBag<EventContainer> Events { get; set; }
 
         public ZoneEvent()
         {
-            Events = new List<EventContainer>();
+            Events = new ConcurrentBag<EventContainer>();
             Range = 1;
         }
 

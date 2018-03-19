@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class ComboDTO : MappingBaseDTO
@@ -20,6 +22,7 @@ namespace OpenNos.Data
 
         public short Animation { get; set; }
 
+        [Key]
         public int ComboId { get; set; }
 
         public short Effect { get; set; }

@@ -1426,4 +1426,121 @@
   <data name="WARNING_INFO" xml:space="preserve">
     <value>You've been warned: {0} times.</value>
   </data>
+  <data name="GIFT_SENT" xml:space="preserve">
+    <value>Gift has been sent!</value>
+  </data>
+  <data name="ARENA_NOT_OPEN" xml:space="preserve">
+    <value>Arena talent is open at 18:00 - 22:00</value>
+  </data>
+  <data name="ARENA_TEAM_FOUND" xml:space="preserve">
+    <value>Participants found</value>
+  </data>
+  <data name="ARENA_TICKET_LEFT" xml:space="preserve">
+    <value>Remaining participation(s) {0}</value>
+  </data>
+  <data name="NO_TEAM_ARENA" xml:space="preserve">
+    <value>No participants found</value>
+  </data>
+  <data name="RETRY_SEARCH_ARENA_TEAM" xml:space="preserve">
+    <value>Retry to make the team.</value>
+  </data>
+  <data name="SEARCH_ARENA_TEAM" xml:space="preserve">
+    <value>Searching for a team</value>
+  </data>
+  <data name="SEARCH_RIVAL_ARENA_TEAM" xml:space="preserve">
+    <value>Searching opposing team</value>
+  </data>
+  <data name="WORLD_SERVER_CONSOLE_TITLE" xml:space="preserve">
+    <value>WORLD SERVER - ID : {0} | Players : {1} | IP : {2}:{3}</value>
+  </data>
+  <data name="EQUALITY" xml:space="preserve">
+    <value>Equality!</value>
+  </data>
+  <data name="ERENIA" xml:space="preserve">
+    <value>You are on the Erenia team.</value>
+  </data>
+  <data name="SELECT_ORDER_ARENA" xml:space="preserve">
+    <value>Choice the order of participation or it will be determinated randomly!</value>
+  </data>
+  <data name="SELECT_ORDER_ARENA_TIME" xml:space="preserve">
+    <value>One minut remaning before the begin of the fight. Good luck!</value>
+  </data>
+  <data name="VICTORIOUS_ERENIA" xml:space="preserve">
+    <value>Winner!  Erenia</value>
+  </data>
+  <data name="VICTORIOUS_ZENAS" xml:space="preserve">
+    <value>Winner! Zenas</value>
+  </data>
+  <data name="ZENAS" xml:space="preserve">
+    <value>You are on the Zenas team.</value>
+  </data>
+  <data name="CANNOT_LEAVE_FAMILY" xml:space="preserve">
+    <value>The family head cannot exit the family.</value>
+  </data>
+  <data name="CANT_USE_THAT" xml:space="preserve">
+    <value>You cannot do it now.</value>
+  </data>
+  <data name="SHELL_ALREADY_IDENTIFIED" xml:space="preserve">
+    <value>Options of this object are already identified.</value>
+  </data>
+  <data name="USER_ON_INSTANCEMAP" xml:space="preserve">
+    <value>The player is not on a general map.</value>
+  </data>
+  <data name="ADD_OPTION_ON_STUFF" xml:space="preserve">
+    <value>Do you want to add an option on this stuff ? If yes, this item will be link to you only.</value>
+  </data>
+  <data name="ADD_OPTION_ON_STUFF_NOT_EMPTY" xml:space="preserve">
+    <value>The option will be replace by the new. You've 50% of chance to win, else the item will be destroyed. Do you want to continue ?</value>
+  </data>
+  <data name="NEED_PARFUM_TO_CHANGE_SHELL" xml:space="preserve">
+    <value>You cannot change the shell, the soul is not yours.</value>
+  </data>
+  <data name="SHELL_BROKEN" xml:space="preserve">
+    <value>The shell is broken because it has failed.</value>
+  </data>
+  <data name="SHELL_ERASED" xml:space="preserve">
+    <value>The option has been erased.</value>
+  </data>
+  <data name="SHELL_FOR_ARMOR_ONLY" xml:space="preserve">
+    <value>You can only use this shell on armor.</value>
+  </data>
+  <data name="SHELL_FOR_WEAPON_ONLY" xml:space="preserve">
+    <value>You can only use this shell on weapon.</value>
+  </data>
+  <data name="SHELL_LEVEL_TOO_HIGH" xml:space="preserve">
+    <value>The level of the shell is too high.</value>
+  </data>
+  <data name="SHELL_MUST_BE_IDENTIFIED" xml:space="preserve">
+    <value>The shell must be identified before use.</value>
+  </data>
+  <data name="SHELL_OPTION_SET" xml:space="preserve">
+    <value>A new option has been added.</value>
+  </data>
+  <data name="SHELL_RARITY_TOO_HIGH" xml:space="preserve">
+    <value>The shell rarity is too high.</value>
+  </data>
+  <data name="ARENA_CALLED" xml:space="preserve">
+    <value>A participant has called : {0}</value>
+  </data>
+  <data name="ARENA_PENALITY_NOTICE" xml:space="preserve">
+    <value>If you cancel the inscription you will suffered a penality.</value>
+  </data>
+  <data name="ASK_CHANGE_SPAWNLOCATION" xml:space="preserve">
+    <value>Do you want to change the respawn town?</value>
+  </data>
+  <data name="RESPAWNLOCATION_CHANGED" xml:space="preserve">
+    <value>The town has been changed!</value>
+  </data>
+  <data name="RIVAL_ARENA_TEAM_FOUND" xml:space="preserve">
+    <value>Enemy team found.</value>
+  </data>
+  <data name="WINNER_ARENA_ROUND" xml:space="preserve">
+    <value>{0} as kill {1}.</value>
+  </data>
+  <data name="INSTANTBATTLE_NOT_ENOUGH_PLAYERS" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DIGNITY_RESTORED" xml:space="preserve">
+    <value />
+  </data>
 </root>

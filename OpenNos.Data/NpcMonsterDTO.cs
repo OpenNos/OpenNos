@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
 using OpenNos.Domain;
 
 namespace OpenNos.Data
@@ -88,6 +89,7 @@ namespace OpenNos.Data
 
         public byte NoticeRange { get; set; }
 
+        [Key]
         public short NpcMonsterVNum { get; set; }
 
         public byte Race { get; set; }

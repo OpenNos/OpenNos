@@ -157,7 +157,7 @@
     <value>Ne^donnez^JAMAIS^vos^identifiants^de^connexion^!</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>Besoin^d´un^GM^?^http://support.nostale.fr/</value>
+    <value>Besoin^d´un^GM^?^Go^sur^Discord</value>
   </data>
   <data name="BN3" xml:space="preserve">
     <value>Peur^d´un^vol^?^Lisez^le^guide^anti-arnaques^!</value>
@@ -166,10 +166,10 @@
     <value>Besoin^d´aide^pour^un^TS^?^Contactez^un^NosHelper^!</value>
   </data>
   <data name="BN5" xml:space="preserve">
-    <value>Forum^officiel:^http://board.fr.nostale.gameforge.com</value>
+    <value>Site^officiel:^https://noswings.fr/</value>
   </data>
   <data name="BN6" xml:space="preserve">
-    <value>Entrez^dans^la^légende,^découvrez^le^Panthéon</value>
+    <value>Bon^jeu^sur^Noswings^!</value>
   </data>
   <data name="BUFF_BLOCKED" xml:space="preserve">
     <value>À partir de maintenant, le décompte de buff sera masqué.</value>
@@ -250,7 +250,7 @@
     <value>Déconnection forcée du client {0}, Trop de connexion...</value>
   </data>
   <data name="FRIEND_REQ_BLOCKED" xml:space="preserve">
-    <value>À partir de maintenant, tu bloques les demandes d'amitiées.</value>
+    <value>À partir de maintenant, tu bloques les demandes d'amitiés.</value>
   </data>
   <data name="FRIEND_REQ_UNLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu débloques les demandes d'amitiées</value>
@@ -265,7 +265,7 @@
     <value>Tu as obtenu de l'or.</value>
   </data>
   <data name="GROUP_BLOCKED" xml:space="preserve">
-    <value>Ce joueur a bloqué les demandes de groupe.</value>
+    <value>Le joueur a bloqué les demandes de groupe.</value>
   </data>
   <data name="GROUP_CLOSED" xml:space="preserve">
     <value>Groupe dissous.</value>
@@ -325,7 +325,7 @@
     <value>Tu ne peux pas abandonner cet objet.</value>
   </data>
   <data name="ITEM_NOT_SOLDABLE" xml:space="preserve">
-    <value>Ce objet ne peut pas être vendu.</value>
+    <value>Cet objet ne peut pas être vendu.</value>
   </data>
   <data name="ITEM_NOT_TRADABLE" xml:space="preserve">
     <value>Tu ne peux pas échanger cet objet.</value>
@@ -358,7 +358,7 @@
     <value>Magicien</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
-    <value>Maximum d'or atteint.</value>
+    <value>Le montant maximal d'or a été atteint.</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Message reçu {0} sur le client {1}</value>
@@ -781,7 +781,7 @@
     <value>Tu es le maître du groupe.</value>
   </data>
   <data name="GROUP_JOIN" xml:space="preserve">
-    <value>Vous avez rejoint le groupe de {0}</value>
+    <value>Tu as rejoint le groupe de {0}</value>
   </data>
   <data name="NO_WIG" xml:space="preserve">
     <value>Tu ne portes pas de coiffures spéciales</value>
@@ -821,7 +821,7 @@ Veux-tu le porter ?</value>
     <value>C'est impossible de faire un commerce avec {0} par ce qu'il est en plein combat.</value>
   </data>
   <data name="ALREADY_EXCHANGE" xml:space="preserve">
-    <value>Le joueur est déjà en train d'effectué un échange.</value>
+    <value>Le joueur est déjà en train d'effectuer un échange.</value>
   </data>
   <data name="HAS_SHOP_OPENED" xml:space="preserve">
     <value>Tu ne peux pas faire d'échanger avec ce joueur, car il a ouvert un magasin.</value>
@@ -908,10 +908,10 @@ Veux-tu le porter ?</value>
     <value>L'objet que tu recherches est introuvable.</value>
   </data>
   <data name="MONSTER_NOT_FOUND" xml:space="preserve">
-    <value>Le monstre que tu recherches est introuvable.</value>
+    <value>Le monstre n'a pas pu être trouvé.</value>
   </data>
   <data name="ADVENTURERS_CANT_USE" xml:space="preserve">
-    <value>Ton personnage ne remplis les conditions requise pour utiliser cet objet.</value>
+    <value>Ton personnage ne remplit les conditions requises pour utiliser cet objet.</value>
   </data>
   <data name="SAVING_ALL" xml:space="preserve">
     <value>Le serveur vient d'effectuer une sauvegarde des données.</value>
@@ -926,7 +926,7 @@ Veux-tu le porter ?</value>
     <value>Une nouvelle note est arrivée.</value>
   </data>
   <data name="GIFTED" xml:space="preserve">
-    <value>Tu as reçu {0} paquet(s).</value>
+    <value>Noveaux paquets arrivés : {0} </value>
   </data>
   <data name="ITEM_GIFTED" xml:space="preserve">
     <value>Paquet reçu &gt;&gt;</value>
@@ -971,7 +971,7 @@ Veux-tu le porter ?</value>
     <value>Astuce : Un problème ? reportez le sur notre page github !</value>
   </data>
   <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
-    <value>Le monstre doit être en vie. Sinon, essayez de cliquer dessus et ressayez !</value>
+    <value>Le monstre doit être en vie. Sinon, essayez de cliquer dessus et réessayez !</value>
   </data>
   <data name="MONSTER_REMOVED" xml:space="preserve">
     <value>Le monstre a été supprimé.</value>
@@ -995,7 +995,7 @@ Veux-tu le porter ?</value>
     <value>Tu subis une sanction. par conséquant, tu ne peux pas utiliser cet objet.</value>
   </data>
   <data name="ACT4_PVP_DIE" xml:space="preserve">
-    <value>La malédiction de la Courrone de Glace t'a transformé en phoque pour 30 secondes !</value>
+    <value>La malédiction de la Couronne de Glace t'a transformé en phoque pour 30 secondes !</value>
   </data>
   <data name="ALREADY_FRIEND" xml:space="preserve">
     <value>Vous êtes déjà amis.</value>
@@ -1076,7 +1076,7 @@ Veux-tu le porter ?</value>
     <value>Cridefamille</value>
   </data>
   <data name="FAMILY_FOUNDED" xml:space="preserve">
-    <value>Félicitations. La famille {0} a été fondée !</value>
+    <value>Félicitations !  La famille {0} a été fondée !</value>
   </data>
   <data name="FAMILY_GROUP_NOT_FULL" xml:space="preserve">
     <value>Il faut minimum trois membres dans le groupe pour pouvoir crée une famille !</value>
@@ -1118,7 +1118,7 @@ Veux-tu le porter ?</value>
     <value>[Taux de chance d'apparition d'or] : </value>
   </data>
   <data name="GOLD_DROP_RATE_CHANGED" xml:space="preserve">
-    <value>Gold drop rate changed!</value>
+    <value>Le taux d'apparition de l'or a été augmenté !</value>
   </data>
   <data name="GROUP_MEMBER_ALREADY_IN_FAMILY" xml:space="preserve">
     <value>Un membre du groupe possède déjà une famille.</value>
@@ -1226,10 +1226,10 @@ Veux-tu le porter ?</value>
     <value>La transformation a été interrompue. Tu n'as plus assez de point SP</value>
   </data>
   <data name="SP_POINTSADDED" xml:space="preserve">
-    <value>Tu as reçu {0} points pour ta Carte Spécialiste !</value>
+    <value>Tes points de spécialiste de base ont été augmentés de  {0}.</value>
   </data>
   <data name="SP_POINTSADDEDBOTH" xml:space="preserve">
-    <value>Tu as reçu {0} points de base et {1} points additionnels</value>
+    <value>Tes points de spécialiste de base ont été augmentés de {0} et les points additionnels de  {1}.</value>
   </data>
   <data name="STATE_CHANGED" xml:space="preserve">
     <value>L'offre a été mise à jour. La vente a été annulée.</value>
@@ -1253,13 +1253,13 @@ Veux-tu le porter ?</value>
     <value>Le diable de feu volant a disparu.</value>
   </data>
   <data name="LOD_CLOSED" xml:space="preserve">
-    <value>La Terre Des Morts est fermée.</value>
+    <value>Tu ne peux pas adhérer maintenant.</value>
   </data>
   <data name="LOD_REQUIERE_LVL" xml:space="preserve">
-    <value>Seul les membres de niveau 55 ou plus peuvent entrer dans la Terre Des Morts</value>
+    <value>Seuls les membres de niveau 55 ou plus peuvent entrer dans la Terre Des Morts</value>
   </data>
   <data name="NEED_FAMILY" xml:space="preserve">
-    <value>Tu ne peux pas rejoindre la Terre Des Morts sans famille.</value>
+    <value>Seuls les membres d'une famille peuvent entrer sur la Terre des morts.</value>
   </data>
   <data name="NOT_ENOUGH_SAVER" xml:space="preserve">
     <value>Tu n'as pas assez de fontaine magique pour pouvoir résscuciter.</value>
@@ -1349,7 +1349,7 @@ Veux-tu le porter ?</value>
     <value>Le niveau de ton NosMate est trop haut pour pouvoir être équipé.</value>
   </data>
   <data name="PET_IN_TEAM_UNRELEASABLE" xml:space="preserve">
-    <value>Tu ne peux pas libéré ton NosMate lorsqu'il t'accompagne.</value>
+    <value>Tu ne peux pas libérer ton NosMate lorsqu'il t'accompagne.</value>
   </data>
   <data name="PET_KICKED" xml:space="preserve">
     <value>Ton NosMate a été renvoyé au Mini-Pays.</value>
@@ -1398,5 +1398,350 @@ Veux-tu le porter ?</value>
   </data>
   <data name="TS_TUTORIAL" xml:space="preserve">
     <value>Espace-temps tutoriel</value>
+  </data>
+  <data name="ACCEPTED_SHARE" xml:space="preserve">
+    <value>Tu as changé le point de retour de {0} !</value>
+  </data>
+  <data name="ALREADY_MARRIED" xml:space="preserve">
+    <value>Tu ne peux pas te marier de nouveau car tu es déjà en couple !</value>
+  </data>
+  <data name="API_INITIALIZED" xml:space="preserve">
+    <value>La communication avec MasterServer s'est correctement effectuée.</value>
+  </data>
+  <data name="BUY_ITEM_VALID" xml:space="preserve">
+    <value>Tu as acheté {1} de {0}</value>
+  </data>
+  <data name="CARDS_LOADED" xml:space="preserve">
+    <value>{0} Cartes chargées.</value>
+  </data>
+  <data name="DIVORCED" xml:space="preserve">
+    <value>Tu es dès à présent divorcé.</value>
+  </data>
+  <data name="DROPPED_ITEM" xml:space="preserve">
+    <value>Tu as reçu {0} x {1}</value>
+  </data>
+  <data name="EFFECT_TERMINATED" xml:space="preserve">
+    <value>Tu perds l'effet : {0} !</value>
+  </data>
+  <data name="ITEM_BOUND_TO" xml:space="preserve">
+    <value>(Groupe) Priorité à :  {1}  : {0} x {2}</value>
+  </data>
+  <data name="MARRIAGE_ACCEPT" xml:space="preserve">
+    <value>T'as demande de mariage a été acceptée !</value>
+  </data>
+  <data name="MARRIAGE_ACCEPT_SHOUT" xml:space="preserve">
+    <value>Félicitations ! {0} a accepté dans la demande en mariage de  {1} !</value>
+  </data>
+  <data name="MARRIAGE_REJECTED" xml:space="preserve">
+    <value>Votre demande de mariage a été refusée</value>
+  </data>
+  <data name="MARRIAGE_REJECT_SHOUT" xml:space="preserve">
+    <value>{0} a rejeté la demande en mariage de {1} ! </value>
+  </data>
+  <data name="MARRY_REQUEST" xml:space="preserve">
+    <value>{0} Vous a demandé en mariage. Voulez-vous accepter ?</value>
+  </data>
+  <data name="NOT_FRIEND" xml:space="preserve">
+    <value>Vous n'êtes pas amis.</value>
+  </data>
+  <data name="RAID_DISOLVED" xml:space="preserve">
+    <value>L'équipe du raid a été dissoute !</value>
+  </data>
+  <data name="RAID_JOIN" xml:space="preserve">
+    <value>{0} a rejoint l'équipe du raid.</value>
+  </data>
+  <data name="RAID_LEFT" xml:space="preserve">
+    <value>Tu as quitté l'équipe du raid.</value>
+  </data>
+  <data name="RAID_LEVEL_INCORRECT" xml:space="preserve">
+    <value>Ton niveau ne correspond pas avec le niveau requis pour ce raid, par conséquant tu ne recevras aucune récompense !</value>
+  </data>
+  <data name="RAID_MEMBER_DEAD" xml:space="preserve">
+    <value>Le membre de l'équipe : {0} est mort !</value>
+  </data>
+  <data name="RAID_REGISTERED" xml:space="preserve">
+    <value>L'équipe de raid a été enregistrée dans la liste</value>
+  </data>
+  <data name="RAID_START" xml:space="preserve">
+    <value>Le raid a commencé !</value>
+  </data>
+  <data name="RAID_SUCCEED" xml:space="preserve">
+    <value>[Équipe de {1}] L'équipe de raid  {0} a mené à bien sa mission.</value>
+  </data>
+  <data name="RAID_TEAM_NOT_READY" xml:space="preserve">
+    <value>L'équipe n'est pas encore prête !</value>
+  </data>
+  <data name="RAID_UNREGISTERED" xml:space="preserve">
+    <value>Votre équipe a bien été supprimée de la liste des raids</value>
+  </data>
+  <data name="RETRY_CONNECTION" xml:space="preserve">
+    <value>Impossible de se connecter à  Master Server ! Réssayez dans 5 secondes ...</value>
+  </data>
+  <data name="SEARCH_TEAM_MEMBERS" xml:space="preserve">
+    <value>{0} recherche des membres pour le raid {1} !</value>
+  </data>
+  <data name="SHIP_MINUTE" xml:space="preserve">
+    <value>Le bateau partira dans 1 minute</value>
+  </data>
+  <data name="SHIP_MINUTES" xml:space="preserve">
+    <value>Le bateau partira dans {0} minutes.</value>
+  </data>
+  <data name="SHIP_NOTARRIVED" xml:space="preserve">
+    <value>Le bateau n'est pas encore revenu</value>
+  </data>
+  <data name="SHIP_SECONDS" xml:space="preserve">
+    <value>Le bateau va larguer les amarres dans  {0} secondes.</value>
+  </data>
+  <data name="SHIP_SETOFF" xml:space="preserve">
+    <value>C'est parti ! Larguez les amarres ! </value>
+  </data>
+  <data name="SUPPORT" xml:space="preserve">
+    <value>NH</value>
+  </data>
+  <data name="UNDER_EFFECT" xml:space="preserve">
+    <value>Tu subis l'effet :  {0} !</value>
+  </data>
+  <data name="WARNING" xml:space="preserve">
+    <value>Tu as été avertis pour : {0}</value>
+  </data>
+  <data name="WARNING_INFO" xml:space="preserve">
+    <value>Tu as été avertis : {0} fois</value>
+  </data>
+  <data name="ASK_CHANGE_FACTION" xml:space="preserve">
+    <value>Veux-tu vraiment changer ton attribut ?</value>
+  </data>
+  <data name="ASK_CHANGE_FACTION1" xml:space="preserve">
+    <value>Veux-tu vraiment acquérir le pouvoir de l'ange ?</value>
+  </data>
+  <data name="ASK_CHANGE_FACTION2" xml:space="preserve">
+    <value>Veux-tu vraiment acquérir le pouvoir du démon ?</value>
+  </data>
+  <data name="ARENA_NOT_OPEN" xml:space="preserve">
+    <value>L'arène des talents est ouverte de 18:00 à 22:00</value>
+  </data>
+  <data name="ARENA_TEAM_FOUND" xml:space="preserve">
+    <value>Participants inscrits trouvés</value>
+  </data>
+  <data name="ARENA_TICKET_LEFT" xml:space="preserve">
+    <value>Tu peux encore participer {0} fois aujourd'hui.</value>
+  </data>
+  <data name="NO_TEAM_ARENA" xml:space="preserve">
+    <value>Aucun participant trouvé.</value>
+  </data>
+  <data name="RETRY_SEARCH_ARENA_TEAM" xml:space="preserve">
+    <value>Essaie à nouveau de former l'équipe.</value>
+  </data>
+  <data name="ARENA_TEAM_LEAVE" xml:space="preserve">
+    <value>Le participant a annulé l'inscription.</value>
+  </data>
+  <data name="SEARCH_RIVAL_ARENA_TEAM" xml:space="preserve">
+    <value>Chercher l'équipe adverse</value>
+  </data>
+  <data name="EQUALITY" xml:space="preserve">
+    <value>Egalité !</value>
+  </data>
+  <data name="ERENIA" xml:space="preserve">
+    <value>Tu fais partie de l'équipe Erenia.</value>
+  </data>
+  <data name="SELECT_ORDER_ARENA" xml:space="preserve">
+    <value>Choisis l'ordre dans lequel les participants vont combattre sinon cet ordre sera déterminé au hasard.</value>
+  </data>
+  <data name="SELECT_ORDER_ARENA_TIME" xml:space="preserve">
+    <value>Plus que 1 minutes avant le début du combat. Bonne chance !</value>
+  </data>
+  <data name="VICTORIOUS_ERENIA" xml:space="preserve">
+    <value>Vainqueur !  Erenia</value>
+  </data>
+  <data name="VICTORIOUS_ZENAS" xml:space="preserve">
+    <value>Vainqueur ! Zénas</value>
+  </data>
+  <data name="ZENAS" xml:space="preserve">
+    <value>Tu fais partie de l'équipe Zénas.</value>
+  </data>
+  <data name="CELLONING_FAILED" xml:space="preserve">
+    <value>Le cellon a disparu, car tu n'as pas réussi à ajouter des options.</value>
+  </data>
+  <data name="CELLONING_SUCCESS" xml:space="preserve">
+    <value>Options ajoutées.</value>
+  </data>
+  <data name="CELLON_LEVEL_TOO_HIGH" xml:space="preserve">
+    <value>Le niveau de ce cellon est trop élevé pour être utilisé sur cet objet.</value>
+  </data>
+  <data name="NOT_ENOUGH_GOLD" xml:space="preserve">
+    <value>Tu n'as pas assez d'or !</value>
+  </data>
+  <data name="SHELL_IDENTIFIED" xml:space="preserve">
+    <value>Les options sont identifiées.</value>
+  </data>
+  <data name="TOO_MUCH_CELLON" xml:space="preserve">
+    <value>Ce bijou possède déjà le nombre maximal d'améliorations.</value>
+  </data>
+  <data name="ASK_OPEN_BOX" xml:space="preserve">
+    <value>Ouvrir le coffre au trésor ?</value>
+  </data>
+  <data name="DO_YOU_WANT_RAID" xml:space="preserve">
+    <value>Veux-tu commencer le raid ?</value>
+  </data>
+  <data name="FAMILY_LEAVE" xml:space="preserve">
+    <value>Tu as quitté la famille.</value>
+  </data>
+  <data name="NEED_TEAM" xml:space="preserve">
+    <value>Une équipe de raid doit d'abord avoir été formée.</value>
+  </data>
+  <data name="NEW_MISSION" xml:space="preserve">
+    <value>Nouvel objectif de mission !</value>
+  </data>
+  <data name="ONLY_TEAM_LEADER_CAN_START" xml:space="preserve">
+    <value>Seul le chef d'équipe peut emprunter le portail.</value>
+  </data>
+  <data name="TS_PENALTY" xml:space="preserve">
+    <value>Pénalité de l'espace-temps</value>
+  </data>
+  <data name="YOU_ARE_RAID_CHIEF" xml:space="preserve">
+    <value>Tu es le chef de raid à présent. Invite des membres</value>
+  </data>
+  <data name="CANNOT_LEAVE_FAMILY" xml:space="preserve">
+    <value>Le chef de famille ne peut pas quitter.</value>
+  </data>
+  <data name="CANT_USE_THAT" xml:space="preserve">
+    <value>Tu ne peux pas effectuer cette action maintenant.</value>
+  </data>
+  <data name="SHELL_ALREADY_IDENTIFIED" xml:space="preserve">
+    <value>Les options de cet objet ont déjà été identifiées.</value>
+  </data>
+  <data name="USER_ON_INSTANCEMAP" xml:space="preserve">
+    <value>Le joueur n'est pas sur une map générale.</value>
+  </data>
+  <data name="ADD_OPTION_ON_STUFF" xml:space="preserve">
+    <value>Souhaites-tu ajouter une option à cet équipement ?
+Si tu ajoutes une option, aucun autre joueur ne pourra plus l'utiliser, car l'équipement sera lié à toi.</value>
+  </data>
+  <data name="ADD_OPTION_ON_STUFF_NOT_EMPTY" xml:space="preserve">
+    <value>L'option existante sera supprimée et remplacée par une nouvelle.
+La probabilité de réussite est actuellement de 50 %.
+Veux-tu continuer ?</value>
+  </data>
+  <data name="NEED_PARFUM_TO_CHANGE_SHELL" xml:space="preserve">
+    <value>Tu ne peux pas changer la rune de cet équipement, l'âme est liée à un autre joueur.</value>
+  </data>
+  <data name="SHELL_BROKEN" xml:space="preserve">
+    <value>La rune est brisée, car l'ajout de l'option a échoué.</value>
+  </data>
+  <data name="SHELL_ERASED" xml:space="preserve">
+    <value>L'option a été supprimée.</value>
+  </data>
+  <data name="SHELL_FOR_ARMOR_ONLY" xml:space="preserve">
+    <value>Cette rune est uniquement utilisable sur une armure.</value>
+  </data>
+  <data name="SHELL_FOR_WEAPON_ONLY" xml:space="preserve">
+    <value>Cette rune est uniquement utilisable sur une arme.</value>
+  </data>
+  <data name="SHELL_LEVEL_TOO_HIGH" xml:space="preserve">
+    <value>Le niveau de la rune est trop élevé pour être appliqué à cet équipement.</value>
+  </data>
+  <data name="SHELL_MUST_BE_IDENTIFIED" xml:space="preserve">
+    <value>La rune doit être identifiée pour pouvoir être utilisable.</value>
+  </data>
+  <data name="SHELL_OPTION_SET" xml:space="preserve">
+    <value>Une nouvelle option a été ajoutée.</value>
+  </data>
+  <data name="SHELL_RARITY_TOO_HIGH" xml:space="preserve">
+    <value>La rareté de la rune est trop élevée pour être appliquée à cet équipement.</value>
+  </data>
+  <data name="ARENA_CALLED" xml:space="preserve">
+    <value>Un autre participant l'appellera rapidement : {0}</value>
+  </data>
+  <data name="ARENA_PENALITY_NOTICE" xml:space="preserve">
+    <value>Si tu annules l'inscription tu recevras une pénalité.</value>
+  </data>
+  <data name="ASK_CHANGE_SPAWNLOCATION" xml:space="preserve">
+    <value>Veux-tu changer le village de renaissance ?</value>
+  </data>
+  <data name="RESPAWNLOCATION_CHANGED" xml:space="preserve">
+    <value>Le village est désigné comme lieu de renaissance.</value>
+  </data>
+  <data name="RIVAL_ARENA_TEAM_FOUND" xml:space="preserve">
+    <value>Une équipe adverse a été trouvée.</value>
+  </data>
+  <data name="SEARCH_ARENA_TEAM" xml:space="preserve">
+    <value>Recherche de l'équipe.</value>
+  </data>
+  <data name="WINNER_ARENA_ROUND" xml:space="preserve">
+    <value>{0} a vaincu {1}.</value>
+  </data>
+  <data name="ICEBREAKER_ASK" xml:space="preserve">
+    <value>Veux-tu entrer dans le Brise-glace ? Tu devras verser : {0}Or"</value>
+  </data>
+  <data name="ICEBREAKER_FIGHT_START" xml:space="preserve">
+    <value>Lance l'attaque !</value>
+  </data>
+  <data name="ICEBREAKER_FIGHT_WARN" xml:space="preserve">
+    <value>Le PvP va bientôt commencer.</value>
+  </data>
+  <data name="ICEBREAKER_MINUTES" xml:space="preserve">
+    <value>Dans {0} minutes {1} ~ {2}Le Brise-Glace va commencer pour tous les niveaux.</value>
+  </data>
+  <data name="ICEBREAKER_PLAYER_FROZEN" xml:space="preserve">
+    <value>{0} est congelé.</value>
+  </data>
+  <data name="ICEBREAKER_PLAYER_OUT" xml:space="preserve">
+    <value>{0} est dehors.</value>
+  </data>
+  <data name="ICEBREAKER_PLAYER_UNFROZEN" xml:space="preserve">
+    <value>{0} n'est pas congelé.</value>
+  </data>
+  <data name="ICEBREAKER_SECONDS" xml:space="preserve">
+    <value>Dans {0} secondes {1} ~ {2}Le Brise-Glace va commencer pour tous les niveaux.</value>
+  </data>
+  <data name="ICEBREAKER_STARTED" xml:space="preserve">
+    <value>Le Brise-glace a commencé.</value>
+  </data>
+  <data name="ICEBREAKER_TIMEOUT" xml:space="preserve">
+    <value>Le délai du Brise-glace est écoulé.</value>
+  </data>
+  <data name="ICEBREAKER_WIN" xml:space="preserve">
+    <value>Vous avez gagné l'IceBreaker.</value>
+  </data>
+  <data name="ARENA_TALENT_LEFT" xml:space="preserve">
+    <value>{0} a quitté l'arène d'équipe.</value>
+  </data>
+  <data name="NEED_FACTION_ACT4" xml:space="preserve">
+    <value>Seuls ceux qui possèdent le pouvoir de protection peuvent entrer dans la Couronne de glace.</value>
+  </data>
+  <data name="TEAM_WINNER_ARENA_ROUND" xml:space="preserve">
+    <value>Vainqueur ! {0}  {1} !</value>
+  </data>
+  <data name="SUPER_REWARD" xml:space="preserve">
+    <value>Quelqu'un a gagné le gros lot à la boîte Mystere !</value>
+  </data>
+  <data name="ACT4_NEED_FACTION" xml:space="preserve">
+    <value>Seuls ceux qui possèdent le pouvoir de protection peuvent entrer dans la Couronne de glace.</value>
+  </data>
+  <data name="ACT4_PVP_DEATH" xml:space="preserve">
+    <value>Le pouvoir de {1} a été volé par un gardien des {0}.</value>
+  </data>
+  <data name="ACT4_PVP_KILL" xml:space="preserve">
+    <value>{1} a vaincu un gardien des {0}.</value>
+  </data>
+  <data name="DIGNITY_RESTORED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MONSTER_LVL_MUST_BE_LESS" xml:space="preserve">
+    <value>Tu peux uniquement capturer des animaux qui ont un niveau inférieur au tien.</value>
+  </data>
+  <data name="MONSTER_CANNOT_BE_CAPTURED" xml:space="preserve">
+    <value>Les monstres ne peuvent pas être capturés.</value>
+  </data>
+  <data name="MONSTER_MUST_BE_LOW_HP" xml:space="preserve">
+    <value>Tu peux uniquement capturer des animaux qui n'ont plus que 50 % ou moins de leur HP.</value>
+  </data>
+  <data name="CAPTURE_FAILED" xml:space="preserve">
+    <value>La capture a échoué.</value>
+  </data>
+  <data name="MAX_MATES_COUNT" xml:space="preserve">
+    <value>Tu ne peux pas adopter encore plus de familiers.</value>
+  </data>
+  <data name="MAX_MATES_COUNT" xml:space="preserve">
+    <value>Tu ne peux pas adopter encore plus de familiers.</value>
   </data>
 </root>

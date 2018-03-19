@@ -48,6 +48,7 @@ namespace OpenNos.GameObject
             session.Character.FoodAmount--;
         }
 
+        // TODO REVIEW THAT
         public void Sync(ClientSession session, Item item)
         {
             for (session.Character.MaxFood = 0; session.Character.MaxFood < 5; session.Character.MaxFood++)

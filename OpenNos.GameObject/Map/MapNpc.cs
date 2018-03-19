@@ -18,6 +18,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using OpenNos.PathFinder;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -56,19 +57,22 @@ namespace OpenNos.GameObject
 
         public MapInstance MapInstance { get; set; }
 
-        public List<EventContainer> OnDeathEvents { get; set; }
+        public ConcurrentBag<EventContainer> OnDeathEvents { get; set; }
 
         public List<Node> Path { get; set; }
 
         public List<Recipe> Recipes { get; set; }
 
         public Shop Shop { get; set; }
-
-        public bool Started { get; internal set; }
+        
 
         public long Target { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
+
+        public IDisposable Life { get; private set; }
+
+        public bool IsOut { get; set; }
 
         #endregion
 
@@ -83,15 +87,31 @@ namespace OpenNos.GameObject
                 Id = effectid
             };
         }
+        public string GenerateSay(string message, int type)
+        {
+            return $"say 2 {MapNpcId} 2 {message}";
+        }
 
         public string GenerateIn()
         {
             NpcMonster npcinfo = ServerManager.Instance.GetNpc(NpcVNum);
-            if (npcinfo != null && !IsDisabled)
+            if (npcinfo == null || IsDisabled)
             {
-                return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
+                return string.Empty;
             }
-            return string.Empty;
+            IsOut = false;
+            return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
+        }
+
+        public string GenerateOut()
+        {
+            NpcMonster npcinfo = ServerManager.Instance.GetNpc(NpcVNum);
+            if (npcinfo == null || IsDisabled)
+            {
+                return string.Empty;
+            }
+            IsOut = true;
+            return $"out 2 {MapNpcId}";
         }
 
         public string GetNpcDialog()
@@ -103,7 +123,6 @@ namespace OpenNos.GameObject
         {
             MapInstance = currentMapInstance;
             Initialize();
-            StartLife();
         }
 
         public override void Initialize()
@@ -133,7 +152,7 @@ namespace OpenNos.GameObject
         public void RunDeathEvent()
         {
             MapInstance.InstanceBag.NpcsKilled++;
-            OnDeathEvents.ForEach(e =>
+            OnDeathEvents.ToList().ForEach(e =>
             {
                 if(e.EventActionType == EventActionType.THROWITEMS)
                 {
@@ -142,14 +161,13 @@ namespace OpenNos.GameObject
                 }
                 EventHelper.Instance.RunEvent(e);
             });
-            OnDeathEvents.RemoveAll(s => s != null);
+            OnDeathEvents.Clear();
         }
 
-        internal void StartLife()
+        public void StartLife()
         {
-            Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+            Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
             {
-                Started = true;
                 try
                 {
                     if (!MapInstance.IsSleeping)
@@ -292,6 +310,7 @@ namespace OpenNos.GameObject
                         if (DateTime.Now > LastMove && Npc.Speed > 0 && Path.Any())
                         {
                             int maxindex = Path.Count > Npc.Speed / 2 && Npc.Speed > 1 ? Npc.Speed / 2 : Path.Count;
+                            maxindex = maxindex < 1 ? 1 : maxindex;
                             short mapX = (short)Path.ElementAt(maxindex - 1).X;
                             short mapY = (short)Path.ElementAt(maxindex - 1).Y;
                             double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Npc.Speed;
@@ -306,7 +325,7 @@ namespace OpenNos.GameObject
                                     MapY = mapY;
                                 });
 
-                            Path.RemoveRange(0, maxindex);
+                            Path.RemoveRange(0, maxindex > Path.Count ? Path.Count : maxindex);
                         }
                         if (Target != -1 && (MapId != monster.MapId || distance > maxDistance))
                         {
@@ -317,6 +336,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        internal void StopLife()
+        {
+            Life.Dispose();
+            Life = null;
+        }
 
         /// <summary>
         /// Remove the current Target from Npc.
@@ -331,6 +355,7 @@ namespace OpenNos.GameObject
                 Path = BestFirstSearch.FindPath(new Node { X = MapX, Y = MapY }, new Node { X = FirstX, Y = FirstY }, MapInstance.Map.Grid);
             }
         }
+        
 
         #endregion
     }

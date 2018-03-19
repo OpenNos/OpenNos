@@ -74,34 +74,50 @@
       <HintPath>..\packages\Microsoft.Owin.Security.3.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Reactive.Core, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Core.3.1.1\lib\net46\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Interfaces.3.1.1\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Linq.3.1.1\lib\net46\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.PlatformServices.3.1.1\lib\net46\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Windows.Threading, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Windows.Threading.3.1.1\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
     <Compile Include="Extension.cs" />
     <Compile Include="Handling\HandlerMethodReference.cs" />
+    <Compile Include="Networking\Communication\Scs\Threading\SequentialItemProcessor.cs" />
     <Compile Include="Networking\INetworkClient.cs" />
     <Compile Include="Handling\IPacketHandler.cs" />
     <Compile Include="Networking\NetworkClient.cs" />
     <Compile Include="Serializing\PacketAliasAttribute.cs" />
-    <Compile Include="Threading\ConcurrentQueueExtensions.cs" />
-    <Compile Include="Threading\ThreadSafeGenericList.cs" />
-    <Compile Include="Threading\ThreadSafeSortedList.cs" />
+    <Compile Include="Extensions\BlockingCollectionExtensions.cs" />
+    <Compile Include="Extensions\ConcurrentQueueExtensions.cs" />
     <Compile Include="DelegateBuilder.cs" />
     <Compile Include="LoginEncryption.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\IScsServiceClient.cs" />
@@ -123,7 +139,6 @@
     <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceClient.cs" />
     <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceClientFactory.cs" />
     <Compile Include="Networking\Communication\ScsServices\Service\ServiceClientEventArgs.cs" />
-    <Compile Include="Networking\Communication\Scs\Client\ClientReConnecter.cs" />
     <Compile Include="Networking\Communication\Scs\Client\IConnectableClient.cs" />
     <Compile Include="Networking\Communication\Scs\Client\IScsClient.cs" />
     <Compile Include="Networking\Communication\Scs\Client\ScsClientBase.cs" />
@@ -176,13 +191,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializing\PacketIndexAttribute.cs" />
     <Compile Include="SessionFactory.cs" />
-    <Compile Include="Threading\SequentialItemProcessor.cs" />
-    <Compile Include="Threading\ThreadedBase.cs" />
-    <Compile Include="Threading\Timer.cs" />
+    <Compile Include="Singleton.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Scripts\jquery-3.2.1.min.map" />
+    <None Include="Scripts\jquery-3.2.1.slim.min.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Domain\OpenNos.Domain.csproj">
@@ -191,8 +210,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\jquery.signalR-2.2.2.js" />
-    <Content Include="Scripts\jquery.signalR-2.2.2.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.2.1.js" />
+    <Content Include="Scripts\jquery-3.2.1.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

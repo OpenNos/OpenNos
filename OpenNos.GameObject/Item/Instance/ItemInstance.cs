@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return BoundCharacterId.HasValue;
+                return BoundCharacterId.HasValue && Item.ItemType != ItemType.Armor && Item.ItemType != ItemType.Weapon;
             }
         }
 
@@ -60,6 +60,12 @@ namespace OpenNos.GameObject
             {
                 return item ?? (item = ServerManager.Instance.GetItem(ItemVNum));
             }
+        }
+
+        public ClientSession CharacterSession
+        {
+            // TODO REVIEW THAT
+            get { return ServerManager.Instance.GetSessionByCharacterId(CharacterId); }
         }
 
         #endregion

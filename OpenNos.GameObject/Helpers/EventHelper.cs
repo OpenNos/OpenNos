@@ -15,39 +15,20 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Event.ARENA;
 using OpenNos.PathFinder;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using OpenNos.GameObject.CommandPackets;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class EventHelper
+    public class EventHelper : Singleton<EventHelper>
     {
-        #region Members
-
-        private static EventHelper instance;
-
-        #endregion
-
-        #region Properties
-
-        public static EventHelper Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new EventHelper();
-                }
-                return instance;
-            }
-        }
-
-        #endregion
-
         #region Methods
 
         public int CalculateComboPoint(int n)
@@ -63,7 +44,7 @@ namespace OpenNos.GameObject.Helpers
             return a;
         }
 
-        public void GenerateEvent(EventType type)
+        public void GenerateEvent(EventType type, bool useTimer = true)
         {
             if (!ServerManager.Instance.StartedEvents.Contains(type))
             {
@@ -85,16 +66,23 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case EventType.INSTANTBATTLE:
-                            InstantBattle.GenerateInstantBattle();
+                            InstantBattle.GenerateInstantBattle(useTimer);
                             break;
-
+                        case EventType.TALENTARENA:
+                            ArenaEvent.GenerateTalentArena();
+                            break;
                         case EventType.LODDH:
                             LOD.GenerateLod(35);
+                            break;
+
+                        case EventType.ICEBREAKER:
+                            IceBreaker.GenerateIceBreaker(useTimer);
                             break;
                     }
                 });
             }
         }
+
 
         public TimeSpan GetMilisecondsBeforeTime(TimeSpan time)
         {
@@ -107,6 +95,12 @@ namespace OpenNos.GameObject.Helpers
             return timeLeftUntilFirstRun;
         }
 
+        /// <summary>
+        /// Run Event
+        /// </summary>
+        /// <param name="evt">Event Container</param>
+        /// <param name="session">Character Session that run the event</param>
+        /// <param name="monster">Monster that run the event</param>
         public void RunEvent(EventContainer evt, ClientSession session = null, MapMonster monster = null)
         {
             if (session != null)
@@ -127,336 +121,399 @@ namespace OpenNos.GameObject.Helpers
                         #endregion
                 }
             }
-            if (evt.MapInstance != null)
+            if (evt.MapInstance == null)
             {
-                switch (evt.EventActionType)
-                {
-                    #region EventForUser
+                return;
+            }
+            switch (evt.EventActionType)
+            {
+                #region EventForUser
 
-                    case EventActionType.NPCDIALOG:
-                    case EventActionType.SENDPACKET:
-                        if (session == null)
+                case EventActionType.NPCDIALOG:
+                case EventActionType.SENDPACKET:
+                    if (session == null)
+                    {
+                        evt.MapInstance.Sessions.ToList().ForEach(e =>
                         {
-                            evt.MapInstance.Sessions.ToList().ForEach(e =>
-                            {
-                                RunEvent(evt, e);
-                            });
-                        }
-                        break;
+                            RunEvent(evt, e);
+                        });
+                    }
+                    break;
 
-                    #endregion
+                #endregion
 
-                    #region MapInstanceEvent
+                #region MapInstanceEvent
 
-                    case EventActionType.REGISTEREVENT:
-                        Tuple<string, List<EventContainer>> even = (Tuple<string, List<EventContainer>>)evt.Parameter;
-                        switch (even.Item1)
-                        {
-                            case "OnCharacterDiscoveringMap":
-                                even.Item2.ForEach(s => evt.MapInstance.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer, List<long>>(s, new List<long>())));
-                                break;
+                case EventActionType.REGISTEREVENT:
+                    Tuple<string, ConcurrentBag<EventContainer>> even = (Tuple<string, ConcurrentBag<EventContainer>>)evt.Parameter;
+                    switch (even.Item1)
+                    {
+                        case "OnCharacterDiscoveringMap":
+                            even.Item2.ToList().ForEach(s => evt.MapInstance.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer, List<long>>(s, new List<long>())));
+                            break;
 
-                            case "OnMoveOnMap":
-                                evt.MapInstance.OnMoveOnMapEvents.AddRange(even.Item2);
-                                break;
+                        case "OnMoveOnMap":
+                            evt.MapInstance.OnMoveOnMapEvents.AddRange(even.Item2);
+                            break;
 
-                            case "OnMapClean":
-                                evt.MapInstance.OnMapClean.AddRange(even.Item2);
-                                break;
+                        case "OnMapClean":
+                            evt.MapInstance.OnMapClean.AddRange(even.Item2);
+                            break;
 
-                            case "OnLockerOpen":
-                                evt.MapInstance.InstanceBag.UnlockEvents.AddRange(even.Item2);
-                                break;
-                        }
-                        break;
-                    case EventActionType.REGISTERWAVE:
-                        evt.MapInstance.WaveEvents.Add((EventWave)evt.Parameter);
-                        break;
-                    case EventActionType.SETAREAENTRY:
-                        ZoneEvent even2 = (ZoneEvent)evt.Parameter;
-                        evt.MapInstance.OnAreaEntryEvents.Add(even2);
+                        case "OnLockerOpen":
+                            even.Item2.ToList().ForEach(s => evt.MapInstance.InstanceBag.UnlockEvents.Add(s));
+                            break;
+                    }
+                    break;
+                case EventActionType.REGISTERWAVE:
+                    evt.MapInstance.WaveEvents.Add((EventWave)evt.Parameter);
+                    break;
+                case EventActionType.SETAREAENTRY:
+                    ZoneEvent even2 = (ZoneEvent)evt.Parameter;
+                    evt.MapInstance.OnAreaEntryEvents.Add(even2);
 
-                        break;
-                    case EventActionType.REMOVEMONSTERLOCKER:
-                        EventContainer evt2 = (EventContainer)evt.Parameter;
+                    break;
+                case EventActionType.REMOVEMONSTERLOCKER:
+                    if (evt.MapInstance.InstanceBag.MonsterLocker.Current > 0)
+                    {
                         evt.MapInstance.InstanceBag.MonsterLocker.Current--;
-                        if (evt.MapInstance.InstanceBag.MonsterLocker.Current == 0 && evt.MapInstance.InstanceBag.ButtonLocker.Current == 0)
-                        {
-                            evt.MapInstance.InstanceBag.UnlockEvents.ForEach(s => RunEvent(s));
-                            evt.MapInstance.InstanceBag.UnlockEvents.RemoveAll(s => s != null);
-                        }
-                        break;
+                    }
+                    if (evt.MapInstance.InstanceBag.MonsterLocker.Current == 0 && evt.MapInstance.InstanceBag.ButtonLocker.Current == 0)
+                    {
+                        evt.MapInstance.InstanceBag.UnlockEvents.ToList().ForEach(s => RunEvent(s));
+                        evt.MapInstance.InstanceBag.UnlockEvents.Clear();
+                    }
+                    break;
 
-                    case EventActionType.REMOVEBUTTONLOCKER:
-                        evt2 = (EventContainer)evt.Parameter;
+                case EventActionType.REMOVEBUTTONLOCKER:
+                    if (evt.MapInstance.InstanceBag.ButtonLocker.Current > 0)
+                    {
                         evt.MapInstance.InstanceBag.ButtonLocker.Current--;
-                        if (evt.MapInstance.InstanceBag.MonsterLocker.Current == 0 && evt.MapInstance.InstanceBag.ButtonLocker.Current == 0)
-                        {
-                            evt.MapInstance.InstanceBag.UnlockEvents.ForEach(s => RunEvent(s));
-                            evt.MapInstance.InstanceBag.UnlockEvents.RemoveAll(s => s != null);
-                        }
-                        break;
+                    }
+                    if (evt.MapInstance.InstanceBag.MonsterLocker.Current == 0 && evt.MapInstance.InstanceBag.ButtonLocker.Current == 0)
+                    {
+                        evt.MapInstance.InstanceBag.UnlockEvents.ToList().ForEach(s => RunEvent(s));
+                        evt.MapInstance.InstanceBag.UnlockEvents.Clear();
+                    }
+                    break;
 
-                    case EventActionType.EFFECT:
-                        short evt3 = (short)evt.Parameter;
-                        if (monster!=null && (DateTime.Now - monster.LastEffect).TotalSeconds >= 5)
-                        {
-                            evt.MapInstance.Broadcast(monster.GenerateEff(evt3));
-                            monster.ShowEffect();
-                        }
-                        break;
+                case EventActionType.EFFECT:
+                    short evt3 = (short)evt.Parameter;
+                    if (monster!=null && (DateTime.Now - monster.LastEffect).TotalSeconds >= 5)
+                    {
+                        evt.MapInstance.Broadcast(monster.GenerateEff(evt3));
+                        monster.ShowEffect();
+                    }
+                    break;
 
-                    case EventActionType.CONTROLEMONSTERINRANGE:
-                        if (monster != null)
+                case EventActionType.CONTROLEMONSTERINRANGE:
+                    if (monster != null)
+                    {
+                        Tuple<short, byte, ConcurrentBag<EventContainer>> evnt = (Tuple<short, byte, ConcurrentBag<EventContainer>>)evt.Parameter;
+                        List<MapMonster> mapMonsters = evt.MapInstance.GetListMonsterInRange(monster.MapX, monster.MapY, evnt.Item2);
+                        if (evnt.Item1 != 0)
                         {
-                            Tuple<short, byte, List<EventContainer>> evnt = (Tuple<short, byte, List<EventContainer>>)evt.Parameter;
-                            List<MapMonster> MapMonsters = evt.MapInstance.GetListMonsterInRange(monster.MapX, monster.MapY, evnt.Item2);
-                            if (evnt.Item1 != 0)
+                            mapMonsters.RemoveAll(s => s.MonsterVNum != evnt.Item1);
+                        }
+                        mapMonsters.ForEach(s => evnt.Item3.ToList().ForEach(e => RunEvent(e, monster: s)));
+                    }
+                    break;
+
+                case EventActionType.ONTARGET:
+                    if (monster?.MoveEvent != null && monster.MoveEvent.InZone(monster.MapX, monster.MapY))
+                    {
+                        ((ConcurrentBag<EventContainer>)evt.Parameter).ToList().ForEach(s => RunEvent(s, monster: monster));
+                    }
+                    break;
+
+                case EventActionType.MOVE:
+                    ZoneEvent evt4 = (ZoneEvent)evt.Parameter;
+                    if (monster != null)
+                    {
+
+                        monster.FirstX = evt4.X;
+                        monster.FirstY = evt4.Y;
+                        monster.MoveEvent = evt4;
+                        monster.Path = BestFirstSearch.FindPath(new Node { X = monster.MapX, Y = monster.MapY }, new Node { X = evt4.X, Y = evt4.Y }, evt.MapInstance?.Map.Grid);
+                    }
+                    break;
+
+                case EventActionType.CLOCK:
+                    evt.MapInstance.InstanceBag.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
+                    evt.MapInstance.InstanceBag.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
+                    break;
+
+                case EventActionType.SETMONSTERLOCKERS:
+                    evt.MapInstance.InstanceBag.MonsterLocker.Current = Convert.ToByte(evt.Parameter);
+                    evt.MapInstance.InstanceBag.MonsterLocker.Initial = Convert.ToByte(evt.Parameter);
+                    break;
+
+                case EventActionType.SETBUTTONLOCKERS:
+                    evt.MapInstance.InstanceBag.ButtonLocker.Current = Convert.ToByte(evt.Parameter);
+                    evt.MapInstance.InstanceBag.ButtonLocker.Initial = Convert.ToByte(evt.Parameter);
+                    break;
+                case EventActionType.SCRIPTEND:
+                    switch (evt.MapInstance.MapInstanceType)
+                    {
+                        case MapInstanceType.TimeSpaceInstance:
+                            evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
+                            ClientSession client = evt.MapInstance.Sessions.FirstOrDefault();
+                            if (client != null)
                             {
-                                MapMonsters.RemoveAll(s => s.MonsterVNum != evnt.Item1);
-                            }
-                            MapMonsters.ForEach(s => evnt.Item3.ForEach(e => RunEvent(e, monster: s)));
-                        }
-                        break;
-
-                    case EventActionType.ONTARGET:
-                        if (monster.MoveEvent != null && monster.MoveEvent.InZone(monster.MapX, monster.MapY))
-                        {
-                            ((List<EventContainer>)evt.Parameter).ForEach(s => RunEvent(s, monster: monster));
-                        }
-                        break;
-
-                    case EventActionType.MOVE:
-                        ZoneEvent evt4 = (ZoneEvent)evt.Parameter;
-                        if (monster != null)
-                        {
-
-                            monster.FirstX = evt4.X;
-                            monster.FirstY = evt4.Y;
-                            monster.MoveEvent = evt4;
-                            monster.Path = BestFirstSearch.FindPath(new Node { X = monster.MapX, Y = monster.MapY }, new Node { X = evt4.X, Y = evt4.Y }, evt.MapInstance?.Map.Grid);
-                        }
-                        break;
-
-                    case EventActionType.CLOCK:
-                        evt.MapInstance.InstanceBag.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
-                        evt.MapInstance.InstanceBag.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
-                        break;
-
-                    case EventActionType.SETMONSTERLOCKERS:
-                        evt.MapInstance.InstanceBag.MonsterLocker.Current = Convert.ToByte(evt.Parameter);
-                        evt.MapInstance.InstanceBag.MonsterLocker.Initial = Convert.ToByte(evt.Parameter);
-                        break;
-
-                    case EventActionType.SETBUTTONLOCKERS:
-                        evt.MapInstance.InstanceBag.ButtonLocker.Current = Convert.ToByte(evt.Parameter);
-                        evt.MapInstance.InstanceBag.ButtonLocker.Initial = Convert.ToByte(evt.Parameter);
-                        break;
-                    case EventActionType.SCRIPTEND:
-                        switch (evt.MapInstance.MapInstanceType)
-                        {
-                            case MapInstanceType.TimeSpaceInstance:
-                                evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
-                                ClientSession client = evt.MapInstance.Sessions.FirstOrDefault();
-                                if (client != null)
+                                Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(client.Character.MapId);
+                                MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
+                                ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
+                                byte penalty = 0;
+                                if (si != null && penalty > (client.Character.Level - si.LevelMinimum) * 2)
                                 {
-                                    Guid MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(client.Character.MapId);
-                                    MapInstance map = ServerManager.Instance.GetMapInstance(MapInstanceId);
-                                    ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
-                                    byte penalty = 0;
-                                    if (penalty > (client.Character.Level - si.LevelMinimum) * 2)
-                                    {
-                                        penalty = penalty > 100 ? (byte)100 : penalty;
-                                        client.SendPacket(client.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("TS_PENALTY"), penalty), 10));
-                                    }
-                                    int point = evt.MapInstance.InstanceBag.Point * (100 - penalty) / 100;
-                                    string perfection = string.Empty;
-                                    perfection += evt.MapInstance.InstanceBag.MonstersKilled >= si.MonsterAmount ? 1 : 0;
-                                    perfection += evt.MapInstance.InstanceBag.NpcsKilled == 0 ? 1 : 0;
-                                    perfection += evt.MapInstance.InstanceBag.RoomsVisited >= si.RoomAmount ? 1 : 0;
-
-                                    evt.MapInstance.Broadcast($"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} { si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
+                                    penalty = penalty > 100 ? (byte)100 : penalty;
+                                    client.SendPacket(client.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("TS_PENALTY"), penalty), 10));
                                 }
-                                break;
-                            case MapInstanceType.RaidInstance:
-                                evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
-                                client = evt.MapInstance.Sessions.FirstOrDefault();
-                                if (client != null)
+                                int point = evt.MapInstance.InstanceBag.Point * (100 - penalty) / 100;
+                                string perfection = string.Empty;
+                                perfection += si != null && evt.MapInstance.InstanceBag.MonstersKilled >= si.MonsterAmount ? 1 : 0;
+                                perfection += evt.MapInstance.InstanceBag.NpcsKilled == 0 ? 1 : 0;
+                                perfection += si != null && evt.MapInstance.InstanceBag.RoomsVisited >= si.RoomAmount ? 1 : 0;
+
+                                if (si != null)
                                 {
-                                    Group grp = client?.Character?.Group;
-                                    if (grp == null)
+                                    evt.MapInstance.Broadcast(
+                                        $"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} {si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
+                                }
+                            }
+                            break;
+                        case MapInstanceType.RaidInstance:
+                            evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
+                            client = evt.MapInstance.Sessions.FirstOrDefault();
+                            List<ClientSession> toBan = new List<ClientSession>();
+                            if (client != null)
+                            {
+                                Group grp = client.Character?.Group;
+                                if (grp == null)
+                                {
+                                    return;
+                                }
+                                if (evt.MapInstance.InstanceBag.EndState == 1 && evt.MapInstance.Monsters.Any(s => s.IsBoss && !s.IsAlive))
+                                {
+                                    foreach (ClientSession sess in grp.Characters.Replace(s => s.CurrentMapInstance.Monsters.Any(e => e.IsBoss)))
                                     {
-                                        return;
-                                    }
-                                    if (evt.MapInstance.InstanceBag.EndState == 1)
-                                    {
-                                        foreach (ClientSession sess in grp.Characters)
+                                        // TODO REMOTE THAT FOR PUBLIC RELEASE
+                                        if (grp.Characters.Count(s => s.IpAddress.Equals(sess.IpAddress)) > 2)
                                         {
-                                            foreach (Gift gift in grp?.Raid?.GiftItems)
+                                            toBan.Add(sess);
+                                            continue;
+                                        }
+                                        if (grp.Raid?.GiftItems == null)
+                                        {
+                                            continue;
+                                        }
+                                        if (grp.Raid.Reputation > 0)
+                                        {
+                                            sess.Character.GetReput(grp.Raid.Reputation);
+                                        }
+                                        if (sess.Character.Dignity < 0)
+                                        {
+                                            sess.Character.Dignity += 100;
+                                        }
+                                        else
+                                        {
+                                            sess.Character.Dignity = 100;
+                                        }
+                                        if (sess.Character.Level > grp.Raid.LevelMaximum)
+                                        {
+                                            // RAID CERTIFICATE
+                                            sess.Character.GiftAdd(2320, 1);
+                                        }
+                                        else
+                                        {
+                                            foreach (Gift gift in grp.Raid?.GiftItems)
                                             {
-                                                byte rare = 0;
+                                                sbyte rare = 0;
                                                 if (gift.IsRandomRare)
                                                 {
-                                                    rare = (byte)ServerManager.Instance.RandomNumber(0, 7);
+                                                    rare = (sbyte) ServerManager.Instance.RandomNumber(-2, 7);
                                                 }
                                                 //TODO add random rarity for some object
-                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
+                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
                                             }
                                         }
-                                        ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp?.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
                                     }
+                                    // Remove monster when raid is over
+                                    foreach (MapMonster e in evt.MapInstance.Monsters.Where(s => !s.IsBoss))
+                                    {
+                                        evt.MapInstance.DespawnMonster(e.MonsterVNum);
+                                    }
+                                    evt.MapInstance.WaveEvents.Clear();
 
-                                    Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(o =>
+                                    ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(
+                                        string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
+
+                                    Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(obj =>
+                                    {
+                                        ClientSession[] grpmembers = new ClientSession[40];
+                                        grp.Characters.ToList().CopyTo(grpmembers);
+                                        List<MapInstance> mapinstances = new List<MapInstance>();
+                                        foreach (ClientSession targetSession in grpmembers)
                                         {
-
-                                            ClientSession[] grpmembers = new ClientSession[40];
-                                            grp.Characters.CopyTo(grpmembers);
-                                            foreach (ClientSession targetSession in grpmembers)
+                                            if (targetSession == null)
                                             {
-                                                if (targetSession != null)
-                                                {
-                                                    if (targetSession.Character.Hp <= 0)
-                                                    {
-                                                        targetSession.Character.Hp = 1;
-                                                        targetSession.Character.Mp = 1;
-                                                    }
-                                                    targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
-                                                    targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
-                                                    targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
-                                                    grp.LeaveGroup(targetSession);
-                                                }
+                                                continue;
                                             }
-                                            ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                                            ServerManager.Instance.GroupsThreadSafe.Remove(grp.GroupId);
-                                            evt.MapInstance.Dispose();
-                                        });
+                                            if (targetSession.Character.Hp <= 0)
+                                            {
+                                                targetSession.Character.Hp = 1;
+                                                targetSession.Character.Mp = 1;
+                                            }
+                                            targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
+                                            targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
+                                            targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
+                                            if (!mapinstances.Any(s => s.MapInstanceId == targetSession?.CurrentMapInstance.MapInstanceId && s.MapInstanceType == MapInstanceType.RaidInstance))
+                                            {
+                                                mapinstances.Add(targetSession.CurrentMapInstance);
+                                            }
+                                            grp.LeaveGroup(targetSession);
+                                        }
+                                        ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
+                                        ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId, out Group _);
+                                        mapinstances.ForEach(s => s.Dispose());
+                                    });
                                 }
-                                break;
-                        }
-                        break;
+                            }
+                            break;
+                    }
+                    break;
 
-                    case EventActionType.MAPCLOCK:
-                        evt.MapInstance.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
-                        evt.MapInstance.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
-                        break;
+                case EventActionType.MAPCLOCK:
+                    evt.MapInstance.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
+                    evt.MapInstance.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
+                    break;
 
-                    case EventActionType.STARTCLOCK:
-                        Tuple<List<EventContainer>, List<EventContainer>> eve = (Tuple<List<EventContainer>, List<EventContainer>>)evt.Parameter;
+                case EventActionType.STARTCLOCK:
+                    Tuple<List<EventContainer>, List<EventContainer>> eve = (Tuple<List<EventContainer>, List<EventContainer>>)evt.Parameter;
+                    if (eve != null)
+                    {
                         evt.MapInstance.InstanceBag.Clock.StopEvents = eve.Item2;
                         evt.MapInstance.InstanceBag.Clock.TimeoutEvents = eve.Item1;
                         evt.MapInstance.InstanceBag.Clock.StartClock();
                         evt.MapInstance.Broadcast(evt.MapInstance.InstanceBag.Clock.GetClock());
-                        break;
+                    }
+                    break;
 
-                    case EventActionType.TELEPORT:
-                        Tuple<short, short, short, short> tp = (Tuple<short, short, short, short>)evt.Parameter;
-                        List<Character> characters = evt.MapInstance.GetCharactersInRange(tp.Item1, tp.Item2, 5).ToList();
-                        characters.ForEach(s =>
-                        {
-                            s.PositionX = tp.Item3;
-                            s.PositionY = tp.Item4;
-                            evt.MapInstance?.Broadcast(s.Session, s.GenerateTp(), ReceiverType.Group);
-                        });
-                        break;
+                case EventActionType.TELEPORT:
+                    Tuple<short, short, short, short> tp = (Tuple<short, short, short, short>)evt.Parameter;
+                    List<Character> characters = evt.MapInstance.GetCharactersInRange(tp.Item1, tp.Item2, 5).ToList();
+                    characters.ForEach(s =>
+                    {
+                        s.PositionX = tp.Item3;
+                        s.PositionY = tp.Item4;
+                        evt.MapInstance?.Broadcast(s.Session, s.GenerateTp(), ReceiverType.Group);
+                    });
+                    break;
 
-                    case EventActionType.STOPCLOCK:
-                        evt.MapInstance.InstanceBag.Clock.StopClock();
-                        evt.MapInstance.Broadcast(evt.MapInstance.InstanceBag.Clock.GetClock());
-                        break;
+                case EventActionType.STOPCLOCK:
+                    evt.MapInstance.InstanceBag.Clock.StopClock();
+                    evt.MapInstance.Broadcast(evt.MapInstance.InstanceBag.Clock.GetClock());
+                    break;
 
-                    case EventActionType.STARTMAPCLOCK:
-                        eve = (Tuple<List<EventContainer>, List<EventContainer>>)evt.Parameter;
+                case EventActionType.STARTMAPCLOCK:
+                    eve = (Tuple<List<EventContainer>, List<EventContainer>>)evt.Parameter;
+                    if (eve != null)
+                    {
                         evt.MapInstance.Clock.StopEvents = eve.Item2;
                         evt.MapInstance.Clock.TimeoutEvents = eve.Item1;
                         evt.MapInstance.Clock.StartClock();
                         evt.MapInstance.Broadcast(evt.MapInstance.Clock.GetClock());
-                        break;
+                    }
+                    break;
 
-                    case EventActionType.STOPMAPCLOCK:
-                        evt.MapInstance.Clock.StopClock();
-                        evt.MapInstance.Broadcast(evt.MapInstance.Clock.GetClock());
-                        break;
+                case EventActionType.STOPMAPCLOCK:
+                    evt.MapInstance.Clock.StopClock();
+                    evt.MapInstance.Broadcast(evt.MapInstance.Clock.GetClock());
+                    break;
 
-                    case EventActionType.SPAWNPORTAL:
-                        evt.MapInstance.CreatePortal((Portal)evt.Parameter);
-                        break;
+                case EventActionType.SPAWNPORTAL:
+                    evt.MapInstance.CreatePortal((Portal)evt.Parameter);
+                    break;
 
-                    case EventActionType.REFRESHMAPITEMS:
-                        evt.MapInstance.MapClear();
-                        break;
+                case EventActionType.REFRESHMAPITEMS:
+                    evt.MapInstance.MapClear();
+                    break;
 
-                    case EventActionType.NPCSEFFECTCHANGESTATE:
-                        evt.MapInstance.Npcs.ForEach(s => s.EffectActivated = (bool)evt.Parameter);
-                        break;
+                case EventActionType.NPCSEFFECTCHANGESTATE:
+                    evt.MapInstance.Npcs.ForEach(s => s.EffectActivated = (bool)evt.Parameter);
+                    break;
 
-                    case EventActionType.CHANGEPORTALTYPE:
-                        Tuple<int, PortalType> param = (Tuple<int, PortalType>)evt.Parameter;
-                        Portal portal = evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == param.Item1);
-                        if (portal != null)
-                        {
-                            portal.Type = (short)param.Item2;
-                        }
-                        break;
+                case EventActionType.CHANGEPORTALTYPE:
+                    Tuple<int, PortalType> param = (Tuple<int, PortalType>)evt.Parameter;
+                    Portal portal = evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == param.Item1);
+                    if (portal != null)
+                    {
+                        portal.Type = (short)param.Item2;
+                    }
+                    break;
 
-                    case EventActionType.CHANGEDROPRATE:
-                        evt.MapInstance.DropRate = (int)evt.Parameter;
-                        break;
+                case EventActionType.CHANGEDROPRATE:
+                    evt.MapInstance.DropRate = (int)evt.Parameter;
+                    break;
 
-                    case EventActionType.CHANGEXPRATE:
-                        evt.MapInstance.XpRate = (int)evt.Parameter;
-                        break;
+                case EventActionType.CHANGEXPRATE:
+                    evt.MapInstance.XpRate = (int)evt.Parameter;
+                    break;
 
-                    case EventActionType.DISPOSEMAP:
-                        evt.MapInstance.Dispose();
-                        break;
+                case EventActionType.DISPOSEMAP:
+                    evt.MapInstance.Dispose();
+                    break;
 
-                    case EventActionType.SPAWNBUTTON:
-                        evt.MapInstance.SpawnButton((MapButton)evt.Parameter);
-                        break;
+                case EventActionType.SPAWNBUTTON:
+                    evt.MapInstance.SpawnButton((MapButton)evt.Parameter);
+                    break;
 
-                    case EventActionType.UNSPAWNMONSTERS:
-                        evt.MapInstance.DespawnMonster((int)evt.Parameter);
-                        break;
+                case EventActionType.UNSPAWNMONSTERS:
+                    evt.MapInstance.DespawnMonster((int)evt.Parameter);
+                    break;
 
-                    case EventActionType.SPAWNMONSTERS:
-                        evt.MapInstance.SummonMonsters((List<MonsterToSummon>)evt.Parameter);
-                        break;
-                    case EventActionType.REFRESHRAIDGOAL:
-                        ClientSession cl = evt.MapInstance.Sessions.FirstOrDefault();
-                        if (cl?.Character != null)
-                        {
-                            ServerManager.Instance.Broadcast(cl, cl.Character?.Group.GeneraterRaidmbf(), ReceiverType.Group);
-                            ServerManager.Instance.Broadcast(cl, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEW_MISSION"), 0), ReceiverType.Group);
-                        }
-                        break;
-                    case EventActionType.SPAWNNPCS:
-                        evt.MapInstance.SummonNpcs((List<NpcToSummon>)evt.Parameter);
-                        break;
+                case EventActionType.SPAWNMONSTERS:
+                    evt.MapInstance.SummonMonsters(((ConcurrentBag<MonsterToSummon>)evt.Parameter).ToList());
+                    break;
+                case EventActionType.REFRESHRAIDGOAL:
+                    ClientSession cl = evt.MapInstance.Sessions.FirstOrDefault();
+                    if (cl?.Character != null)
+                    {
+                        ServerManager.Instance.Broadcast(cl, cl.Character?.Group?.GeneraterRaidmbf(), ReceiverType.Group);
+                        ServerManager.Instance.Broadcast(cl, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEW_MISSION"), 0), ReceiverType.Group);
+                    }
+                    break;
+                case EventActionType.SPAWNNPCS:
+                    evt.MapInstance.SummonNpcs((List<NpcToSummon>)evt.Parameter);
+                    break;
 
-                    case EventActionType.DROPITEMS:
-                        evt.MapInstance.DropItems((List<Tuple<short, int, short, short>>)evt.Parameter);
-                        break;
+                case EventActionType.DROPITEMS:
+                    evt.MapInstance.DropItems((List<Tuple<short, int, short, short>>)evt.Parameter);
+                    break;
 
-                    case EventActionType.THROWITEMS:
-                        Tuple<int, short, byte, int, int> parameters = (Tuple<int, short, byte, int, int>)evt.Parameter;
-                        evt.MapInstance.ThrowItems(parameters);
-                        break;
+                case EventActionType.THROWITEMS:
+                    Tuple<int, short, byte, int, int> parameters = (Tuple<int, short, byte, int, int>)evt.Parameter;
+                    if (monster != null)
+                    {
+                        parameters = new Tuple<int, short, byte, int, int>(monster.MapMonsterId, parameters.Item2, parameters.Item3, parameters.Item4, parameters.Item5);
+                    }
+                    evt.MapInstance.ThrowItems(parameters);
+                    break;
 
-                    case EventActionType.SPAWNONLASTENTRY:
-                        Character lastincharacter = evt.MapInstance.Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
-                        List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
-                        MapCell hornSpawn = new MapCell
-                        {
-                            X = lastincharacter?.PositionX ?? 154,
-                            Y = lastincharacter?.PositionY ?? 140
-                        };
-                        long hornTarget = lastincharacter?.CharacterId ?? -1;
-                        summonParameters.Add(new MonsterToSummon(Convert.ToInt16(evt.Parameter), hornSpawn, hornTarget, true));
-                        evt.MapInstance.SummonMonsters(summonParameters);
-                        break;
+                case EventActionType.SPAWNONLASTENTRY:
+                    Character lastincharacter = evt.MapInstance.Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
+                    List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
+                    MapCell hornSpawn = new MapCell
+                    {
+                        X = lastincharacter?.PositionX ?? 154,
+                        Y = lastincharacter?.PositionY ?? 140
+                    };
+                    long hornTarget = lastincharacter?.CharacterId ?? -1;
+                    summonParameters.Add(new MonsterToSummon(Convert.ToInt16(evt.Parameter), hornSpawn, hornTarget, true));
+                    evt.MapInstance.SummonMonsters(summonParameters);
+                    break;
 
-                        #endregion
-                }
+                #endregion
             }
         }
 

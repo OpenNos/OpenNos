@@ -14,6 +14,7 @@
 
 using OpenNos.Domain;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.Data
 {
@@ -25,6 +26,7 @@ namespace OpenNos.Data
 
         public string FamilyLogData { get; set; }
 
+        [Key]
         public long FamilyLogId { get; set; }
 
         public FamilyLogType FamilyLogType { get; set; }

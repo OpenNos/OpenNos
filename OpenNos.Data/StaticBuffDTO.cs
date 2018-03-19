@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class StaticBuffDTO : MappingBaseDTO
@@ -22,6 +24,7 @@ namespace OpenNos.Data
 
         public int RemainingTime { get; set; }
 
+        [Key]
         public long StaticBuffId { get; set; }
       
         public short CardId { get; set; }

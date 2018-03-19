@@ -42,7 +42,7 @@ namespace OpenNos.Test
             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
 
             // register for account login
-            CommunicationServiceClient.Instance.RegisterAccountLogin(account.AccountId, 12345);
+            CommunicationServiceClient.Instance.RegisterAccountLogin(account.AccountId, 12345, account.Name);
 
             // OpenNosEntryPoint -> LoadCharacterList
             client.ReceivePacket("12345");
@@ -207,7 +207,8 @@ namespace OpenNos.Test
 
         private static void CreateServerItems()
         {
-            DAOFactory.ItemDAO.Insert(new ItemDTO
+
+           ItemDTO item= new ItemDTO
             {
                 VNum = 1,
                 Class = 1,
@@ -223,17 +224,20 @@ namespace OpenNos.Test
                 MaximumAmmo = 100,
                 Name = "Wooden Stick",
                 Price = 70
-            });
-            DAOFactory.ItemDAO.Insert(new ItemDTO
+            };
+            DAOFactory.ItemDAO.InsertOrUpdate(ref item);
+           item = new ItemDTO
             {
                 VNum = 8,
                 EquipmentSlot = EquipmentType.SecondaryWeapon
-            });
-            DAOFactory.ItemDAO.Insert(new ItemDTO
+            };
+            DAOFactory.ItemDAO.InsertOrUpdate(ref item);
+           item = new ItemDTO
             {
                 VNum = 12,
                 EquipmentSlot = EquipmentType.Armor
-            });
+            };
+            DAOFactory.ItemDAO.InsertOrUpdate(ref item);
         }
 
         private static void CreateServerMaps()
@@ -263,38 +267,44 @@ namespace OpenNos.Test
                 }
             }
             testingMap.Data = mapData.ToArray();
-            DAOFactory.MapDAO.Insert(testingMap);
+            DAOFactory.MapDAO.InsertOrUpdate(ref testingMap);
         }
 
         private static void CreateServerSkills()
         {
-            DAOFactory.SkillDAO.Insert(new SkillDTO
+            SkillDTO skill = new SkillDTO
             {
                 SkillVNum = 200,
                 CastId = 0
-            });
-            DAOFactory.SkillDAO.Insert(new SkillDTO
+            };
+            DAOFactory.SkillDAO.InsertOrUpdate(ref skill);
+            skill = new SkillDTO
             {
                 SkillVNum = 201,
                 CastId = 1
-            });
-            DAOFactory.SkillDAO.Insert(new SkillDTO
+            };
+            DAOFactory.SkillDAO.InsertOrUpdate(ref skill);
+            skill = new SkillDTO
             {
                 SkillVNum = 209,
                 CastId = 2
-            });
+            };
+            DAOFactory.SkillDAO.InsertOrUpdate(ref skill);
         }
 
         private static void RegisterMappings()
         {
             // register mappings for items
+            DAOFactory.IteminstanceDAO.RegisterMapping(typeof(BoxInstance));
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(SpecialistInstance));
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.IteminstanceDAO.InitializeMapper(typeof(ItemInstance));
+            DAOFactory.IteminstanceDAO.RegisterMapping(typeof(ItemInstance));
+            DAOFactory.IteminstanceDAO.RegisterMapping(typeof(ItemInstanceDTO)).InitializeMapper();
+
 
             // entities
             DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
-            DAOFactory.CellonOptionDAO.RegisterMapping(typeof(CellonOptionDTO)).InitializeMapper();
+            DAOFactory.EquipmentOptionDAO.RegisterMapping(typeof(EquipmentOptionDTO)).InitializeMapper();
             DAOFactory.CharacterDAO.RegisterMapping(typeof(Character)).InitializeMapper();
             DAOFactory.CharacterSkillDAO.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();
             DAOFactory.ComboDAO.RegisterMapping(typeof(ComboDTO)).InitializeMapper();

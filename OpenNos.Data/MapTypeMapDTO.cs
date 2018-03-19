@@ -12,14 +12,23 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace OpenNos.Data
 {
     public class MapTypeMapDTO : MappingBaseDTO
     {
         #region Properties
-
+        [Key]
+        public object[] Key
+        {
+            get
+            {
+                return new object[] { MapId, MapTypeId };
+            }
+        }
         public short MapId { get; set; }
-
         public short MapTypeId { get; set; }
 
         #endregion

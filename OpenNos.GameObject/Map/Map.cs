@@ -16,9 +16,12 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.PathFinder;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
@@ -39,9 +42,9 @@ namespace OpenNos.GameObject
             Data = data;
             LoadZone();
             MapTypes = new List<MapTypeDTO>();
-            foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId).ToList())
+            foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.Where(s=>s.MapId == mapId).ToList())
             {
-                MapTypeDTO maptype = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
+                MapTypeDTO maptype = DAOFactory.MapTypeDAO.FirstOrDefault(s=>s.MapTypeId == maptypemap.MapTypeId);
                 MapTypes.Add(maptype);
             }
 
@@ -53,11 +56,11 @@ namespace OpenNos.GameObject
                     long? returnMapTypeId = MapTypes.ElementAt(0).ReturnMapTypeId;
                     if (respawnMapTypeId != null)
                     {
-                        DefaultRespawn = DAOFactory.RespawnMapTypeDAO.LoadById((long)respawnMapTypeId);
+                        DefaultRespawn = DAOFactory.RespawnMapTypeDAO.FirstOrDefault(s=>s.RespawnMapTypeId == respawnMapTypeId);
                     }
                     if (returnMapTypeId != null)
                     {
-                        DefaultReturn = DAOFactory.RespawnMapTypeDAO.LoadById((long)returnMapTypeId);
+                        DefaultReturn = DAOFactory.RespawnMapTypeDAO.FirstOrDefault(s => s.RespawnMapTypeId == returnMapTypeId);
                     }
                 }
             }
@@ -69,11 +72,13 @@ namespace OpenNos.GameObject
 
         public byte[] Data { get; set; }
 
-        public RespawnMapTypeDTO DefaultRespawn { get; private set; }
+        public RespawnMapTypeDTO DefaultRespawn { get; }
 
-        public RespawnMapTypeDTO DefaultReturn { get; private set; }
+        public RespawnMapTypeDTO DefaultReturn { get; }
 
-        public GridPos[,] Grid { get; set; }
+        public GridPos[,] Grid { get; private set; }
+        
+        private ConcurrentBag<MapCell> Cells { get; set; }
 
         public short MapId { get; set; }
 
@@ -107,60 +112,74 @@ namespace OpenNos.GameObject
             return (int)Heuristic.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
 
-        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true, bool isBoss = false)
+        public ConcurrentBag<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true, bool isBoss = false)
         {
-            List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
+            ConcurrentBag<MonsterToSummon> summonParameters = new ConcurrentBag<MonsterToSummon>();
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
-                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, isBonus: isBonus, isHostile: isHostile, isBoss: isBoss) {DeathEvents = deathEvents });
+                summonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, isBonus: isBonus, isHostile: isHostile, isBoss: isBoss) { DeathEvents = deathEvents });
             }
-            return SummonParameters;
+            return summonParameters;
         }
 
-        public List<NpcToSummon> GenerateNpcs(short vnum, short amount, List<EventContainer> deathEvents, bool isMate, bool isProtected)
+        public List<NpcToSummon> GenerateNpcs(short vnum, short amount, ConcurrentBag<EventContainer> deathEvents, bool isMate, bool isProtected)
         {
-            List<NpcToSummon> SummonParameters = new List<NpcToSummon>();
+            List<NpcToSummon> summonParameters = new List<NpcToSummon>();
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
-                SummonParameters.Add(new NpcToSummon(vnum, cell, -1, deathEvents, isMate: isMate, isProtected: isProtected));
+                summonParameters.Add(new NpcToSummon(vnum, cell, -1, deathEvents, isMate: isMate, isProtected: isProtected));
             }
-            return SummonParameters;
+            return summonParameters;
         }
 
         public MapCell GetRandomPosition()
         {
-            List<MapCell> cells = new List<MapCell>();
-            for (short y = 0; y <= YLength; y++)
+            if (Cells != null)
             {
-                for (short x = 0; x <= XLength; x++)
-                {
-                    if (!IsBlockedZone(x, y))
-                    {
-                        cells.Add(new MapCell { X = x, Y = y });
-                    }
-                }
+                return Cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
             }
-            return cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
+            Cells = new ConcurrentBag<MapCell>();
+            Parallel.For(0, YLength, y => Parallel.For(0, XLength, x =>
+            {
+                if (!IsBlockedZone(x, y))
+                {
+                    Cells.Add(new MapCell {X = (short) x, Y = (short) y});
+                }
+            }));
+            return Cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
         }
 
         public bool IsBlockedZone(int x, int y)
         {
             try
             {
-                if (Grid != null)
+                if (Grid == null)
                 {
-                    if (!Grid[x, y].IsWalkable())
-                    {
-                        return true;
-                    }
+                    return false;
                 }
-                return false;
+                return !Grid[x, y].IsWalkable();
             }
             catch
             {
                 return true;
+            }
+        }
+
+        public bool IsArenaPVPable(int x, int y)
+        {
+            try
+            {
+                if (Grid == null)
+                {
+                    return false;
+                }
+                return !Grid[x, y].IsArenaStairs();
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -185,12 +204,13 @@ namespace OpenNos.GameObject
             }
             foreach (MapCell cell in cells.OrderBy(s => _random.Next(int.MaxValue)))
             {
-                if (!IsBlockedZone(firstX, firstY, cell.X, cell.Y))
+                if (IsBlockedZone(firstX, firstY, cell.X, cell.Y))
                 {
-                    firstX = cell.X;
-                    firstY = cell.Y;
-                    return true;
+                    continue;
                 }
+                firstX = cell.X;
+                firstY = cell.Y;
+                return true;
             }
             return false;
         }

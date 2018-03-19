@@ -15,6 +15,7 @@
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.Data
 {
@@ -22,6 +23,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
+        [Key]
         public short CardId { get; set; }
 
         public int Duration { get; set; }

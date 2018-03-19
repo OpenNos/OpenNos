@@ -13,13 +13,14 @@
  */
 
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.Data
 {
     public class GeneralLogDTO : MappingBaseDTO
     {
         #region Properties
-
+        
         public long? AccountId { get; set; }
 
         public long? CharacterId { get; set; }
@@ -28,6 +29,7 @@ namespace OpenNos.Data
 
         public string LogData { get; set; }
 
+        [Key]
         public long LogId { get; set; }
 
         public string LogType { get; set; }

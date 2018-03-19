@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.GameObject
 {
@@ -39,6 +40,7 @@ namespace OpenNos.GameObject
 
         public short MapY { get; set; }
 
+        [Key]
         public long MinilandObjectId { get; set; }
 
         #endregion

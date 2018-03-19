@@ -33,14 +33,14 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
         {
             switch (Effect)
             {
                 case 0:
-                    if (Option == 0)
+                    if (option == 0)
                     {
-                        if (packetsplit.Length == 9)
+                        if (packetsplit != null && packetsplit.Length == 9)
                         {
                             BoxInstance box = session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot, InventoryType.Equipment);
                             if (box != null)
@@ -75,43 +75,51 @@ namespace OpenNos.GameObject
                                 List<ItemInstance> newInv = null;
                                 foreach (RollGeneratedItemDTO rollitem in roll)
                                 {
-                                    if (newInv == null)
+                                    if (newInv != null)
                                     {
-                                        currentrnd += rollitem.Probability;
-                                        if (currentrnd >= rnd)
-                                        {
-                                            newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
-                                            if (newInv.Any())
-                                            {
-                                                short Slot = inv.Slot;
-                                                if (Slot != -1)
-                                                {
-                                                    session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
-                                                    newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
-                                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
-                                                }
-                                            }
-                                        }
+                                        continue;
                                     }
+                                    currentrnd += rollitem.Probability;
+                                    if (currentrnd < rnd)
+                                    {
+                                        continue;
+                                    }
+                                    newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, Rare: box.Rare, Upgrade: rollitem.ItemGeneratedUpgrade);
+                                    if (!newInv.Any())
+                                    {
+                                        continue;
+                                    }
+                                    short slot = inv.Slot;
+                                    if (slot == -1)
+                                    {
+                                        continue;
+                                    }
+                                    session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {rollitem.ItemGeneratedAmount})", 12));
+                                    session.SendPacket($"rdi {rollitem.ItemGeneratedVNum} {rollitem.ItemGeneratedAmount}");
+                                    newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
+                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
                                 }
                             }
                             else if (box.HoldingVNum == 0)
                             {
-                                if (packetsplit.Length == 1)
+                                if (packetsplit != null && packetsplit.Length == 1)
                                 {
-                                    if (int.TryParse(packetsplit[0], out int PetId))
+                                    if (int.TryParse(packetsplit[0], out int petId))
                                     {
-                                        Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
-                                        box.HoldingVNum = mate.NpcMonsterVNum;
-                                        box.SpLevel = mate.Level;
-                                        box.SpDamage = mate.Attack;
-                                        box.SpDefence = mate.Defence;
-                                        session.Character.Mates.Remove(mate);
-                                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_STORED")));
-                                        session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
-                                        session.SendPackets(session.Character.GenerateScP());
-                                        session.SendPackets(session.Character.GenerateScN());
-                                        session.CurrentMapInstance?.Broadcast(mate.GenerateOut());
+                                        Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == petId);
+                                        if (mate != null)
+                                        {
+                                            box.HoldingVNum = mate.NpcMonsterVNum;
+                                            box.SpLevel = mate.Level;
+                                            box.SpDamage = mate.Attack;
+                                            box.SpDefence = mate.Defence;
+                                            session.Character.Mates.Remove(mate);
+                                            session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_STORED")));
+                                            session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
+                                            session.SendPackets(session.Character.GenerateScP());
+                                            session.SendPackets(session.Character.GenerateScN());
+                                            session.CurrentMapInstance?.Broadcast(mate.GenerateOut());
+                                        }
                                     }
                                 }
                             }
@@ -137,7 +145,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1:
-                    if (Option == 0)
+                    if (option == 0)
                     {
                         session.SendPacket($"qna #guri^300^8023^{inv.Slot} {Language.Instance.GetMessageFromKey("ASK_RELEASE_PET")}");
                     }
@@ -197,8 +205,8 @@ namespace OpenNos.GameObject
                                         specialist.Upgrade = box.Upgrade;
                                         specialist.XP = box.XP;
                                     }
-                                    short Slot = inv.Slot;
-                                    if (Slot != -1)
+                                    short slot = inv.Slot;
+                                    if (slot != -1)
                                     {
                                         if (specialist != null)
                                         {
@@ -235,8 +243,8 @@ namespace OpenNos.GameObject
                                     {
                                         fairy.ElementRate = box.ElementRate;
                                     }
-                                    short Slot = inv.Slot;
-                                    if (Slot != -1)
+                                    short slot = inv.Slot;
+                                    if (slot != -1)
                                     {
                                         if (fairy != null)
                                         {
@@ -267,8 +275,8 @@ namespace OpenNos.GameObject
                                 List<ItemInstance> newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
                                 if (newInv.Any())
                                 {
-                                    short Slot = inv.Slot;
-                                    if (Slot != -1)
+                                    short slot = inv.Slot;
+                                    if (slot != -1)
                                     {
                                         session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
                                         newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));

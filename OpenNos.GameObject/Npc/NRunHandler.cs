@@ -21,6 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
+using System.Collections.Concurrent;
 
 namespace OpenNos.GameObject
 {
@@ -36,6 +39,7 @@ namespace OpenNos.GameObject
             }
             MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == packet.NpcId);
             TeleporterDTO tp;
+            Random rand = new Random();
             switch (packet.Runner)
             {
                 case 1:
@@ -53,7 +57,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (Session.Character.Inventory.GetAllItems().All(i => i.Type != InventoryType.Wear))
+                    if (Session.Character.Inventory.All(i => i.Value.Type != InventoryType.Wear))
                     {
                         Session.Character.Inventory.AddNewToInventory((short)(4 + packet.Type * 14), type: InventoryType.Wear);
                         Session.Character.Inventory.AddNewToInventory((short)(81 + packet.Type * 13), type: InventoryType.Wear);
@@ -265,7 +269,7 @@ namespace OpenNos.GameObject
                 case 17:
                     double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
                     double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-                    if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstance)
+                    if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstance || Session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance)
                     {
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                         return;
@@ -275,7 +279,8 @@ namespace OpenNos.GameObject
                         Session.Character.LastPortal = currentRunningSeconds;
                         Session.Character.Gold -= 500 * (1 + packet.Type);
                         Session.SendPacket(Session.Character.GenerateGold());
-                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, packet.Type == 0 ? ServerManager.Instance.ArenaInstance.MapInstanceId : ServerManager.Instance.FamilyArenaInstance.MapInstanceId, packet.Type == 0 ? ServerManager.Instance.ArenaInstance.Map.GetRandomPosition().X : ServerManager.Instance.FamilyArenaInstance.Map.GetRandomPosition().X, packet.Type == 0 ? ServerManager.Instance.ArenaInstance.Map.GetRandomPosition().Y : ServerManager.Instance.FamilyArenaInstance.Map.GetRandomPosition().Y);
+                        ServerManager.Instance.TeleportOnRandomPlaceInMap(Session,
+                            packet.Type == 0 ? ServerManager.Instance.ArenaInstance.MapInstanceId : ServerManager.Instance.FamilyArenaInstance.MapInstanceId);
                     }
                     else
                     {
@@ -330,6 +335,66 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                case 137:
+                    Session.SendPacket("taw_open");
+                    break;
+
+                case 138:
+                    ConcurrentBag<ArenaTeamMember> at = ServerManager.Instance.ArenaTeams.OrderBy(s => rand.Next()).FirstOrDefault();
+                    if (at != null)
+                    {
+                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, at.FirstOrDefault(s => s.Session != null).Session.CurrentMapInstance.MapInstanceId, 69, 100);
+
+                        ArenaTeamMember zenas = at.OrderBy(s => s.Order).FirstOrDefault(s => s.Session != null && !s.Dead && s.ArenaTeamType == ArenaTeamType.ZENAS);
+                        ArenaTeamMember erenia = at.OrderBy(s => s.Order).FirstOrDefault(s => s.Session != null && !s.Dead && s.ArenaTeamType == ArenaTeamType.ERENIA);
+                        Session.SendPacket(erenia.Session.Character.GenerateTaM(0));
+                        Session.SendPacket(erenia.Session.Character.GenerateTaM(3));
+                        Session.SendPacket("taw_sv 0");
+                        Session.SendPacket(zenas.Session.Character.GenerateTaP(0, true));
+                        Session.SendPacket(erenia.Session.Character.GenerateTaP(2, true));
+                        Session.SendPacket(zenas.Session.Character.GenerateTaFc(0));
+                        Session.SendPacket(erenia.Session.Character.GenerateTaFc(1));
+                    }
+                    else
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_TALENT_ARENA")));
+                    }
+                    break;
+                case 135:
+                    if (!ServerManager.Instance.StartedEvents.Contains(EventType.TALENTARENA))
+                    {
+                        Session.SendPacket(npc?.GenerateSay(Language.Instance.GetMessageFromKey("ARENA_NOT_OPEN"), 10));
+                    }
+                    else
+                    {
+                        int tickets = 5 - Session.Character.GeneralLogs.Count(s => s.LogType == "TalentArena" && s.Timestamp.Date == DateTime.Today);
+                        if (ServerManager.Instance.ArenaMembers.All(s => s.Session != Session) && tickets > 0)
+                        {
+                            if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId))
+                            {
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TALENT_ARENA_GROUP"), 0));
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TALENT_ARENA_GROUP"), 10));
+                            }
+                            else
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ARENA_TICKET_LEFT"), tickets), 10));
+                                ServerManager.Instance.ArenaMembers.Add(new ArenaMember
+                                {
+                                    ArenaType = EventType.TALENTARENA,
+                                    Session = Session,
+                                    GroupId = null,
+                                    Time = 0
+                                });
+                            }
+                        }
+                        else
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TALENT_ARENA_NO_MORE_TICKET"), 0));
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TALENT_ARENA_NO_MORE_TICKET"), 10));
+                        }
+                    }
+                    break;
+
                 case 150:
                     if (npc != null)
                     {
@@ -359,7 +424,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 301:
-                        tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                    tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                     if (tp != null)
                     {
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
@@ -479,13 +544,10 @@ namespace OpenNos.GameObject
                     {
                         if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
                         {
-                            foreach (ClientSession s in Session.Character.Group.Characters)
+                            if (Session.Character.Group.Characters.Any(s => s.Character.Family != null))
                             {
-                                if (s.Character.Family != null)
-                                {
-                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_MEMBER_ALREADY_IN_FAMILY")));
-                                    return;
-                                }
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_MEMBER_ALREADY_IN_FAMILY")));
+                                return;
                             }
                         }
                         if (Session.Character.Group == null || Session.Character.Group.CharacterCount != 3)
@@ -524,19 +586,53 @@ namespace OpenNos.GameObject
                     Session.SendPacket($"wopen 32 {Medal} {Time}");
                     break;
 
-                case 5002:
-                    tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
-                    if (tp != null)
-                    {
-                        Session.SendPacket("it 3");
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
-                    }
-                    break;
-
                 case 5001:
                     if (npc != null)
                     {
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 130, 12, 40);
+                        MapInstance map = null;
+                        switch (Session.Character.Faction)
+                        {
+                            case FactionType.Neutral:
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("NEED_FACTION_ACT4"));
+                                return;
+                            case FactionType.Angel:
+                                map = ServerManager.Instance.Act4ShipAngel;
+
+                                break;
+                            case FactionType.Demon:
+                                map = ServerManager.Instance.Act4ShipDemon;
+
+                                break;
+                        }
+                        if (map == null || !npc.EffectActivated)
+                        {
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHIP_NOTARRIVED"), 0));
+                            return;
+                        }
+                        if (3000 > Session.Character.Gold)
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                            return;
+                        }
+                        Session.Character.Gold -= 3000;
+                        MapCell pos = map.Map.GetRandomPosition();
+                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, map.MapInstanceId, pos.X, pos.Y);
+                    }
+                    break;
+
+                case 5002:
+                    if (npc != null)
+                    {
+                        tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
+                        if (tp != null)
+                        {
+                            Session.SendPacket("it 3");
+                            SerializableWorldServer connection = CommunicationServiceClient.Instance.GetPreviousChannelByAccountId(Session.Account.AccountId);
+                            Session.Character.MapId = tp.MapId;
+                            Session.Character.MapX = tp.MapX;
+                            Session.Character.MapY = tp.MapY;
+                            Session.Character.ChangeChannel(connection.EndPointIp, connection.EndPointPort, 3);
+                        }
                     }
                     break;
 

@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class PortalDTO : MappingBaseDTO
@@ -26,6 +28,7 @@ namespace OpenNos.Data
 
         public bool IsDisabled { get; set; }
 
+        [Key]
         public int PortalId { get; set; }
 
         public short SourceMapId { get; set; }

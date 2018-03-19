@@ -1,6 +1,7 @@
 ﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.Data
 {
@@ -31,6 +32,7 @@ namespace OpenNos.Data
 
         public ScsTcpEndPoint Endpoint { get; set; }
 
+        [Key]
         public Guid Id { get; set; }
 
         #endregion

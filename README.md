@@ -1,4 +1,15 @@
-[<img src="https://discordapp.com/api/guilds/210791003735457793/widget.png?style=shield">](https://discord.gg/qdPMDv5)
+<div align="center">
+<b>OpenNos</b>
+  <br/>
+  Continued by NosWings Developers
+  <br/>
+  <a href="https://noswings.fr">
+    <img height="300px" src="https://noswings.fr/assets/img/logo_full.png">
+  </a>
+  <br/>
+<br/>
+</div>
+<br/><br/><br/><br/><br/>
 
 # Information! #
 A master branch is to which we will push only stable changes that got confirmed, we develop now on dev branch, please dont ask for help with using dev branch, its unstable and designed only for advanced users.
@@ -32,3 +43,4 @@ http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409
 - Go to Tools -> NuGet Package Manager -> Package Manager Console
 - Choose Project OpenNos.DAL.EF
 - Type 'update-database' and update the Database
+

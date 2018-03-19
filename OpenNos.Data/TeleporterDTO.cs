@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class TeleporterDTO : MappingBaseDTO
@@ -28,6 +30,7 @@ namespace OpenNos.Data
 
         public short MapY { get; set; }
 
+        [Key]
         public short TeleporterId { get; set; }
 
         #endregion
