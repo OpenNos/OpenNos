@@ -82,7 +82,7 @@ namespace OpenNos.DAL.EF
 
         public bool ExchangeBlocked { get; set; }
 
-        public int Faction { get; set; }
+        public byte Faction { get; set; }
 
         public virtual ICollection<FamilyCharacter> FamilyCharacter { get; set; }
 

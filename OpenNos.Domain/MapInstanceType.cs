@@ -21,6 +21,11 @@ namespace OpenNos.Domain
         LodInstance,
         TimeSpaceInstance,
         RaidInstance,
-        FamilyRaidInstance
+        FamilyRaidInstance,
+        TalentArenaMapInstance,
+        Act4Instance,
+        IceBreakerInstance,
+        RainbowBattleInstance,
+        ArenaInstance
     }
 }

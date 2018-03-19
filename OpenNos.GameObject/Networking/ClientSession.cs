@@ -25,6 +25,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using OpenNos.Master.Library.Data;
 
 namespace OpenNos.GameObject
 {
@@ -36,12 +37,12 @@ namespace OpenNos.GameObject
 
         private static EncryptionBase _encryptor;
         private Character _character;
-        private INetworkClient _client;
+        private readonly INetworkClient _client;
         private IDictionary<string, HandlerMethodReference> _handlerMethods;
         private Random _random;
-        private ConcurrentQueue<byte[]> _receiveQueue;
+        private readonly ConcurrentQueue<byte[]> _receiveQueue;
         private object _receiveQueueObservable;
-        private IList<string> _waitForPacketList = new List<string>();
+        private readonly IList<string> _waitForPacketList = new List<string>();
 
         // Packetwait Packets
         private int? _waitForPacketsAmount;
@@ -125,7 +126,7 @@ namespace OpenNos.GameObject
 
         public bool HasSession => _client != null;
 
-        public string IpAddress => _client.IpAddress;
+        public string IpAddress => _client.IpAddress.Contains("tcp://") ? _client.IpAddress.Replace("tcp://", "") : _client.IpAddress;
 
         public bool IsAuthenticated { get; set; }
 
@@ -165,7 +166,7 @@ namespace OpenNos.GameObject
 
         public void Destroy()
         {
-            // unregister from WCF events
+            // unregister from events
             CommunicationServiceClient.Instance.CharacterConnectedEvent -= OnOtherCharacterConnected;
             CommunicationServiceClient.Instance.CharacterDisconnectedEvent -= OnOtherCharacterDisconnected;
 
@@ -176,17 +177,19 @@ namespace OpenNos.GameObject
                 if (Character.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance || Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                 {
                     Character.MapInstance.InstanceBag.DeadList.Add(Character.CharacterId);
-                    if(Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    if (Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                     {
-                        Character?.Group?.Characters.ForEach(s =>
+                        Character?.Group?.Characters.ToList().ForEach(s =>
                         {
                             s.SendPacket(s.Character.Group.GeneraterRaidmbf());
                             s.SendPacket(s.Character.Group.GenerateRdlst());
                         });
                     }
                 }
-                ServerManager.Instance.RemoveMapInstance(Character.Miniland.MapInstanceId);
-
+                if (Character?.Miniland != null)
+                {
+                    ServerManager.Instance.RemoveMapInstance(Character.Miniland.MapInstanceId);
+                }
                 // TODO Check why ExchangeInfo.TargetCharacterId is null Character.CloseTrade();
                 // disconnect client
                 CommunicationServiceClient.Instance.DisconnectCharacter(ServerManager.Instance.WorldId, Character.CharacterId);
@@ -227,10 +230,18 @@ namespace OpenNos.GameObject
             GenerateHandlerReferences(packetHandler, isWorldServer);
         }
 
-        public void InitializeAccount(Account account)
+        public void InitializeAccount(Account account, bool crossServer = false)
         {
             Account = account;
-            CommunicationServiceClient.Instance.ConnectAccount(ServerManager.Instance.WorldId, account.AccountId, SessionId);
+            if (crossServer)
+            {
+                CommunicationServiceClient.Instance.ConnectAccountInternal(ServerManager.Instance.WorldId, account.AccountId, SessionId);
+            }
+            else
+            {
+                CommunicationServiceClient.Instance.ConnectAccount(ServerManager.Instance.WorldId, account.AccountId, SessionId);
+
+            }
             IsAuthenticated = true;
         }
 
@@ -291,7 +302,7 @@ namespace OpenNos.GameObject
         {
             Character = character;
 
-            // register WCF events
+            // register events
             CommunicationServiceClient.Instance.CharacterConnectedEvent += OnOtherCharacterConnected;
             CommunicationServiceClient.Instance.CharacterDisconnectedEvent += OnOtherCharacterDisconnected;
 
@@ -300,7 +311,7 @@ namespace OpenNos.GameObject
             // register for servermanager
             ServerManager.Instance.RegisterSession(this);
             Character.SetSession(this);
-            Character.Buff = new List<Buff>();
+            Character.Buff = new ConcurrentBag<Buff>();
         }
 
         private void ClearReceiveQueue()
@@ -362,7 +373,7 @@ namespace OpenNos.GameObject
                     string sessionPacket = _encryptor.DecryptCustomParameter(packetData);
 
                     string[] sessionParts = sessionPacket.Split(' ');
-                    if (!sessionParts.Any())
+                    if (sessionParts.Length == 0)
                     {
                         return;
                     }
@@ -377,26 +388,27 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (int.TryParse(sessionParts[1].Split('\\').FirstOrDefault(), out int sessid))
+                    if (!int.TryParse(sessionParts[1].Split('\\').FirstOrDefault(), out int sessid))
                     {
-                        SessionId = sessid;
-                        Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), SessionId);
+                        return;
+                    }
+                    SessionId = sessid;
+                    Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), SessionId);
 
-                        if (!_waitForPacketsAmount.HasValue)
-                        {
-                            TriggerHandler("OpenNos.EntryPoint", string.Empty, false);
-                        }
+                    if (!_waitForPacketsAmount.HasValue)
+                    {
+                        TriggerHandler("OpenNos.EntryPoint", string.Empty, false);
                     }
                     return;
                 }
 
                 string packetConcatenated = _encryptor.Decrypt(packetData, SessionId);
 
-                foreach (string packet in packetConcatenated.Split(new[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (string packet in packetConcatenated.Split(new[] {(char) 0xFF}, StringSplitOptions.RemoveEmptyEntries))
                 {
                     string packetstring = packet.Replace('^', ' ');
                     string[] packetsplit = packetstring.Split(' ');
-
+                    
                     if (_encryptor.HasCustomParameter)
                     {
                         // keep alive
@@ -421,41 +433,45 @@ namespace OpenNos.GameObject
 
                         if (_waitForPacketsAmount.HasValue)
                         {
-                            if (_waitForPacketList.Count != _waitForPacketsAmount - 1)
+                            _waitForPacketList.Add(packetstring);
+                            string[] packetssplit = packetstring.Split(' ');
+                            if (packetssplit.Length > 3 && packetsplit[1] == "DAC")
                             {
-                                _waitForPacketList.Add(packetstring);
+                                _waitForPacketList.Add("0 CrossServerAuthenticate");
                             }
-                            else
+                            if (_waitForPacketList.Count != _waitForPacketsAmount)
                             {
-                                _waitForPacketList.Add(packetstring);
-                                _waitForPacketsAmount = null;
-                                string queuedPackets = string.Join(" ", _waitForPacketList.ToArray());
-                                string header = queuedPackets.Split(' ', '^')[1];
-                                TriggerHandler(header, queuedPackets, true);
-                                _waitForPacketList.Clear();
-                                return;
+                                continue;
                             }
+                            _waitForPacketsAmount = null;
+                            string queuedPackets = string.Join(" ", _waitForPacketList.ToArray());
+                            string header = queuedPackets.Split(' ', '^')[1];
+                            TriggerHandler(header, queuedPackets, true);
+                            _waitForPacketList.Clear();
+                            return;
                         }
-                        else
+                        if (packetsplit.Length <= 1)
                         {
-                            if (packetsplit.Length > 1)
-                            {
-                                if (packetsplit[1].Length >= 1 && (packetsplit[1][0] == '/' || packetsplit[1][0] == ':' || packetsplit[1][0] == ';'))
-                                {
-                                    packetsplit[1] = packetsplit[1][0].ToString();
-                                    packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
-                                }
-                                if (packetsplit[1] != "0")
-                                {
-                                    TriggerHandler(packetsplit[1].Replace("#", ""), packetstring, false);
-                                }
-                            }
+                            continue;
+                        }
+                        if (packetsplit[1].Length >= 1 && (packetsplit[1][0] == '/' || packetsplit[1][0] == ':' || packetsplit[1][0] == ';'))
+                        {
+                            packetsplit[1] = packetsplit[1][0].ToString();
+                            packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
+                        }
+                        if (packetsplit[1] != "0")
+                        {
+                            TriggerHandler(packetsplit[1].Replace("#", ""), packetstring, false);
                         }
                     }
                     else
                     {
                         string packetHeader = packetstring.Split(' ')[0];
-
+                        if (string.IsNullOrWhiteSpace(packetHeader))
+                        {
+                            Disconnect();
+                            return;
+                        }
                         // simple messaging
                         if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
                         {
@@ -476,8 +492,7 @@ namespace OpenNos.GameObject
         /// <param name="e"></param>
         private void OnNetworkClientMessageReceived(object sender, MessageEventArgs e)
         {
-            ScsRawDataMessage message = e.Message as ScsRawDataMessage;
-            if (message == null)
+            if (!(e.Message is ScsRawDataMessage message))
             {
                 return;
             }
@@ -512,18 +527,24 @@ namespace OpenNos.GameObject
         private void OnOtherCharacterDisconnected(object sender, EventArgs e)
         {
             Tuple<long, string> loggedOutCharacter = (Tuple<long, string>)sender;
-            if (Character.IsFriendOfCharacter(loggedOutCharacter.Item1))
+            if (!Character.IsFriendOfCharacter(loggedOutCharacter.Item1))
             {
-                if (Character != null && Character.CharacterId != loggedOutCharacter.Item1)
-                {
-                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item2), 10));
-                    _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item1, false));
-                }
+                return;
             }
+            if (Character == null || Character.CharacterId == loggedOutCharacter.Item1)
+            {
+                return;
+            }
+            _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item2), 10));
+            _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item1, false));
         }
 
         private void TriggerHandler(string packetHeader, string packet, bool force)
         {
+            if (ServerManager.Instance.InShutdown)
+            {
+                return;
+            }
             if (!IsDisposing)
             {
                 HandlerMethodReference methodReference = HandlerMethods.ContainsKey(packetHeader) ? HandlerMethods[packetHeader] : null;
@@ -538,30 +559,33 @@ namespace OpenNos.GameObject
                     }
                     try
                     {
-                        if (HasSelectedCharacter || methodReference.ParentHandler.GetType().Name == "CharacterScreenPacketHandler" || methodReference.ParentHandler.GetType().Name == "LoginPacketHandler")
+                        if (!HasSelectedCharacter && methodReference.ParentHandler.GetType().Name != "CharacterScreenPacketHandler" &&
+                            methodReference.ParentHandler.GetType().Name != "LoginPacketHandler")
                         {
-                            // call actual handler method
-                            if (methodReference.PacketDefinitionParameterType != null)
+                            return;
+                        }
+                        // call actual handler method
+                        if (methodReference.PacketDefinitionParameterType != null)
+                        {
+                            //check for the correct authority
+                            if (IsAuthenticated && (byte) methodReference.Authority > (byte) Account.Authority)
                             {
-                                //check for the correct authority
-                                if (!IsAuthenticated || (byte)methodReference.Authority <= (byte)Account.Authority)
-                                {
-                                    object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, IsAuthenticated);
+                                return;
+                            }
+                            object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, IsAuthenticated);
 
-                                    if (deserializedPacket != null || methodReference.PassNonParseablePacket)
-                                    {
-                                        methodReference.HandlerMethod(methodReference.ParentHandler, deserializedPacket);
-                                    }
-                                    else
-                                    {
-                                        Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CORRUPT_PACKET"), packetHeader, packet);
-                                    }
-                                }
+                            if (deserializedPacket != null || methodReference.PassNonParseablePacket)
+                            {
+                                methodReference.HandlerMethod(methodReference.ParentHandler, deserializedPacket);
                             }
                             else
                             {
-                                methodReference.HandlerMethod(methodReference.ParentHandler, packet);
+                                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CORRUPT_PACKET"), packetHeader, packet);
                             }
+                        }
+                        else
+                        {
+                            methodReference.HandlerMethod(methodReference.ParentHandler, packet);
                         }
                     }
                     catch (DivideByZeroException ex)

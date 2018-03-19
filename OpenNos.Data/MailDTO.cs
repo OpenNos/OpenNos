@@ -14,9 +14,11 @@
 
 using OpenNos.Domain;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.Data
 {
+    [Serializable]
     public class MailDTO : MappingBaseDTO
     {
         #region Properties
@@ -37,6 +39,7 @@ namespace OpenNos.Data
 
         public bool IsSenderCopy { get; set; }
 
+        [Key]
         public long MailId { get; set; }
 
         public string Message { get; set; }

@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
 using OpenNos.Domain;
 
 namespace OpenNos.Data
@@ -28,8 +29,9 @@ namespace OpenNos.Data
 
         public int Experience { get; set; }
 
+        [Key]
         public long FamilyCharacterId { get; set; }
-
+        
         public long FamilyId { get; set; }
 
         public FamilyMemberRank Rank { get; set; }

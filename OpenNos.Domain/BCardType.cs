@@ -83,8 +83,8 @@ namespace OpenNos.Domain
             LordHatus = 53,
             LordCalvinas = 54,
             SESpecialist = 55,
-            FourthGlacernonFamilyRaid = 56,
-            SummonedMonsterAttack = 57,
+            SummonedMonsterAttack = 56,
+            FourthGlacernonFamilyRaid = 57,
             BearSpirit = 58,
             SummonSkill = 59,
             InflictSkill = 60,
@@ -116,7 +116,9 @@ namespace OpenNos.Domain
 
             AngerSkill = 82,
             MeteoriteTeleport = 83,
-            StealBuff = 84
+            StealBuff = 84,
+
+            SPSL = 200,
         }
     }
 
@@ -212,7 +214,7 @@ namespace OpenNos.Domain
             WaterIncreased = 21,
             WaterDecreased = 22,
             LightIncreased = 31,
-            Light5Decreased = 32,
+            LightDecreased = 32,
             DarkIncreased = 41,
             DarkDecreased = 42,
             AllIncreased = 51,
@@ -1087,6 +1089,16 @@ namespace OpenNos.Domain
             ChanceSummonOnyxDragonNegated = 32,
             StealGoodEffect = 41,
             StealGoodEffectNegated = 42
+        }
+
+
+        public enum SPSL : byte
+        {
+            Attack,
+            Defense,
+            Element,
+            HPMP,
+            All
         }
 
         // end!

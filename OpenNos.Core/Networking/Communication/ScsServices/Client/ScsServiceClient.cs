@@ -215,7 +215,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// </summary>
         private void OnConnected()
         {
-            var handler = Connected;
+            EventHandler handler = Connected;
             handler?.Invoke(this, EventArgs.Empty);
         }
 
@@ -224,7 +224,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// </summary>
         private void OnDisconnected()
         {
-            var handler = Disconnected;
+            EventHandler handler = Disconnected;
             handler?.Invoke(this, EventArgs.Empty);
         }
 
@@ -237,7 +237,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         private void RequestReplyMessenger_MessageReceived(object sender, MessageEventArgs e)
         {
             // Cast message to ScsRemoteInvokeMessage and check it
-            var invokeMessage = e.Message as ScsRemoteInvokeMessage;
+            ScsRemoteInvokeMessage invokeMessage = e.Message as ScsRemoteInvokeMessage;
             if (invokeMessage == null)
             {
                 return;
@@ -254,13 +254,13 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
             object returnValue;
             try
             {
-                var type = _clientObject.GetType();
-                var method = type.GetMethod(invokeMessage.MethodName);
+                Type type = _clientObject.GetType();
+                MethodInfo method = type.GetMethod(invokeMessage.MethodName);
                 returnValue = method.Invoke(_clientObject, invokeMessage.Parameters);
             }
             catch (TargetInvocationException ex)
             {
-                var innerEx = ex.InnerException;
+                Exception innerEx = ex.InnerException;
                 if (innerEx != null)
                 {
                     SendInvokeResponse(invokeMessage, null, new ScsRemoteException(innerEx.Message, innerEx));

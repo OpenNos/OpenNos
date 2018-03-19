@@ -13,6 +13,8 @@
  */
 
 using System;
+using System.Collections.Generic;
+using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
@@ -48,6 +50,8 @@ namespace OpenNos.GameObject
         public short PositionX { get; set; }
 
         public short PositionY { get; set; }
+
+        public List<EquipmentOptionDTO> EquipmentOptions;
 
         public virtual long TransportId
         {

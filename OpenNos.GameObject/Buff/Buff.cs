@@ -30,6 +30,11 @@ namespace OpenNos.GameObject
         public int RemainingTime { get; set; }
         public DateTime Start { get; set; }
 
+        public Buff(int id)
+        {
+            Card = ServerManager.Instance.Cards.FirstOrDefault(s => s.CardId == id);
+        }
+
         public Buff(int id, byte level)
         {
             Card = ServerManager.Instance.Cards.FirstOrDefault(s => s.CardId == id);

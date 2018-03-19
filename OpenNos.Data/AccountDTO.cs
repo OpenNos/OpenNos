@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
 using OpenNos.Domain;
 
 namespace OpenNos.Data
@@ -20,6 +21,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
+        [Key]
         public long AccountId { get; set; }
 
         public AuthorityType Authority { get; set; }

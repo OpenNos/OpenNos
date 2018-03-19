@@ -5,7 +5,7 @@ using System.Reactive.Linq;
 
 namespace OpenNos.GameObject
 {
-    public class Clock
+    public class Clock : IDisposable
     {
         #region Instantiation
 
@@ -15,16 +15,18 @@ namespace OpenNos.GameObject
             TimeoutEvents = new List<EventContainer>();
             Type = type;
             DeciSecondRemaining = 1;
-            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(
-           x =>
-           {
-               Tick();
-           });
+            TickObservable = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(
+            x =>
+            {
+                Tick();
+            });
         }
 
         #endregion
 
         #region Properties
+
+        public IDisposable TickObservable { get; set; }
 
         public int BasesSecondRemaining { get; set; }
 
@@ -38,13 +40,18 @@ namespace OpenNos.GameObject
 
         public byte Type { get; set; }
 
+        public void Dispose()
+        {
+            TickObservable.Dispose();
+        }
+
         #endregion
 
         #region Methods
 
         public string GetClock()
         {
-            return $"evnt {Type} {(Enabled ? 0 : (Type != 3) ? -1 : 1)} {DeciSecondRemaining} {BasesSecondRemaining}";
+            return $"evnt {Type} {(Enabled ? 0 : Type != 3 ? -1 : 1)} {DeciSecondRemaining} {BasesSecondRemaining}";
         }
 
         public void StartClock()

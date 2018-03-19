@@ -13,6 +13,7 @@
  */
 
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.Data
 {
@@ -20,9 +21,10 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public byte Amount { get; set; }
-
+        [Key]
         public long BazaarItemId { get; set; }
+
+        public byte Amount { get; set; }
 
         public DateTime DateStart { get; set; }
 

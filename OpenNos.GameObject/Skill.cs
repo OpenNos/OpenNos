@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System.Collections.Concurrent;
 using OpenNos.DAL;
 using OpenNos.Data;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace OpenNos.GameObject
         public Skill()
         {
             Combos = new List<ComboDTO>();
-            BCards = new List<BCard>();
+            BCards = new ConcurrentBag<BCard>();
         }
 
         #endregion
@@ -33,7 +34,8 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<ComboDTO> Combos { get; set; }
-        public List<BCard> BCards { get; set; }
+
+        public ConcurrentBag<BCard> BCards { get; set; }
 
         #endregion
 

@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
 using OpenNos.Domain;
 
 namespace OpenNos.Data
@@ -22,6 +23,7 @@ namespace OpenNos.Data
 
         public long CharacterId { get; set; }
 
+        [Key]
         public long CharacterRelationId { get; set; }
 
         public long RelatedCharacterId { get; set; }

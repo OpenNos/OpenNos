@@ -19,6 +19,7 @@ namespace OpenNos.Domain
         Normal,
         Reduced,
         Free,
-        Drop
+        Drop,
+        Success
     }
 }

@@ -10,11 +10,8 @@ namespace OpenNos.GameObject.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public byte Page { get; set; }
-
-        [PacketIndex(1, SerializeToEnd = true)]
-        public string Name { get; set; }
+        [PacketIndex(0, SerializeToEnd = true)]
+        public string Data { get; set; }
 
         public static string ReturnHelp()
         {

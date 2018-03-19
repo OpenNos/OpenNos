@@ -108,7 +108,7 @@ namespace OpenNos.GameObject
                         {
                             ServerManager.Instance.GroupLeave(session);
                         }
-
+                        session.Character.LeaveTalentArena(true);
                         session.Character.Save();
                     }
                 }

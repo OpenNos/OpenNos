@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class DropDTO : MappingBaseDTO
@@ -22,6 +24,7 @@ namespace OpenNos.Data
 
         public int DropChance { get; set; }
 
+        [Key]
         public short DropId { get; set; }
 
         public short ItemVNum { get; set; }

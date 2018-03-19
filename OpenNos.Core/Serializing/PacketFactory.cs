@@ -36,7 +36,7 @@ namespace OpenNos.Core
         {
             try
             {
-                var serializationInformation = GetSerializationInformation(packetType);
+                KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformation = GetSerializationInformation(packetType);
                 PacketDefinition deserializedPacket = (PacketDefinition)Activator.CreateInstance(packetType); // reflection is bad, improve?
                 SetDeserializationInformations(deserializedPacket, packetContent, serializationInformation.Key.Item2);
                 deserializedPacket = Deserialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
@@ -62,7 +62,7 @@ namespace OpenNos.Core
         {
             try
             {
-                var serializationInformation = GetSerializationInformation(typeof(TPacket));
+                KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformation = GetSerializationInformation(typeof(TPacket));
                 TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); // reflection is bad, improve?
                 SetDeserializationInformations(deserializedPacket, packetContent, serializationInformation.Key.Item2);
 
@@ -102,12 +102,12 @@ namespace OpenNos.Core
             try
             {
                 // load pregenerated serialization information
-                var serializationInformation = GetSerializationInformation(packet.GetType());
+                KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformation = GetSerializationInformation(packet.GetType());
 
                 string deserializedPacket = serializationInformation.Key.Item2; // set header
 
                 int lastIndex = 0;
-                foreach (var packetBasePropertyInfo in serializationInformation.Value)
+                foreach (KeyValuePair<PacketIndexAttribute, PropertyInfo> packetBasePropertyInfo in serializationInformation.Value)
                 {
                     // check if we need to add a non mapped values (pseudovalues)
                     if (packetBasePropertyInfo.Key.Index > lastIndex + 1)
@@ -150,7 +150,7 @@ namespace OpenNos.Core
 
             if (matches.Count > 0)
             {
-                foreach (var packetBasePropertyInfo in serializationInformation.Value)
+                foreach (KeyValuePair<PacketIndexAttribute, PropertyInfo> packetBasePropertyInfo in serializationInformation.Value)
                 {
                     int currentIndex = packetBasePropertyInfo.Key.Index + (includesKeepAliveIdentity ? 2 : 1); // adding 2 because we need to skip incrementing number and packet header
 
@@ -199,9 +199,9 @@ namespace OpenNos.Core
         private static object DeserializeSubpacket(string currentSubValues, Type packetBasePropertyType, KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> subpacketSerializationInfo, bool isReturnPacket = false)
         {
             string[] subpacketValues = currentSubValues.Split(isReturnPacket ? '^' : '.');
-            var newSubpacket = Activator.CreateInstance(packetBasePropertyType);
+            object newSubpacket = Activator.CreateInstance(packetBasePropertyType);
 
-            foreach (var subpacketPropertyInfo in subpacketSerializationInfo.Value)
+            foreach (KeyValuePair<PacketIndexAttribute, PropertyInfo> subpacketPropertyInfo in subpacketSerializationInfo.Value)
             {
                 int currentSubIndex = isReturnPacket ? subpacketPropertyInfo.Key.Index + 1 : subpacketPropertyInfo.Key.Index; // return packets do include header
                 string currentSubValue = subpacketValues[currentSubIndex];
@@ -227,7 +227,7 @@ namespace OpenNos.Core
             IList subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(packetBasePropertyType), packetBasePropertyType);
 
             Type subPacketType = packetBasePropertyType.GetGenericArguments()[0];
-            var subpacketSerializationInfo = GetSerializationInformation(subPacketType);
+            KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> subpacketSerializationInfo = GetSerializationInformation(subPacketType);
 
             // handle subpackets with separator
             if (shouldRemoveSeparator)
@@ -311,7 +311,7 @@ namespace OpenNos.Core
             }
             if (packetPropertyType.BaseType != null && packetPropertyType.BaseType.Equals(typeof(PacketDefinition))) // subpacket
             {
-                var subpacketSerializationInfo = GetSerializationInformation(packetPropertyType);
+                KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> subpacketSerializationInfo = GetSerializationInformation(packetPropertyType);
                 return DeserializeSubpacket(currentValue, packetPropertyType, subpacketSerializationInfo, packetIndexAttribute?.IsReturnPacket ?? false);
             }
             if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)) // subpacket list
@@ -374,7 +374,7 @@ namespace OpenNos.Core
             }
 
             // order by index
-            var keyValuePairs = packetsForPacketDefinition.OrderBy(p => p.Key.Index);
+            IOrderedEnumerable<KeyValuePair<PacketIndexAttribute, PropertyInfo>> keyValuePairs = packetsForPacketDefinition.OrderBy(p => p.Key.Index);
 
             KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformatin = new KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>>(new Tuple<Type, string>(serializationType, header), packetsForPacketDefinition);
             _packetSerializationInformations.Add(serializationInformatin.Key, serializationInformatin.Value);
@@ -414,7 +414,7 @@ namespace OpenNos.Core
             string serializedSubpacket = isReturnPacket ? $" #{subpacketSerializationInfo.Key.Item2}^" : " ";
 
             // iterate thru configure subpacket properties
-            foreach (var subpacketPropertyInfo in subpacketSerializationInfo.Value)
+            foreach (KeyValuePair<PacketIndexAttribute, PropertyInfo> subpacketPropertyInfo in subpacketSerializationInfo.Value)
             {
                 // first element
                 if (subpacketPropertyInfo.Key.Index != 0)
@@ -431,7 +431,7 @@ namespace OpenNos.Core
         private static string SerializeSubpackets(IList listValues, Type packetBasePropertyType, bool shouldRemoveSeparator)
         {
             string serializedSubPacket = string.Empty;
-            var subpacketSerializationInfo = GetSerializationInformation(packetBasePropertyType.GetGenericArguments()[0]);
+            KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> subpacketSerializationInfo = GetSerializationInformation(packetBasePropertyType.GetGenericArguments()[0]);
 
             if (listValues.Count > 0)
             {
@@ -470,7 +470,7 @@ namespace OpenNos.Core
                 }
                 if (propertyType.BaseType != null && propertyType.BaseType.Equals(typeof(PacketDefinition)))
                 {
-                    var subpacketSerializationInfo = GetSerializationInformation(propertyType);
+                    KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> subpacketSerializationInfo = GetSerializationInformation(propertyType);
                     return SerializeSubpacket(value, subpacketSerializationInfo, packetIndexAttribute?.IsReturnPacket ?? false, packetIndexAttribute?.RemoveSeparator ?? false);
                 }
                 if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))

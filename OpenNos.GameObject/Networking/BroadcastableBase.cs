@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace OpenNos.GameObject
         /// <summary>
         /// List of all connected clients.
         /// </summary>
-        private readonly ThreadSafeSortedList<long, ClientSession> _sessions;
+        private readonly ConcurrentDictionary<long, ClientSession> _sessions;
 
         private bool _disposed;
 
@@ -40,7 +41,7 @@ namespace OpenNos.GameObject
         protected BroadcastableBase()
         {
             LastUnregister = DateTime.Now.AddMinutes(-1);
-            _sessions = new ThreadSafeSortedList<long, ClientSession>();
+            _sessions = new ConcurrentDictionary<long, ClientSession>();
         }
 
         #endregion
@@ -51,7 +52,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return _sessions.GetAllItems().Where(s => s.HasSelectedCharacter && !s.IsDisposing && s.IsConnected);
+                return _sessions.Select(s => s.Value).Where(s => s.HasSelectedCharacter && !s.IsDisposing && s.IsConnected);
             }
         }
 
@@ -114,7 +115,6 @@ namespace OpenNos.GameObject
         {
             if (!_disposed)
             {
-                Dispose(true);
                 GC.SuppressFinalize(this);
                 _disposed = true;
             }
@@ -139,182 +139,180 @@ namespace OpenNos.GameObject
             {
                 session.CurrentMapInstance.IsSleeping = false;
             }
+            Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
         }
 
         public void UnregisterSession(long characterId)
         {
-            // Get client from client list, if not in list do not continue
-            var session = _sessions[characterId];
-            if (session == null)
+            // Remove client from online clients list
+            if (!_sessions.TryRemove(characterId, out ClientSession session))
             {
                 return;
             }
-
-            // Remove client from online clients list
-            _sessions.Remove(characterId);
             if (session.HasCurrentMapInstance && _sessions.Count == 0)
             {
                 session.CurrentMapInstance.IsSleeping = true;
             }
+            Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
             LastUnregister = DateTime.Now;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _sessions.Dispose();
-            }
         }
 
         private void SpreadBroadcastpacket(BroadcastPacket sentPacket)
         {
-            if (Sessions != null && !string.IsNullOrEmpty(sentPacket?.Packet))
+            if (Sessions == null || string.IsNullOrEmpty(sentPacket?.Packet))
             {
-                switch (sentPacket.Receiver)
-                {
-                    case ReceiverType.All: // send packet to everyone
-                        Parallel.ForEach(Sessions, session =>
+                return;
+            }
+            switch (sentPacket.Receiver)
+            {
+                case ReceiverType.All: // send packet to everyone
+                    Parallel.ForEach(Sessions, session =>
+                    {
+                        if (!session.HasSelectedCharacter)
                         {
-                            if (session.HasSelectedCharacter)
-                            {
-                                if (sentPacket.Sender != null)
-                                {
-                                    if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
-                                    {
-                                        session.SendPacket(sentPacket.Packet);
-                                    }
-                                }
-                                else
-                                {
-                                    session.SendPacket(sentPacket.Packet);
-                                }
-                            }
-                        });
-                        break;
-
-                    case ReceiverType.AllExceptMe: // send to everyone except the sender
-                        Parallel.ForEach(Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId), session =>
+                            return;
+                        }
+                        if (sentPacket.Sender != null)
                         {
-                            if (session.HasSelectedCharacter)
+                            if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
                             {
-                                if (sentPacket.Sender != null)
-                                {
-                                    if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
-                                    {
-                                        session.SendPacket(sentPacket.Packet);
-                                    }
-                                }
-                                else
-                                {
-                                    session.SendPacket(sentPacket.Packet);
-                                }
-                            }
-                        });
-                        break;
-                    case ReceiverType.AllExceptGroup:
-                        foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId && (s.Character?.Group == null || (s.Character?.Group?.GroupId != sentPacket.Sender?.Character?.Group?.GroupId))))
-                        {
-                            if (session.HasSelectedCharacter)
-                            {
-                                if (sentPacket.Sender != null)
-                                {
-                                    if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
-                                    {
-                                        session.SendPacket(sentPacket.Packet);
-                                    }
-                                }
-                                else
-                                {
-                                    session.SendPacket(sentPacket.Packet);
-                                }
+                                session.SendPacket(sentPacket.Packet);
                             }
                         }
-                        break;
-                    case ReceiverType.AllInRange: // send to everyone which is in a range of 50x50
-                        if (sentPacket.XCoordinate != 0 && sentPacket.YCoordinate != 0)
+                        else
                         {
-                            Parallel.ForEach(Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)), session =>
-                            {
-                                if (session.HasSelectedCharacter)
-                                {
-                                    if (sentPacket.Sender != null)
-                                    {
-                                        if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
-                                        {
-                                            session.SendPacket(sentPacket.Packet);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        session.SendPacket(sentPacket.Packet);
-                                    }
-                                }
-                            });
+                            session.SendPacket(sentPacket.Packet);
                         }
-                        break;
+                    });
+                    break;
 
-                    case ReceiverType.OnlySomeone:
-                        if (sentPacket.SomeonesCharacterId > 0 || !string.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
+                case ReceiverType.AllExceptMe: // send to everyone except the sender
+                    Parallel.ForEach(Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId), session =>
+                    {
+                        if (!session.HasSelectedCharacter)
                         {
-                            ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == sentPacket.SomeonesCharacterId || s.Character.Name == sentPacket.SomeonesCharacterName);
-                            if (targetSession != null && targetSession.HasSelectedCharacter)
+                            return;
+                        }
+                        if (sentPacket.Sender != null)
+                        {
+                            if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
                             {
-                                if (sentPacket.Sender != null)
+                                session.SendPacket(sentPacket.Packet);
+                            }
+                        }
+                        else
+                        {
+                            session.SendPacket(sentPacket.Packet);
+                        }
+                    });
+
+                    break;
+                case ReceiverType.AllExceptGroup:
+                    foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId && (s.Character?.Group == null || s.Character?.Group?.GroupId != sentPacket.Sender?.Character?.Group?.GroupId)))
+                    {
+                        if (!session.HasSelectedCharacter)
+                        {
+                            continue;
+                        }
+                        if (sentPacket.Sender != null)
+                        {
+                            if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
+                            {
+                                session.SendPacket(sentPacket.Packet);
+                            }
+                        }
+                        else
+                        {
+                            session.SendPacket(sentPacket.Packet);
+                        }
+                    }
+                    break;
+                case ReceiverType.AllInRange: // send to everyone which is in a range of 50x50
+                    if (sentPacket.XCoordinate != 0 && sentPacket.YCoordinate != 0)
+                    {
+                        Parallel.ForEach(Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)), session =>
+                        {
+                            if (!session.HasSelectedCharacter)
+                            {
+                                return;
+                            }
+                            if (sentPacket.Sender != null)
+                            {
+                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
                                 {
-                                    if (!sentPacket.Sender.Character.IsBlockedByCharacter(targetSession.Character.CharacterId))
-                                    {
-                                        targetSession.SendPacket(sentPacket.Packet);
-                                    }
-                                    else
-                                    {
-                                        sentPacket.Sender.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
-                                    }
+                                    session.SendPacket(sentPacket.Packet);
                                 }
-                                else
+                            }
+                            else
+                            {
+                                session.SendPacket(sentPacket.Packet);
+                            }
+                        });
+                    }
+                    break;
+
+                case ReceiverType.OnlySomeone:
+                    if (sentPacket.SomeonesCharacterId > 0 || !string.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
+                    {
+                        ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == sentPacket.SomeonesCharacterId || s.Character.Name == sentPacket.SomeonesCharacterName);
+                        if (targetSession != null && targetSession.HasSelectedCharacter)
+                        {
+                            if (sentPacket.Sender != null)
+                            {
+                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(targetSession.Character.CharacterId))
                                 {
                                     targetSession.SendPacket(sentPacket.Packet);
                                 }
+                                else
+                                {
+                                    sentPacket.Sender.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
+                                }
+                            }
+                            else
+                            {
+                                targetSession.SendPacket(sentPacket.Packet);
                             }
                         }
-                        break;
+                    }
+                    break;
 
-                    case ReceiverType.AllNoEmoBlocked:
-                        Parallel.ForEach(Sessions.Where(s => !s.Character.EmoticonsBlocked), session =>
+                case ReceiverType.AllNoEmoBlocked:
+                    Parallel.ForEach(Sessions.Where(s => !s.Character.EmoticonsBlocked), session =>
+                    {
+                        if (!session.HasSelectedCharacter)
                         {
-                            if (session.HasSelectedCharacter)
-                            {
-                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
-                                {
-                                    session.SendPacket(sentPacket.Packet);
-                                }
-                            }
-                        });
-                        break;
-
-                    case ReceiverType.AllNoHeroBlocked:
-                        Parallel.ForEach(Sessions.Where(s => !s.Character.HeroChatBlocked), session =>
-                        {
-                            if (session.HasSelectedCharacter)
-                            {
-                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
-                                {
-                                    session.SendPacket(sentPacket.Packet);
-                                }
-                            }
-                        });
-                        break;
-
-                    case ReceiverType.Group:
-                        Parallel.ForEach(Sessions.Where(s => s.Character?.Group != null && sentPacket.Sender?.Character?.Group != null && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId), session =>
+                            return;
+                        }
+                        if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
                         {
                             session.SendPacket(sentPacket.Packet);
-                        });
-                        break;
+                        }
+                    });
+                    break;
 
-                    case ReceiverType.Unknown:
-                        break;
-                }
+                case ReceiverType.AllNoHeroBlocked:
+                    Parallel.ForEach(Sessions.Where(s => !s.Character.HeroChatBlocked), session =>
+                    {
+                        if (!session.HasSelectedCharacter)
+                        {
+                            return;
+                        }
+                        if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
+                        {
+                            session.SendPacket(sentPacket.Packet);
+                        }
+                    });
+                    break;
+
+                case ReceiverType.Group:
+                    Parallel.ForEach(Sessions.Where(s => s.Character?.Group != null && sentPacket.Sender?.Character?.Group != null && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId), session =>
+                    {
+                        session.SendPacket(sentPacket.Packet);
+                    });
+                    break;
+
+                case ReceiverType.Unknown:
+                    break;
             }
         }
 

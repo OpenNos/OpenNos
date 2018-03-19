@@ -43,6 +43,14 @@ namespace OpenNos.DAL.EF
         #region Properties
 
         public byte BasicUpgrade { get; set; }
+        public bool Flag1 { get; set; }
+        public bool Flag2 { get; set; }
+        public bool Flag3 { get; set; }
+        public bool Flag4 { get; set; }
+        public bool Flag5 { get; set; }
+        public bool Flag6 { get; set; }
+        public bool Flag7 { get; set; }
+        public bool Flag8 { get; set; }
 
         public byte CellonLvl { get; set; }
 
@@ -96,7 +104,7 @@ namespace OpenNos.DAL.EF
 
         public short HpRegeneration { get; set; }
 
-        public bool IsBlocked { get; set; }
+        public bool IsMinilandActionable { get; set; }
 
         public bool IsColored { get; set; }
 
@@ -106,9 +114,9 @@ namespace OpenNos.DAL.EF
 
         public bool IsHeroic { get; set; }
 
-        public bool IsHolder { get; set; }
+        public bool Flag9 { get; set; }
 
-        public bool IsMinilandObject { get; set; }
+        public bool IsWarehouse { get; set; }
 
         public bool IsSoldable { get; set; }
 

@@ -1,9 +1,11 @@
-﻿using static OpenNos.Domain.BCardType;
+﻿using System.ComponentModel.DataAnnotations;
+using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.Data
 {
     public class BCardDTO : MappingBaseDTO
     {
+        [Key]
         public short BCardId { get; set; }
 
         public byte SubType { get; set; }
@@ -25,6 +27,10 @@ namespace OpenNos.Data
         public short? NpcMonsterVNum { get; set; }
 
         public byte CastType { get; set; }
+
+        public bool IsLevelScaled { get; set; }
+
+        public bool IsLevelDivided { get; set; }
 
     }
 }

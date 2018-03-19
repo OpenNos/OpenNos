@@ -8,6 +8,7 @@ using OpenNos.Master.Library.Interface;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using OpenNos.Data;
 
 namespace OpenNos.Master.Library.Client
 {
@@ -42,7 +43,7 @@ namespace OpenNos.Master.Library.Client
                 }
             }
         }
-
+        
         #endregion
 
         #region Events
@@ -57,6 +58,8 @@ namespace OpenNos.Master.Library.Client
 
         public event EventHandler MessageSentToCharacter;
 
+        public event EventHandler MailSent;
+
         public event EventHandler PenaltyLogRefresh;
 
         public event EventHandler RelationRefresh;
@@ -64,6 +67,7 @@ namespace OpenNos.Master.Library.Client
         public event EventHandler SessionKickedEvent;
 
         public event EventHandler ShutdownEvent;
+
 
         #endregion
 
@@ -78,6 +82,7 @@ namespace OpenNos.Master.Library.Client
                 return _client.CommunicationState;
             }
         }
+
 
         #endregion
 
@@ -148,9 +153,19 @@ namespace OpenNos.Master.Library.Client
             _client.ServiceProxy.RefreshPenalty(penaltyId);
         }
 
-        public void RegisterAccountLogin(long accountId, long sessionId)
+        public void RegisterAccountLogin(long accountId, long sessionId, string accountName)
         {
-            _client.ServiceProxy.RegisterAccountLogin(accountId, sessionId);
+            _client.ServiceProxy.RegisterAccountLogin(accountId, sessionId, accountName);
+        }
+        
+        public bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId)
+        {
+            return _client.ServiceProxy.ConnectAccountInternal(worldId, accountId, sessionId);
+        }
+
+        public void RegisterInternalAccountLogin(long accountId, int sessionId)
+        {
+            _client.ServiceProxy.RegisterInternalAccountLogin(accountId, sessionId);
         }
 
         public int? RegisterWorldServer(SerializableWorldServer worldServer)
@@ -167,12 +182,28 @@ namespace OpenNos.Master.Library.Client
         {
             return _client.ServiceProxy.RetrieveServerStatistics();
         }
+        
+        public SerializableWorldServer GetPreviousChannelByAccountId(long accountId)
+        {
+            return _client.ServiceProxy.GetPreviousChannelByAccountId(accountId);
+        }
+
+        public SerializableWorldServer GetAct4ChannelInfo(string worldGroup)
+        {
+            return _client.ServiceProxy.GetAct4ChannelInfo(worldGroup);
+        }
+
+        public bool IsCrossServerLoginPermitted(long accountId, int sessionId)
+        {
+            return _client.ServiceProxy.IsCrossServerLoginPermitted(accountId, sessionId);
+        }
 
         public int? SendMessageToCharacter(SCSCharacterMessage message)
         {
             return _client.ServiceProxy.SendMessageToCharacter(message);
         }
 
+   
         public void Shutdown(string worldGroup)
         {
             _client.ServiceProxy.Shutdown(worldGroup);
@@ -200,13 +231,13 @@ namespace OpenNos.Master.Library.Client
 
         internal void OnCharacterConnected(long characterId)
         {
-            string characterName = DAOFactory.CharacterDAO.LoadById(characterId)?.Name;
+            string characterName = DAOFactory.CharacterDAO.FirstOrDefault(s=>s.CharacterId == characterId)?.Name;
             CharacterConnectedEvent?.Invoke(new Tuple<long, string>(characterId, characterName), null);
         }
 
         internal void OnCharacterDisconnected(long characterId)
         {
-            string characterName = DAOFactory.CharacterDAO.LoadById(characterId)?.Name;
+            string characterName = DAOFactory.CharacterDAO.FirstOrDefault(s=>s.CharacterId == characterId)?.Name;
             CharacterDisconnectedEvent?.Invoke(new Tuple<long, string>(characterId, characterName), null);
         }
 
@@ -245,6 +276,17 @@ namespace OpenNos.Master.Library.Client
             RelationRefresh?.Invoke(relationId, null);
         }
 
+        internal void OnSendMail(MailDTO mail)
+        {
+            MailSent?.Invoke(mail, null);
+        }
+
+        public void SendMail(string worldGroup, MailDTO mail)
+        {
+            _client.ServiceProxy.SendMail(worldGroup, mail);
+        }
+
+    
         #endregion
     }
 }

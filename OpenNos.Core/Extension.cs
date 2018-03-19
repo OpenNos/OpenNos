@@ -23,6 +23,7 @@ namespace OpenNos.Core
             return str.Length > length ? str.Substring(0, length) : str;
         }
 
+    
         #endregion
     }
 }

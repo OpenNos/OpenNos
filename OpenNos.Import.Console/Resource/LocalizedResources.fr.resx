@@ -165,6 +165,9 @@
   <data name="PARSE_ALL" xml:space="preserve">
     <value>Voulez-vous tout analyser ?</value>
   </data>
+  <data name="PARSE_CARDS" xml:space="preserve">
+    <value>Voulez-vous analysé les Bcard ?</value>
+  </data>
   <data name="PARSE_DROP" xml:space="preserve">
     <value>Voulez-vous analyser les drops ?</value>
   </data>
@@ -214,7 +217,7 @@
     <value>{0} Recettes analysées !</value>
   </data>
   <data name="RESPAWNTYPE_PARSED" xml:space="preserve">
-    <value>RespawnType analysés !</value>
+    <value>Types de respawn analysés analysés !</value>
   </data>
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
     <value>{0} Magasins d'objets analysés !</value>
@@ -230,5 +233,8 @@
   </data>
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
     <value>{0} Téléporteurs analysés !</value>
+  </data>
+  <data name="TIMESPACES_PARSED" xml:space="preserve">
+    <value>{0} Espace-temps analysés</value>
   </data>
 </root>

@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class RespawnDTO : MappingBaseDTO
@@ -22,6 +24,7 @@ namespace OpenNos.Data
 
         public short MapId { get; set; }
 
+        [Key]
         public long RespawnId { get; set; }
 
         public long RespawnMapTypeId { get; set; }

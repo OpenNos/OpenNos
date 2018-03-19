@@ -6,7 +6,7 @@ namespace OpenNos.PathFinder
     {
         #region Members
 
-        public static readonly Double SQRT_2 = Math.Sqrt(2);
+        public static readonly double SQRT_2 = Math.Sqrt(2);
 
         #endregion
 

@@ -25,10 +25,13 @@ using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using OpenNos.World.Resource;
 
 namespace OpenNos.World
 {
@@ -36,8 +39,8 @@ namespace OpenNos.World
     {
         #region Members
 
-        private static EventHandler exitHandler;
-        private static ManualResetEvent run = new ManualResetEvent(true);
+        private static EventHandler _exitHandler;
+        private static ManualResetEvent _run = new ManualResetEvent(true);
 
         #endregion
 
@@ -69,11 +72,10 @@ namespace OpenNos.World
             // initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
-            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
-            Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}dev";
-            int port = Convert.ToInt32(ConfigurationManager.AppSettings["WorldPort"]);
-            string text = $"WORLD SERVER v{fileVersionInfo.ProductVersion}dev - by OpenNos Team";
+            Console.Title = string.Format(LocalizedResources.WORLD_SERVER_CONSOLE_TITLE, 0, 0, 0, 0);
+            short port = Convert.ToInt16(ConfigurationManager.AppSettings["WorldPort"]);
+            const string text = "OpenNos - World Server";
             int offset = Console.WindowWidth / 2 + text.Length / 2;
             string separator = new string('=', Console.WindowWidth);
             Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
@@ -101,21 +103,28 @@ namespace OpenNos.World
 
             // TODO: initialize ClientLinkManager initialize PacketSerialization
             PacketFactory.Initialize<WalkPacket>();
-
+            string ip = ConfigurationManager.AppSettings["IPADDRESS"];
+            if (bool.TryParse(ConfigurationManager.AppSettings["AutoReboot"], out bool autoreboot))
+            {
+                autoreboot = false;
+            }
             try
             {
-                exitHandler += ExitHandler;
-                NativeMethods.SetConsoleCtrlHandler(exitHandler, true);
+                _exitHandler += ExitHandler;
+                if (autoreboot)
+                {
+                    AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
+                }
+                NativeMethods.SetConsoleCtrlHandler(_exitHandler, true);
             }
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
             }
-            NetworkManager<WorldEncryption> networkManager = null;
             portloop:
             try
             {
-                networkManager = new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
+                NetworkManager<WorldEncryption> unused = new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
             catch (SocketException ex)
             {
@@ -131,31 +140,47 @@ namespace OpenNos.World
 
             ServerManager.Instance.ServerGroup = ConfigurationManager.AppSettings["ServerGroup"];
             int sessionLimit = Convert.ToInt32(ConfigurationManager.AppSettings["SessionLimit"]);
-            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ConfigurationManager.AppSettings["IPADDRESS"], port, sessionLimit, ServerManager.Instance.ServerGroup));
+            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ip, port, sessionLimit, ServerManager.Instance.ServerGroup));
 
             if (newChannelId.HasValue)
             {
                 ServerManager.Instance.ChannelId = newChannelId.Value;
+                ServerManager.Instance.IpAddress = ip;
+                ServerManager.Instance.Port = port;
+                ServerManager.Instance.AccountLimit = sessionLimit;
+                Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
             }
             else
             {
                 Logger.Log.ErrorFormat("Could not retrieve ChannelId from Web API.");
                 Console.ReadKey();
-                return;
             }
         }
 
         private static bool ExitHandler(CtrlType sig)
         {
-            string serverGroup = ConfigurationManager.AppSettings["ServerGroup"];
-            int port = Convert.ToInt32(ConfigurationManager.AppSettings["WorldPort"]);
             CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.SaveAll();
-
             Thread.Sleep(5000);
             return false;
+        }
+        
+        // TODO SEND MAIL TO REVIEW EXCEPTION
+        private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        {
+            ServerManager.Instance.InShutdown = true;
+            Logger.Log.Error((Exception)e.ExceptionObject);
+            Logger.Log.Debug(Language.Instance.GetMessageFromKey("SERVER_CRASH"));
+            CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
+
+            ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
+            ServerManager.Instance.SaveAll();
+            Thread.Sleep(5000);
+
+            Process.Start(Process.GetCurrentProcess().ProcessName);
+            Environment.Exit(1);
         }
 
         private static void RegisterMappings()
@@ -166,9 +191,10 @@ namespace OpenNos.World
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(WearableInstance));
             DAOFactory.IteminstanceDAO.InitializeMapper(typeof(ItemInstance));
 
+
             // entities
             DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
-            DAOFactory.CellonOptionDAO.RegisterMapping(typeof(CellonOptionDTO)).InitializeMapper();
+            DAOFactory.EquipmentOptionDAO.RegisterMapping(typeof(EquipmentOptionDTO)).InitializeMapper();
             DAOFactory.CharacterDAO.RegisterMapping(typeof(Character)).InitializeMapper();
             DAOFactory.CharacterRelationDAO.RegisterMapping(typeof(CharacterRelationDTO)).InitializeMapper();
             DAOFactory.CharacterSkillDAO.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();
@@ -196,7 +222,7 @@ namespace OpenNos.World
             DAOFactory.RecipeDAO.RegisterMapping(typeof(Recipe)).InitializeMapper();
             DAOFactory.RecipeItemDAO.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();
             DAOFactory.MinilandObjectDAO.RegisterMapping(typeof(MinilandObjectDTO)).InitializeMapper();
-            DAOFactory.MinilandObjectDAO.RegisterMapping(typeof(MinilandObject)).InitializeMapper();
+            DAOFactory.MinilandObjectDAO.RegisterMapping(typeof(MapDesignObject)).InitializeMapper();
             DAOFactory.RespawnDAO.RegisterMapping(typeof(RespawnDTO)).InitializeMapper();
             DAOFactory.RespawnMapTypeDAO.RegisterMapping(typeof(RespawnMapTypeDTO)).InitializeMapper();
             DAOFactory.ShopDAO.RegisterMapping(typeof(Shop)).InitializeMapper();
@@ -216,6 +242,8 @@ namespace OpenNos.World
             DAOFactory.FamilyCharacterDAO.RegisterMapping(typeof(FamilyCharacter)).InitializeMapper();
             DAOFactory.ScriptedInstanceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
             DAOFactory.ScriptedInstanceDAO.RegisterMapping(typeof(ScriptedInstance)).InitializeMapper();
+            DAOFactory.LogChatDAO.RegisterMapping(typeof(LogChatDTO)).InitializeMapper();
+            DAOFactory.LogCommandsDAO.RegisterMapping(typeof(LogCommandsDTO)).InitializeMapper();
         }
 
         public class NativeMethods

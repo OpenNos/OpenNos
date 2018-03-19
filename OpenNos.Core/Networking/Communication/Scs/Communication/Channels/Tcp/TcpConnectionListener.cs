@@ -92,7 +92,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             {
                 try
                 {
-                    var clientSocket = _listenerSocket.AcceptSocket();
+                    Socket clientSocket = _listenerSocket.AcceptSocket();
                     if (clientSocket.Connected)
                     {
                         OnCommunicationChannelConnected(new TcpCommunicationChannel(clientSocket));

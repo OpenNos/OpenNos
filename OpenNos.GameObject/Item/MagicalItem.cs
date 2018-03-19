@@ -17,6 +17,10 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -32,7 +36,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
         {
             switch (Effect)
             {
@@ -41,11 +45,121 @@ namespace OpenNos.GameObject
                     if (ItemType == ItemType.Event)
                     {
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(EffectValue));
-                        if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))
+                        if (MappingHelper.Instance.GuriItemEffects.ContainsKey(EffectValue))
                         {
-                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(19, 1, session.Character.CharacterId, MappingHelper.GuriItemEffects[EffectValue]), session.Character.MapX, session.Character.MapY);
+                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(19, 1, session.Character.CharacterId, MappingHelper.Instance.GuriItemEffects[EffectValue]), session.Character.MapX, session.Character.MapY);
                         }
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    }
+                    // APPLY SHELL ON EQUIPMENT
+                    if (inv.Item.ItemType == ItemType.Shell)
+                    {
+                        if (!((WearableInstance) inv).EquipmentOptions.Any())
+                        {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_MUST_BE_IDENTIFIED"), 0));
+                            return;
+                        }
+                        if (packetsplit == null)
+                        {
+                            return;
+                        }
+                        
+                        if (packetsplit.Length < 9)
+                        {
+                            // MODIFIED PACKET
+                            return;
+                        }
+
+                        if (!short.TryParse(packetsplit[9], out short eqSlot) || !Enum.TryParse(packetsplit[8], out InventoryType eqType))
+                        {
+                            return;
+                        }
+
+                        if (!int.TryParse(packetsplit[6], out int requestType))
+                        {
+                            return;
+                        }
+         
+                        WearableInstance shell = (WearableInstance)inv;
+                        WearableInstance eq = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
+
+                        if (eq == null)
+                        {
+                            // PACKET MODIFIED
+                            return;
+                        }
+                        if (eq.Item.ItemType != ItemType.Armor && shell.Item.ItemSubType == 1)
+                        {
+                            // ARMOR SHELL ONLY APPLY ON ARMORS
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_FOR_ARMOR_ONLY"), 0));
+                            return;
+                        }
+                        if (eq.Item.ItemType != ItemType.Weapon && shell.Item.ItemSubType == 0)
+                        {
+                            // WEAPON SHELL ONLY APPLY ON WEAPONS
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_FOR_WEAPON_ONLY"), 0));
+                            return;
+                        }
+                        switch (requestType)
+                        {
+                            case 0:
+                                session.SendPacket(eq.EquipmentOptions.Any()
+                                    ? $"qna #u_i^1^{session.Character.CharacterId}^{(short) inv.Type}^{inv.Slot}^1^1^{(short) eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF_NOT_EMPTY")}"
+                                    : $"qna #u_i^1^{session.Character.CharacterId}^{(short) inv.Type}^{inv.Slot}^1^1^{(short) eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF")}");
+                                break;
+                            case 1:
+                                if (shell.EquipmentOptions == null)
+                                {
+                                    // SHELL NOT IDENTIFIED
+                                    return;
+                                }
+                                if (eq.BoundCharacterId != session.Character.CharacterId && eq.BoundCharacterId != null)
+                                {
+                                    // NEED TO PERFUME STUFF BEFORE CHANGING SHELL
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_PARFUM_TO_CHANGE_SHELL"), 0));
+                                    return;
+                                }
+                                if (eq.Rare < shell.Rare)
+                                {
+                                    // RARITY TOO HIGH ON SHELL
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_RARITY_TOO_HIGH"), 0));
+                                    return;
+                                }
+                                if (eq.Item.LevelMinimum < shell.Upgrade)
+                                {
+                                    // SHELL LEVEL TOO HIGH
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_LEVEL_TOO_HIGH"), 0));
+                                    return;
+                                }
+
+                                if (eq.EquipmentOptions?.Any() == true)
+                                {
+                                    if (new Random().Next(100) >= 50)
+                                    {
+                                        // BREAK BECAUSE DIDN'T USE MAGIC ERASER
+                                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_BROKEN"), 0));
+                                        session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
+                                        return;
+                                    }
+                                }
+                                if (eq.EquipmentOptions == null)
+                                {
+                                    eq.EquipmentOptions = new List<EquipmentOptionDTO>();
+                                }
+
+                                eq.EquipmentOptions.Clear();
+                                foreach (EquipmentOptionDTO i in shell.EquipmentOptions)
+                                {
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_OPTION_SET"), 0));
+                                    eq.EquipmentOptions.Add(i);
+                                }
+
+                                eq.BoundCharacterId = session.Character.CharacterId;
+                                eq.ShellRarity = shell.Rare;
+                                session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
+                                break;
+                        }
                     }
                     break;
 
@@ -56,14 +170,13 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
                         return;
                     }
-                    int type, secondaryType, inventoryType, slot;
-                    if (packetsplit != null && int.TryParse(packetsplit[2], out type) && int.TryParse(packetsplit[3], out secondaryType) && int.TryParse(packetsplit[4], out inventoryType) && int.TryParse(packetsplit[5], out slot))
+                    if (packetsplit != null && int.TryParse(packetsplit[2], out var type) && int.TryParse(packetsplit[3], out var secondaryType) && int.TryParse(packetsplit[4], out var inventoryType) && int.TryParse(packetsplit[5], out var slot))
                     {
                         int packetType;
                         switch (EffectValue)
                         {
                             case 0:
-                                if (Option == 0)
+                                if (option == 0)
                                 {
                                     session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1 #u_i^{type}^{secondaryType}^{inventoryType}^{slot}^2 {Language.Instance.GetMessageFromKey("WANT_TO_SAVE_POSITION")}"));
                                 }
@@ -133,7 +246,7 @@ namespace OpenNos.GameObject
                                 break;
 
                             case 2:
-                                if (Option == 0)
+                                if (option == 0)
                                 {
                                     session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1"));
                                 }
@@ -190,7 +303,7 @@ namespace OpenNos.GameObject
                             session.Character.Dignity = 100;
                         }
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff(49 - session.Character.Faction));
+                        session.SendPacket(session.Character.GenerateEff(49 - (byte)session.Character.Faction));
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -199,7 +312,7 @@ namespace OpenNos.GameObject
                     {
                         session.Character.Dignity = 100;
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff(49 - session.Character.Faction));
+                        session.SendPacket(session.Character.GenerateEff(49 - (byte)session.Character.Faction));
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -210,7 +323,7 @@ namespace OpenNos.GameObject
                 case 15:
                     if (!session.Character.IsVehicled)
                     {
-                        if (Option == 0)
+                        if (option == 0)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 3, session.Character.CharacterId, 1));
                         }
@@ -221,7 +334,7 @@ namespace OpenNos.GameObject
                 case 16:
                     if (!session.Character.IsVehicled)
                     {
-                        if (Option == 0)
+                        if (option == 0)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 4, session.Character.CharacterId, 1));
                         }
@@ -246,6 +359,18 @@ namespace OpenNos.GameObject
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"), 0));
                         }
+                    }
+                    break;
+
+                //Raid stone
+                case 300:
+                    if (session.Character.Group != null && session.Character.Group.GroupType != GroupType.Group && session.Character.Group.IsLeader(session) && session.CurrentMapInstance.Portals.Any(s => s.Type == (short)PortalType.Raid))
+                    {
+                        Parallel.ForEach(session.Character.Group.Characters.Replace(s => s.Character.Group?.GroupId == session.Character.Group?.GroupId), sess =>
+                        {
+                            ServerManager.Instance.TeleportOnRandomPlaceInMap(sess, session.CurrentMapInstance.MapInstanceId);
+                        });
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     break;
 

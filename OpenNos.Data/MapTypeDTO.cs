@@ -12,12 +12,15 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.Data
 {
     public class MapTypeDTO : MappingBaseDTO
     {
         #region Properties
 
+        [Key]
         public short MapTypeId { get; set; }
 
         public string MapTypeName { get; set; }

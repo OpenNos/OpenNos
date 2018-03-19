@@ -13,9 +13,12 @@ namespace OpenNos.GameObject.CommandPackets
         [PacketIndex(0)]
         public EventType EventType { get; set; }
 
+        [PacketIndex(1)]
+        public int? UseTimer { get; set; }
+
         public static string ReturnHelp()
         {
-            return "$Event EVENT";
+            return "$Event EVENT USETIMER";
         }
 
         #endregion

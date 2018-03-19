@@ -20,6 +20,10 @@ namespace OpenNos.Domain
         LOD,
         MINILANDREFRESHEVENT,
         LODDH,
-        RANKINGREFRESH
+        RANKINGREFRESH,
+        TALENTARENA,
+        MASTERARENA,
+        ICEBREAKER,
+        ACT4SHIP
     }
 }
