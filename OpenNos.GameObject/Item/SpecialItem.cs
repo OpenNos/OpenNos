@@ -411,12 +411,11 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+               // Sealed Vessel
                 case 1002:
-                    // TODO REVIEW THIS
-                    /*
                     if (EffectValue == 69)
                     {
-                        int rnd = ServerManager.Instance.RandomNumber(0, 1000);
+                        int rnd = ServerManager.RandomNumber(0, 1000);
                         if (rnd < 5)
                         {
                             short[] vnums =
@@ -424,15 +423,14 @@ namespace OpenNos.GameObject
                                 5560, 5591, 4099, 907, 1160, 4705, 4706, 4707, 4708, 4709, 4710, 4711, 4712, 4713, 4714,
                                 4715, 4716
                             };
-                            byte[] counts = {1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-                            int item = ServerManager.Instance.RandomNumber(0, 17);
-
+                            byte[] counts = { 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+                            int item = ServerManager.RandomNumber(0, 17);
                             session.Character.GiftAdd(vnums[item], counts[item]);
                         }
                         else if (rnd < 30)
                         {
-                            short[] vnums = {361, 362, 363, 366, 367, 368, 371, 372, 373};
-                            session.Character.GiftAdd(vnums[ServerManager.Instance.RandomNumber(0, 9)], 1);
+                            short[] vnums = { 361, 362, 363, 366, 367, 368, 371, 372, 373 };
+                            session.Character.GiftAdd(vnums[ServerManager.RandomNumber(0, 9)], 1);
                         }
                         else
                         {
@@ -447,44 +445,37 @@ namespace OpenNos.GameObject
                                 10, 10, 20, 5, 1, 1, 99, 1, 1, 5, 5, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 5, 20,
                                 20, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
                             };
-                            int item = ServerManager.Instance.RandomNumber(0, 42);
+                            int item = ServerManager.RandomNumber(0, 42);
                             session.Character.GiftAdd(vnums[item], counts[item]);
                         }
-                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                        session.Character.Inventory.RemoveItemFromInventory(inv.Id);
                     }
-                    */
-                    if (session.HasCurrentMapInstance)
+                    else if (session.HasCurrentMapInstance && session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance && (session.Character.LastVessel.AddSeconds(1) <= DateTime.Now || session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.FastVessels)))
                     {
-                        if (session.CurrentMapInstance.Map.MapTypes.All(m => m.MapTypeId != (short) MapTypeEnum.Act4))
-                        {
-                            short[] vnums =
-                            {
-                                1386, 1387, 1388, 1389, 1390, 1391, 1392, 1393, 1394, 1395, 1396, 1397, 1398, 1399,
-                                1400, 1401, 1402, 1403, 1404, 1405
-                            };
-                            short vnum = vnums[ServerManager.Instance.RandomNumber(0, 20)];
+                        short[] vnums = { 1386, 1387, 1388, 1389, 1390, 1391, 1392, 1393, 1394, 1395, 1396, 1397, 1398, 1399, 1400, 1401, 1402, 1403, 1404, 1405 };
+                        short vnum = vnums[ServerManager.RandomNumber(0, 20)];
 
-                            NpcMonster npcmonster = ServerManager.Instance.GetNpc(vnum);
-                            if (npcmonster == null)
-                            {
-                                return;
-                            }
-                            MapMonster monster = new MapMonster
-                            {
-                                MonsterVNum = vnum,
-                                MapY = session.Character.MapY,
-                                MapX = session.Character.MapX,
-                                MapId = session.Character.MapInstance.Map.MapId,
-                                Position = (byte) session.Character.Direction,
-                                IsMoving = true,
-                                MapMonsterId = session.CurrentMapInstance.GetNextMonsterId(),
-                                ShouldRespawn = false
-                            };
-                            monster.Initialize(session.CurrentMapInstance);
-                            session.CurrentMapInstance.AddMonster(monster);
-                            session.CurrentMapInstance.Broadcast(monster.GenerateIn());
-                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                        NpcMonster npcmonster = ServerManager.GetNpc(vnum);
+                        if (npcmonster == null)
+                        {
+                            return;
                         }
+                        MapMonster monster = new MapMonster
+                        {
+                            MonsterVNum = vnum,
+                            MapY = session.Character.MapY,
+                            MapX = session.Character.MapX,
+                            MapId = session.Character.MapInstance.Map.MapId,
+                            Position = session.Character.Direction,
+                            IsMoving = true,
+                            MapMonsterId = session.CurrentMapInstance.GetNextMonsterId(),
+                            ShouldRespawn = false
+                        };
+                        monster.Initialize(session.CurrentMapInstance);
+                        session.CurrentMapInstance.AddMonster(monster);
+                        session.CurrentMapInstance.Broadcast(monster.GenerateIn());
+                        session.Character.Inventory.RemoveItemFromInventory(inv.Id);
+                        session.Character.LastVessel = DateTime.Now;
                     }
                     break;
 
