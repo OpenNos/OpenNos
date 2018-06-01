@@ -1,12 +1,9 @@
 <div align="center">
 <b>OpenNos</b>
-  <br/>
-  Continued by NosWings Developers
-  <br/>
-  <a href="https://noswings.fr">
-    <img height="300px" src="https://noswings.fr/assets/img/logo_full.png">
-  </a>
-  <br/>
+<br/>
+This project was abandonned by developpers. Pull request are still accepted but there is really few chances that this emulator will continue.<br/>
+The founder of this project is now working on a new Emulator : NosCore.<br/>
+All informations are there : https://github.com/NosCoreIO/NosCore
 <br/>
 </div>
 <br/><br/><br/><br/><br/>
