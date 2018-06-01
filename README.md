@@ -1,9 +1,11 @@
 <div align="center">
 <b>OpenNos</b>
 <br/>
-This project was abandonned by developpers. Pull request are still accepted but there is really few chances that this emulator will continue.<br/>
-The founder of this project is now working on a new Emulator : NosCore.<br/>
-All informations are there : https://github.com/NosCoreIO/NosCore
+This project was abandoned by developers. Pull request is still accepted, but there are really few chances that this emulator will continue.
+<br/>
+The founder of this project is now working on a new Emulator: NosCore.
+<br/> 
+for more information : https://github.com/NosCoreIO/NosCore
 <br/>
 </div>
 <br/><br/><br/><br/><br/>
